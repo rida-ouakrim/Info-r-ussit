@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+
+/* ============================================================
+   DESIGN TOKENS — PREMIUM INDIGO ACADEMIC THEME
+   ============================================================ */
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+
+  /* Core Palette — Dark Mode */
+  --bg-base: #090e1a;
+  --bg-surface: #0f1625;
+  --bg-card: #161e30;
+  --border: #1e2a42;
+  --border-light: #263350;
+
+  --text-primary: #eef2ff;
+  --text-secondary: #94a3b8;
+  --text-muted: #5b7083;
+
+  /* ✦ Premium Indigo Accent */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-dark: #3730a3;
+  --accent-light: #e0e7ff;
+  --accent-subtle: rgba(79, 70, 229, 0.10);
+
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+}
+
+/* ============================================================
+   GLOBAL BASE STYLES
+   ============================================================ */
+html,
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #344e65;
+}
+
+/* ============================================================
+   DARK MODE  (html.dark)
+   ============================================================ */
+html.dark body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+}
+
+html.dark .glass-nav {
+  background: rgba(9, 14, 26, 0.96);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+}
+
+html.dark .glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+html.dark .sidebar-base {
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+}
+
+/* ============================================================
+   LIGHT MODE  (html.light)
+   ============================================================ */
+html.light body {
+  background-color: #f8f9fc;
+  color: #0f172a;
+}
+
+html.light .glass-nav {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+html.light .glass-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  color: #0f172a;
+}
+
+html.light .sidebar-base {
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+}
+
+/* -- Light Form Controls -- */
+html.light input,
+html.light select,
+html.light textarea {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+html.light input::placeholder {
+  color: #94a3b8;
+}
+
+
+/* -- Code Blocks Always Dark -- */
+html.light pre {
+  background: #1e1b4b !important;
+  color: #e0e7ff !important;
+}
+
+html.light pre code,
+html.light pre code * {
+  color: #a5b4fc !important;
+}
+
+/* ============================================================
+   COMPONENT PRIMITIVES
+   ============================================================ */
+
+/* Academic Badge */
+.badge-academic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border: 1px solid rgba(79, 70, 229, 0.25);
+}
+
+html.light .badge-academic {
+  background: #ede9fe;
+  color: #4338ca;
+  border-color: #c4b5fd;
+}
+
+/* Primary Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #4f46e5;
+  color: #ffffff !important;
+  transition: all 0.15s ease;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
+}
+
+/* Ghost Button */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-ghost:hover {
+  border-color: #4f46e5;
+  color: #4f46e5;
+  background: var(--accent-subtle);
+}
+
+html.light .btn-ghost {
+  border-color: #d1d5db;
+  color: #475569;
+}
+
+html.light .btn-ghost:hover {
+  border-color: #4f46e5;
+  color: #4338ca;
+  background: #ede9fe;
+}
+
+/* Stat Number */
+.stat-number {
+  font-size: 2.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  font-family: var(--font-sans);
+}
+
+/* Feature Card */
+.feature-card {
+  padding: 28px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.10);
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to bottom, #4f46e5, #7c3aed);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.feature-card:hover::before {
+  opacity: 1;
+}
+
+/* Sidebar Active Link */
+html.dark .sidebar-active {
+  background: rgba(79, 70, 229, 0.12);
+  color: #a5b4fc !important;
+  border-left: 3px solid #4f46e5;
+}
+
+html.light .sidebar-active {
+  background: #ede9fe;
+  color: #4338ca !important;
+  border-left: 3px solid #4f46e5;
+}
