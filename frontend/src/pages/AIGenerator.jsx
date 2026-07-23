@@ -171,7 +171,8 @@ const AIGenerator = () => {
       if (err.response && err.response.status === 403) {
         setLimitError(err.response.data);
       } else {
-        alert("Erreur lors de la génération IA. Veuillez réessayer.");
+        const errorMsg = err.response?.data?.error || "Erreur lors de la génération IA. Veuillez réessayer.";
+        alert(errorMsg);
       }
     } finally {
       setGenerating(false);
@@ -353,7 +354,7 @@ const AIGenerator = () => {
                   className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm"
                 >
                   {subdomains.map(sd => (
-                    <option key={sd.code} value={sd.code}>{sd.name} ({sd.code})</option>
+                    <option key={sd.code} value={sd.code}>{sd.name}</option>
                   ))}
                 </select>
               </div>

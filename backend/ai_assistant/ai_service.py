@@ -18,27 +18,7 @@ class GeneratedQuestionSchema(BaseModel):
 class PageQuestionsSchema(BaseModel):
     questions: List[GeneratedQuestionSchema] = Field(description="List of MCQ questions")
 
-def get_genai_client():
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if api_key:
-        return genai.Client(api_key=api_key)
-    
-    project_id = os.environ.get("GCP_PROJECT_ID", "chrome-backbone-496013-p4")
-    location = os.environ.get("GCP_LOCATION", "us-central1")
-
-    try:
-        return genai.Client(
-            vertexai=True, 
-            project=project_id, 
-            location=location,
-            http_options=types.HttpOptions(timeout=60000)
-        )
-    except Exception:
-        return genai.Client()
-
 def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_description="", num_q=5, difficulty="Moyen"):
-    client = get_genai_client()
-
     prompt = f"""
     You are a senior computer science professor and head of jury for competitive computer science recruitment exams (CRMEF, Master, Agrégation, Engineers, Technicians).
     Please generate exactly {num_q} original, high-quality Multiple Choice Questions (QCM) targeting the official syllabus subdomain: "{subdomain_name}" ({subdomain_code}) under domain "{domain_name}".
@@ -55,24 +35,54 @@ def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_d
     Return strictly a JSON object matching the PageQuestionsSchema schema.
     """
 
+    clients_to_try = []
+    
+    # Option A: GEMINI_API_KEY environment variable
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if api_key:
+        try:
+            clients_to_try.append(genai.Client(api_key=api_key))
+        except Exception:
+            pass
+
+    # Option B: Vertex AI ADC Client
+    project_id = os.environ.get("GCP_PROJECT_ID", "chrome-backbone-496013-p4")
+    location = os.environ.get("GCP_LOCATION", "us-central1")
+    try:
+        clients_to_try.append(genai.Client(
+            vertexai=True, 
+            project=project_id, 
+            location=location,
+            http_options=types.HttpOptions(timeout=60000)
+        ))
+    except Exception:
+        pass
+
+    # Option C: Default fallback Client
+    try:
+        clients_to_try.append(genai.Client())
+    except Exception:
+        pass
+
     models_to_try = ["gemini-1.5-flash", "gemini-2.5-flash", "gemini-1.5-pro"]
     last_error = None
 
-    for model_name in models_to_try:
-        try:
-            response = client.models.generate_content(
-                model=model_name,
-                contents=[prompt],
-                config=types.GenerateContentConfig(
-                    response_mime_type="application/json",
-                    response_schema=PageQuestionsSchema,
-                    temperature=0.7
+    for client in clients_to_try:
+        for model_name in models_to_try:
+            try:
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=[prompt],
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json",
+                        response_schema=PageQuestionsSchema,
+                        temperature=0.7
+                    )
                 )
-            )
-            data = json.loads(response.text)
-            return data.get("questions", [])
-        except Exception as err:
-            last_error = err
-            continue
+                data = json.loads(response.text)
+                return data.get("questions", [])
+            except Exception as err:
+                last_error = err
+                continue
 
-    raise Exception(f"Erreur d'appel API Gemini/Vertex: {str(last_error)}")
+    raise Exception(f"{str(last_error)}")
