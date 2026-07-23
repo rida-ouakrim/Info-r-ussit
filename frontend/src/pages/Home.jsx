@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import heroImg from '../assets/hero.png';
 import {
   BookOpen, FileCheck, Sparkles, Target,
   CheckCircle2, ArrowRight, Award, Users, Brain, Clock,
-  ChevronRight, Mail, Phone, MapPin, Key
+  ChevronRight, ChevronLeft, Mail, Phone, MapPin, Key
 } from 'lucide-react';
 
 /* ── Stats ──────────────────────────────────────────────── */
@@ -51,6 +51,7 @@ const FEATURES = [
 
 /* ── Component ──────────────────────────────────────────── */
 export default function Home() {
+  const [activeSlide, setActiveSlide] = useState(0);
   return (
     <div className="min-h-screen">
 
@@ -235,165 +236,224 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════════
-          APERÇU INTERACTIF DES QCM & CORRECTIONS (EXAM SHOWCASE)
+          APERÇU SLIDER DES QCM & CORRECTIONS (EXAM CAROUSEL SHOWCASE)
           ══════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 bg-slate-50 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-5xl mx-auto space-y-10">
+      <section className="py-16 px-6 bg-slate-50 dark:bg-slate-900/40 border-t border-slate-200 dark:border-slate-800">
+        <div className="max-w-4xl mx-auto space-y-8">
           
-          <div className="text-center space-y-3">
+          <div className="text-center space-y-2">
             <span className="badge-academic inline-block">Aperçu Réel des Épreuves</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white"
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white"
               style={{ fontFamily: "'Source Serif 4', Georgia, serif" }}>
-              Des QCM clairs, du code formaté et des explications détaillées.
+              Visualisez la structure de nos QCM
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-              Découvrez la présentation exacte de nos questionnaires : coloration syntaxique pour les algorithmes, tableaux de données pour les exercices et astuces concours personnalisées.
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
+              Basculez entre les aperçus pour voir la coloration du code, la gestion des tableaux et le format des explications.
             </p>
           </div>
 
-          {/* Interactive Showcase Card */}
-          <div className="glass-card p-6 sm:p-8 rounded-3xl space-y-6 shadow-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          {/* Slider Tab Navigation */}
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <button
+              onClick={() => setActiveSlide(0)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeSlide === 0
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25 scale-105'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-purple-300'
+              }`}
+            >
+              💻 1. Code & Algorithmes
+            </button>
+            <button
+              onClick={() => setActiveSlide(1)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeSlide === 1
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25 scale-105'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-purple-300'
+              }`}
+            >
+              📊 2. Tableaux & Formules
+            </button>
+            <button
+              onClick={() => setActiveSlide(2)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeSlide === 2
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25 scale-105'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-purple-300'
+              }`}
+            >
+              ⚡ 3. Corrections & Astuces
+            </button>
+          </div>
+
+          {/* Interactive Slide Card Container */}
+          <div className="relative glass-card p-6 sm:p-7 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 min-h-[380px] flex flex-col justify-between">
             
-            {/* Showcase 1: Algorithm Code Question */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-                <span>Q1 : Algorithmique & Logique</span>
-                <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">Question avec Code Source</span>
-              </div>
-              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium">On considère l'algorithme suivante :</p>
-              
-              {/* Code Snippet Box */}
-              <div className="rounded-2xl bg-slate-950 p-4 font-mono text-xs text-slate-200 border border-slate-800 shadow-inner overflow-x-auto space-y-1">
-                <div className="text-slate-500 pb-1 flex items-center justify-between border-b border-slate-800 text-[11px]">
-                  <span>&gt;_ Algorithme / Code Source</span>
-                  <span className="text-slate-400">Copier</span>
+            {/* SLIDE 0: Code Algorithmique */}
+            {activeSlide === 0 && (
+              <div className="space-y-4 animate-fade-in">
+                <div className="flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
+                  <span>Q1 : Algorithmique & Logique</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20">Question avec Code Source</span>
                 </div>
-                <div className="pt-2">
-                  <span className="text-purple-400 font-bold">ALGORITHME</span> : Évaluation logique<br/>
-                  <span className="text-purple-400 font-bold">VARIABLES</span> :<br/>
-                  &nbsp;&nbsp;<span className="text-sky-300">a, b</span>: <span className="text-emerald-400">Entier</span><br/>
-                  &nbsp;&nbsp;<span className="text-sky-300">y</span>: <span className="text-emerald-400">Booléen</span><br/>
-                  &nbsp;&nbsp;<span className="text-sky-300">résultat</span>: <span className="text-emerald-400">Booléen</span><br/>
-                  <span className="text-purple-400 font-bold">DÉBUT</span><br/>
-                  &nbsp;&nbsp;a &lt;- <span className="text-amber-400">10</span><br/>
-                  &nbsp;&nbsp;b &lt;- <span className="text-amber-400">20</span><br/>
-                  &nbsp;&nbsp;y &lt;- <span className="text-emerald-400">VRAI</span><br/>
-                  &nbsp;&nbsp;résultat &lt;- (a = 10 <span className="text-amber-400 font-bold">ET</span> b ≠ 15) <span className="text-amber-400 font-bold">OU</span> y<br/>
-                  &nbsp;&nbsp;<span className="text-sky-400">Ecrire</span> résultat<br/>
-                  <span className="text-purple-400 font-bold">FIN</span>
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">On considère l'algorithme suivante :</p>
+                
+                {/* Code Snippet Box */}
+                <div className="rounded-2xl bg-slate-950 p-4 font-mono text-xs text-slate-200 border border-slate-800 shadow-inner overflow-x-auto">
+                  <div className="text-slate-500 pb-1 flex items-center justify-between border-b border-slate-800 text-[11px] mb-2">
+                    <span>&gt;_ Algorithme / Code Source</span>
+                    <span className="text-slate-400">Copier</span>
+                  </div>
+                  <div>
+                    <span className="text-purple-400 font-bold">ALGORITHME</span> : Évaluation logique<br/>
+                    <span className="text-purple-400 font-bold">VARIABLES</span> : <span className="text-sky-300">a, b</span>: <span className="text-emerald-400">Entier</span>, <span className="text-sky-300">y</span>: <span className="text-emerald-400">Booléen</span><br/>
+                    <span className="text-purple-400 font-bold">DÉBUT</span><br/>
+                    &nbsp;&nbsp;a &lt;- <span className="text-amber-400">10</span>; b &lt;- <span className="text-amber-400">20</span>; y &lt;- <span className="text-emerald-400">VRAI</span><br/>
+                    &nbsp;&nbsp;résultat &lt;- (a = 10 <span className="text-amber-400 font-bold">ET</span> b ≠ 15) <span className="text-amber-400 font-bold">OU</span> y<br/>
+                    &nbsp;&nbsp;<span className="text-sky-400">Ecrire</span> résultat<br/>
+                    <span className="text-purple-400 font-bold">FIN</span>
+                  </div>
                 </div>
-              </div>
 
-              <p className="text-sm text-slate-800 dark:text-slate-200 font-semibold pt-1">Quelle est la valeur finale de résultat ?</p>
-              
-              {/* Option Choices */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-700 dark:text-slate-300">
-                  <strong className="text-sky-600">A)</strong> FAUX
-                </div>
-                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-700 dark:text-slate-300">
-                  <strong className="text-sky-600">B)</strong> 10
-                </div>
-                <div className="p-3 rounded-xl border-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-between">
-                  <span><strong className="text-emerald-600">C)</strong> VRAI</span>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                </div>
-                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-700 dark:text-slate-300">
-                  <strong className="text-sky-600">D)</strong> 1 ET 0
+                <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-semibold pt-1">Quelle est la valeur finale de résultat ?</p>
+                
+                {/* Option Choices */}
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-700 dark:text-slate-300">
+                    <strong className="text-sky-600">A)</strong> FAUX
+                  </div>
+                  <div className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-700 dark:text-slate-300">
+                    <strong className="text-sky-600">B)</strong> 10
+                  </div>
+                  <div className="p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-between col-span-2 sm:col-span-1">
+                    <span><strong className="text-emerald-600">C)</strong> VRAI</span>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  </div>
+                  <div className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-medium text-slate-700 dark:text-slate-300">
+                    <strong className="text-sky-600">D)</strong> 1 ET 0
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Divider */}
-            <div className="border-t border-slate-200 dark:border-slate-800"></div>
-
-            {/* Showcase 2: Excel Table Question */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-                <span>Q70 : Systèmes d'Information & Excel</span>
-                <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20">Exercice sur Tableau de Données</span>
-              </div>
-              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium">
-                On considère le tableau suivant qui présente des informations sur les produits vendus par une entreprise :
-              </p>
-
-              {/* Data Table */}
-              <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                <table className="w-full text-left text-xs font-medium text-slate-700 dark:text-slate-300">
-                  <thead className="bg-slate-100 dark:bg-slate-950 font-bold border-b border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
-                    <tr>
-                      <th className="p-2.5 text-center bg-slate-200 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-700 w-10">#</th>
-                      <th className="p-2.5">A (Produit)</th>
-                      <th className="p-2.5">B (Catégorie)</th>
-                      <th className="p-2.5">C (Région)</th>
-                      <th className="p-2.5">D (Ventes €)</th>
-                      <th className="p-2.5">E (Stock)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                    <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                      <td className="p-2.5 text-center font-bold bg-slate-100 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">2</td>
-                      <td className="p-2.5 font-bold text-slate-900 dark:text-white">Stylo</td>
-                      <td className="p-2.5">Fournitures</td>
-                      <td className="p-2.5">Nord</td>
-                      <td className="p-2.5 font-mono">150</td>
-                      <td className="p-2.5 text-emerald-600 font-bold">Oui</td>
-                    </tr>
-                    <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                      <td className="p-2.5 text-center font-bold bg-slate-100 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">3</td>
-                      <td className="p-2.5 font-bold text-slate-900 dark:text-white">Imprimante</td>
-                      <td className="p-2.5">Électronique</td>
-                      <td className="p-2.5">Nord</td>
-                      <td className="p-2.5 font-mono">850</td>
-                      <td className="p-2.5 text-emerald-600 font-bold">Oui</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <p className="text-sm text-slate-800 dark:text-slate-200 font-semibold pt-1">
-                Quelle formule Excel permet de compter le nombre de produits appartenant à la catégorie "Fournitures" ?
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-mono text-slate-800 dark:text-slate-200">
-                  <strong className="text-sky-600 font-sans">A)</strong> =NB.SI(B2:B8; "Fournitures")
+            {/* SLIDE 1: Tableaux & Formules */}
+            {activeSlide === 1 && (
+              <div className="space-y-4 animate-fade-in">
+                <div className="flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
+                  <span>Q70 : Systèmes d'Information & Excel</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20">Tableau de Données</span>
                 </div>
-                <div className="p-3 rounded-xl border-2 border-emerald-500 bg-emerald-500/10 font-mono text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-between">
-                  <span><strong className="text-emerald-600 font-sans">B)</strong> =NB.SI(B3:B8; "Fournitures")</span>
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                </div>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-slate-200 dark:border-slate-800"></div>
-
-            {/* Showcase 3: Correction & Astuce Concours */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-                <span>Correction Détaillée & Astuces du Jury</span>
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">Pédagogie & Méthode</span>
-              </div>
-
-              {/* Correction Box */}
-              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 text-xs space-y-1">
-                <div className="font-bold flex items-center gap-1.5 text-sm">
-                  <span>❌ Incorrect. Bonne réponse : D</span>
-                </div>
-                <p className="text-slate-700 dark:text-slate-300 leading-relaxed pt-1">
-                  Un tableau croisé dynamique (TCD) permet de synthétiser de grandes quantités de données, de les analyser sous différents angles et de les regrouper selon des critères spécifiques.
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium">
+                  On considère le tableau suivant présentant des informations sur les produits vendus :
                 </p>
-              </div>
 
-              {/* Astuce Concours Box */}
-              <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/30 text-sky-800 dark:text-sky-300 text-xs leading-relaxed flex items-start gap-2">
-                <span className="text-base shrink-0">⚡</span>
-                <div>
-                  <strong className="font-bold text-sky-900 dark:text-sky-200">Astuce Concours :</strong> Pensez 'RAP' pour Résumer, Analyser, Présenter. Le TCD (Tableau Croisé Dynamique) est l'outil d'analyse par excellence des épreuves théoriques d'informatique.
+                {/* Data Table */}
+                <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <table className="w-full text-left text-xs font-medium text-slate-700 dark:text-slate-300">
+                    <thead className="bg-slate-100 dark:bg-slate-950 font-bold border-b border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white">
+                      <tr>
+                        <th className="p-2 text-center bg-slate-200 dark:bg-slate-800 border-r border-slate-300 dark:border-slate-700 w-8">#</th>
+                        <th className="p-2">A (Produit)</th>
+                        <th className="p-2">B (Catégorie)</th>
+                        <th className="p-2">C (Région)</th>
+                        <th className="p-2">D (Ventes €)</th>
+                        <th className="p-2">E (Stock)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                      <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        <td className="p-2 text-center font-bold bg-slate-100 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">2</td>
+                        <td className="p-2 font-bold text-slate-900 dark:text-white">Stylo</td>
+                        <td className="p-2">Fournitures</td>
+                        <td className="p-2">Nord</td>
+                        <td className="p-2 font-mono">150</td>
+                        <td className="p-2 text-emerald-600 font-bold">Oui</td>
+                      </tr>
+                      <tr className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                        <td className="p-2 text-center font-bold bg-slate-100 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">3</td>
+                        <td className="p-2 font-bold text-slate-900 dark:text-white">Imprimante</td>
+                        <td className="p-2">Électronique</td>
+                        <td className="p-2">Nord</td>
+                        <td className="p-2 font-mono">850</td>
+                        <td className="p-2 text-emerald-600 font-bold">Oui</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 font-semibold">
+                  Quelle formule Excel permet de compter le nombre de produits de la catégorie "Fournitures" ?
+                </p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-mono text-slate-800 dark:text-slate-200">
+                    <strong className="text-sky-600 font-sans">A)</strong> =NB.SI(B2:B8; "Fournitures")
+                  </div>
+                  <div className="p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-500/10 font-mono text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-between">
+                    <span><strong className="text-emerald-600 font-sans">B)</strong> =NB.SI(B3:B8; "Fournitures")</span>
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                  </div>
                 </div>
               </div>
+            )}
 
+            {/* SLIDE 2: Corrections & Astuces */}
+            {activeSlide === 2 && (
+              <div className="space-y-4 animate-fade-in">
+                <div className="flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
+                  <span>Correction Détaillée & Astuces du Jury</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">Pédagogie</span>
+                </div>
+
+                <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">Q72 : Dans Excel, quel est le rôle principal d'un tableau croisé dynamique ?</p>
+
+                {/* Correction Box */}
+                <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 text-xs space-y-1">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <span>❌ Incorrect. Bonne réponse : D</span>
+                  </div>
+                  <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                    Un tableau croisé dynamique (TCD) permet de synthétiser de grandes quantités de données et de les analyser sous différents angles.
+                  </p>
+                </div>
+
+                {/* Astuce Concours Box */}
+                <div className="p-3.5 rounded-2xl bg-sky-500/10 border border-sky-500/30 text-sky-800 dark:text-sky-300 text-xs leading-relaxed flex items-start gap-2">
+                  <span className="text-base shrink-0">⚡</span>
+                  <div>
+                    <strong className="font-bold text-sky-900 dark:text-sky-200">Astuce Concours :</strong> Pensez 'RAP' pour Résumer, Analyser, Présenter. Le TCD est l'outil d'analyse par excellence du jury.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Slider Navigation Arrows & Dots */}
+            <div className="pt-4 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
+              <button
+                onClick={() => setActiveSlide((prev) => (prev === 0 ? 2 : prev - 1))}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1 text-xs font-semibold"
+              >
+                <ChevronLeft className="w-4 h-4" /> Précédent
+              </button>
+
+              <div className="flex items-center gap-1.5">
+                {[0, 1, 2].map((idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveSlide(idx)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all ${
+                      activeSlide === idx ? 'w-6 bg-purple-600' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => setActiveSlide((prev) => (prev === 2 ? 0 : prev + 1))}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1 text-xs font-semibold"
+              >
+                Suivant <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
 
           </div>
