@@ -455,7 +455,7 @@ const Exams = () => {
   const currentAttempt = quizAttempts[currentQ.id];
 
   return (
-    <div className="max-w-4xl mx-auto py-8 space-y-6">
+    <div className="max-w-4xl mx-auto py-4 sm:py-8 space-y-4 sm:space-y-6 px-1 sm:px-0">
       {/* Toast Save Message */}
       {saveSuccessMessage && (
         <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-800 dark:text-emerald-200 text-xs font-bold flex items-center gap-2 shadow-lg animate-fade-in">
@@ -465,18 +465,18 @@ const Exams = () => {
       )}
 
       {/* Top Controls Header */}
-      <div className="glass-card p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="glass-card p-4 sm:p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider">Concours {selectedYear} • Mode {mode}</span>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-1">Question {currentIndex + 1} / {questions.length}</h2>
+          <span className="text-[10px] sm:text-xs font-semibold text-sky-600 dark:text-sky-400 uppercase tracking-wider">Concours {selectedYear} • Mode {mode}</span>
+          <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-0.5">Question {currentIndex + 1} / {questions.length}</h2>
         </div>
 
-        <div className="flex items-center gap-2.5 w-full md:w-auto flex-wrap">
+        <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
           {/* Direct Jumper */}
           <select
             value={currentIndex}
             onChange={(e) => handleJump(Number(e.target.value))}
-            className="px-3 py-2 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs font-medium focus:outline-none"
+            className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-[11px] font-medium focus:outline-none"
           >
             {questions.map((q, idx) => (
               <option key={idx} value={idx}>Aller à Q{idx + 1}: {q.question_number || ''}</option>
@@ -486,56 +486,56 @@ const Exams = () => {
           {/* MANUAL SAVE BUTTON */}
           <button
             onClick={handleManualSave}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-[11px] shadow-sm"
             title="Enregistrer manuellement mon avancement"
           >
-            <Save className="w-4 h-4" /> Enregistrer
+            <Save className="w-3.5 h-3.5" /> Enregistrer
           </button>
 
           <button
             onClick={handlePause}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-[11px] shadow-sm"
           >
-            <Pause className="w-4 h-4" /> Pause & Quitter
+            <Pause className="w-3.5 h-3.5" /> Quitter
           </button>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-slate-200 dark:bg-slate-900 rounded-full h-2 overflow-hidden">
-        <div className="bg-sky-500 h-2 rounded-full transition-all duration-300" style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}></div>
+      <div className="w-full bg-slate-200 dark:bg-slate-900 rounded-full h-1.5 overflow-hidden">
+        <div className="bg-sky-500 h-1.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}></div>
       </div>
 
       {/* Main Question Card */}
-      <div className="glass-card p-8 rounded-3xl space-y-6 relative">
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold">
+      <div className="glass-card p-4 sm:p-8 rounded-2xl sm:rounded-3xl space-y-4 sm:space-y-6 relative">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-[10px] sm:text-xs font-bold">
               {currentQ.domain_name}
             </span>
-            <span className="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium">
+            <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] sm:text-xs font-medium">
               {currentQ.subdomain_name}
             </span>
           </div>
 
           <button
             onClick={() => toggleBookmark(currentQ.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold transition-all ${
               currentQ.is_bookmarked ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Star className="w-4 h-4" />
-            {currentQ.is_bookmarked ? '★ Dans vos favoris' : '⭐ Favoris'}
+            <Star className="w-3.5 h-3.5" />
+            {currentQ.is_bookmarked ? '★ Favoris' : '⭐ Favoris'}
           </button>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm leading-relaxed">
-          <div className="font-bold text-sky-600 dark:text-sky-400 mb-2">{currentQ.question_number} :</div>
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs sm:text-sm leading-relaxed">
+          <div className="font-bold text-sky-600 dark:text-sky-400 mb-1.5">{currentQ.question_number} :</div>
           <MarkdownViewer content={currentQ.question_text} />
         </div>
 
         {/* MCQ Options (A, B, C, D, E) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4">
           {(() => {
             const availableKeys = ['A', 'B', 'C', 'D', 'E'];
             return availableKeys.map((optKey) => {
@@ -550,7 +550,7 @@ const Exams = () => {
                   key={optKey}
                   onClick={() => handleOptionSelect(currentQ.id, optKey)}
                   disabled={Boolean(currentAttempt)}
-                  className={`p-4 rounded-xl border text-left text-sm font-medium transition-all ${
+                  className={`p-3 sm:p-4 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all ${
                     isFullWidth ? 'sm:col-span-2' : ''
                   } ${
                     isChosen 
@@ -558,7 +558,7 @@ const Exams = () => {
                       : 'bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200'
                   }`}
                 >
-                  <strong className="text-sky-600 dark:text-sky-400 mr-2">{optKey})</strong> {optText}
+                  <strong className="text-sky-600 dark:text-sky-400 mr-1.5">{optKey})</strong> {optText}
                 </button>
               );
             });
@@ -567,16 +567,16 @@ const Exams = () => {
 
         {/* Correction Feedback (Mode Entraînement) */}
         {currentAttempt && mode === 'Entraînement' && (
-          <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
-            <div className={`p-4 rounded-xl text-xs space-y-2 ${currentAttempt.is_correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300'}`}>
-              <div className="font-bold text-sm">
+          <div className="space-y-3 pt-3.5 border-t border-slate-200 dark:border-slate-800">
+            <div className={`p-3 sm:p-4 rounded-xl text-[11px] sm:text-xs space-y-1.5 ${currentAttempt.is_correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300'}`}>
+              <div className="font-bold text-xs sm:text-sm">
                 {currentAttempt.is_correct ? '✔️ Correct ! Bonne réponse.' : `❌ Incorrect. Bonne réponse : ${currentAttempt.details?.correct_option || currentQ.correct_option}`}
               </div>
               <div>{currentAttempt.details?.explanation || currentQ.explanation}</div>
             </div>
 
             {currentQ.astuce && (
-              <div className="p-4 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-700 dark:text-sky-300 text-xs font-medium">
+              <div className="p-3 sm:p-4 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-700 dark:text-sky-300 text-[11px] sm:text-xs font-medium">
                 ⚡ <strong>Astuce Concours :</strong> {currentQ.astuce}
               </div>
             )}

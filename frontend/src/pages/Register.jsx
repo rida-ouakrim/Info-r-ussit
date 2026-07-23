@@ -54,26 +54,26 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full glass-card p-8 rounded-3xl space-y-8 shadow-2xl">
+    <div className="min-h-[80vh] flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full glass-card p-5 sm:p-8 rounded-3xl space-y-6 sm:space-y-8 shadow-2xl">
         
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center justify-center mx-auto">
-            <Key className="w-6 h-6" />
+          <div className="w-11 h-11 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center justify-center mx-auto">
+            <Key className="w-5.5 h-5.5" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-white">Inscription & Activation</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Renseignez vos coordonnées et votre Clé d'Accès Sécurisée</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white">Inscription & Activation</h2>
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Renseignez vos coordonnées et votre Clé d'Accès Sécurisée</p>
         </div>
 
         {error && (
-          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 shrink-0" />
+          <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Prénom</label>
               <input
