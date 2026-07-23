@@ -23,9 +23,9 @@ class GenerateQCMView(APIView):
         if num_q < 3 or num_q > 15:
             return Response({"error": "Le nombre de questions doit être compris entre 3 et 15."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Enforce generation limits (except for Rida or superuser)
+        # Enforce generation limits (except for Rida, superusers, or Premium accounts)
         user = request.user
-        is_unlimited = user.is_superuser or user.username.lower() == 'rida'
+        is_unlimited = user.is_superuser or user.username.lower() == 'rida' or getattr(user, 'account_type', 'Standard') == 'Premium'
         
         if not is_unlimited:
             try:

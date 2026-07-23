@@ -144,6 +144,7 @@ class AdminDashboardView(APIView):
                 "total_attempts": c_total_att,
                 "success_rate": c_rate,
                 "allowed_generations": c.allowed_generations,
+                "account_type": c.account_type,
                 "created_at": c.created_at
             })
 
@@ -167,11 +168,17 @@ class UpdateAllowedGenerationsView(APIView):
 
     def post(self, request):
         user_id = request.data.get('user_id')
-        allowed_generations = int(request.data.get('allowed_generations', 0))
         try:
             user = User.objects.get(id=user_id)
-            user.allowed_generations = allowed_generations
+            if 'allowed_generations' in request.data:
+                user.allowed_generations = int(request.data.get('allowed_generations', 0))
+            if 'account_type' in request.data:
+                user.account_type = request.data.get('account_type', 'Standard')
             user.save()
-            return Response({"success": True, "allowed_generations": user.allowed_generations})
+            return Response({
+                "success": True, 
+                "allowed_generations": user.allowed_generations,
+                "account_type": user.account_type
+            })
         except User.DoesNotExist:
             return Response({"error": "Utilisateur introuvable"}, status=status.HTTP_404_NOT_FOUND)

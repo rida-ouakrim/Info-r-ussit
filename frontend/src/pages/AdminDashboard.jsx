@@ -71,6 +71,21 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleUpdateAccountType = async (userId, newType) => {
+    try {
+      await API.post('auth/admin/update-generations/', { user_id: userId, account_type: newType });
+      setData(prev => {
+        const updatedCandidates = prev.candidates.map(c => 
+          c.id === userId ? { ...c, account_type: newType } : c
+        );
+        return { ...prev, candidates: updatedCandidates };
+      });
+      showToast(`Type de compte mis à jour vers : ${newType === 'Premium' ? '⭐ Premium (Illimité)' : 'Normale (Standard)'}`);
+    } catch (err) {
+      console.error("Failed to update account type:", err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -203,6 +218,7 @@ const AdminDashboard = () => {
             <thead className="text-xs uppercase bg-slate-950 text-slate-400 border-b border-slate-800">
               <tr>
                 <th className="px-4 py-3">Candidat</th>
+                <th className="px-4 py-3">Type de Compte</th>
                 <th className="px-4 py-3">Concours Visé</th>
                 <th className="px-4 py-3">Générations IA</th>
                 <th className="px-4 py-3">Cours Maîtrisés</th>
@@ -217,17 +233,31 @@ const AdminDashboard = () => {
                     <div className="font-semibold text-white">{c.full_name}</div>
                     <div className="text-xs text-slate-400">{c.email}</div>
                   </td>
+                  <td className="px-4 py-3.5">
+                    <select
+                      value={c.account_type || 'Standard'}
+                      onChange={(e) => handleUpdateAccountType(c.id, e.target.value)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-700 text-xs font-bold text-slate-200 cursor-pointer"
+                    >
+                      <option value="Standard">Normale</option>
+                      <option value="Premium">Premium</option>
+                    </select>
+                  </td>
                   <td className="px-4 py-3.5 text-xs font-medium text-sky-400">{c.target_exam}</td>
                   <td className="px-4 py-3.5">
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="number" 
-                        min="0"
-                        value={c.allowed_generations || 0}
-                        onChange={(e) => handleUpdateGenerations(c.id, e.target.value)}
-                        className="w-16 px-2 py-1 rounded bg-slate-950 border border-slate-800 text-white text-xs text-center font-bold"
-                      />
-                    </div>
+                    {c.account_type === 'Premium' ? (
+                      <span className="text-xs text-amber-400 font-bold">∞ Illimité</span>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <input 
+                          type="number" 
+                          min="0"
+                          value={c.allowed_generations || 0}
+                          onChange={(e) => handleUpdateGenerations(c.id, e.target.value)}
+                          className="w-16 px-2 py-1 rounded bg-slate-950 border border-slate-800 text-white text-xs text-center font-bold"
+                        />
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-3.5">
                     <span className="font-bold text-white">{c.completed_courses}</span> <span className="text-xs text-slate-400">/ 39</span>
