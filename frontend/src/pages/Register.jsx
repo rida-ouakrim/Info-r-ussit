@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Key, User, Mail, Lock, ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react';
+import { Key, User, Mail, Lock, ShieldCheck, ArrowRight, AlertCircle, ChevronDown } from 'lucide-react';
 
 const Register = () => {
   const { register } = useAuth();
@@ -141,19 +141,29 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Concours Cible</label>
-            <select
-              name="target_exam"
-              value={formData.target_exam}
-              onChange={handleChange}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:border-sky-500 focus:outline-none"
-            >
-              <option value="CRMEF Informatique">CRMEF Secondaire Informatique</option>
-              <option value="Agrégation Informatique">Agrégation de Génie Informatique</option>
-              <option value="Master & Doctorat">Master & Doctorat Informatique</option>
-              <option value="Ingénieur d'État">Concours Ingénieur d'État</option>
-              <option value="Technicien & Administrateur">Technicien / Administrateur Système</option>
-            </select>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Concours Cible</label>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                1 Actif
+              </span>
+            </div>
+            <div className="relative">
+              <select
+                name="target_exam"
+                value={formData.target_exam}
+                onChange={handleChange}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:border-sky-500 focus:outline-none appearance-none pr-10 shadow-sm cursor-pointer transition-all"
+              >
+                <option value="CRMEF Informatique">CRMEF Secondaire Informatique (Disponible ✅)</option>
+                <option value="Agrégation Informatique" disabled className="text-slate-400 dark:text-slate-600 bg-slate-100 dark:bg-slate-900">Agrégation de Génie Informatique (Bientôt disponible 🔒)</option>
+                <option value="Master & Doctorat" disabled className="text-slate-400 dark:text-slate-600 bg-slate-100 dark:bg-slate-900">Master & Doctorat Informatique (Bientôt disponible 🔒)</option>
+                <option value="Ingénieur d'État" disabled className="text-slate-400 dark:text-slate-600 bg-slate-100 dark:bg-slate-900">Concours Ingénieur d'État (Bientôt disponible 🔒)</option>
+                <option value="Technicien & Administrateur" disabled className="text-slate-400 dark:text-slate-600 bg-slate-100 dark:bg-slate-900">Technicien / Administrateur Système (Bientôt disponible 🔒)</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <ChevronDown className="w-4 h-4 text-slate-400" />
+              </div>
+            </div>
           </div>
 
           {/* LICENSE KEY INPUT FIELD */}
