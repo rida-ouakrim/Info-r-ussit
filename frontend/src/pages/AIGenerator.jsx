@@ -666,13 +666,6 @@ const AIGenerator = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-8 space-y-6">
-      {/* Toast Save Message */}
-      {saveSuccessMessage && (
-        <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-800 dark:text-emerald-200 text-xs font-bold flex items-center gap-2 shadow-lg animate-fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-          <span>{saveSuccessMessage}</span>
-        </div>
-      )}
 
       {/* Top Controls Header */}
       <div className="glass-card p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
