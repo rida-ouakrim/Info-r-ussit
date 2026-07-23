@@ -56,9 +56,33 @@ const AdminDashboard = () => {
     }
   };
 
+  const fallbackCopy = (text) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      showToast(`Clé d'accès copiée : ${text}`);
+    } catch (err) {
+      console.error('Fallback copy error', err);
+      showToast(`Clé : ${text}`);
+    }
+    document.body.removeChild(textArea);
+  };
+
   const copyToClipboard = (code) => {
-    navigator.clipboard.writeText(code);
-    showToast(`Clé d'accès copiée dans le presse-papier !`);
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(code)
+        .then(() => showToast(`Clé d'accès copiée : ${code}`))
+        .catch(() => fallbackCopy(code));
+    } else {
+      fallbackCopy(code);
+    }
   };
 
   const handleUpdateGenerations = async (userId, value) => {
