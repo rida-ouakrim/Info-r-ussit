@@ -38,6 +38,7 @@ const PUBLIC_PATHS = ['/', '/login', '/register'];
 function AppContent() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const isPublic = PUBLIC_PATHS.includes(location.pathname);
 
@@ -59,7 +60,6 @@ function AppContent() {
   }
 
   /* ── Layout Espace Candidat / Admin (avec Sidebar) ── */
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex bg-slate-50 dark:bg-[#0c1220]">
