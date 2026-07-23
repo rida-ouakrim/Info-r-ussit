@@ -174,7 +174,7 @@ const Register = () => {
               onChange={handleChange}
               required
               className="w-full px-3.5 py-2.5 rounded-xl bg-amber-50/50 dark:bg-slate-950 border-2 border-amber-500/40 text-amber-700 dark:text-amber-300 font-mono text-sm tracking-wider focus:border-amber-400 focus:outline-none"
-              placeholder="ex: PASS-CONCOURS-2026"
+              placeholder="Clé d'accès fournie par l'administrateur"
             />
           </div>
 
