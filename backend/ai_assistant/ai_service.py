@@ -38,7 +38,7 @@ def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_d
     clients_to_try = []
     
     # Option A: GEMINI_API_KEY environment variable
-    api_key = os.environ.get("GEMINI_API_KEY")
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip().strip('"').strip("'")
     if api_key:
         try:
             clients_to_try.append(genai.Client(api_key=api_key))
@@ -64,7 +64,7 @@ def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_d
     except Exception:
         pass
 
-    models_to_try = ["gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-1.5-flash", "gemini-1.5-pro-latest"]
+    models_to_try = ["gemini-2.0-flash", "gemini-1.5-flash"]
     last_error = None
 
     for client in clients_to_try:
