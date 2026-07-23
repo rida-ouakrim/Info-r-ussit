@@ -116,7 +116,7 @@ class AdminDashboardView(APIView):
     permission_classes = [permissions.IsAdminUser]
 
     def get(self, request):
-        candidates = User.objects.filter(is_staff=False).order_by('-created_at')
+        candidates = User.objects.all().order_by('-created_at')
         total_candidates = candidates.count()
 
         total_keys = LicenseKey.objects.count()
@@ -145,6 +145,8 @@ class AdminDashboardView(APIView):
                 "success_rate": c_rate,
                 "allowed_generations": c.allowed_generations,
                 "account_type": c.account_type,
+                "is_staff": c.is_staff,
+                "is_superuser": c.is_superuser,
                 "created_at": c.created_at
             })
 
@@ -174,11 +176,24 @@ class UpdateAllowedGenerationsView(APIView):
                 user.allowed_generations = int(request.data.get('allowed_generations', 0))
             if 'account_type' in request.data:
                 user.account_type = request.data.get('account_type', 'Standard')
+            if 'is_staff' in request.data:
+                is_staff_val = bool(request.data.get('is_staff'))
+                user.is_staff = is_staff_val
+                if is_staff_val:
+                    user.is_superuser = True
+            if 'new_password' in request.data:
+                new_pass = str(request.data.get('new_password', '')).strip()
+                if len(new_pass) >= 6:
+                    user.set_password(new_pass)
+                else:
+                    return Response({"error": "Le mot de passe doit contenir au moins 6 caractères."}, status=status.HTTP_400_BAD_REQUEST)
             user.save()
             return Response({
                 "success": True, 
                 "allowed_generations": user.allowed_generations,
-                "account_type": user.account_type
+                "account_type": user.account_type,
+                "is_staff": user.is_staff,
+                "is_superuser": user.is_superuser
             })
         except User.DoesNotExist:
             return Response({"error": "Utilisateur introuvable"}, status=status.HTTP_404_NOT_FOUND)
