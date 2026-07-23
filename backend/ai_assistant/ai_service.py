@@ -22,11 +22,15 @@ def get_genai_client():
     api_key = os.environ.get("GEMINI_API_KEY")
     if api_key:
         return genai.Client(api_key=api_key)
+    
+    project_id = os.environ.get("GCP_PROJECT_ID", "chrome-backbone-496013-p4")
+    location = os.environ.get("GCP_LOCATION", "us-central1")
+
     try:
         return genai.Client(
             vertexai=True, 
-            project="chrome-backbone-496013-p4", 
-            location="us-central1",
+            project=project_id, 
+            location=location,
             http_options=types.HttpOptions(timeout=60000)
         )
     except Exception:
