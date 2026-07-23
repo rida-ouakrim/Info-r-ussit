@@ -1,4 +1,5 @@
 import json
+import os
 from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
@@ -17,13 +18,22 @@ class GeneratedQuestionSchema(BaseModel):
 class PageQuestionsSchema(BaseModel):
     questions: List[GeneratedQuestionSchema] = Field(description="List of MCQ questions")
 
+def get_genai_client():
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if api_key:
+        return genai.Client(api_key=api_key)
+    try:
+        return genai.Client(
+            vertexai=True, 
+            project="chrome-backbone-496013-p4", 
+            location="us-central1",
+            http_options=types.HttpOptions(timeout=60000)
+        )
+    except Exception:
+        return genai.Client()
+
 def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_description="", num_q=5, difficulty="Moyen"):
-    client = genai.Client(
-        vertexai=True, 
-        project="chrome-backbone-496013-p4", 
-        location="us-central1",
-        http_options=types.HttpOptions(timeout=60000)
-    )
+    client = get_genai_client()
 
     prompt = f"""
     You are a senior computer science professor and head of jury for competitive computer science recruitment exams (CRMEF, Master, Agrégation, Engineers, Technicians).
@@ -41,15 +51,24 @@ def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_d
     Return strictly a JSON object matching the PageQuestionsSchema schema.
     """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=[prompt],
-        config=types.GenerateContentConfig(
-            response_mime_type="application/json",
-            response_schema=PageQuestionsSchema,
-            temperature=0.7
-        )
-    )
+    models_to_try = ["gemini-1.5-flash", "gemini-2.5-flash", "gemini-1.5-pro"]
+    last_error = None
 
-    data = json.loads(response.text)
-    return data.get("questions", [])
+    for model_name in models_to_try:
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=[prompt],
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=PageQuestionsSchema,
+                    temperature=0.7
+                )
+            )
+            data = json.loads(response.text)
+            return data.get("questions", [])
+        except Exception as err:
+            last_error = err
+            continue
+
+    raise Exception(f"Erreur d'appel API Gemini/Vertex: {str(last_error)}")

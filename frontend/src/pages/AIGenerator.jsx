@@ -42,14 +42,14 @@ const AIGenerator = () => {
     fetchDomains();
     fetchHistory();
     checkQueryParam();
-    fetchUserData();
+    fetchUserProfile();
   }, []);
 
-  const fetchUserData = async () => {
+  const fetchUserProfile = async () => {
     try {
       const res = await API.get('auth/me/');
-      setAllowedGenerations(res.data.allowed_generations);
-      const isUnlimited = res.data.is_staff || res.data.username.toLowerCase() === 'rida';
+      const isUnlimited = res.data.is_staff || res.data.username.toLowerCase() === 'rida' || res.data.account_type === 'Premium';
+      setAllowedGenerations(isUnlimited ? 99999 : res.data.allowed_generations);
       if (!isUnlimited && res.data.allowed_generations <= 0) {
         setLimitError({
           error: "Limite de génération QCM IA atteinte. Pour obtenir plus de générations, veuillez contacter l'administrateur Rida Ouakrim."
