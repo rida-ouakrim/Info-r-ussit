@@ -136,8 +136,7 @@ const AIGenerator = () => {
 
   const handleManualSave = async () => {
     await saveSession(currentIndex, userAnswers, score, showResults);
-    setSaveSuccessMessage('💾 QCM IA enregistré dans votre historique avec succès !');
-    setTimeout(() => setSaveSuccessMessage(''), 3000);
+    showToast('💾 QCM IA enregistré dans votre historique avec succès !');
   };
 
   const handleGenerate = async (e) => {
