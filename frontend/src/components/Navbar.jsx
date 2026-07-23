@@ -58,7 +58,7 @@ export default function Navbar() {
               <Link to="/login" className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
                 Connexion
               </Link>
-              <Link to="/register" className="btn-primary text-sm py-2 px-4">
+              <Link to="/register" className="hidden sm:inline-flex btn-primary text-sm py-2 px-4">
                 <Key className="w-3.5 h-3.5" /> Activer ma clé
               </Link>
             </>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import heroImg from '../assets/hero.png';
 import {
   BookOpen, FileCheck, Sparkles, Target,
   CheckCircle2, ArrowRight, Award, Users, Brain, Clock,
@@ -90,7 +91,7 @@ export default function Home() {
 
             <div className="relative z-10 w-full max-w-sm lg:max-w-md">
               <img
-                src="/images/hero_developer.png"
+                src={heroImg}
                 alt="Informaticien heureux — Inforéussit"
                 className="w-full h-auto rounded-3xl shadow-2xl shadow-slate-300/50 dark:shadow-slate-900/80 object-cover"
                 style={{ maxHeight: '520px', objectPosition: 'top' }}
@@ -236,7 +237,7 @@ export default function Home() {
       {/* ══════════════════════════════════════════════════════
           CTA BAND — styles 100% inline pour éviter tout conflit CSS
           ══════════════════════════════════════════════════════ */}
-      <section style={{ backgroundColor: '#2563eb', padding: '80px 24px' }}>
+      <section style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)', padding: '80px 24px' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{
             fontFamily: "'Source Serif 4', Georgia, serif",
@@ -249,7 +250,7 @@ export default function Home() {
             Prêt à commencer votre préparation ?
           </h2>
           <p style={{
-            color: '#bfdbfe',
+            color: '#e0e7ff',
             fontSize: '1rem',
             marginBottom: '36px',
             lineHeight: '1.7',
@@ -264,7 +265,7 @@ export default function Home() {
                 alignItems: 'center',
                 gap: '8px',
                 backgroundColor: '#ffffff',
-                color: '#1d4ed8',
+                color: '#6d28d9',
                 fontWeight: '700',
                 fontSize: '14px',
                 padding: '12px 24px',
@@ -273,8 +274,8 @@ export default function Home() {
                 boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
               }}
             >
-              <Key style={{ width: '16px', height: '16px', color: '#1d4ed8' }} />
-              <span style={{ color: '#1d4ed8' }}>Activer ma clé d'accès</span>
+              <Key style={{ width: '16px', height: '16px', color: '#6d28d9' }} />
+              <span style={{ color: '#6d28d9' }}>Activer ma clé d'accès</span>
             </Link>
             <Link
               to="/login"
