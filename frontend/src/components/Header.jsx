@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Sun, Moon, Award } from 'lucide-react';
+import { LogOut, Sun, Moon, Award, Menu } from 'lucide-react';
 
 const PAGE_TITLES = {
   '/dashboard': 'Tableau de bord',
@@ -15,7 +15,7 @@ const PAGE_TITLES = {
   '/admin':     'Administration',
 };
 
-export default function Header() {
+export default function Header({ onMenuClick }) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
@@ -25,11 +25,20 @@ export default function Header() {
   const title = PAGE_TITLES[location.pathname] ?? 'ConcoursInfo';
 
   return (
-    <header className="glass-nav sticky top-0 z-30 px-6 h-14 flex items-center justify-between">
-      {/* Page Title */}
-      <div>
-        <h1 className="text-base font-semibold text-slate-800 dark:text-slate-100">{title}</h1>
-        <p className="text-[11px] text-slate-400 mt-0">Inforéussit</p>
+    <header className="glass-nav sticky top-0 z-30 px-4 sm:px-6 h-14 flex items-center justify-between">
+      {/* Title + Mobile Menu Toggle */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={onMenuClick}
+          className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 md:hidden transition-colors"
+          title="Ouvrir le menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div>
+          <h1 className="text-base font-semibold text-slate-800 dark:text-slate-100">{title}</h1>
+          <p className="text-[10px] text-slate-400 mt-0 leading-none">Inforéussit</p>
+        </div>
       </div>
 
       {/* Right Controls */}

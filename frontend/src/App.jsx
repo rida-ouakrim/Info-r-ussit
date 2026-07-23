@@ -59,14 +59,29 @@ function AppContent() {
   }
 
   /* ── Layout Espace Candidat / Admin (avec Sidebar) ── */
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex bg-slate-50 dark:bg-[#0c1220]">
-      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
+      {/* Backdrop overlay for mobile drawer */}
+      {mobileOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm md:hidden transition-opacity duration-300"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
 
-      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-200 ${collapsed ? 'ml-[68px]' : 'ml-[240px]'}`}>
-        <Header />
+      <Sidebar 
+        collapsed={collapsed} 
+        setCollapsed={setCollapsed} 
+        mobileOpen={mobileOpen} 
+        onCloseMobile={() => setMobileOpen(false)} 
+      />
 
-        <main className="flex-1 px-6 py-6 max-w-7xl w-full mx-auto">
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-200 ml-0 ${collapsed ? 'md:ml-[68px]' : 'md:ml-[240px]'}`}>
+        <Header onMenuClick={() => setMobileOpen(true)} />
+
+        <main className="flex-1 px-4 sm:px-6 py-6 max-w-7xl w-full mx-auto">
           <Routes>
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/courses"   element={<ProtectedRoute><Courses /></ProtectedRoute>} />

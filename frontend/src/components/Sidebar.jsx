@@ -16,7 +16,7 @@ const navLinks = [
   { name: "Carnet d'Erreurs", path: '/errors',      icon: AlertCircle,     protected: true },
 ];
 
-export default function Sidebar({ collapsed, setCollapsed }) {
+export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMobile }) {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate  = useNavigate();
@@ -29,32 +29,50 @@ export default function Sidebar({ collapsed, setCollapsed }) {
     : navLinks;
 
   return (
-    <aside className={`sidebar-base fixed top-0 left-0 h-screen z-50 flex flex-col transition-all duration-200 shadow-xl ${collapsed ? 'w-[68px]' : 'w-[240px]'}`}>
+    <aside 
+      className={`sidebar-base fixed top-0 left-0 h-screen z-50 flex flex-col transition-transform md:transition-all duration-300 shadow-xl 
+        ${collapsed ? 'md:w-[68px]' : 'md:w-[240px]'} 
+        w-[240px]
+        ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}
+    >
 
       {/* ── Brand Header ── */}
       <div className="flex items-center justify-between px-4 py-4 border-b border-inherit">
-        {!collapsed && (
-          <Link to="/" className="flex items-center gap-0.5 min-w-0">
-            <span className="font-extrabold text-lg tracking-tight text-blue-600">Info</span>
-            <span className="font-extrabold text-lg tracking-tight text-slate-800 dark:text-white">réussit</span>
-          </Link>
-        )}
+        <Link 
+          to="/" 
+          className={`items-center gap-0.5 min-w-0 ${collapsed ? 'hidden md:hidden' : 'flex'} md:flex`} 
+          onClick={onCloseMobile}
+        >
+          <span className="font-extrabold text-lg tracking-tight text-blue-600">Info</span>
+          <span className="font-extrabold text-lg tracking-tight text-slate-800 dark:text-white">réussit</span>
+        </Link>
         {collapsed && (
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center mx-auto">
+          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center mx-auto md:flex hidden">
             <span className="text-white font-black text-xs">IR</span>
           </div>
         )}
-        {!collapsed && (
-          <button onClick={() => setCollapsed(true)} className="p-1.5 rounded-md text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-2 shrink-0">
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-        )}
+        <button 
+          onClick={() => {
+            if (window.innerWidth < 768) {
+              if (onCloseMobile) onCloseMobile();
+            } else {
+              setCollapsed(true);
+            }
+          }} 
+          className={`p-1.5 rounded-md text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-2 shrink-0 ${collapsed ? 'hidden md:hidden' : 'block'}`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
       </div>
 
       {/* ── Navigation ── */}
       <nav className="flex-1 py-4 px-2 space-y-0.5 overflow-y-auto">
         {collapsed && (
-          <button onClick={() => setCollapsed(false)} className="w-full flex items-center justify-center p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mb-3 transition-colors">
+          <button 
+            onClick={() => setCollapsed(false)} 
+            className="w-full flex items-center justify-center p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 mb-3 transition-colors md:flex hidden"
+          >
             <ChevronRight className="w-4 h-4" />
           </button>
         )}
@@ -66,6 +84,7 @@ export default function Sidebar({ collapsed, setCollapsed }) {
             <Link
               key={link.path}
               to={link.path}
+              onClick={onCloseMobile}
               title={collapsed ? link.name : undefined}
               className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all rounded-lg
                 ${isActive
