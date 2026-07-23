@@ -81,3 +81,4 @@ parser.py
 seed_*.py
 cahier_des_charges_pfe.md
 db.sqlite3
+!backend/db.sqlite3
