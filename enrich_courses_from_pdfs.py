@@ -88,15 +88,15 @@ def enrich_courses():
     for course_id, pdf_list in COURSE_PDF_MAPPING.items():
         print(f"\n========================================\nProcessing Course ID: {course_id}...")
         
-        # Get current title and domain details from concours.db
-        conn = sqlite3.connect(DB_CONCOURS)
+        # Get current title and domain details from DB_BACKEND
+        conn = sqlite3.connect(DB_BACKEND)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         cursor.execute("""
             SELECT c.title, sd.name as subdomain_name, d.name as domain_name
-            FROM courses c
-            JOIN syllabus_subdomains sd ON c.subdomain_code = sd.code
-            JOIN syllabus_domains d ON sd.domain_code = d.code
+            FROM syllabus_course c
+            JOIN syllabus_subdomain sd ON c.subdomain_id = sd.code
+            JOIN syllabus_domain d ON sd.domain_id = d.code
             WHERE c.id = ?
         """, (course_id,))
         row = cursor.fetchone()
@@ -160,16 +160,20 @@ def enrich_courses():
                 astuces = data.get("astuces", "").strip()
                 
                 if content:
-                    # Update concours.db
-                    conn1 = sqlite3.connect(DB_CONCOURS)
-                    cursor1 = conn1.cursor()
-                    cursor1.execute("""
-                        UPDATE courses 
-                        SET content = ?, examples = ?, astuces = ? 
-                        WHERE id = ?
-                    """, (content, examples, astuces, course_id))
-                    conn1.commit()
-                    conn1.close()
+                    # Update concours.db if it exists
+                    if os.path.exists(DB_CONCOURS):
+                        try:
+                            conn1 = sqlite3.connect(DB_CONCOURS)
+                            cursor1 = conn1.cursor()
+                            cursor1.execute("""
+                                UPDATE courses 
+                                SET content = ?, examples = ?, astuces = ? 
+                                WHERE id = ?
+                            """, (content, examples, astuces, course_id))
+                            conn1.commit()
+                            conn1.close()
+                        except Exception as db_err:
+                            print(f"Skipped updating concours.db: {db_err}")
                     
                     # Update backend/db.sqlite3
                     conn2 = sqlite3.connect(DB_BACKEND)
@@ -182,7 +186,7 @@ def enrich_courses():
                     conn2.commit()
                     conn2.close()
                     
-                    print(f"Successfully enriched and saved course: '{title}' in both databases!")
+                    print(f"Successfully enriched and saved course: '{title}'!")
                     success = True
                     break
                 else:
