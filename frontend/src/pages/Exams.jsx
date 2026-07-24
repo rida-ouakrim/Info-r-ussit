@@ -13,6 +13,8 @@ const Exams = () => {
   const [mode, setMode] = useState('Entraînement');
   const [activeTab, setActiveTab] = useState('new'); // 'new' or 'saved'
   
+  const [selectedDomainFilter, setSelectedDomainFilter] = useState('ALL'); // 'ALL', 'SPECIALITE', 'DIDACTIQUE'
+  
   const [quizActive, setQuizActive] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -66,7 +68,12 @@ const Exams = () => {
       const targetSession = sessionToResume || (resume ? savedSession : null);
       const targetYear = targetSession ? targetSession.exam_year : selectedYear;
 
-      const res = await API.get(`questions/?year=${targetYear}&source_type=past_exam`);
+      let queryUrl = `questions/?year=${targetYear}&source_type=past_exam`;
+      if (selectedDomainFilter !== 'ALL') {
+        queryUrl += `&domain=${selectedDomainFilter}`;
+      }
+
+      const res = await API.get(queryUrl);
       if (res.data.length === 0) {
         alert(`Aucune question disponible pour l'année ${targetYear}.`);
         setLoading(false);
@@ -296,6 +303,39 @@ const Exams = () => {
                       }`}
                     >
                       ⏱️ Mode Examen Blanc
+                    </button>
+                  </div>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">Type d'Épreuve du Concours</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDomainFilter('ALL')}
+                      className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                        selectedDomainFilter === 'ALL' ? 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-400 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      <span>📚 Sujet Complet (Toutes épreuves)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDomainFilter('SPECIALITE')}
+                      className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                        selectedDomainFilter === 'SPECIALITE' ? 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-400 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      <span>💻 Épreuve 1 : Spécialité Info</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDomainFilter('DIDACTIQUE')}
+                      className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                        selectedDomainFilter === 'DIDACTIQUE' ? 'bg-indigo-500/15 border-indigo-500 text-indigo-700 dark:text-indigo-300 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      <span>🎓 Épreuve 2 : Didactique & Pédagogie</span>
                     </button>
                   </div>
                 </div>
