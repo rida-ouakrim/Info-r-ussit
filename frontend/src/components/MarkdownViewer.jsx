@@ -168,8 +168,7 @@ const CodeBlock = ({ code }) => {
   // Detect tree diagrams (Q16, Q17) vs Algorithm Code
   const isTreeDiagram = codeLines.some(l => 
     (l.includes('/') && l.includes('\\')) || 
-    l.includes('/  \\') || 
-    (l.includes('A') && l.includes('B') && l.includes('C'))
+    l.includes('/  \\')
   );
 
   return (
@@ -334,14 +333,20 @@ const renderTextWithMatrices = (text) => {
     const namePart = match[1] ? match[1].replace('=', '').trim() : '';
     const contentPart = match[2];
 
+    const rows = contentPart.split('/').map(r => r.trim().split(/\s+/).filter(Boolean));
+    const isRealMatrix = rows.length > 0 && rows.every(row => row.length > 0 && row.every(cell => cell.length <= 4));
+
     if (matchStart > lastIndex) {
       elements.push(parseInlineFormatting(text.slice(lastIndex, matchStart)));
     }
 
-    const rows = contentPart.split('/').map(r => r.trim().split(/\s+/).filter(Boolean));
-    elements.push(
-      <MatrixBlock key={`matrix-${idx}`} name={namePart} rows={rows} />
-    );
+    if (isRealMatrix) {
+      elements.push(
+        <MatrixBlock key={`matrix-${idx}`} name={namePart} rows={rows} />
+      );
+    } else {
+      elements.push(parseInlineFormatting(fullMatch));
+    }
 
     lastIndex = matchStart + fullMatch.length;
   });
