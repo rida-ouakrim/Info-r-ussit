@@ -115,7 +115,7 @@ class QuestionChatAssistantView(APIView):
         correct_option = request.data.get('correct_option', '')
         chosen_option = request.data.get('chosen_option', '')
         explanation = request.data.get('explanation', '')
-        user_message = request.data.get('user_message', 'Explications supplémentaires s'il vous plaît.')
+        user_message = request.data.get('user_message', "Explications supplémentaires s'il vous plaît.")
         chat_history = request.data.get('chat_history', [])
 
         if not question_text:
