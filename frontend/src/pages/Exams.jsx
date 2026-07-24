@@ -4,7 +4,7 @@ import MarkdownViewer from '../components/MarkdownViewer';
 import { 
   FileText, Play, SkipForward, ChevronLeft, ChevronRight, 
   Pause, Star, CheckCircle2, AlertCircle, RefreshCw, Trophy,
-  Save, History, Trash2, Clock, Check, Eye
+  Save, History, Trash2, Clock, Check, Eye, Bot, Sparkles, Send, X, MessageSquare
 } from 'lucide-react';
 
 const Exams = () => {
@@ -14,6 +14,14 @@ const Exams = () => {
   const [activeTab, setActiveTab] = useState('new'); // 'new' or 'saved'
   
   const [selectedDomainFilter, setSelectedDomainFilter] = useState('ALL'); // 'ALL', 'SPECIALITE', 'DIDACTIQUE'
+  
+  // Interactive Question AI Chatbot state
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [chatQuestion, setChatQuestion] = useState(null);
+  const [chatAttempt, setChatAttempt] = useState(null);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
   
   const [quizActive, setQuizActive] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -196,6 +204,55 @@ const Exams = () => {
   const handleSubmitExam = async () => {
     setExamSubmitted(true);
     await saveSession(currentIndex, quizAttempts, quizScore, true);
+  };
+
+  const openQuestionAiChat = (q, attempt) => {
+    setChatQuestion(q);
+    setChatAttempt(attempt);
+    setChatModalOpen(true);
+    setChatMessages([
+      {
+        role: 'assistant',
+        content: `Bonjour ! Je suis votre Tuteur Pédagogique IA. Avez-vous des questions ou des hésitations sur la question **${q.question_number || ''}**, la réponse choisie (**Option ${attempt?.choice || 'aucune'}**) ou la solution officielle (**Option ${q.correct_option}**) ?`
+      }
+    ]);
+  };
+
+  const handleSendChatMessage = async (presetText = null) => {
+    const messageToSend = presetText || chatInput.trim();
+    if (!messageToSend || chatLoading || !chatQuestion) return;
+
+    const userMsg = { role: 'user', content: messageToSend };
+    const updatedMessages = [...chatMessages, userMsg];
+    setChatMessages(updatedMessages);
+    setChatInput('');
+    setChatLoading(true);
+
+    try {
+      const res = await API.post('ai/ask-question/', {
+        question_text: chatQuestion.question_text,
+        option_a: chatQuestion.option_a,
+        option_b: chatQuestion.option_b,
+        option_c: chatQuestion.option_c,
+        option_d: chatQuestion.option_d,
+        correct_option: chatQuestion.correct_option,
+        chosen_option: chatAttempt?.choice || '',
+        explanation: chatQuestion.explanation || '',
+        user_message: messageToSend,
+        chat_history: updatedMessages
+      });
+
+      const aiMsg = { role: 'assistant', content: res.data.reply };
+      setChatMessages(prev => [...prev, aiMsg]);
+    } catch (err) {
+      console.error(err);
+      setChatMessages(prev => [...prev, {
+        role: 'assistant',
+        content: "⚠️ Une erreur est survenue lors de la communication avec l'Assistant IA. Veuillez réessayer."
+      }]);
+    } finally {
+      setChatLoading(false);
+    }
   };
 
   // --- HOME / SELECTION SCREEN ---
@@ -620,6 +677,26 @@ const Exams = () => {
                 ⚡ <strong>Astuce Concours :</strong> {currentQ.astuce}
               </div>
             )}
+
+            {/* Interactive AI Chatbot Callout Banner */}
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-500/15 via-indigo-500/15 to-purple-500/15 border border-sky-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shrink-0">
+                  <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white">Vous avez une question sur cette correction ?</h4>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Demandez des explications complémentaires ou un exemple au Tuteur IA !</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => openQuestionAiChat(currentQ, currentAttempt)}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 text-white font-bold text-xs shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2 shrink-0 transition-all hover:scale-[1.02]"
+              >
+                <Bot className="w-4 h-4" /> Discuter avec l'Assistant IA
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -728,6 +805,147 @@ const Exams = () => {
           </div>
         </div>
       )}
+      {/* Interactive AI Chatbot Modal for Question Explanations */}
+      {chatModalOpen && chatQuestion && (
+        <div className="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-sky-500/30 rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-fade-in">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg">
+                  <Bot className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                    Tuteur Pédagogique IA
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                      En direct
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Explications & Q/R en direct sur {chatQuestion.question_number || 'la question'}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setChatModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Question Context Banner */}
+            <div className="px-5 py-3 bg-slate-950/60 border-b border-slate-800/60 text-xs flex flex-wrap items-center justify-between gap-2">
+              <div className="text-slate-300 font-medium truncate max-w-full">
+                <span className="text-sky-400 font-bold mr-1">{chatQuestion.question_number}:</span>
+                {chatQuestion.question_text?.slice(0, 65)}...
+              </div>
+              <div className="flex items-center gap-2 text-[11px]">
+                <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">
+                  Votre choix: <strong className="text-sky-400">{chatAttempt?.choice || 'Aucun'}</strong>
+                </span>
+                <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Bonne réponse: <strong className="text-emerald-400">{chatQuestion.correct_option}</strong>
+                </span>
+              </div>
+            </div>
+
+            {/* Chat Messages Feed */}
+            <div className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4 text-xs font-sans">
+              {chatMessages.map((msg, idx) => (
+                <div
+                  key={idx}
+                  className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  {msg.role === 'assistant' && (
+                    <div className="w-8 h-8 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 flex items-center justify-center shrink-0 mt-1">
+                      <Bot className="w-4 h-4" />
+                    </div>
+                  )}
+                  <div
+                    className={`p-4 rounded-2xl max-w-[85%] leading-relaxed ${
+                      msg.role === 'user'
+                        ? 'bg-sky-600 text-white rounded-tr-none shadow-md'
+                        : 'bg-slate-800/90 text-slate-200 border border-slate-700/80 rounded-tl-none shadow-sm'
+                    }`}
+                  >
+                    {msg.role === 'assistant' ? (
+                      <MarkdownViewer content={msg.content} />
+                    ) : (
+                      <span>{msg.content}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {chatLoading && (
+                <div className="flex items-center gap-3 text-sky-400 text-xs p-3 rounded-2xl bg-slate-800/50 border border-slate-700/50 w-fit animate-pulse">
+                  <RefreshCw className="w-4 h-4 animate-spin text-sky-400" />
+                  <span>L'Assistant IA analyse la question et rédige la réponse...</span>
+                </div>
+              )}
+            </div>
+
+            {/* Quick Suggestion Chips */}
+            <div className="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar">
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider shrink-0">Suggestions:</span>
+              <button
+                type="button"
+                onClick={() => handleSendChatMessage("Pourquoi ma réponse est-elle fausse ?")}
+                disabled={chatLoading}
+                className="px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium transition-colors shrink-0 whitespace-nowrap"
+              >
+                💡 Pourquoi ma réponse est fausse ?
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSendChatMessage("Donne-moi un exemple concret pour mieux comprendre.")}
+                disabled={chatLoading}
+                className="px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium transition-colors shrink-0 whitespace-nowrap"
+              >
+                🔍 Exemple concret
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSendChatMessage("Quelle est l'astuce pour résoudre ce type de question le jour J ?")}
+                disabled={chatLoading}
+                className="px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium transition-colors shrink-0 whitespace-nowrap"
+              >
+                ⚡ Astuce du concours
+              </button>
+            </div>
+
+            {/* Chat Input Bar */}
+            <div className="p-4 bg-slate-950 border-t border-slate-800">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSendChatMessage();
+                }}
+                className="flex items-center gap-2"
+              >
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="Posez votre question à l'Assistant IA..."
+                  className="flex-1 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 text-xs focus:border-sky-500 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={!chatInput.trim() || chatLoading}
+                  className="px-4 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 text-white font-bold text-xs shadow-md disabled:opacity-50 flex items-center justify-center"
+                >
+                  <Send className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
       {toast && (
         <div className="fixed bottom-6 right-6 z-[9999] px-6 py-4 rounded-2xl bg-slate-900/95 dark:bg-slate-950/95 border border-emerald-500/30 text-emerald-400 text-sm font-semibold shadow-2xl flex items-center gap-2 animate-bounce">
           <CheckCircle2 className="w-5 h-5" />

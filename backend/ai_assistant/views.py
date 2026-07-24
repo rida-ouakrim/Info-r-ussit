@@ -102,3 +102,40 @@ class GenerateQCMView(APIView):
                     locked_user.allowed_generations += 1
                     locked_user.save()
             return Response({"error": f"Erreur lors de la génération IA : {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class QuestionChatAssistantView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        question_text = request.data.get('question_text', '')
+        option_a = request.data.get('option_a', '')
+        option_b = request.data.get('option_b', '')
+        option_c = request.data.get('option_c', '')
+        option_d = request.data.get('option_d', '')
+        correct_option = request.data.get('correct_option', '')
+        chosen_option = request.data.get('chosen_option', '')
+        explanation = request.data.get('explanation', '')
+        user_message = request.data.get('user_message', 'Explications supplémentaires s'il vous plaît.')
+        chat_history = request.data.get('chat_history', [])
+
+        if not question_text:
+            return Response({"error": "Énoncé de la question manquant"}, status=status.HTTP_400_BAD_REQUEST)
+
+        from .ai_service import answer_question_chat_query
+
+        try:
+            ai_reply = answer_question_chat_query(
+                question_text=question_text,
+                option_a=option_a,
+                option_b=option_b,
+                option_c=option_c,
+                option_d=option_d,
+                correct_option=correct_option,
+                chosen_option=chosen_option,
+                explanation=explanation,
+                user_message=user_message,
+                chat_history=chat_history
+            )
+            return Response({"reply": ai_reply}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": f"Erreur de l'Assistant IA : {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
