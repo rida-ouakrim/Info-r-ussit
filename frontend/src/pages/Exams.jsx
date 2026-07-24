@@ -679,20 +679,20 @@ const Exams = () => {
             )}
 
             {/* Interactive AI Chatbot Callout Banner */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-500/15 via-indigo-500/15 to-purple-500/15 border border-sky-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-purple-500/10 dark:from-sky-950/40 dark:via-indigo-950/40 dark:to-purple-950/40 border border-sky-500/30 dark:border-sky-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shrink-0">
-                  <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 shrink-0">
+                  <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-900 dark:text-white">Vous avez une question sur cette correction ?</h4>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-400">Demandez des explications complémentaires ou un exemple au Tuteur IA !</p>
+                  <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">Vous avez une question sur cette correction ?</h4>
+                  <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 font-medium">Demandez des explications complémentaires ou un exemple au Tuteur IA !</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => openQuestionAiChat(currentQ, currentAttempt)}
-                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 text-white font-bold text-xs shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2 shrink-0 transition-all hover:scale-[1.02]"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 shrink-0 transition-all hover:scale-[1.02]"
               >
                 <Bot className="w-4 h-4" /> Discuter avec l'Assistant IA
               </button>
@@ -807,22 +807,22 @@ const Exams = () => {
       )}
       {/* Interactive AI Chatbot Modal for Question Explanations */}
       {chatModalOpen && chatQuestion && (
-        <div className="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-sky-500/30 rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-fade-in">
+        <div className="fixed inset-0 z-[9999] bg-slate-950/60 dark:bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-sky-500/30 rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-fade-in">
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+            <div className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
                   <Bot className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base flex items-center gap-2">
                     Tuteur Pédagogique IA
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/10 dark:bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-sky-500/30 font-semibold">
                       En direct
                     </span>
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                     Explications & Q/R en direct sur {chatQuestion.question_number || 'la question'}
                   </p>
                 </div>
@@ -830,45 +830,45 @@ const Exams = () => {
               <button
                 type="button"
                 onClick={() => setChatModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-full bg-slate-200/80 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Question Context Banner */}
-            <div className="px-5 py-3 bg-slate-950/60 border-b border-slate-800/60 text-xs flex flex-wrap items-center justify-between gap-2">
-              <div className="text-slate-300 font-medium truncate max-w-full">
-                <span className="text-sky-400 font-bold mr-1">{chatQuestion.question_number}:</span>
+            <div className="px-5 py-3 bg-sky-50/70 dark:bg-slate-950/60 border-b border-sky-100 dark:border-slate-800/80 text-xs flex flex-wrap items-center justify-between gap-2">
+              <div className="text-slate-700 dark:text-slate-300 font-medium truncate max-w-full">
+                <span className="text-sky-600 dark:text-sky-400 font-bold mr-1">{chatQuestion.question_number}:</span>
                 {chatQuestion.question_text?.slice(0, 65)}...
               </div>
               <div className="flex items-center gap-2 text-[11px]">
-                <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300">
-                  Votre choix: <strong className="text-sky-400">{chatAttempt?.choice || 'Aucun'}</strong>
+                <span className="px-2 py-0.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shadow-xs font-semibold">
+                  Votre choix: <strong className="text-sky-600 dark:text-sky-400">{chatAttempt?.choice || 'Aucun'}</strong>
                 </span>
-                <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  Bonne réponse: <strong className="text-emerald-400">{chatQuestion.correct_option}</strong>
+                <span className="px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30 shadow-xs font-semibold">
+                  Bonne réponse: <strong className="text-emerald-600 dark:text-emerald-400">{chatQuestion.correct_option}</strong>
                 </span>
               </div>
             </div>
 
             {/* Chat Messages Feed */}
-            <div className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4 text-xs font-sans">
+            <div className="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4 text-xs font-sans bg-slate-50/50 dark:bg-slate-900/50">
               {chatMessages.map((msg, idx) => (
                 <div
                   key={idx}
                   className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {msg.role === 'assistant' && (
-                    <div className="w-8 h-8 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-300 flex items-center justify-center shrink-0 mt-1">
+                    <div className="w-8 h-8 rounded-xl bg-indigo-100 dark:bg-indigo-600/30 border border-indigo-200 dark:border-indigo-500/40 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0 mt-1 shadow-xs">
                       <Bot className="w-4 h-4" />
                     </div>
                   )}
                   <div
                     className={`p-4 rounded-2xl max-w-[85%] leading-relaxed ${
                       msg.role === 'user'
-                        ? 'bg-sky-600 text-white rounded-tr-none shadow-md'
-                        : 'bg-slate-800/90 text-slate-200 border border-slate-700/80 rounded-tl-none shadow-sm'
+                        ? 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white rounded-tr-none shadow-md font-medium'
+                        : 'bg-white dark:bg-slate-800/90 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700/80 rounded-tl-none shadow-sm'
                     }`}
                   >
                     {msg.role === 'assistant' ? (
@@ -881,21 +881,21 @@ const Exams = () => {
               ))}
 
               {chatLoading && (
-                <div className="flex items-center gap-3 text-sky-400 text-xs p-3 rounded-2xl bg-slate-800/50 border border-slate-700/50 w-fit animate-pulse">
-                  <RefreshCw className="w-4 h-4 animate-spin text-sky-400" />
+                <div className="flex items-center gap-3 text-sky-700 dark:text-sky-400 text-xs p-3.5 rounded-2xl bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 w-fit shadow-xs animate-pulse font-medium">
+                  <RefreshCw className="w-4 h-4 animate-spin text-sky-600 dark:text-sky-400" />
                   <span>L'Assistant IA analyse la question et rédige la réponse...</span>
                 </div>
               )}
             </div>
 
             {/* Quick Suggestion Chips */}
-            <div className="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar">
-              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider shrink-0">Suggestions:</span>
+            <div className="px-4 py-2.5 bg-slate-50 dark:bg-slate-950/80 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-extrabold uppercase tracking-wider shrink-0">Suggestions:</span>
               <button
                 type="button"
                 onClick={() => handleSendChatMessage("Pourquoi ma réponse est-elle fausse ?")}
                 disabled={chatLoading}
-                className="px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium transition-colors shrink-0 whitespace-nowrap"
+                className="px-3 py-1 rounded-full bg-white hover:bg-sky-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-sky-700 dark:hover:text-white border border-slate-200 dark:border-slate-700 text-[11px] font-semibold transition-colors shrink-0 whitespace-nowrap shadow-xs"
               >
                 💡 Pourquoi ma réponse est fausse ?
               </button>
@@ -903,7 +903,7 @@ const Exams = () => {
                 type="button"
                 onClick={() => handleSendChatMessage("Donne-moi un exemple concret pour mieux comprendre.")}
                 disabled={chatLoading}
-                className="px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium transition-colors shrink-0 whitespace-nowrap"
+                className="px-3 py-1 rounded-full bg-white hover:bg-sky-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-sky-700 dark:hover:text-white border border-slate-200 dark:border-slate-700 text-[11px] font-semibold transition-colors shrink-0 whitespace-nowrap shadow-xs"
               >
                 🔍 Exemple concret
               </button>
@@ -911,14 +911,14 @@ const Exams = () => {
                 type="button"
                 onClick={() => handleSendChatMessage("Quelle est l'astuce pour résoudre ce type de question le jour J ?")}
                 disabled={chatLoading}
-                className="px-3 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium transition-colors shrink-0 whitespace-nowrap"
+                className="px-3 py-1 rounded-full bg-white hover:bg-sky-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-sky-700 dark:hover:text-white border border-slate-200 dark:border-slate-700 text-[11px] font-semibold transition-colors shrink-0 whitespace-nowrap shadow-xs"
               >
                 ⚡ Astuce du concours
               </button>
             </div>
 
             {/* Chat Input Bar */}
-            <div className="p-4 bg-slate-950 border-t border-slate-800">
+            <div className="p-4 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -931,12 +931,12 @@ const Exams = () => {
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder="Posez votre question à l'Assistant IA..."
-                  className="flex-1 px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 text-xs focus:border-sky-500 focus:outline-none"
+                  className="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 focus:outline-none transition-all"
                 />
                 <button
                   type="submit"
                   disabled={!chatInput.trim() || chatLoading}
-                  className="px-4 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 text-white font-bold text-xs shadow-md disabled:opacity-50 flex items-center justify-center"
+                  className="px-4 py-3 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-500/20 disabled:opacity-50 flex items-center justify-center transition-all"
                 >
                   <Send className="w-4 h-4" />
                 </button>
