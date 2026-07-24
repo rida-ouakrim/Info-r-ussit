@@ -44,13 +44,16 @@ class CoursePayload(BaseModel):
     examples: str = Field(description="Comprehensive step-by-step resolved examples, exercises, or code in French (markdown format)")
     astuces: str = Field(description="Traps, tips, formulas, and tricks in French (markdown format)")
 
+def normalize_name(text):
+    return text.lower().replace("é", "e").replace("è", "e").replace("ê", "e").replace("ë", "e").replace("’", "'").replace(" ", "").replace("-", "").strip()
+
 def extract_pdf_text(filenames):
     combined_text = ""
     for name in filenames:
-        # Match case-insensitively or with minor accents
+        # Match case-insensitively or with minor accents/special characters
         actual_filename = None
         for f in os.listdir(COURS_DIR):
-            if f.lower().replace("é", "e").replace("è", "e") == name.lower().replace("é", "e").replace("è", "e"):
+            if normalize_name(f) == normalize_name(name):
                 actual_filename = f
                 break
         
