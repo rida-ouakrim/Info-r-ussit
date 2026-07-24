@@ -165,11 +165,16 @@ const CodeBlock = ({ code, language }) => {
 
   const codeLines = (code || '').split('\n');
 
-  // Detect tree diagrams (Q16, Q17) vs Algorithm Code
-  const isTreeDiagram = language === 'alg' || (!language && codeLines.some(l => 
-    (l.includes('/') && l.includes('\\')) || 
-    l.includes('/  \\')
-  ));
+  // Detect tree diagrams vs Algorithm Code:
+  // - language 'alg' = always algorithm syntax highlighting (NEVER a tree)
+  // - language 'tree' = force tree rendering
+  // - no language = only tree if the code looks like a real binary tree (has both / and \ on same line, no algorithm keywords)
+  const hasAlgKeywords = codeLines.some(l => {
+    const lower = l.toLowerCase();
+    return lower.includes('algorithme') || lower.includes('variables') || lower.includes('début') || lower.includes('debut') || lower.includes('tantque') || lower.includes('tant que') || lower.includes('finsi') || lower.includes('finpour');
+  });
+  const isRealTree = !hasAlgKeywords && codeLines.some(l => l.includes('/') && l.includes('\\'));
+  const isTreeDiagram = language === 'tree' || (language !== 'alg' && !language && isRealTree);
 
   return (
     <div className="my-5 rounded-2xl overflow-hidden bg-[#090d16] border border-slate-800 shadow-2xl group">
@@ -181,10 +186,15 @@ const CodeBlock = ({ code, language }) => {
               <span className="text-sm">🌳</span>
               <span className="font-bold text-slate-200">Arbre Binaire / Structure</span>
             </>
+          ) : language === 'alg' || hasAlgKeywords ? (
+            <>
+              <Terminal className="w-3.5 h-3.5 text-purple-400" />
+              <span className="font-bold text-slate-200">Algorithme / Pseudocode</span>
+            </>
           ) : (
             <>
               <Terminal className="w-3.5 h-3.5 text-sky-400" />
-              <span className="font-bold text-slate-200">Algorithme / Code Source</span>
+              <span className="font-bold text-slate-200">Code Source</span>
             </>
           )}
         </div>
