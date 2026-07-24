@@ -154,7 +154,7 @@ const renderAlgorithmLine = (line) => {
   }
 };
 
-const CodeBlock = ({ code }) => {
+const CodeBlock = ({ code, language }) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -166,10 +166,10 @@ const CodeBlock = ({ code }) => {
   const codeLines = (code || '').split('\n');
 
   // Detect tree diagrams (Q16, Q17) vs Algorithm Code
-  const isTreeDiagram = codeLines.some(l => 
+  const isTreeDiagram = language === 'alg' || (!language && codeLines.some(l => 
     (l.includes('/') && l.includes('\\')) || 
     l.includes('/  \\')
-  );
+  ));
 
   return (
     <div className="my-5 rounded-2xl overflow-hidden bg-[#090d16] border border-slate-800 shadow-2xl group">
@@ -475,6 +475,7 @@ export const MarkdownViewer = ({ content }) => {
   const elements = [];
   let currentCodeBlock = [];
   let inCode = false;
+  let currentLanguage = '';
   let currentTableRows = [];
 
   const flushTable = (keyIndex) => {
@@ -488,11 +489,13 @@ export const MarkdownViewer = ({ content }) => {
     if (line.trim().startsWith('```')) {
       flushTable(index);
       if (inCode) {
-        elements.push(<CodeBlock key={`code-${index}`} code={currentCodeBlock.join('\n')} />);
+        elements.push(<CodeBlock key={`code-${index}`} code={currentCodeBlock.join('\n')} language={currentLanguage} />);
         currentCodeBlock = [];
         inCode = false;
+        currentLanguage = '';
       } else {
         inCode = true;
+        currentLanguage = line.trim().substring(3).toLowerCase().trim();
       }
       return;
     }
