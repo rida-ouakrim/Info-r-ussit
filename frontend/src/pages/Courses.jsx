@@ -213,7 +213,6 @@ const Courses = () => {
               }`}
             >
               <span>{dom.name}</span>
-              <span className="px-1.5 py-0.5 rounded-md bg-slate-200/80 dark:bg-slate-900/60 text-[10px] opacity-80">{dom.code}</span>
             </button>
           );
         })}
