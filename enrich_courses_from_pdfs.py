@@ -11,9 +11,10 @@ from pydantic import BaseModel, Field
 # Set up utf-8
 sys.stdout.reconfigure(encoding='utf-8')
 
-COURS_DIR = "c:/Users/RIDA OUAKRIM/Desktop/rida/zrida/cours"
-DB_CONCOURS = "c:/Users/RIDA OUAKRIM/Desktop/rida/zrida/concours.db"
-DB_BACKEND = "c:/Users/RIDA OUAKRIM/Desktop/rida/zrida/backend/db.sqlite3"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+COURS_DIR = os.path.join(BASE_DIR, "cours")
+DB_CONCOURS = os.path.join(BASE_DIR, "concours.db")
+DB_BACKEND = os.path.join(BASE_DIR, "backend", "db.sqlite3")
 
 # Mapping Course ID -> List of PDF filenames
 COURSE_PDF_MAPPING = {
