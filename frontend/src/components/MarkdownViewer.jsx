@@ -390,11 +390,21 @@ const AccessQueryIcon = () => (
 const parseInlineFormatting = (text) => {
   if (!text) return '';
 
-  if (text.includes('[ICON_ACCESS_QUERY]') || text.includes('⚡')) {
-    const segments = text.split(/(\[ICON_ACCESS_QUERY\]|⚡)/g);
+  if (text.includes('[ICON_ACCESS_QUERY]')) {
+    const segments = text.split(/(\[ICON_ACCESS_QUERY\])/g);
     return segments.map((seg, i) => {
-      if (seg === '[ICON_ACCESS_QUERY]' || seg === '⚡') {
+      if (seg === '[ICON_ACCESS_QUERY]') {
         return <AccessQueryIcon key={`access-icon-${i}`} />;
+      }
+      return parseInlineFormatting(seg);
+    });
+  }
+
+  if (text.includes('⚡')) {
+    const segments = text.split(/(⚡)/g);
+    return segments.map((seg, i) => {
+      if (seg === '⚡') {
+        return <span key={`lightning-${i}`} className="inline-block text-amber-500 text-base font-extrabold mr-1 align-middle">⚡</span>;
       }
       return parseInlineFormatting(seg);
     });

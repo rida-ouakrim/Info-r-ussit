@@ -27,10 +27,13 @@ const Courses = () => {
 
   const getEmbedUrl = (url) => {
     if (!url) return null;
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    if (match && match[2].length === 11) {
-      return `https://www.youtube.com/embed/${match[2]}?autoplay=0&rel=0`;
+    const vMatch = url.match(/(?:v=|\/embed\/|\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    const videoId = vMatch ? vMatch[1] : null;
+    const listMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+    const listId = listMatch ? listMatch[1] : null;
+
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}${listId ? `?list=${listId}` : ''}`;
     }
     if (url.includes('youtube.com/embed/')) return url;
     return url;

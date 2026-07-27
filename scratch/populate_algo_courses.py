@@ -11,7 +11,7 @@ DJANGO_DB = os.path.join(BASE_DIR, "backend", "db.sqlite3")
 ALGO_COURSES = [
     {
         "title": "01. Introduction à l'Algorithmique et Notions de Base",
-        "video_url": "https://www.youtube.com/watch?v=gTlywLgE-W4",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=1",
         "content": """# 1. Introduction à l'Algorithmique
 
 ## Définition
@@ -57,7 +57,7 @@ Fin
     },
     {
         "title": "02. Variables, Constantes et Types de Données",
-        "video_url": "https://www.youtube.com/watch?v=fN9zR5l0_0w",
+        "video_url": "https://www.youtube.com/watch?v=ahyfYdRvc3M&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=2",
         "content": """# 2. Variables, Constantes et Types de Données
 
 ## Notion de Variable
@@ -96,7 +96,7 @@ Fin
     },
     {
         "title": "03. Opérateurs, Expressions et Entrées/Sorties (Lire/Écrire)",
-        "video_url": "https://www.youtube.com/watch?v=YjXh9_k3Dkg",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=3",
         "content": """# 3. Opérateurs, Expressions et Instructions I/O
 
 ## Opérateurs Arithmétiques
@@ -135,7 +135,7 @@ Fin
     },
     {
         "title": "04. Structures Conditionnelles (Si...Alors...Sinon, Selon)",
-        "video_url": "https://www.youtube.com/watch?v=R9_mG-0kXy4",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=4",
         "content": """# 4. Structures Conditionnelles
 
 ## 1. Conditionnelle Simple : `Si ... Alors`
@@ -184,7 +184,7 @@ Fin
     },
     {
         "title": "05. Structures Itératives et Boucles (TantQue, Pour, Répéter)",
-        "video_url": "https://www.youtube.com/watch?v=0t3H-KjL7F8",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=5",
         "content": """# 5. Structures Itératives et Boucles
 
 ## 1. Boucle `Pour` (Nombre d'itérations connu)
@@ -229,7 +229,7 @@ Fin
     },
     {
         "title": "06. Les Tableaux à 1D et 2D (Vecteurs et Matrices)",
-        "video_url": "https://www.youtube.com/watch?v=bQ1hU8aN4Jk",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=6",
         "content": """# 6. Les Tableaux (Vecteurs et Matrices)
 
 ## 1. Tableau Unidimensionnel (Vecteur)
@@ -272,7 +272,7 @@ Fin
     },
     {
         "title": "07. Chaînes de Caractères et Manipulations",
-        "video_url": "https://www.youtube.com/watch?v=3KzJ9y2N_X0",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=7",
         "content": """# 7. Chaînes de Caractères
 
 ## Définition
@@ -306,7 +306,7 @@ Pour inverser une chaîne en temps linéaire $O(n)$, échanger `ch[i]` et `ch[n 
     },
     {
         "title": "08. Procédures et Fonctions (Sous-programmes & Modularité)",
-        "video_url": "https://www.youtube.com/watch?v=v9Z8v7hG1wQ",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=8",
         "content": """# 8. Modularité : Procédures et Fonctions
 
 ## 1. Fonction
@@ -347,7 +347,7 @@ FinProcédure
     },
     {
         "title": "09. Complexité des algorithmes (Notations O)",
-        "video_url": "https://www.youtube.com/watch?v=g2CMeS2F-g8",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=9",
         "content": """# 9. Complexité des Algorithmes
 
 ## Notion de Complexité
@@ -381,7 +381,7 @@ FinPour
     },
     {
         "title": "10. Structures de données statiques et dynamiques (Piles, Files, Listes)",
-        "video_url": "https://www.youtube.com/watch?v=K37_nQ9M_Wc",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=10",
         "content": """# 10. Structures de Données (Piles, Files, Listes)
 
 ## 1. Les Piles (LIFO - Last In First Out)
@@ -415,7 +415,7 @@ void push(Node** top, int val) {
     },
     {
         "title": "11. Algorithmes de Tri et Recherche (Tri Bulle, Sélection, Insertion, Rapide, Fusion)",
-        "video_url": "https://www.youtube.com/watch?v=7uKj4b9b9c0",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=11",
         "content": """# 11. Algorithmes de Tri et Recherche
 
 ## Algorithmes de Tri Comparatifs
@@ -459,7 +459,7 @@ Fin
     },
     {
         "title": "12. Récursivité et approche Diviser pour régner",
-        "video_url": "https://www.youtube.com/watch?v=kYv_8R2v7c4",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=12",
         "content": """# 12. Récursivité et Diviser pour Régner
 
 ## Principe de la Récursivité
@@ -489,7 +489,7 @@ Se produit si la condition d'arrêt est absente ou jamais atteinte."""
     },
     {
         "title": "13. Arbres binaires et Arbres binaires de recherche (ABR)",
-        "video_url": "https://www.youtube.com/watch?v=0h94yJ9y8w8",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=13",
         "content": """# 13. Arbres Binaires et ABR
 
 ## Définitions
@@ -519,7 +519,7 @@ void infixe(Node* root) {
     },
     {
         "title": "14. Graphes : Représentation et parcours (DFS, BFS)",
-        "video_url": "https://www.youtube.com/watch?v=0uB_X6t28w4",
+        "video_url": "https://www.youtube.com/watch?v=kk6YbA5I-Iw&list=PL2aehqZh72Lumvy4tSekr6Rzcgwn15MLI&index=14",
         "content": """# 14. Graphes : Représentation et Parcours
 
 ## Définitions
