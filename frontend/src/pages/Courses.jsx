@@ -436,31 +436,7 @@ const Courses = () => {
                   </div>
 
                   {selectedCourse.video_url ? (
-                    (selectedCourse.video_url.endsWith('.mp4') || selectedCourse.video_url.startsWith('/videos/')) ? (
-                      <div className="space-y-4">
-                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800 flex items-center justify-center">
-                          <video
-                            src={selectedCourse.video_url}
-                            controls
-                            controlsList="nodownload"
-                            className="w-full h-full object-contain bg-black"
-                          ></video>
-                        </div>
-                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
-                          <span className="text-slate-600 dark:text-slate-300 font-medium">
-                            ✨ <strong>Vidéo HD Sans Publicité :</strong> Regardez le cours vidéo puis passez aux exercices et QCM.
-                          </span>
-                          <a
-                            href={selectedCourse.video_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
-                          >
-                            Télécharger / Ouvrir en plein écran ↗
-                          </a>
-                        </div>
-                      </div>
-                    ) : selectedCourse.video_url.includes('drive.google.com') ? (
+                    selectedCourse.video_url.includes('drive.google.com') ? (
                       <div className="space-y-4">
                         <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                           <iframe
@@ -506,7 +482,7 @@ const Courses = () => {
                             rel="noopener noreferrer"
                             className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
                           >
-                            Ouvrir la vidéo sur YouTube ↗
+                            Ouvrir la vidéo ↗
                           </a>
                         </div>
                       </div>
