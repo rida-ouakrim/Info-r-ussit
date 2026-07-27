@@ -39,7 +39,12 @@ const Dashboard = () => {
 
   if (!data) return null;
 
-  const { user, course_stats, quiz_stats, bookmarks_count, active_sessions, weak_points } = data;
+  const course_stats = data.course_stats || { total: 0, completed: 0, percentage: 0 };
+  const quiz_stats = data.quiz_stats || { total_attempts: 0, correct_attempts: 0, success_rate: 0 };
+  const bookmarks_count = data.bookmarks_count || 0;
+  const active_sessions = data.active_sessions || [];
+  const weak_points = data.weak_points || [];
+  const user = data.user || {};
 
   return (
     <div className="space-y-8 py-4">
@@ -48,10 +53,10 @@ const Dashboard = () => {
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-400 text-xs font-semibold">
             <Award className="w-3.5 h-3.5" />
-            Espace Candidat • {user.target_exam}
+            Espace Candidat • {user?.target_exam || 'Concours CRMEF'}
           </div>
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
-            Bienvenue, {user.first_name || user.username} ! 👋
+            Bienvenue, {user?.first_name || user?.username || user?.email || 'Candidat'} ! 👋
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-300">
             Suivez votre progression en temps réel sur l'ensemble du programme officiel.

@@ -48,9 +48,10 @@ const AIGenerator = () => {
   const fetchUserProfile = async () => {
     try {
       const res = await API.get('auth/me/');
-      const isUnlimited = res.data.is_staff || res.data.username.toLowerCase() === 'rida' || res.data.account_type === 'Premium';
-      setAllowedGenerations(isUnlimited ? 99999 : res.data.allowed_generations);
-      if (!isUnlimited && res.data.allowed_generations <= 0) {
+      const usernameStr = (res.data?.username || '').toLowerCase();
+      const isUnlimited = res.data?.is_staff || usernameStr === 'rida' || res.data?.account_type === 'Premium';
+      setAllowedGenerations(isUnlimited ? 99999 : (res.data?.allowed_generations ?? 0));
+      if (!isUnlimited && (res.data?.allowed_generations ?? 0) <= 0) {
         setLimitError({
           error: "Limite de génération QCM IA atteinte. Pour obtenir plus de générations, veuillez contacter l'administrateur Rida Ouakrim."
         });
@@ -63,16 +64,20 @@ const AIGenerator = () => {
   const fetchDomains = async () => {
     try {
       const res = await API.get('domains/');
-      setDomains(res.data);
-      if (res.data.length > 0) {
-        setSelectedDomainCode(res.data[0].code);
-        setSubdomains(res.data[0].subdomains);
-        if (res.data[0].subdomains.length > 0) {
-          setSelectedSubdomainCode(res.data[0].subdomains[0].code);
+      const domList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+      setDomains(domList);
+      if (domList.length > 0) {
+        setSelectedDomainCode(domList[0].code);
+        const subList = Array.isArray(domList[0].subdomains) ? domList[0].subdomains : [];
+        setSubdomains(subList);
+        if (subList.length > 0) {
+          setSelectedSubdomainCode(subList[0].code);
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error("fetchDomains error:", err);
+      setDomains([]);
+      setSubdomains([]);
     } finally {
       setLoading(false);
     }
@@ -89,11 +94,13 @@ const AIGenerator = () => {
   const handleDomainChange = (e) => {
     const code = e.target.value;
     setSelectedDomainCode(code);
-    const dom = domains.find(d => d.code === code);
+    const domList = Array.isArray(domains) ? domains : [];
+    const dom = domList.find(d => d.code === code);
     if (dom) {
-      setSubdomains(dom.subdomains);
-      if (dom.subdomains.length > 0) {
-        setSelectedSubdomainCode(dom.subdomains[0].code);
+      const subList = Array.isArray(dom.subdomains) ? dom.subdomains : [];
+      setSubdomains(subList);
+      if (subList.length > 0) {
+        setSelectedSubdomainCode(subList[0].code);
       }
     }
   };
@@ -101,11 +108,12 @@ const AIGenerator = () => {
   const fetchHistory = async () => {
     try {
       const res = await API.get('exams/history/');
-      // Filter sessions for AI QCM (exam_year === 9999)
-      const aiSessions = (res.data || []).filter(s => s.exam_year === 9999);
+      const rawList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+      const aiSessions = rawList.filter(s => s.exam_year === 9999);
       setHistoryList(aiSessions);
     } catch (err) {
       console.error('Erreur chargement historique QCM IA:', err);
+      setHistoryList([]);
     }
   };
 
@@ -339,7 +347,7 @@ const AIGenerator = () => {
                   onChange={handleDomainChange}
                   className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm"
                 >
-                  {domains.map(d => (
+                  {(Array.isArray(domains) ? domains : []).map(d => (
                     <option key={d.code} value={d.code}>{d.name}</option>
                   ))}
                 </select>
@@ -352,7 +360,7 @@ const AIGenerator = () => {
                   onChange={(e) => setSelectedSubdomainCode(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm"
                 >
-                  {subdomains.map(sd => (
+                  {(Array.isArray(subdomains) ? subdomains : []).map(sd => (
                     <option key={sd.code} value={sd.code}>{sd.name}</option>
                   ))}
                 </select>

@@ -46,18 +46,25 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f"Imported {subdomains_count} Subdomains"))
 
         # 3. Import Courses
-        cursor.execute("SELECT subdomain_code, title, content, examples, astuces FROM courses")
+        # Check if video_url column exists in cursor table info
+        columns = [col[1] for col in cursor.execute("PRAGMA table_info(courses)").fetchall()]
+        has_video_url = 'video_url' in columns
+
+        query = "SELECT subdomain_code, title, content, examples, astuces, video_url FROM courses" if has_video_url else "SELECT subdomain_code, title, content, examples, astuces FROM courses"
+        cursor.execute(query)
         courses_count = 0
         for row in cursor.fetchall():
             subdomain = Subdomain.objects.filter(code=row['subdomain_code']).first()
             if subdomain:
+                video_val = row['video_url'] if has_video_url and 'video_url' in row.keys() else None
                 Course.objects.update_or_create(
                     subdomain=subdomain,
                     title=row['title'],
                     defaults={
                         'content': row['content'],
                         'examples': row['examples'],
-                        'astuces': row['astuces']
+                        'astuces': row['astuces'],
+                        'video_url': video_val
                     }
                 )
                 courses_count += 1
@@ -70,23 +77,27 @@ class Command(BaseCommand):
             domain = Domain.objects.filter(code=row['domain_code']).first() if row['domain_code'] else None
             subdomain = Subdomain.objects.filter(code=row['subdomain_code']).first() if row['subdomain_code'] else None
             
-            Question.objects.get_or_create(
+            existing_q = Question.objects.filter(
                 question_text=row['question_text'],
-                defaults={
-                    'source_type': row['source_type'] or 'past_exam',
-                    'exam_year': row['exam_year'],
-                    'question_number': row['question_number'],
-                    'option_a': row['option_a'],
-                    'option_b': row['option_b'],
-                    'option_c': row['option_c'],
-                    'option_d': row['option_d'],
-                    'correct_option': row['correct_option'],
-                    'explanation': row['explanation'],
-                    'astuce': row['astuce'],
-                    'domain': domain,
-                    'subdomain': subdomain
-                }
-            )
+                exam_year=row['exam_year'],
+                question_number=row['question_number']
+            ).first()
+            if not existing_q:
+                Question.objects.create(
+                    question_text=row['question_text'],
+                    source_type=row['source_type'] or 'past_exam',
+                    exam_year=row['exam_year'],
+                    question_number=row['question_number'],
+                    option_a=row['option_a'],
+                    option_b=row['option_b'],
+                    option_c=row['option_c'],
+                    option_d=row['option_d'],
+                    correct_option=row['correct_option'],
+                    explanation=row['explanation'],
+                    astuce=row['astuce'],
+                    domain=domain,
+                    subdomain=subdomain
+                )
             questions_count += 1
         self.stdout.write(self.style.SUCCESS(f"Imported {questions_count} Questions"))
 

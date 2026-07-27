@@ -24,6 +24,7 @@ class Course(models.Model):
     content = models.TextField(blank=True, null=True)
     examples = models.TextField(blank=True, null=True)
     astuces = models.TextField(blank=True, null=True)
+    video_url = models.CharField(max_length=500, blank=True, null=True, help_text="Lien de la vidéo YouTube de la leçon")
 
     class Meta:
         unique_together = ('subdomain', 'title')

@@ -1,0 +1,16 @@
+import os
+import pypdf
+
+DIDACTIQUE_DIR = "c:/Users/RIDA OUAKRIM/Desktop/rida/zrida/didactique informatique"
+
+print("=== DIDACTIQUE PDF INSPECTION ===")
+for filename in os.listdir(DIDACTIQUE_DIR):
+    if filename.endswith(".pdf"):
+        filepath = os.path.join(DIDACTIQUE_DIR, filename)
+        try:
+            with open(filepath, 'rb') as f:
+                reader = pypdf.PdfReader(f)
+                num_pages = len(reader.pages)
+                print(f"File: {filename} | Pages: {num_pages}")
+        except Exception as e:
+            print(f"Error reading {filename}: {e}")

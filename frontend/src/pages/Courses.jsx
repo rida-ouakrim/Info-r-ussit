@@ -4,7 +4,8 @@ import MarkdownViewer from '../components/MarkdownViewer';
 import { 
   BookOpen, CheckCircle2, Circle, Sparkles, Search, 
   HelpCircle, Code2, AlertTriangle, RefreshCw, Clock, 
-  ChevronRight, Award, Zap, Bookmark, ChevronDown, ChevronUp, Star
+  ChevronRight, Award, Zap, Bookmark, ChevronDown, ChevronUp, Star,
+  Video, Play
 } from 'lucide-react';
 
 const Courses = () => {
@@ -24,6 +25,17 @@ const Courses = () => {
   const [userAnswers, setUserAnswers] = useState({});
   const [openQcmIds, setOpenQcmIds] = useState({}); // Stores which QCM cards are expanded
 
+  const getEmbedUrl = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if (match && match[2].length === 11) {
+      return `https://www.youtube.com/embed/${match[2]}?autoplay=0&rel=0`;
+    }
+    if (url.includes('youtube.com/embed/')) return url;
+    return url;
+  };
+
   useEffect(() => {
     fetchDomains();
     fetchStats();
@@ -32,17 +44,21 @@ const Courses = () => {
   const fetchDomains = async () => {
     try {
       const res = await API.get('domains/');
-      setDomains(res.data);
-      if (res.data.length > 0) {
-        setSelectedDomainCode(res.data[0].code);
-        setSubdomains(res.data[0].subdomains);
-        if (res.data[0].subdomains.length > 0) {
-          setSelectedSubdomainCode(res.data[0].subdomains[0].code);
-          fetchCourses(res.data[0].subdomains[0].code);
+      const domList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+      setDomains(domList);
+      if (domList.length > 0) {
+        setSelectedDomainCode(domList[0].code);
+        const subList = Array.isArray(domList[0].subdomains) ? domList[0].subdomains : [];
+        setSubdomains(subList);
+        if (subList.length > 0) {
+          setSelectedSubdomainCode(subList[0].code);
+          fetchCourses(subList[0].code);
         }
       }
     } catch (err) {
-      console.error(err);
+      console.error("fetchDomains error:", err);
+      setDomains([]);
+      setSubdomains([]);
     } finally {
       setLoading(false);
     }
@@ -59,12 +75,14 @@ const Courses = () => {
 
   const handleDomainChange = (code) => {
     setSelectedDomainCode(code);
-    const dom = domains.find(d => d.code === code);
+    const domList = Array.isArray(domains) ? domains : [];
+    const dom = domList.find(d => d.code === code);
     if (dom) {
-      setSubdomains(dom.subdomains);
-      if (dom.subdomains.length > 0) {
-        setSelectedSubdomainCode(dom.subdomains[0].code);
-        fetchCourses(dom.subdomains[0].code);
+      const subList = Array.isArray(dom.subdomains) ? dom.subdomains : [];
+      setSubdomains(subList);
+      if (subList.length > 0) {
+        setSelectedSubdomainCode(subList[0].code);
+        fetchCourses(subList[0].code);
       }
     }
   };
@@ -77,15 +95,17 @@ const Courses = () => {
   const fetchCourses = async (subCode) => {
     try {
       const res = await API.get(`courses/?subdomain=${subCode}`);
-      setCourses(res.data);
-      if (res.data.length > 0) {
-        fetchCourseDetail(res.data[0].id);
+      const courseList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+      setCourses(courseList);
+      if (courseList.length > 0) {
+        fetchCourseDetail(courseList[0].id);
       } else {
         setSelectedCourse(null);
       }
       fetchSubQuestions(subCode);
     } catch (err) {
-      console.error(err);
+      console.error("fetchCourses error:", err);
+      setCourses([]);
     }
   };
 
@@ -101,10 +121,12 @@ const Courses = () => {
   const fetchSubQuestions = async (subCode) => {
     try {
       const res = await API.get(`questions/?subdomain=${subCode}&source_type=past_exam`);
-      setSubQuestions(res.data);
-      setOpenQcmIds({}); // Collapse QCM by default on new subdomain
+      const qList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+      setSubQuestions(qList);
+      setOpenQcmIds({});
     } catch (err) {
-      console.error(err);
+      console.error("fetchSubQuestions error:", err);
+      setSubQuestions([]);
     }
   };
 
@@ -112,7 +134,7 @@ const Courses = () => {
     try {
       const res = await API.post(`courses/${id}/toggle-completed/`, { is_completed: !currentVal });
       setSelectedCourse(prev => prev ? { ...prev, is_completed: res.data.is_completed } : null);
-      setCourses(prev => prev.map(c => c.id === id ? { ...c, is_completed: res.data.is_completed } : c));
+      setCourses(prev => (Array.isArray(prev) ? prev : []).map(c => c.id === id ? { ...c, is_completed: res.data.is_completed } : c));
       fetchStats();
     } catch (err) {
       console.error(err);
@@ -131,7 +153,7 @@ const Courses = () => {
   const toggleBookmark = async (questionId) => {
     try {
       const res = await API.post(`bookmarks/${questionId}/toggle/`);
-      setSubQuestions(prev => prev.map(q => q.id === questionId ? { ...q, is_bookmarked: res.data.is_bookmarked } : q));
+      setSubQuestions(prev => (Array.isArray(prev) ? prev : []).map(q => q.id === questionId ? { ...q, is_bookmarked: res.data.is_bookmarked } : q));
     } catch (err) {
       console.error(err);
     }
@@ -143,7 +165,7 @@ const Courses = () => {
 
   const expandAllQcm = () => {
     const allOpen = {};
-    subQuestions.forEach(q => { allOpen[q.id] = true; });
+    (Array.isArray(subQuestions) ? subQuestions : []).forEach(q => { allOpen[q.id] = true; });
     setOpenQcmIds(allOpen);
   };
 
@@ -151,7 +173,7 @@ const Courses = () => {
     setOpenQcmIds({});
   };
 
-  const filteredCourses = courses.filter(c => 
+  const filteredCourses = (Array.isArray(courses) ? courses : []).filter(c => 
     c.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -203,7 +225,7 @@ const Courses = () => {
         className="flex overflow-x-auto no-scrollbar flex-nowrap lg:flex-wrap gap-2 pb-2 lg:pb-0"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {domains.map((dom) => {
+        {(Array.isArray(domains) ? domains : []).map((dom) => {
           const isSelected = selectedDomainCode === dom.code;
           return (
             <button
@@ -227,7 +249,7 @@ const Courses = () => {
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold px-3 shrink-0">Sous-domaines :</span>
-        {subdomains.map(sd => {
+        {(Array.isArray(subdomains) ? subdomains : []).map(sd => {
           const isSel = selectedSubdomainCode === sd.code;
           return (
             <button
@@ -291,7 +313,12 @@ const Courses = () => {
                         <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded mt-0.5 ${isSel ? 'bg-sky-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
                           {idx + 1}
                         </span>
-                        <span className="line-clamp-2 leading-relaxed">{c.title}</span>
+                        <span className="line-clamp-2 leading-relaxed flex items-center gap-1.5">
+                          {c.title}
+                          {c.video_url && (
+                            <Video className="w-3.5 h-3.5 text-red-500 shrink-0 inline" title="Vidéo explicative disponible" />
+                          )}
+                        </span>
                       </div>
                       {c.is_completed ? (
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
@@ -351,6 +378,17 @@ const Courses = () => {
                   <BookOpen className="w-4 h-4" /> Fiche de Révision
                 </button>
                 <button
+                  onClick={() => setActiveTab('video')}
+                  className={`pb-3 px-2 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
+                    activeTab === 'video' ? 'border-red-500 text-red-600 dark:text-red-400 font-extrabold' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Video className="w-4 h-4 text-red-500" /> Vidéo Explicative
+                  {selectedCourse.video_url && (
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                  )}
+                </button>
+                <button
                   onClick={() => setActiveTab('examples')}
                   className={`pb-3 px-2 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
                     activeTab === 'examples' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -376,8 +414,60 @@ const Courses = () => {
                 </button>
               </div>
 
-              {/* Coursera Lesson Content Box */}
-              {activeTab !== 'qcm' ? (
+              {/* Coursera Lesson Content / Video Box */}
+              {activeTab === 'video' ? (
+                <div className="glass-card p-6 sm:p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl space-y-6">
+                  <div className="flex items-center justify-between flex-wrap gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                        <Play className="w-6 h-6 fill-current" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Leçon Vidéo • {selectedCourse.title}</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Support vidéo du cours et explication pas à pas (Style Coursera)</p>
+                      </div>
+                    </div>
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      Mohamed Chiny & Académie Info
+                    </span>
+                  </div>
+
+                  {selectedCourse.video_url ? (
+                    <div className="space-y-4">
+                      <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
+                        <iframe
+                          src={getEmbedUrl(selectedCourse.video_url)}
+                          title={selectedCourse.title}
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                      <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">
+                          💡 <strong>Conseil pédagogique :</strong> Regardez la vidéo puis passez aux exercices pratiques et QCM.
+                        </span>
+                        <a
+                          href={selectedCourse.video_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
+                        >
+                          Ouvrir la vidéo sur YouTube ↗
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-12 text-center space-y-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
+                      <Video className="w-12 h-12 text-slate-400 mx-auto opacity-50" />
+                      <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">Aucune vidéo associée à ce module</h4>
+                      <p className="text-xs text-slate-500 max-w-md mx-auto">
+                        Consultez la fiche de révision théorique et les exemples de code pour préparer votre examen.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : activeTab !== 'qcm' ? (
                 <div className="glass-card p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl min-h-[400px]">
                   {activeTab === 'content' && <MarkdownViewer content={selectedCourse.content} />}
                   {activeTab === 'examples' && <MarkdownViewer content={selectedCourse.examples} />}

@@ -20,7 +20,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'subdomain', 'subdomain_name', 'domain_code', 'title', 'is_completed')
+        fields = ('id', 'subdomain', 'subdomain_name', 'domain_code', 'title', 'video_url', 'is_completed')
 
     def get_is_completed(self, obj):
         user = self.context.get('request').user if self.context.get('request') else None
@@ -36,7 +36,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'subdomain', 'subdomain_code', 'subdomain_name', 'domain_name', 'title', 'content', 'examples', 'astuces', 'is_completed')
+        fields = ('id', 'subdomain', 'subdomain_code', 'subdomain_name', 'domain_name', 'title', 'content', 'examples', 'astuces', 'video_url', 'is_completed')
 
     def get_is_completed(self, obj):
         user = self.context.get('request').user if self.context.get('request') else None
