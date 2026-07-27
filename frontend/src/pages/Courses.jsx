@@ -436,30 +436,81 @@ const Courses = () => {
                   </div>
 
                   {selectedCourse.video_url ? (
-                    <div className="space-y-4">
-                      <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
-                        <iframe
-                          src={getEmbedUrl(selectedCourse.video_url)}
-                          title={selectedCourse.title}
-                          className="w-full h-full border-0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
+                    (selectedCourse.video_url.endsWith('.mp4') || selectedCourse.video_url.startsWith('/videos/')) ? (
+                      <div className="space-y-4">
+                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800 flex items-center justify-center">
+                          <video
+                            src={selectedCourse.video_url}
+                            controls
+                            controlsList="nodownload"
+                            className="w-full h-full object-contain bg-black"
+                          ></video>
+                        </div>
+                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
+                          <span className="text-slate-600 dark:text-slate-300 font-medium">
+                            ✨ <strong>Vidéo HD Sans Publicité :</strong> Regardez le cours vidéo puis passez aux exercices et QCM.
+                          </span>
+                          <a
+                            href={selectedCourse.video_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
+                          >
+                            Télécharger / Ouvrir en plein écran ↗
+                          </a>
+                        </div>
                       </div>
-                      <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
-                        <span className="text-slate-600 dark:text-slate-300 font-medium">
-                          💡 <strong>Conseil pédagogique :</strong> Regardez la vidéo puis passez aux exercices pratiques et QCM.
-                        </span>
-                        <a
-                          href={selectedCourse.video_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
-                        >
-                          Ouvrir la vidéo sur YouTube ↗
-                        </a>
+                    ) : selectedCourse.video_url.includes('drive.google.com') ? (
+                      <div className="space-y-4">
+                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
+                          <iframe
+                            src={selectedCourse.video_url.replace(/\/view(\?.*)?$/, '/preview')}
+                            title={selectedCourse.title}
+                            className="w-full h-full border-0"
+                            allow="autoplay"
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
+                          <span className="text-slate-600 dark:text-slate-300 font-medium">
+                            ☁️ <strong>Vidéo HD Google Drive :</strong> Streaming direct et sécurisé sans aucune publicité.
+                          </span>
+                          <a
+                            href={selectedCourse.video_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
+                          >
+                            Ouvrir dans Google Drive ↗
+                          </a>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
+                          <iframe
+                            src={getEmbedUrl(selectedCourse.video_url)}
+                            title={selectedCourse.title}
+                            className="w-full h-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                          ></iframe>
+                        </div>
+                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
+                          <span className="text-slate-600 dark:text-slate-300 font-medium">
+                            💡 <strong>Conseil pédagogique :</strong> Regardez la vidéo puis passez aux exercices pratiques et QCM.
+                          </span>
+                          <a
+                            href={selectedCourse.video_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
+                          >
+                            Ouvrir la vidéo sur YouTube ↗
+                          </a>
+                        </div>
+                      </div>
+                    )
                   ) : (
                     <div className="p-12 text-center space-y-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
                       <Video className="w-12 h-12 text-slate-400 mx-auto opacity-50" />
