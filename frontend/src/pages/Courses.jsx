@@ -1,13 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import API from '../services/api';
 import MarkdownViewer from '../components/MarkdownViewer';
-import { 
-  BookOpen, CheckCircle2, Circle, Sparkles, Search, 
-  HelpCircle, Code2, AlertTriangle, RefreshCw, Clock, 
-  ChevronRight, Award, Zap, Bookmark, ChevronDown, ChevronUp, Star,
-  Video, Play
-} from 'lucide-react';
 import { cLessons } from '../data/cLessons';
+import { 
+  BookOpen, CheckCircle2, Circle, Search, 
+  HelpCircle, Code2, RefreshCw, Clock, 
+  ChevronRight, Zap, Play, PlayCircle, Filter, 
+  FileText, Star, ChevronDown, ChevronUp, User, Globe, Award, Sparkles, Layers
+} from 'lucide-react';
+
+// Circular Progress Ring Component (Coursera / Vercel style)
+const ProgressRing = ({ percentage = 0, size = 64, strokeWidth = 6 }) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative inline-flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="transform -rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          className="text-slate-200 dark:text-slate-800"
+          fill="transparent"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
+          className="text-sky-500 transition-all duration-500 ease-out"
+          fill="transparent"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className="absolute text-xs font-black text-slate-900 dark:text-white">
+        {Math.round(percentage)}%
+      </span>
+    </div>
+  );
+};
 
 const Courses = () => {
   const [domains, setDomains] = useState([]);
@@ -18,14 +56,16 @@ const Courses = () => {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedCLessonIdx, setSelectedCLessonIdx] = useState(0);
+  const [openModuleIds, setOpenModuleIds] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('content'); // 'content', 'examples', 'astuces', 'qcm'
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'completed', 'in_progress', 'favorites'
+  const [activeTab, setActiveTab] = useState('content'); // 'content', 'video', 'examples', 'astuces', 'qcm'
 
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [subQuestions, setSubQuestions] = useState([]);
   const [userAnswers, setUserAnswers] = useState({});
-  const [openQcmIds, setOpenQcmIds] = useState({}); // Stores which QCM cards are expanded
+  const [openQcmIds, setOpenQcmIds] = useState({});
 
   const getEmbedUrl = (url) => {
     if (!url) return null;
@@ -104,8 +144,6 @@ const Courses = () => {
       setCourses(courseList);
       if (courseList.length > 0) {
         fetchCourseDetail(courseList[0].id);
-      } else {
-        setSelectedCourse(null);
       }
       fetchSubQuestions(subCode);
     } catch (err) {
@@ -114,138 +152,34 @@ const Courses = () => {
     }
   };
 
-  const filterQuestionsForCourse = (questions, course) => {
-    if (!Array.isArray(questions) || !course) return [];
-    const title = (course.title || '').toLowerCase();
+  const isCLanguage = useMemo(() => {
+    return selectedCourse?.title?.toLowerCase().includes('langage c') || false;
+  }, [selectedCourse]);
 
-    // 01. Introduction & Notions de base
-    if (title.includes('01.') || title.includes('introduction')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return (text.includes('algorithme') || text.includes('pseudo-code') || text.includes('organigramme') || text.includes('définition')) &&
-          !text.includes('tableau') && !text.includes('matrice') && !text.includes('boucle pour') && !text.includes('tantque') && !text.includes('arbre') && !text.includes('graphe');
-      });
+  const currentCLesson = useMemo(() => {
+    return cLessons[selectedCLessonIdx] || cLessons[0];
+  }, [selectedCLessonIdx]);
+
+  const activeCourseData = useMemo(() => {
+    if (!selectedCourse) return null;
+    if (isCLanguage && currentCLesson) {
+      return {
+        ...selectedCourse,
+        title: `Leçon ${currentCLesson.num < 10 ? '0' + currentCLesson.num : currentCLesson.num} : ${currentCLesson.title}`,
+        content: currentCLesson.content,
+        examples: currentCLesson.examples,
+        astuces: currentCLesson.astuces,
+        video_url: currentCLesson.video_url
+      };
     }
-
-    // 02. Variables, Constantes et Types
-    if (title.includes('02.') || title.includes('variable')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return (text.includes('variable') || text.includes('constante') || text.includes('entier') || text.includes('réel') || text.includes('booléen')) &&
-          !text.includes('tableau') && !text.includes('boucle') && !text.includes('arbre') && !text.includes('graphe');
-      });
-    }
-
-    // 03. Opérateurs et I/O
-    if (title.includes('03.') || title.includes('opérateur')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return (text.includes('opérateur') || text.includes('div') || text.includes('mod') || text.includes('lire') || text.includes('écrire')) &&
-          !text.includes('tableau') && !text.includes('arbre') && !text.includes('graphe');
-      });
-    }
-
-    // 04. Structures Conditionnelles (Si...Alors...Sinon, Selon)
-    if (title.includes('04.') || title.includes('condition')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return (text.includes('si ') || text.includes('sinon') || text.includes('selon') || text.includes('condition')) &&
-          !text.includes('boucle pour') && !text.includes('tantque') && !text.includes('tableau') && !text.includes('arbre');
-      });
-    }
-
-    // 05. Structures Itératives et Boucles (TantQue, Pour, Répéter)
-    if (title.includes('05.') || title.includes('boucle')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return (text.includes('boucle') || text.includes('pour') || text.includes('tantque') || text.includes('répéter') || text.includes('itérat')) &&
-          !text.includes('tableau') && !text.includes('matrice') && !text.includes('arbre') && !text.includes('graphe');
-      });
-    }
-
-    // 06. Les Tableaux à 1D et 2D (Vecteurs et Matrices) - EXCLUSIF AUX TABLEAUX
-    if (title.includes('06.') || title.includes('tableau')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return text.includes('tableau') || text.includes('vecteur') || text.includes('matrice') || text.includes(' 1d') || text.includes(' 2d');
-      });
-    }
-
-    // 07. Chaînes de caractères
-    if (title.includes('07.') || title.includes('chaîne') || title.includes('chaine')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return text.includes('chaîne') || text.includes('chaine') || text.includes('caractère') || text.includes('caractere') || text.includes('string');
-      });
-    }
-
-    // 08. Procédures et Fonctions
-    if (title.includes('08.') || title.includes('procédure') || title.includes('fonction')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return (text.includes('fonction') || text.includes('procédure') || text.includes('procedure') || text.includes('paramètre') || text.includes('passage par')) &&
-          !text.includes('récurs') && !text.includes('arbre') && !text.includes('graphe');
-      });
-    }
-
-    // 09. Complexité
-    if (title.includes('09.') || title.includes('complexité')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return text.includes('complexité') || text.includes('o(1)') || text.includes('o(n)') || text.includes('o(n^2)') || text.includes('grand o');
-      });
-    }
-
-    // 10. Structures de données (Piles, Files, Listes)
-    if (title.includes('10.') || title.includes('pile') || title.includes('file')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return text.includes('pile') || text.includes('file') || text.includes('lifo') || text.includes('fifo') || text.includes('empiler') || text.includes('dépiler') || text.includes('liste chaînée');
-      });
-    }
-
-    // 11. Tri & Recherche
-    if (title.includes('11.') || title.includes('tri') || title.includes('recherche')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return text.includes('tri') || text.includes('bulle') || text.includes('sélection') || text.includes('insertion') || text.includes('quicksort') || text.includes('mergesort') || text.includes('dichotom');
-      });
-    }
-
-    // 12. Récursivité
-    if (title.includes('12.') || title.includes('récursiv')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return text.includes('récursiv') || text.includes('recursiv') || text.includes('cas de base');
-      });
-    }
-
-    // 13. Arbres Binaires et ABR
-    if (title.includes('13.') || title.includes('arbre')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return text.includes('arbre') || text.includes('abr') || text.includes('infixe') || text.includes('préfixe') || text.includes('postfixe');
-      });
-    }
-
-    // 14. Graphes
-    if (title.includes('14.') || title.includes('graphe')) {
-      return questions.filter(q => {
-        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
-        return text.includes('graphe') || text.includes('dfs') || text.includes('bfs') || text.includes('adjacence') || text.includes('dijkstra');
-      });
-    }
-
-    return questions.slice(0, 5);
-  };
-
-  const targetedQuestions = filterQuestionsForCourse(subQuestions, selectedCourse);
+    return selectedCourse;
+  }, [selectedCourse, isCLanguage, currentCLesson]);
 
   const fetchCourseDetail = async (id) => {
     try {
       const res = await API.get(`courses/${id}/`);
       setSelectedCourse(res.data);
-      if (!res.data?.video_url && activeTab === 'video') {
+      if (!res.data?.video_url && activeTab === 'video' && !isCLanguage) {
         setActiveTab('content');
       }
     } catch (err) {
@@ -264,6 +198,121 @@ const Courses = () => {
       setSubQuestions([]);
     }
   };
+
+  const filterQuestionsForCourse = (questions, course) => {
+    if (!Array.isArray(questions) || !course) return [];
+    const title = (course.title || '').toLowerCase();
+
+    if (title.includes('01.') || title.includes('introduction')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('algorithme') || text.includes('pseudo-code') || text.includes('organigramme') || text.includes('définition')) &&
+          !text.includes('tableau') && !text.includes('matrice') && !text.includes('boucle pour') && !text.includes('tantque') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
+
+    if (title.includes('02.') || title.includes('variable')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('variable') || text.includes('constante') || text.includes('entier') || text.includes('réel') || text.includes('booléen')) &&
+          !text.includes('tableau') && !text.includes('boucle') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
+
+    if (title.includes('03.') || title.includes('opérateur')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('opérateur') || text.includes('div') || text.includes('mod') || text.includes('lire') || text.includes('écrire')) &&
+          !text.includes('tableau') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
+
+    if (title.includes('04.') || title.includes('condition')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('si ') || text.includes('sinon') || text.includes('selon') || text.includes('condition')) &&
+          !text.includes('boucle pour') && !text.includes('tantque') && !text.includes('tableau') && !text.includes('arbre');
+      });
+    }
+
+    if (title.includes('05.') || title.includes('boucle')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('boucle') || text.includes('pour') || text.includes('tantque') || text.includes('répéter') || text.includes('itérat')) &&
+          !text.includes('tableau') && !text.includes('matrice') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
+
+    if (title.includes('06.') || title.includes('tableau')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('tableau') || text.includes('vecteur') || text.includes('matrice') || text.includes(' 1d') || text.includes(' 2d');
+      });
+    }
+
+    if (title.includes('07.') || title.includes('chaîne') || title.includes('chaine')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('chaîne') || text.includes('chaine') || text.includes('caractère') || text.includes('caractere') || text.includes('string');
+      });
+    }
+
+    if (title.includes('08.') || title.includes('procédure') || title.includes('fonction')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('fonction') || text.includes('procédure') || text.includes('procedure') || text.includes('paramètre') || text.includes('passage par')) &&
+          !text.includes('récurs') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
+
+    if (title.includes('09.') || title.includes('complexité')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('complexité') || text.includes('o(1)') || text.includes('o(n)') || text.includes('o(n^2)') || text.includes('grand o');
+      });
+    }
+
+    if (title.includes('10.') || title.includes('pile') || title.includes('file')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('pile') || text.includes('file') || text.includes('lifo') || text.includes('fifo') || text.includes('empiler') || text.includes('dépiler') || text.includes('liste chaînée');
+      });
+    }
+
+    if (title.includes('11.') || title.includes('tri') || title.includes('recherche')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('tri') || text.includes('bulle') || text.includes('sélection') || text.includes('insertion') || text.includes('quicksort') || text.includes('mergesort') || text.includes('dichotom');
+      });
+    }
+
+    if (title.includes('12.') || title.includes('récursiv')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('récursiv') || text.includes('recursiv') || text.includes('cas de base');
+      });
+    }
+
+    if (title.includes('13.') || title.includes('arbre')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('arbre') || text.includes('abr') || text.includes('infixe') || text.includes('préfixe') || text.includes('postfixe');
+      });
+    }
+
+    if (title.includes('14.') || title.includes('graphe')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('graphe') || text.includes('dfs') || text.includes('bfs') || text.includes('adjacence') || text.includes('dijkstra');
+      });
+    }
+
+    return questions.slice(0, 5);
+  };
+
+  const targetedQuestions = useMemo(() => {
+    return filterQuestionsForCourse(subQuestions, selectedCourse);
+  }, [subQuestions, selectedCourse]);
 
   const toggleCourseCompleted = async (id, currentVal) => {
     try {
@@ -308,65 +357,219 @@ const Courses = () => {
     setOpenQcmIds({});
   };
 
-  const filteredCourses = (Array.isArray(courses) ? courses : []).filter(c => 
-    c.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const toggleModuleOpen = (modId) => {
+    setOpenModuleIds(prev => ({ ...prev, [modId]: !prev[modId] }));
+  };
+
+  // Keyboard Shortcuts (ArrowLeft & ArrowRight for Lesson Navigation)
+  const handleNextLesson = useCallback(() => {
+    if (isCLanguage) {
+      setSelectedCLessonIdx(prev => Math.min(cLessons.length - 1, prev + 1));
+    } else {
+      const idx = courses.findIndex(c => c.id === selectedCourse?.id);
+      if (idx !== -1 && idx < courses.length - 1) {
+        fetchCourseDetail(courses[idx + 1].id);
+      }
+    }
+  }, [isCLanguage, courses, selectedCourse]);
+
+  const handlePrevLesson = useCallback(() => {
+    if (isCLanguage) {
+      setSelectedCLessonIdx(prev => Math.max(0, prev - 1));
+    } else {
+      const idx = courses.findIndex(c => c.id === selectedCourse?.id);
+      if (idx > 0) {
+        fetchCourseDetail(courses[idx - 1].id);
+      }
+    }
+  }, [isCLanguage, courses, selectedCourse]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ignore key events when user is typing in inputs or textareas
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      if (e.key === 'ArrowRight') {
+        handleNextLesson();
+      } else if (e.key === 'ArrowLeft') {
+        handlePrevLesson();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleNextLesson, handlePrevLesson]);
+
+  // Group Courses into Coursera-style Modules
+  const groupedModules = useMemo(() => {
+    if (isCLanguage) {
+      // Group 50 C lessons into 6 chapters
+      const chapters = [
+        { id: 'c_mod_1', title: 'Module 1 : Syntaxe de Base, Variables & Opérateurs', start: 0, end: 8 },
+        { id: 'c_mod_2', title: 'Module 2 : Structures de Contrôle (if, switch, boucles)', start: 8, end: 17 },
+        { id: 'c_mod_3', title: 'Module 3 : Fonctions, Prototypes & Modularité', start: 17, end: 23 },
+        { id: 'c_mod_4', title: 'Module 4 : Pointeurs & Allocation Dynamique (malloc)', start: 23, end: 33 },
+        { id: 'c_mod_5', title: 'Module 5 : Structures de Données & Listes Chaînées', start: 33, end: 42 },
+        { id: 'c_mod_6', title: 'Module 6 : Fichiers, En-têtes (.h) & Compilation', start: 42, end: 50 }
+      ];
+
+      return chapters.map(chap => {
+        const lessons = cLessons.slice(chap.start, chap.end);
+        const completedCount = lessons.filter(l => l.num <= selectedCLessonIdx).length;
+        const total = lessons.length;
+        const pct = Math.round((completedCount / total) * 100);
+
+        return {
+          id: chap.id,
+          title: chap.title,
+          lessonsCount: total,
+          completedCount,
+          percentage: pct,
+          lessons: lessons.map(les => {
+            const lesGlobalIdx = les.num - 1;
+            const isActive = lesGlobalIdx === selectedCLessonIdx;
+            const isDone = lesGlobalIdx < selectedCLessonIdx;
+
+            return {
+              globalIdx: lesGlobalIdx,
+              num: les.num,
+              title: les.title,
+              duration: '10 min',
+              type: 'Vidéo',
+              isActive,
+              isDone
+            };
+          })
+        };
+      });
+    }
+
+    // Default grouping for other courses
+    const allCoursesList = Array.isArray(courses) ? courses : [];
+    return [
+      {
+        id: 'default_mod_1',
+        title: selectedSubdomainCode ? `Module Général • ${selectedSubdomainCode}` : 'Module de Cours',
+        lessonsCount: allCoursesList.length,
+        completedCount: allCoursesList.filter(c => c.is_completed).length,
+        percentage: allCoursesList.length > 0 ? Math.round((allCoursesList.filter(c => c.is_completed).length / allCoursesList.length) * 100) : 0,
+        lessons: allCoursesList.map((c, idx) => ({
+          courseId: c.id,
+          num: idx + 1,
+          title: c.title,
+          duration: '15 min',
+          type: c.video_url ? 'Vidéo' : 'Fiche',
+          isActive: selectedCourse?.id === c.id,
+          isDone: c.is_completed
+        }))
+      }
+    ];
+  }, [isCLanguage, selectedCLessonIdx, courses, selectedCourse, selectedSubdomainCode]);
+
+  const currentDomainObj = useMemo(() => {
+    return (Array.isArray(domains) ? domains : []).find(d => d.code === selectedDomainCode) || null;
+  }, [domains, selectedDomainCode]);
+
+  const currentSubdomainObj = useMemo(() => {
+    return (Array.isArray(subdomains) ? subdomains : []).find(s => s.code === selectedSubdomainCode) || null;
+  }, [subdomains, selectedSubdomainCode]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex items-center gap-3 text-sky-500 font-medium">
           <RefreshCw className="w-6 h-6 animate-spin" />
-          <span>Chargement des Fiches de Cours...</span>
+          <span>Chargement de la plateforme d'apprentissage Coursera / Linear...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 py-4">
+    <div className="space-y-8 py-4 text-slate-900 dark:text-slate-100 font-sans">
       
-      {/* Coursera Header Banner */}
-      <div className="glass-card p-5 sm:p-8 rounded-3xl bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-blue-500/10 dark:from-sky-950/70 dark:via-slate-900 dark:to-indigo-950/70 border border-sky-500/20 dark:border-sky-500/30 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
-        <div className="space-y-2 z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-400 text-[10px] sm:text-xs font-semibold">
-            <BookOpen className="w-3.5 h-3.5" />
-            Académie Nationale de Révision • Programme Officiel 2026
-          </div>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">Fiches de Cours & Parcours d'Apprentissage</h1>
-          <p className="hidden sm:block text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-xl leading-relaxed">
-            Consultez les modules théoriques, les algorithmes pratiques et les QCM ciblés avec option de favoris.
-          </p>
-        </div>
+      {/* -------------------------------------------------------- */}
+      {/* HEADER PREMIUM (Breadcrumb, Progression, Ring SVG, Actions) */}
+      {/* -------------------------------------------------------- */}
+      <div className="space-y-4">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 overflow-x-auto no-scrollbar py-1">
+          <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors">Accueil</span>
+          <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-40" />
+          <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors">{currentDomainObj?.name || 'Développement'}</span>
+          <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-40" />
+          <span className="text-sky-600 dark:text-sky-400 font-bold">{currentSubdomainObj?.name || 'Sous-domaine'}</span>
+          {activeCourseData && (
+            <>
+              <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-40" />
+              <span className="text-slate-900 dark:text-slate-200 truncate max-w-[200px]">{activeCourseData.title}</span>
+            </>
+          )}
+        </nav>
 
-        {stats && (
-          <div className="z-10 flex items-center justify-between sm:justify-start gap-5 bg-white/90 dark:bg-slate-950/80 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-lg shrink-0">
-            <div>
-              <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">Progression Globale</div>
-              <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">{stats.completed} <span className="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400">/ {stats.total} modules</span></div>
-              <div className="text-[10px] sm:text-xs text-sky-600 dark:text-sky-400 font-bold mt-0.5">{stats.percentage}% maîtrisés</div>
+        {/* Header Hero Banner (Linear / Vercel Style) */}
+        <div className="glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-950 to-indigo-950 text-white border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-3 max-w-2xl z-10">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black tracking-wide">
+                PARCOURS OFFICIEL 2026
+              </span>
+              <span className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-300 text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
+                <Clock className="w-3.5 h-3.5 text-sky-400" />
+                {isCLanguage ? '50 Leçons • 6 h de formation' : `${courses.length} Modules de cours`}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-300 text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
+                <Award className="w-3.5 h-3.5 text-amber-400" /> Niveau Débutant à Avancé
+              </span>
             </div>
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 p-0.5 shadow-lg shadow-sky-500/20 shrink-0">
-              <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[14px] flex items-center justify-center font-extrabold text-xs sm:text-sm text-sky-600 dark:text-sky-300">
-                {stats.percentage}%
+
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
+              {currentSubdomainObj?.name || 'Formation Informatique CRMEF'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
+              {currentSubdomainObj?.description || 'Maîtrisez les concepts clés de l\'épreuve écrite et pratique grâce aux leçons vidéo HD, fiches théoriques et QCM d\'annales.'}
+            </p>
+          </div>
+
+          {/* Progress Ring & Fast Actions */}
+          <div className="z-10 flex items-center gap-6 bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shrink-0 self-start lg:self-center">
+            <ProgressRing percentage={stats?.percentage || 0} size={72} strokeWidth={7} />
+            
+            <div className="space-y-2">
+              <div>
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Maîtrise du Parcours</div>
+                <div className="text-lg font-black text-white">
+                  {stats?.completed || 0} / {stats?.total || 0} <span className="text-xs font-medium text-slate-400">validés</span>
+                </div>
               </div>
+
+              {activeCourseData && (
+                <button
+                  type="button"
+                  onClick={() => toggleCourseCompleted(activeCourseData.id, activeCourseData.is_completed)}
+                  className={`px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-1.5 ${
+                    activeCourseData.is_completed
+                      ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                      : 'bg-sky-600 text-white hover:bg-sky-500'
+                  }`}
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  {activeCourseData.is_completed ? 'Terminé' : 'Marquer comme Terminé'}
+                </button>
+              )}
             </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Domain Tabs Navigation */}
-      <div 
-        className="flex overflow-x-auto no-scrollbar flex-nowrap lg:flex-wrap gap-2 pb-2 lg:pb-0"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
+      {/* Domain Navigation Tabs */}
+      <div className="flex overflow-x-auto no-scrollbar flex-nowrap lg:flex-wrap gap-2 pb-1">
         {(Array.isArray(domains) ? domains : []).map((dom) => {
           const isSelected = selectedDomainCode === dom.code;
           return (
             <button
               key={dom.code}
+              type="button"
               onClick={() => handleDomainChange(dom.code)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
                 isSelected
                   ? 'bg-sky-600 text-white shadow-lg shadow-sky-500/25 scale-[1.02]'
                   : 'glass-card text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -379,243 +582,263 @@ const Courses = () => {
       </div>
 
       {/* Subdomain Filter Chips */}
-      <div 
-        className="flex overflow-x-auto no-scrollbar flex-nowrap items-center gap-2 bg-slate-100/80 dark:bg-slate-950/60 p-2 rounded-2xl border border-slate-200 dark:border-slate-800/80 pb-2 lg:flex-wrap"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold px-3 shrink-0">Sous-domaines :</span>
-        {(Array.isArray(subdomains) ? subdomains : []).map(sd => {
-          const isSel = selectedSubdomainCode === sd.code;
+      <div className="flex overflow-x-auto no-scrollbar gap-2 pb-2">
+        {(Array.isArray(subdomains) ? subdomains : []).map((sub) => {
+          const isSel = selectedSubdomainCode === sub.code;
           return (
             <button
-              key={sd.code}
-              onClick={() => handleSubdomainChange(sd.code)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all shrink-0 ${
+              key={sub.code}
+              type="button"
+              onClick={() => handleSubdomainChange(sub.code)}
+              className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all shrink-0 border ${
                 isSel
-                  ? 'bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/40 font-bold shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-900'
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white shadow-md'
+                  : 'bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
-              {sd.name}
+              {sub.name}
             </button>
           );
         })}
       </div>
 
-      {/* Main Coursera 2-Column Reader Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      {/* -------------------------------------------------------- */}
+      {/* MAIN 3-COLUMN LAYOUT (Sidebar Accordéon | Lecteur & Content | Sidebar Utile) */}
+      {/* -------------------------------------------------------- */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* Left Column: Coursera Module Index Drawer */}
-        <div className="space-y-4">
-          <div className="glass-card p-5 rounded-3xl space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Modules de Cours</span>
-              <span className="text-[11px] font-semibold text-sky-600 dark:text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full">
-                {filteredCourses.length} cours
-              </span>
+        {/* -------------------------------------------------------- */}
+        {/* SIDEBAR GAUCHE (Modules Accordéons & Timeline des Leçons) */}
+        {/* -------------------------------------------------------- */}
+        <div className="lg:col-span-4 space-y-4">
+          <div className="glass-card p-5 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-xl space-y-4">
+            
+            {/* Sidebar Title & Search */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-sky-500" /> Sommaire du Parcours
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                  {isCLanguage ? '50 Leçons' : `${courses.length} Modules`}
+                </span>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Rechercher une leçon ou notion..."
+                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-sky-500 focus:outline-none"
+                />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              </div>
+
+              {/* Status Filter Chips */}
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
+                {[
+                  { id: 'all', label: 'Toutes' },
+                  { id: 'in_progress', label: 'En cours' },
+                  { id: 'completed', label: 'Terminées' }
+                ].map(f => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setStatusFilter(f.id)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shrink-0 ${
+                      statusFilter === f.id
+                        ? 'bg-sky-500/15 border border-sky-500/30 text-sky-600 dark:text-sky-400'
+                        : 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Search Input */}
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Rechercher un module..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-sky-500 focus:outline-none"
-              />
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-            </div>
+            {/* Accordion Modules List */}
+            <div className="space-y-3 pt-2 max-h-[650px] overflow-y-auto pr-1">
+              {groupedModules.map((mod) => {
+                const isOpen = openModuleIds[mod.id] !== false; // Default open
 
-            {/* Course Module Items */}
-            <div className="space-y-1.5 max-h-[600px] overflow-y-auto pr-1">
-              {filteredCourses.length === 0 ? (
-                <div className="text-xs text-slate-500 p-4 text-center">Aucun module trouvé.</div>
-              ) : (
-                filteredCourses.map((c, idx) => {
-                  const isSel = selectedCourse?.id === c.id;
-                  return (
+                return (
+                  <div key={mod.id} className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-white/50 dark:bg-slate-950/40 shadow-xs transition-all">
+                    
+                    {/* Module Card Accordion Header */}
                     <button
-                      key={c.id}
-                      onClick={() => fetchCourseDetail(c.id)}
-                      className={`w-full flex items-start justify-between p-3.5 rounded-2xl text-xs font-medium text-left transition-all ${
-                        isSel 
-                          ? 'bg-sky-500/15 border border-sky-500/40 text-slate-900 dark:text-white font-bold shadow-md' 
-                          : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
-                      }`}
+                      type="button"
+                      onClick={() => toggleModuleOpen(mod.id)}
+                      className="w-full p-4 flex items-center justify-between gap-3 text-left bg-slate-50/70 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors"
                     >
-                      <div className="flex items-start gap-2.5 min-w-0 pr-2">
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded mt-0.5 ${isSel ? 'bg-sky-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
-                          {idx + 1}
-                        </span>
-                        <span className="line-clamp-2 leading-relaxed flex items-center gap-1.5">
-                          {c.title}
-                          {c.video_url && (
-                            <Video className="w-3.5 h-3.5 text-red-500 shrink-0 inline" title="Vidéo explicative disponible" />
-                          )}
-                        </span>
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                            {mod.title}
+                          </h4>
+                          <span className="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 shrink-0">
+                            {mod.completedCount}/{mod.lessonsCount}
+                          </span>
+                        </div>
+
+                        {/* Module Mini Progress Bar */}
+                        <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className="bg-sky-500 h-full transition-all duration-300 rounded-full"
+                            style={{ width: `${mod.percentage}%` }}
+                          ></div>
+                        </div>
                       </div>
-                      {c.is_completed ? (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+
+                      {isOpen ? (
+                        <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" />
                       ) : (
-                        <Circle className="w-4 h-4 text-slate-400 dark:text-slate-600 shrink-0 mt-0.5" />
+                        <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
                       )}
                     </button>
-                  );
-                })
-              )}
+
+                    {/* Timeline of Lessons inside Module */}
+                    {isOpen && (
+                      <div className="p-2 space-y-1 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
+                        {mod.lessons.map((les) => {
+                          return (
+                            <button
+                              key={les.num}
+                              type="button"
+                              onClick={() => {
+                                if (isCLanguage) {
+                                  setSelectedCLessonIdx(les.globalIdx);
+                                } else {
+                                  fetchCourseDetail(les.courseId);
+                                }
+                              }}
+                              className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium text-left transition-all ${
+                                les.isActive
+                                  ? 'bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300 font-bold shadow-2xs'
+                                  : 'hover:bg-slate-100 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                {/* Lesson Status Icon */}
+                                {les.isDone ? (
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                                ) : les.isActive ? (
+                                  <PlayCircle className="w-4 h-4 text-sky-500 animate-pulse shrink-0" />
+                                ) : (
+                                  <Circle className="w-4 h-4 text-slate-400 dark:text-slate-600 shrink-0" />
+                                )}
+
+                                <span className="truncate">
+                                  <strong className="text-slate-400 mr-1.5">#{les.num}</strong>
+                                  {les.title}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                                <span className="text-[10px] text-slate-400 font-semibold">{les.duration}</span>
+                                <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold text-slate-500">
+                                  {les.type}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {/* Right Column: Coursera Lesson Viewer */}
-        <div className="lg:col-span-3 space-y-6">
-          {selectedCourse ? (() => {
-            const isCLanguage = selectedCourse?.title?.toLowerCase().includes('langage c') || false;
-            const currentCLesson = cLessons[selectedCLessonIdx] || cLessons[0];
-            const activeCourseData = isCLanguage && currentCLesson ? {
-              ...selectedCourse,
-              title: `Leçon ${currentCLesson.num < 10 ? '0' + currentCLesson.num : currentCLesson.num} : ${currentCLesson.title}`,
-              content: currentCLesson.content,
-              examples: currentCLesson.examples,
-              astuces: currentCLesson.astuces,
-              video_url: currentCLesson.video_url
-            } : selectedCourse;
-
-            return (
-              <div className="space-y-6">
-
-                {/* Coursera/Udemy Lesson Selector for C Language */}
-                {isCLanguage && (
-                  <div className="glass-card p-5 sm:p-6 rounded-3xl bg-slate-900 text-white border border-sky-500/30 shadow-2xl space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black">
-                            Parcours Vidéo Coursera / Udemy • 50 Leçons
-                          </span>
-                          <span className="text-xs text-slate-400 font-bold">
-                            Leçon {currentCLesson.num} / 50
-                          </span>
-                        </div>
-                        <h3 className="text-lg font-extrabold text-white">
-                          {currentCLesson.title}
-                        </h3>
-                      </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedCLessonIdx(prev => Math.max(0, prev - 1))}
-                          disabled={selectedCLessonIdx === 0}
-                          className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-xs font-bold text-slate-200 transition-all"
-                        >
-                          ← Précédente
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedCLessonIdx(prev => Math.min(cLessons.length - 1, prev + 1))}
-                          disabled={selectedCLessonIdx === cLessons.length - 1}
-                          className="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:opacity-30 text-xs font-bold text-white shadow-lg transition-all"
-                        >
-                          Suivante →
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t border-slate-800">
-                      <select
-                        value={selectedCLessonIdx}
-                        onChange={(e) => setSelectedCLessonIdx(Number(e.target.value))}
-                        className="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-bold text-sky-300 focus:border-sky-500 focus:outline-none cursor-pointer"
-                      >
-                        {cLessons.map((les, idx) => (
-                          <option key={les.num} value={idx}>
-                            Leçon {les.num < 10 ? '0' + les.num : les.num} : {les.title}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                )}
+        {/* -------------------------------------------------------- */}
+        {/* CONTENU CENTRAL (Hero Card, Lecteur Vidéo, Onglets Shadcn/ui) */}
+        {/* -------------------------------------------------------- */}
+        <div className="lg:col-span-8 space-y-6">
+          {activeCourseData ? (
+            <div className="space-y-6">
               
-                {/* Course Title Header Card */}
-                <div className="glass-card p-8 rounded-3xl bg-gradient-to-br from-slate-50 via-sky-50/50 to-slate-50 dark:from-slate-900 dark:via-sky-950/30 dark:to-slate-900 border border-slate-200 dark:border-sky-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xl">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold uppercase tracking-wider">
-                        {activeCourseData.subdomain_name}
-                      </span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" /> 10 min de lecture
-                      </span>
-                    </div>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                      {activeCourseData.title}
-                    </h2>
+              {/* Hero Card de la Leçon (Coursera / Linear Style) */}
+              <div className="glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border border-slate-800 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-800 pb-4">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black">
+                      {isCLanguage ? `Leçon ${currentCLesson.num} / 50` : activeCourseData.subdomain_name}
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-sky-400" /> 10 min de vidéo & lecture
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+                      Débutant à Avancé
+                    </span>
                   </div>
 
-                  <button
-                    onClick={() => toggleCourseCompleted(activeCourseData.id, activeCourseData.is_completed)}
-                    className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-bold text-xs shadow-lg transition-all shrink-0 ${
-                      activeCourseData.is_completed
-                        ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-emerald-500/20'
-                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    {activeCourseData.is_completed ? 'Terminé (Maîtrisé)' : 'Marquer comme Terminé'}
-                  </button>
+                  {/* Navigation Inter-Leçons Supérieure */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handlePrevLesson}
+                      className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition-all flex items-center gap-1"
+                      title="Raccourci Clavier: Touche Flèche Gauche ←"
+                    >
+                      ← <span className="hidden sm:inline">Précédente</span> <kbd className="text-[9px] px-1 py-0.5 bg-slate-950 rounded text-slate-400">←</kbd>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextLesson}
+                      className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-bold text-white shadow-md transition-all flex items-center gap-1"
+                      title="Raccourci Clavier: Touche Flèche Droite →"
+                    >
+                      <span className="hidden sm:inline">Suivante</span> → <kbd className="text-[9px] px-1 py-0.5 bg-sky-950 rounded text-sky-200">→</kbd>
+                    </button>
+                  </div>
                 </div>
 
-              {/* Coursera Lesson Navigation Tabs */}
-              <div className="flex flex-wrap border-b border-slate-200 dark:border-slate-800 gap-2 sm:gap-6">
-                <button
-                  onClick={() => setActiveTab('content')}
-                  className={`pb-3 px-2 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-                    activeTab === 'content' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <BookOpen className="w-4 h-4" /> Fiche de Révision
-                </button>
-                <button
-                  onClick={() => setActiveTab('video')}
-                  className={`pb-3 px-2 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-                    activeTab === 'video' ? 'border-red-500 text-red-600 dark:text-red-400 font-extrabold' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Video className="w-4 h-4 text-red-500" /> Vidéo Explicative
-                  {activeCourseData.video_url && (
-                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                  )}
-                </button>
-                <button
-                  onClick={() => setActiveTab('examples')}
-                  className={`pb-3 px-2 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-                    activeTab === 'examples' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Code2 className="w-4 h-4" /> Exemples & Pratique
-                </button>
-                <button
-                  onClick={() => setActiveTab('astuces')}
-                  className={`pb-3 px-2 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-                    activeTab === 'astuces' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Zap className="w-4 h-4 text-amber-500 dark:text-amber-400" /> Astuces & Pièges
-                </button>
-                <button
-                  onClick={() => setActiveTab('qcm')}
-                  className={`pb-3 px-2 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
-                    activeTab === 'qcm' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4 text-purple-500 dark:text-purple-400" /> QCM Ciblés ({targetedQuestions.length})
-                </button>
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-snug">
+                  {activeCourseData.title}
+                </h2>
               </div>
 
-              {/* Coursera Lesson Content / Video Box */}
+              {/* -------------------------------------------------------- */}
+              {/* SHADCN STYLED TABS (Fiche, Vidéo, Pratique, Astuces, Quiz) */}
+              {/* -------------------------------------------------------- */}
+              <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar">
+                {[
+                  { id: 'content', label: 'Fiche de Révision', icon: BookOpen, color: 'text-sky-500' },
+                  { id: 'video', label: 'Leçon Vidéo', icon: Video, color: 'text-red-500', badge: activeCourseData.video_url },
+                  { id: 'examples', label: 'Pratique & Exemples', icon: Code2, color: 'text-indigo-500' },
+                  { id: 'astuces', label: 'Astuces & Pièges', icon: Zap, color: 'text-amber-500' },
+                  { id: 'qcm', label: `Quiz Ciblés (${targetedQuestions.length})`, icon: HelpCircle, color: 'text-purple-500' }
+                ].map((tab) => {
+                  const isActive = activeTab === tab.id;
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                        isActive
+                          ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-md border border-slate-200 dark:border-slate-800 scale-[1.01]'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800/50'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 ${tab.color}`} />
+                      <span>{tab.label}</span>
+                      {tab.badge && (
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* -------------------------------------------------------- */}
+              {/* LECTEUR VIDÉO HD (16/9 Centré Style Coursera / Udemy) */}
+              {/* -------------------------------------------------------- */}
               {activeTab === 'video' ? (
                 <div className="glass-card p-6 sm:p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl space-y-6">
                   <div className="flex items-center justify-between flex-wrap gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
@@ -624,8 +847,8 @@ const Courses = () => {
                         <Play className="w-6 h-6 fill-current" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Leçon Vidéo • {activeCourseData.title}</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Support vidéo du cours et explication pas à pas (Style Coursera)</p>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Leçon Vidéo HD • {activeCourseData.title}</h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Explication pas à pas et support de révision (Style Coursera)</p>
                       </div>
                     </div>
                     <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
@@ -636,7 +859,7 @@ const Courses = () => {
                   {activeCourseData.video_url ? (
                     activeCourseData.video_url.includes('drive.google.com') ? (
                       <div className="space-y-4">
-                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
+                        <div className="relative w-full aspect-video rounded-3xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                           <iframe
                             src={activeCourseData.video_url.replace(/\/view(\?.*)?$/, '/preview')}
                             title={activeCourseData.title}
@@ -645,9 +868,9 @@ const Courses = () => {
                             allowFullScreen
                           ></iframe>
                         </div>
-                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
-                          <span className="text-slate-600 dark:text-slate-300 font-medium">
-                            ☁️ <strong>Vidéo HD Google Drive :</strong> Streaming direct et sécurisé sans aucune publicité.
+                        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
+                          <span className="text-slate-600 dark:text-slate-300 font-medium flex items-center gap-1.5">
+                            ☁️ <strong>Vidéo HD Google Drive :</strong> Lecteur sécurisé sans aucune publicité parasite.
                           </span>
                           <a
                             href={activeCourseData.video_url}
@@ -661,7 +884,7 @@ const Courses = () => {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
+                        <div className="relative w-full aspect-video rounded-3xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                           <iframe
                             src={getEmbedUrl(activeCourseData.video_url)}
                             title={activeCourseData.title}
@@ -670,19 +893,6 @@ const Courses = () => {
                             allowFullScreen
                           ></iframe>
                         </div>
-                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs flex-wrap gap-2">
-                          <span className="text-slate-600 dark:text-slate-300 font-medium">
-                            💡 <strong>Conseil pédagogique :</strong> Regardez la vidéo puis passez aux exercices pratiques et QCM.
-                          </span>
-                          <a
-                            href={activeCourseData.video_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
-                          >
-                            Ouvrir la vidéo ↗
-                          </a>
-                        </div>
                       </div>
                     )
                   ) : (
@@ -690,19 +900,42 @@ const Courses = () => {
                       <Video className="w-12 h-12 text-slate-400 mx-auto opacity-50" />
                       <h4 className="text-sm font-bold text-slate-700 dark:text-slate-300">Aucune vidéo associée à ce module</h4>
                       <p className="text-xs text-slate-500 max-w-md mx-auto">
-                        Consultez la fiche de révision théorique et les exemples de code pour préparer votre examen.
+                        Consultez la fiche de révision théorique et les exemples de code ci-dessous pour préparer votre examen.
                       </p>
                     </div>
                   )}
+
+                  {/* Section Objectifs Pédagogiques sous la Vidéo */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 space-y-1">
+                      <div className="text-xs font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1">
+                        <Sparkles className="w-3.5 h-3.5" /> Ce que vous apprendrez
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">Maîtrise complète de la syntaxe et pièges des épreuves érites.</p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 space-y-1">
+                      <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Prérequis
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">Notions d'algorithmique et structures de données de base.</p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 space-y-1">
+                      <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                        <Award className="w-3.5 h-3.5" /> Évaluation Concours
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400">Entraînement direct sur les QCM d'annales corrigés.</p>
+                    </div>
+                  </div>
                 </div>
               ) : activeTab !== 'qcm' ? (
+                /* Tab 1, 3, 4: Markdown Content Viewer (Fiche, Pratique, Astuces) */
                 <div className="glass-card p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl min-h-[400px]">
                   {activeTab === 'content' && <MarkdownViewer content={activeCourseData.content} />}
                   {activeTab === 'examples' && <MarkdownViewer content={activeCourseData.examples} />}
                   {activeTab === 'astuces' && <MarkdownViewer content={activeCourseData.astuces} />}
                 </div>
               ) : (
-                /* Tab 4: Accordion QCM List (Collapsed by Default) */
+                /* Tab 5: Accordion QCM List */
                 <div className="space-y-6">
                   <div className="glass-card p-6 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
@@ -710,7 +943,7 @@ const Courses = () => {
                         <HelpCircle className="w-5 h-5 text-purple-600 dark:text-purple-400" /> QCM Ciblés du Module ({targetedQuestions.length})
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                        Chaque question est fermée par défaut. Cliquez sur une question pour l'ouvrir, répondre et voir la correction.
+                        Cliquez sur une question pour l'ouvrir, répondre et voir la correction détaillée.
                       </p>
                     </div>
 
@@ -743,7 +976,7 @@ const Courses = () => {
                         const isOpen = Boolean(openQcmIds[q.id]);
 
                         return (
-                          <div key={q.id} className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800/80 overflow-hidden shadow-sm transition-all">
+                          <div key={q.id} className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800/80 overflow-hidden shadow-xs transition-all">
                             
                             {/* Question Card Accordion Header */}
                             <div 
@@ -761,40 +994,29 @@ const Courses = () => {
                               </div>
 
                               <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                                {/* ⭐ OPTION DE FAVORISER */}
                                 <button
+                                  type="button"
                                   onClick={() => toggleBookmark(q.id)}
                                   className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                                     q.is_bookmarked
-                                      ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30'
-                                      : 'bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                      ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                                      : 'bg-slate-200/60 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white'
                                   }`}
-                                  title={q.is_bookmarked ? "Retirer des favoris" : "Ajouter aux favoris"}
                                 >
-                                  <Star className={`w-3.5 h-3.5 ${q.is_bookmarked ? 'fill-amber-500 text-amber-500' : ''}`} />
-                                  <span className="hidden sm:inline">{q.is_bookmarked ? 'Favoris' : '⭐'}</span>
+                                  <Star className={`w-3.5 h-3.5 ${q.is_bookmarked ? 'fill-current' : ''}`} />
                                 </button>
-
-                                {/* Toggle Expand Icon Button */}
-                                <button
-                                  onClick={() => toggleQcmOpen(q.id)}
-                                  className="p-1.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-sky-500 hover:text-white transition-colors"
-                                >
-                                  {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                                </button>
+                                {isOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
                               </div>
                             </div>
 
-                            {/* Expanded Question Body (Only shown when isOpen === true) */}
+                            {/* Accordion Body */}
                             {isOpen && (
                               <div className="p-6 pt-3 space-y-4 border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/20">
                                 
-                                {/* Formatted Question Text & Code Snippets */}
                                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-sm border border-slate-200 dark:border-slate-800/80 leading-relaxed">
                                   <MarkdownViewer content={q.question_text} />
                                 </div>
 
-                                {/* MCQ Options (A, B, C, D, E) */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                   {(() => {
                                     const availableKeys = ['A', 'B', 'C', 'D', 'E'];
@@ -808,6 +1030,7 @@ const Courses = () => {
                                       return (
                                         <button
                                           key={optKey}
+                                          type="button"
                                           onClick={() => handleOptionSelect(q.id, optKey)}
                                           className={`p-3.5 rounded-xl border text-left text-xs font-medium transition-all ${
                                             isFullWidth ? 'sm:col-span-2' : ''
@@ -824,7 +1047,6 @@ const Courses = () => {
                                   })()}
                                 </div>
 
-                                {/* Detailed Explanation */}
                                 {answer && (
                                   <div className={`p-4 rounded-xl text-xs space-y-2 ${answer.is_correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300'}`}>
                                     <div className="font-bold">
@@ -848,11 +1070,35 @@ const Courses = () => {
                 </div>
               )}
 
+              {/* -------------------------------------------------------- */}
+              {/* BARRE DE NAVIGATION FLOTTANTE / INFERIEURE DE LEÇONS */}
+              {/* -------------------------------------------------------- */}
+              <div className="glass-card p-4 rounded-2xl flex items-center justify-between border-slate-200 dark:border-slate-800/80 shadow-lg">
+                <button
+                  type="button"
+                  onClick={handlePrevLesson}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-all flex items-center gap-2"
+                >
+                  ← Leçon Précédente <kbd className="text-[10px] px-1.5 py-0.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-slate-500">←</kbd>
+                </button>
+
+                <div className="hidden sm:block text-xs font-bold text-slate-500 dark:text-slate-400">
+                  {isCLanguage ? `Leçon ${currentCLesson.num} / 50` : `Module ${courses.findIndex(c => c.id === selectedCourse?.id) + 1} / ${courses.length}`}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleNextLesson}
+                  className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-bold text-white shadow-lg shadow-sky-500/25 transition-all flex items-center gap-2"
+                >
+                  Leçon Suivante → <kbd className="text-[10px] px-1.5 py-0.5 bg-sky-800 rounded text-sky-200">→</kbd>
+                </button>
+              </div>
+
             </div>
-            );
-          })() : (
+          ) : (
             <div className="glass-card p-12 rounded-3xl text-center text-slate-500 dark:text-slate-400 text-sm">
-              Sélectionnez un module de cours dans le menu de gauche pour commencer la lecture.
+              Sélectionnez un module de cours dans le sommaire à gauche pour commencer la lecture.
             </div>
           )}
         </div>
