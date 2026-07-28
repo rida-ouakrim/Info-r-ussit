@@ -116,45 +116,125 @@ const Courses = () => {
     if (!Array.isArray(questions) || !course) return [];
     const title = (course.title || '').toLowerCase();
 
-    let keywords = [];
+    // 01. Introduction & Notions de base
     if (title.includes('01.') || title.includes('introduction')) {
-      keywords = ['algorithme', 'pseudo-code', 'définition', 'instruction', 'entrée', 'finitude', 'déterminisme', 'organigramme'];
-    } else if (title.includes('02.') || title.includes('variable')) {
-      keywords = ['variable', 'type', 'entier', 'réel', 'booléen', 'constante', 'mémoire', 'affectation'];
-    } else if (title.includes('03.') || title.includes('opérateur')) {
-      keywords = ['opérateur', 'div', 'mod', 'lire', 'écrire', 'expression', 'logique', 'priorité'];
-    } else if (title.includes('04.') || title.includes('condition')) {
-      keywords = ['si', 'sinon', 'alors', 'finsi', 'selon', 'cas', 'branchement', 'condition'];
-    } else if (title.includes('05.') || title.includes('boucle')) {
-      keywords = ['boucle', 'tantque', 'tant que', 'pour', 'répéter', 'jusqu', 'itératif', 'compteur'];
-    } else if (title.includes('06.') || title.includes('tableau')) {
-      keywords = ['tableau', 'vecteur', 'matrice', 'indice', 'dimension', 'élément'];
-    } else if (title.includes('07.') || title.includes('chaîne') || title.includes('chaine')) {
-      keywords = ['chaîne', 'chaine', 'caractère', 'caractere', 'longueur', 'concaténation', 'sous-chaîne', 'string'];
-    } else if (title.includes('08.') || title.includes('procédure') || title.includes('fonction')) {
-      keywords = ['fonction', 'procédure', 'procedure', 'paramètre', 'valeur', 'référence', 'var', 'retour'];
-    } else if (title.includes('09.') || title.includes('complexité')) {
-      keywords = ['complexité', 'grand o', 'o(1)', 'o(n)', 'o(n^2)', 'o(log n)', 'temporelle', 'notations'];
-    } else if (title.includes('10.') || title.includes('structure de donnée') || title.includes('pile')) {
-      keywords = ['pile', 'file', 'lifo', 'fifo', 'empiler', 'dépiler', 'enfiler', 'défiler', 'liste chaînée', 'pointeur'];
-    } else if (title.includes('11.') || title.includes('tri') || title.includes('recherche')) {
-      keywords = ['tri', 'bulle', 'sélection', 'selection', 'insertion', 'quicksort', 'mergesort', 'dichotomie', 'dichotomique', 'pivot'];
-    } else if (title.includes('12.') || title.includes('récursivité') || title.includes('diviser')) {
-      keywords = ['récursivité', 'recursivite', 'récursif', 'cas de base', 'pile d\'appel', 'diviser pour régner', 'hanoi', 'fibonacci'];
-    } else if (title.includes('13.') || title.includes('arbre')) {
-      keywords = ['arbre', 'abr', 'binaire', 'infixe', 'préfixe', 'postfixe', 'racine', 'feuille', 'hauteur'];
-    } else if (title.includes('14.') || title.includes('graphe')) {
-      keywords = ['graphe', 'dfs', 'bfs', 'profondeur', 'largeur', 'adjacence', 'sommet', 'dijkstra', 'arête', 'arc'];
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('algorithme') || text.includes('pseudo-code') || text.includes('organigramme') || text.includes('définition')) &&
+          !text.includes('tableau') && !text.includes('matrice') && !text.includes('boucle pour') && !text.includes('tantque') && !text.includes('arbre') && !text.includes('graphe');
+      });
     }
 
-    if (keywords.length === 0) return questions.slice(0, 10);
+    // 02. Variables, Constantes et Types
+    if (title.includes('02.') || title.includes('variable')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('variable') || text.includes('constante') || text.includes('entier') || text.includes('réel') || text.includes('booléen')) &&
+          !text.includes('tableau') && !text.includes('boucle') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
 
-    const filtered = questions.filter(q => {
-      const text = ((q.question_text || '') + ' ' + (q.explanation || '') + ' ' + (q.astuce || '')).toLowerCase();
-      return keywords.some(kw => text.includes(kw));
-    });
+    // 03. Opérateurs et I/O
+    if (title.includes('03.') || title.includes('opérateur')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('opérateur') || text.includes('div') || text.includes('mod') || text.includes('lire') || text.includes('écrire')) &&
+          !text.includes('tableau') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
 
-    return filtered.length > 0 ? filtered : questions.slice(0, 10);
+    // 04. Structures Conditionnelles (Si...Alors...Sinon, Selon)
+    if (title.includes('04.') || title.includes('condition')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('si ') || text.includes('sinon') || text.includes('selon') || text.includes('condition')) &&
+          !text.includes('boucle pour') && !text.includes('tantque') && !text.includes('tableau') && !text.includes('arbre');
+      });
+    }
+
+    // 05. Structures Itératives et Boucles (TantQue, Pour, Répéter)
+    if (title.includes('05.') || title.includes('boucle')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('boucle') || text.includes('pour') || text.includes('tantque') || text.includes('répéter') || text.includes('itérat')) &&
+          !text.includes('tableau') && !text.includes('matrice') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
+
+    // 06. Les Tableaux à 1D et 2D (Vecteurs et Matrices) - EXCLUSIF AUX TABLEAUX
+    if (title.includes('06.') || title.includes('tableau')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('tableau') || text.includes('vecteur') || text.includes('matrice') || text.includes(' 1d') || text.includes(' 2d');
+      });
+    }
+
+    // 07. Chaînes de caractères
+    if (title.includes('07.') || title.includes('chaîne') || title.includes('chaine')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('chaîne') || text.includes('chaine') || text.includes('caractère') || text.includes('caractere') || text.includes('string');
+      });
+    }
+
+    // 08. Procédures et Fonctions
+    if (title.includes('08.') || title.includes('procédure') || title.includes('fonction')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return (text.includes('fonction') || text.includes('procédure') || text.includes('procedure') || text.includes('paramètre') || text.includes('passage par')) &&
+          !text.includes('récurs') && !text.includes('arbre') && !text.includes('graphe');
+      });
+    }
+
+    // 09. Complexité
+    if (title.includes('09.') || title.includes('complexité')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('complexité') || text.includes('o(1)') || text.includes('o(n)') || text.includes('o(n^2)') || text.includes('grand o');
+      });
+    }
+
+    // 10. Structures de données (Piles, Files, Listes)
+    if (title.includes('10.') || title.includes('pile') || title.includes('file')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('pile') || text.includes('file') || text.includes('lifo') || text.includes('fifo') || text.includes('empiler') || text.includes('dépiler') || text.includes('liste chaînée');
+      });
+    }
+
+    // 11. Tri & Recherche
+    if (title.includes('11.') || title.includes('tri') || title.includes('recherche')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('tri') || text.includes('bulle') || text.includes('sélection') || text.includes('insertion') || text.includes('quicksort') || text.includes('mergesort') || text.includes('dichotom');
+      });
+    }
+
+    // 12. Récursivité
+    if (title.includes('12.') || title.includes('récursiv')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('récursiv') || text.includes('recursiv') || text.includes('cas de base');
+      });
+    }
+
+    // 13. Arbres Binaires et ABR
+    if (title.includes('13.') || title.includes('arbre')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('arbre') || text.includes('abr') || text.includes('infixe') || text.includes('préfixe') || text.includes('postfixe');
+      });
+    }
+
+    // 14. Graphes
+    if (title.includes('14.') || title.includes('graphe')) {
+      return questions.filter(q => {
+        const text = ((q.question_text || '') + ' ' + (q.explanation || '')).toLowerCase();
+        return text.includes('graphe') || text.includes('dfs') || text.includes('bfs') || text.includes('adjacence') || text.includes('dijkstra');
+      });
+    }
+
+    return questions.slice(0, 5);
   };
 
   const targetedQuestions = filterQuestionsForCourse(subQuestions, selectedCourse);
