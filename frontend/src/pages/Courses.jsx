@@ -112,10 +112,60 @@ const Courses = () => {
     }
   };
 
+  const filterQuestionsForCourse = (questions, course) => {
+    if (!Array.isArray(questions) || !course) return [];
+    const title = (course.title || '').toLowerCase();
+
+    let keywords = [];
+    if (title.includes('01.') || title.includes('introduction')) {
+      keywords = ['algorithme', 'pseudo-code', 'définition', 'instruction', 'entrée', 'finitude', 'déterminisme', 'organigramme'];
+    } else if (title.includes('02.') || title.includes('variable')) {
+      keywords = ['variable', 'type', 'entier', 'réel', 'booléen', 'constante', 'mémoire', 'affectation'];
+    } else if (title.includes('03.') || title.includes('opérateur')) {
+      keywords = ['opérateur', 'div', 'mod', 'lire', 'écrire', 'expression', 'logique', 'priorité'];
+    } else if (title.includes('04.') || title.includes('condition')) {
+      keywords = ['si', 'sinon', 'alors', 'finsi', 'selon', 'cas', 'branchement', 'condition'];
+    } else if (title.includes('05.') || title.includes('boucle')) {
+      keywords = ['boucle', 'tantque', 'tant que', 'pour', 'répéter', 'jusqu', 'itératif', 'compteur'];
+    } else if (title.includes('06.') || title.includes('tableau')) {
+      keywords = ['tableau', 'vecteur', 'matrice', 'indice', 'dimension', 'élément'];
+    } else if (title.includes('07.') || title.includes('chaîne') || title.includes('chaine')) {
+      keywords = ['chaîne', 'chaine', 'caractère', 'caractere', 'longueur', 'concaténation', 'sous-chaîne', 'string'];
+    } else if (title.includes('08.') || title.includes('procédure') || title.includes('fonction')) {
+      keywords = ['fonction', 'procédure', 'procedure', 'paramètre', 'valeur', 'référence', 'var', 'retour'];
+    } else if (title.includes('09.') || title.includes('complexité')) {
+      keywords = ['complexité', 'grand o', 'o(1)', 'o(n)', 'o(n^2)', 'o(log n)', 'temporelle', 'notations'];
+    } else if (title.includes('10.') || title.includes('structure de donnée') || title.includes('pile')) {
+      keywords = ['pile', 'file', 'lifo', 'fifo', 'empiler', 'dépiler', 'enfiler', 'défiler', 'liste chaînée', 'pointeur'];
+    } else if (title.includes('11.') || title.includes('tri') || title.includes('recherche')) {
+      keywords = ['tri', 'bulle', 'sélection', 'selection', 'insertion', 'quicksort', 'mergesort', 'dichotomie', 'dichotomique', 'pivot'];
+    } else if (title.includes('12.') || title.includes('récursivité') || title.includes('diviser')) {
+      keywords = ['récursivité', 'recursivite', 'récursif', 'cas de base', 'pile d\'appel', 'diviser pour régner', 'hanoi', 'fibonacci'];
+    } else if (title.includes('13.') || title.includes('arbre')) {
+      keywords = ['arbre', 'abr', 'binaire', 'infixe', 'préfixe', 'postfixe', 'racine', 'feuille', 'hauteur'];
+    } else if (title.includes('14.') || title.includes('graphe')) {
+      keywords = ['graphe', 'dfs', 'bfs', 'profondeur', 'largeur', 'adjacence', 'sommet', 'dijkstra', 'arête', 'arc'];
+    }
+
+    if (keywords.length === 0) return questions.slice(0, 10);
+
+    const filtered = questions.filter(q => {
+      const text = ((q.question_text || '') + ' ' + (q.explanation || '') + ' ' + (q.astuce || '')).toLowerCase();
+      return keywords.some(kw => text.includes(kw));
+    });
+
+    return filtered.length > 0 ? filtered : questions.slice(0, 10);
+  };
+
+  const targetedQuestions = filterQuestionsForCourse(subQuestions, selectedCourse);
+
   const fetchCourseDetail = async (id) => {
     try {
       const res = await API.get(`courses/${id}/`);
       setSelectedCourse(res.data);
+      if (!res.data?.video_url && activeTab === 'video') {
+        setActiveTab('content');
+      }
     } catch (err) {
       console.error(err);
     }
@@ -413,7 +463,7 @@ const Courses = () => {
                     activeTab === 'qcm' ? 'border-sky-500 text-sky-600 dark:text-sky-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  <HelpCircle className="w-4 h-4 text-purple-500 dark:text-purple-400" /> QCM Ciblés ({subQuestions.length})
+                  <HelpCircle className="w-4 h-4 text-purple-500 dark:text-purple-400" /> QCM Ciblés ({targetedQuestions.length})
                 </button>
               </div>
 
@@ -509,7 +559,7 @@ const Courses = () => {
                   <div className="glass-card p-6 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <HelpCircle className="w-5 h-5 text-purple-600 dark:text-purple-400" /> QCM & Évaluations d'Annales ({subQuestions.length})
+                        <HelpCircle className="w-5 h-5 text-purple-600 dark:text-purple-400" /> QCM Ciblés du Module ({targetedQuestions.length})
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         Chaque question est fermée par défaut. Cliquez sur une question pour l'ouvrir, répondre et voir la correction.
@@ -534,13 +584,13 @@ const Courses = () => {
                     </div>
                   </div>
 
-                  {subQuestions.length === 0 ? (
+                  {targetedQuestions.length === 0 ? (
                     <div className="glass-card p-12 rounded-3xl text-center text-slate-500 dark:text-slate-400 text-sm">
-                      Aucun QCM disponible pour ce sous-domaine.
+                      Aucun QCM ciblé disponible pour ce module.
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      {subQuestions.map((q, idx) => {
+                      {targetedQuestions.map((q, idx) => {
                         const answer = userAnswers[q.id];
                         const isOpen = Boolean(openQcmIds[q.id]);
 
