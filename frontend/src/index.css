@@ -10,15 +10,6 @@
 :root {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Source Serif 4', Georgia, serif;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-sm: 14px;
-  --leading-relaxed: 1.75;
-  --leading-snug: 1.45;
-  --heading-1: 2.7rem;
-  --heading-2: 2.1rem;
-  --heading-3: 1.55rem;
-  --heading-4: 1.25rem;
 
   /* Core Palette — Dark Mode */
   --bg-base: #090e1a;
@@ -45,92 +36,25 @@
 
 /* Light mode token overrides */
 html.light {
-  --bg-base: #f5f1ea;
-  --bg-surface: #fcfaf5;
+  --bg-base: #f1f5f9;
+  --bg-surface: #ffffff;
   --bg-card: #ffffff;
-  --border: #d8c0a8;
-  --border-light: #ece4d8;
-  --text-primary: #102a43;
-  --text-secondary: #4b5563;
-  --text-muted: #6b7280;
-  --accent: #a16a2e;
-  --accent-hover: #8a5a25;
-  --accent-light: #faf2e6;
-  --text-base: 16px;
-  --text-lg: 18px;
-  --text-sm: 14px;
-  --heading-1: 2.5rem;
-  --heading-2: 2rem;
-  --heading-3: 1.45rem;
-  --heading-4: 1.15rem;
+  --border: #e2e8f0;
+  --border-light: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
 }
+
 /* ============================================================
    GLOBAL BASE STYLES
    ============================================================ */
 html,
 body {
   font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: var(--leading-relaxed);
-  color: var(--text-primary);
-  background-color: var(--bg-base);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-feature-settings: "kern" 1, "liga" 1;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-serif);
-  color: var(--text-primary);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  margin-top: 0;
-}
-
-h1 { font-size: var(--heading-1); }
-h2 { font-size: var(--heading-2); }
-h3 { font-size: var(--heading-3); }
-h4 { font-size: var(--heading-4); }
-
-p,
-button,
-input,
-textarea,
-select,
-label,
-span,
-ul,
-ol {
-  font-size: var(--text-base);
-}
-
-p {
-  line-height: var(--leading-relaxed);
-  margin: 0 0 1.25rem;
-}
-
-button,
-input,
-textarea,
-select {
-  font-family: var(--font-sans);
-  /* unify button/input shape for professional UI */
-}
-
-img,
-svg {
-  max-width: 100%;
 }
 
 /* Scrollbar */
@@ -180,26 +104,26 @@ html.dark .sidebar-base {
    LIGHT MODE  (html.light)
    ============================================================ */
 html.light body {
-  background-color: var(--bg-base);
-  color: var(--text-primary);
+  background-color: #f1f5f9;
+  color: #0f172a;
 }
 
 html.light .glass-nav {
-  background: var(--bg-surface);
-  border-bottom: 1px solid rgba(181, 155, 109, 0.18);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
 html.light .glass-card {
-  background: var(--bg-card) !important;
-  border: 1px solid rgba(181, 155, 109, 0.16) !important;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05) !important;
-  color: var(--text-primary) !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06) !important;
+  color: #0f172a !important;
 }
 
 html.light .sidebar-base {
-  background: var(--bg-surface);
-  border-right: 1px solid rgba(181, 155, 109, 0.14);
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
 }
 
 /* -- Light Form Controls -- */
@@ -325,22 +249,22 @@ html.light pre code * {
 .badge-academic {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  padding: 6px 16px;
-  border-radius: 9999px;
-  background: var(--accent-light);
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: var(--accent-subtle);
   color: var(--accent);
-  border: 1px solid rgba(37, 99, 235, 0.15);
+  border: 1px solid rgba(79, 70, 229, 0.25);
 }
 
 html.light .badge-academic {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border-color: #bfdbfe;
+  background: #ede9fe;
+  color: #4338ca;
+  border-color: #c4b5fd;
 }
 
 /* Primary Button */
@@ -348,24 +272,22 @@ html.light .badge-academic {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 26px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  background: var(--accent);
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #4f46e5;
   color: #ffffff !important;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   border: none;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 14px 30px rgba(161, 106, 46, 0.16);
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
+  background: #4338ca;
   transform: translateY(-1px);
-  box-shadow: 0 18px 36px rgba(161, 106, 46, 0.2);
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.35);
 }
 
 /* Ghost Button */
@@ -373,34 +295,33 @@ html.light .badge-academic {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 11px 22px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
   background: transparent;
   color: var(--text-secondary);
   border: 1px solid var(--border);
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   cursor: pointer;
   text-decoration: none;
 }
 
 .btn-ghost:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-light);
+  border-color: #4f46e5;
+  color: #4f46e5;
+  background: var(--accent-subtle);
 }
 
 html.light .btn-ghost {
-  border-color: var(--border);
-  color: var(--text-secondary);
+  border-color: #d1d5db;
+  color: #475569;
 }
 
 html.light .btn-ghost:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-light);
+  border-color: #4f46e5;
+  color: #4338ca;
+  background: #ede9fe;
 }
 
 /* Stat Number */
@@ -456,15 +377,6 @@ html.light .sidebar-active {
   background: #ede9fe;
   color: #4338ca !important;
   border-left: 3px solid #4f46e5;
-}
-
-/* Page wrapper utility for responsive content sections */
-.content-container {
-  width: min(100%, 1280px);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
