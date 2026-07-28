@@ -386,90 +386,68 @@ const AccessQueryIcon = () => (
   </span>
 );
 
-// Helper for **bold**, `code`, and [ICON_ACCESS_QUERY]
+// Helper for **bold**, `code`, $math$, [ICON_ACCESS_QUERY], ⚡, and images
 const parseInlineFormatting = (text) => {
   if (!text) return '';
 
-  if (text.includes('[ICON_ACCESS_QUERY]')) {
-    const segments = text.split(/(\[ICON_ACCESS_QUERY\])/g);
-    return segments.map((seg, i) => {
-      if (seg === '[ICON_ACCESS_QUERY]') {
-        return <AccessQueryIcon key={`access-icon-${i}`} />;
-      }
-      return parseInlineFormatting(seg);
-    });
+  const inlineRegex = /(\*\*.*?\*\*|`.*?`|\$\$.*?\$\$|\$.*?\$|\[ICON_ACCESS_QUERY\]|⚡|!\[.*?\]\(.*?\))/g;
+  const parts = text.split(inlineRegex);
+
+  if (parts.length <= 1) {
+    return text;
   }
 
-  if (text.includes('⚡')) {
-    const segments = text.split(/(⚡)/g);
-    return segments.map((seg, i) => {
-      if (seg === '⚡') {
-        return <span key={`lightning-${i}`} className="inline-block text-amber-500 text-base font-extrabold mr-1 align-middle">⚡</span>;
-      }
-      return parseInlineFormatting(seg);
-    });
-  }
-
-  // Handle Markdown Images: ![alt](src)
-  if (text.includes('![') && text.includes('](')) {
-    const segments = text.split(/(!\[.*?\]\(.*?\))/g);
-    return segments.map((seg, i) => {
-      if (seg.startsWith('![') && seg.includes('](')) {
-        const alt = seg.substring(seg.indexOf('![') + 2, seg.indexOf(']('));
-        const src = seg.substring(seg.indexOf('](') + 2, seg.length - 1);
-        return (
-          <img 
-            key={`img-${i}`} 
-            src={src} 
-            alt={alt} 
-            className="my-4 max-w-full rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md mx-auto block max-h-[300px] object-contain" 
-          />
-        );
-      }
-      return parseInlineFormatting(seg);
-    });
-  }
-
-  // Handle LaTeX Inline Math: $expression$ or $$expression$$
-  if (text.includes('$')) {
-    const parts = text.split(/(\$\$.*?\$\$|\$.*?\$)/g);
-    if (parts.length > 1) {
-      return parts.map((part, i) => {
-        if ((part.startsWith('$$') && part.endsWith('$$')) || (part.startsWith('$') && part.endsWith('$'))) {
-          const mathContent = part.replace(/^\$\$|\$\$$|^\$|\$$/g, '').trim();
-          const cleanMath = mathContent
-            .replace(/\\log_?2?/g, 'log')
-            .replace(/\\lfloor/g, '⌊')
-            .replace(/\\rfloor/g, '⌋')
-            .replace(/\\rightarrow/g, '→')
-            .replace(/\\times/g, '×');
-
-          return (
-            <span 
-              key={`math-${i}`} 
-              className="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 border border-sky-500/20 text-sky-700 dark:text-sky-300 font-mono font-bold text-xs shadow-2xs align-baseline"
-            >
-              {cleanMath}
-            </span>
-          );
-        }
-        return parseInlineFormatting(part);
-      });
-    }
-  }
-
-  const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
   return parts.map((part, i) => {
+    if (!part) return null;
+
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="font-bold text-slate-900 dark:text-white">{part.slice(2, -2)}</strong>;
+      const inner = part.slice(2, -2);
+      return <strong key={`bold-${i}`} className="font-bold text-slate-900 dark:text-white">{parseInlineFormatting(inner)}</strong>;
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return (
-        <code key={i} className="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-sky-700 dark:text-sky-300 border border-slate-200 dark:border-slate-700 font-mono text-xs mx-0.5">
+        <code key={`code-${i}`} className="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-sky-700 dark:text-sky-300 border border-slate-200 dark:border-slate-700 font-mono text-xs mx-0.5">
           {part.slice(1, -1)}
         </code>
       );
     }
+    if ((part.startsWith('$$') && part.endsWith('$$')) || (part.startsWith('$') && part.endsWith('$'))) {
+      const mathContent = part.replace(/^\$\$|\$\$$|^\$|\$$/g, '').trim();
+      const cleanMath = mathContent
+        .replace(/\\log_?2?/g, 'log')
+        .replace(/\\lfloor/g, '⌊')
+        .replace(/\\rfloor/g, '⌋')
+        .replace(/\\rightarrow/g, '→')
+        .replace(/\\times/g, '×');
+
+      return (
+        <span 
+          key={`math-${i}`} 
+          className="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 border border-sky-500/20 text-sky-700 dark:text-sky-300 font-mono font-bold text-xs shadow-2xs align-baseline"
+        >
+          {cleanMath}
+        </span>
+      );
+    }
+    if (part === '[ICON_ACCESS_QUERY]') {
+      return <AccessQueryIcon key={`access-${i}`} />;
+    }
+    if (part === '⚡') {
+      return <span key={`lightning-${i}`} className="inline-block text-amber-500 text-base font-extrabold mr-1 align-middle">⚡</span>;
+    }
+    if (part.startsWith('![') && part.includes('](')) {
+      const alt = part.substring(part.indexOf('![') + 2, part.indexOf(']('));
+      const src = part.substring(part.indexOf('](') + 2, part.length - 1);
+      return (
+        <img 
+          key={`img-${i}`} 
+          src={src} 
+          alt={alt} 
+          className="my-4 max-w-full rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md mx-auto block max-h-[300px] object-contain" 
+        />
+      );
+    }
+
     return part;
   });
 };
@@ -565,6 +543,14 @@ export const MarkdownViewer = ({ content }) => {
 
     if (!trimmed) {
       elements.push(<div key={`empty-${index}`} className="h-2"></div>);
+      return;
+    }
+
+    // Horizontal Rules: --- / *** / ___
+    if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+      elements.push(
+        <hr key={`hr-${index}`} className="my-6 border-t border-slate-200 dark:border-slate-800" />
+      );
       return;
     }
 
