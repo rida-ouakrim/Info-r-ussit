@@ -506,7 +506,7 @@ const Courses = () => {
         </nav>
 
         {/* Header Hero Banner (Linear / Vercel Style) */}
-        <div className="glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-950 to-indigo-950 text-white border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="dark-hero glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-950 to-indigo-950 text-white border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6" style={{background: 'linear-gradient(to right, #0f172a, #020617, #1e1b4b)', color: '#ffffff'}}>
           <div className="space-y-3 max-w-2xl z-10">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black tracking-wide">
@@ -762,7 +762,7 @@ const Courses = () => {
             <div className="space-y-6">
               
               {/* Hero Card de la Leçon (Coursera / Linear Style) */}
-              <div className="glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border border-slate-800 shadow-2xl space-y-4">
+              <div className="dark-hero glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border border-slate-800 shadow-2xl space-y-4" style={{background: 'linear-gradient(to bottom right, #0f172a, #020617, #0f172a)', color: '#ffffff'}}>
                 <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black">

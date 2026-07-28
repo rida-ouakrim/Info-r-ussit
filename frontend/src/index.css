@@ -34,6 +34,18 @@
   --danger: #dc2626;
 }
 
+/* Light mode token overrides */
+html.light {
+  --bg-base: #f1f5f9;
+  --bg-surface: #ffffff;
+  --bg-card: #ffffff;
+  --border: #e2e8f0;
+  --border-light: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+}
+
 /* ============================================================
    GLOBAL BASE STYLES
    ============================================================ */
@@ -92,7 +104,7 @@ html.dark .sidebar-base {
    LIGHT MODE  (html.light)
    ============================================================ */
 html.light body {
-  background-color: #f8f9fc;
+  background-color: #f1f5f9;
   color: #0f172a;
 }
 
@@ -103,10 +115,10 @@ html.light .glass-nav {
 }
 
 html.light .glass-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  color: #0f172a;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06) !important;
+  color: #0f172a !important;
 }
 
 html.light .sidebar-base {
@@ -127,6 +139,86 @@ html.light input::placeholder {
   color: #94a3b8;
 }
 
+/* -- Light Mode: Fix dark Tailwind backgrounds used in Courses.jsx -- */
+/* Header Hero stays intentionally dark (brand color), no override */
+
+html.light .bg-slate-50 { background-color: #f8fafc; }
+html.light .bg-slate-100 { background-color: #f1f5f9; }
+html.light .bg-slate-200 { background-color: #e2e8f0; }
+html.light .bg-white\/50 { background-color: rgba(255, 255, 255, 0.7); }
+
+/* Override dark pill/badge backgrounds in light mode */
+html.light .bg-slate-800 { background-color: #f1f5f9 !important; }
+html.light .bg-slate-800\/60 { background-color: rgba(241, 245, 249, 0.8) !important; }
+html.light .bg-slate-800\/80 { background-color: rgba(241, 245, 249, 0.95) !important; }
+html.light .bg-slate-950 { background-color: #f8fafc !important; }
+html.light .bg-slate-950\/40 { background-color: rgba(248, 250, 252, 0.6) !important; }
+html.light .bg-slate-900\/40 { background-color: rgba(248, 250, 252, 0.6) !important; }
+html.light .bg-slate-900\/60 { background-color: rgba(241, 245, 249, 0.8) !important; }
+html.light .bg-slate-900\/80 { background-color: rgba(255,255,255, 0.97) !important; }
+html.light .bg-slate-900\/90 { background-color: rgba(255,255,255, 0.98) !important; }
+html.light .bg-white\/80 { background-color: rgba(255,255,255,0.95) !important; }
+
+/* Text overrides for light mode */
+html.light .text-slate-300 { color: #475569 !important; }
+html.light .text-slate-400 { color: #64748b !important; }
+html.light .text-white { color: #0f172a; }
+
+/* Exceptions: ALL children of .dark-hero keep white text */
+html.light .dark-hero,
+html.light .dark-hero * {
+  color: #ffffff !important;
+}
+
+/* But keep interactive blue/sky colors inside hero */
+html.light .dark-hero .text-sky-400 { color: #38bdf8 !important; }
+html.light .dark-hero .text-emerald-400 { color: #34d399 !important; }
+html.light .dark-hero .text-sky-200 { color: #bae6fd !important; }
+
+/* glass-card overrides stay white on light bg */
+html.light .glass-card:not(.dark-hero) {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Fix text inside light mode glass-card */
+html.light .glass-card:not(.dark-hero) .text-slate-900 { color: #0f172a !important; }
+html.light .glass-card:not(.dark-hero) .text-slate-700 { color: #334155 !important; }
+html.light .glass-card:not(.dark-hero) .text-slate-600 { color: #475569 !important; }
+html.light .glass-card:not(.dark-hero) .text-slate-500 { color: #64748b !important; }
+
+/* Border overrides */
+html.light .border-slate-800 { border-color: #e2e8f0 !important; }
+html.light .border-slate-800\/80 { border-color: #e2e8f0 !important; }
+html.light .border-slate-800\/90 { border-color: #e2e8f0 !important; }
+html.light .border-slate-700 { border-color: #cbd5e1 !important; }
+
+/* Accordion & module card backgrounds in light mode */
+html.light .bg-white\/50 { background-color: rgba(255,255,255,0.9) !important; }
+html.light .rounded-2xl.border:not(.dark-hero) { border-color: #e2e8f0 !important; }
+
+/* Fix the sidebar module accordion bg */
+html.light .bg-slate-900\/60 { background-color: #f8fafc !important; }
+html.light .bg-white.dark\:bg-slate-950 { background-color: #ffffff !important; }
+
+/* Progress ring track */
+html.light .text-slate-200 { color: #e2e8f0 !important; }
+html.light .text-slate-800 { color: #1e293b !important; }
+
+/* Tabs bar in light mode */
+html.light .bg-slate-100 { background-color: #f1f5f9 !important; }
+html.light .bg-slate-900\/90 { background-color: #f8fafc !important; }
+
+/* Bottom nav bar */
+html.light .glass-card .bg-slate-100 { background-color: #f1f5f9 !important; }
+html.light .glass-card .bg-slate-800 { background-color: #f1f5f9 !important; }
+html.light .glass-card .text-slate-700 { color: #334155 !important; }
+html.light .glass-card .text-slate-300 { color: #475569 !important; }
+
+/* Domain tabs & subdomain chips */
+html.light button.glass-card { background: #ffffff !important; color: #475569 !important; }
 
 /* -- Code Blocks Always Dark -- */
 html.light pre {
