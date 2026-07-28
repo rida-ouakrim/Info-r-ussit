@@ -7,6 +7,7 @@ import {
   ChevronRight, Award, Zap, Bookmark, ChevronDown, ChevronUp, Star,
   Video, Play
 } from 'lucide-react';
+import { cLessons } from '../data/cLessons';
 
 const Courses = () => {
   const [domains, setDomains] = useState([]);
@@ -16,6 +17,7 @@ const Courses = () => {
   
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedCLessonIdx, setSelectedCLessonIdx] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('content'); // 'content', 'examples', 'astuces', 'qcm'
 
@@ -468,37 +470,103 @@ const Courses = () => {
 
         {/* Right Column: Coursera Lesson Viewer */}
         <div className="lg:col-span-3 space-y-6">
-          {selectedCourse ? (
-            <div className="space-y-6">
-              
-              {/* Course Title Header Card */}
-              <div className="glass-card p-8 rounded-3xl bg-gradient-to-br from-slate-50 via-sky-50/50 to-slate-50 dark:from-slate-900 dark:via-sky-950/30 dark:to-slate-900 border border-slate-200 dark:border-sky-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xl">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold uppercase tracking-wider">
-                      {selectedCourse.subdomain_name}
-                    </span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" /> 10 min de lecture
-                    </span>
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    {selectedCourse.title}
-                  </h2>
-                </div>
+          {selectedCourse ? (() => {
+            const isCLanguage = selectedCourse?.title?.toLowerCase().includes('langage c') || false;
+            const currentCLesson = cLessons[selectedCLessonIdx] || cLessons[0];
+            const activeCourseData = isCLanguage && currentCLesson ? {
+              ...selectedCourse,
+              title: `Leçon ${currentCLesson.num < 10 ? '0' + currentCLesson.num : currentCLesson.num} : ${currentCLesson.title}`,
+              content: currentCLesson.content,
+              examples: currentCLesson.examples,
+              astuces: currentCLesson.astuces,
+              video_url: currentCLesson.video_url
+            } : selectedCourse;
 
-                <button
-                  onClick={() => toggleCourseCompleted(selectedCourse.id, selectedCourse.is_completed)}
-                  className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-bold text-xs shadow-lg transition-all shrink-0 ${
-                    selectedCourse.is_completed
-                      ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-emerald-500/20'
-                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
-                  }`}
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  {selectedCourse.is_completed ? 'Terminé (Maîtrisé)' : 'Marquer comme Terminé'}
-                </button>
-              </div>
+            return (
+              <div className="space-y-6">
+
+                {/* Coursera/Udemy Lesson Selector for C Language */}
+                {isCLanguage && (
+                  <div className="glass-card p-5 sm:p-6 rounded-3xl bg-slate-900 text-white border border-sky-500/30 shadow-2xl space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black">
+                            Parcours Vidéo Coursera / Udemy • 50 Leçons
+                          </span>
+                          <span className="text-xs text-slate-400 font-bold">
+                            Leçon {currentCLesson.num} / 50
+                          </span>
+                        </div>
+                        <h3 className="text-lg font-extrabold text-white">
+                          {currentCLesson.title}
+                        </h3>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCLessonIdx(prev => Math.max(0, prev - 1))}
+                          disabled={selectedCLessonIdx === 0}
+                          className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-30 text-xs font-bold text-slate-200 transition-all"
+                        >
+                          ← Précédente
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCLessonIdx(prev => Math.min(cLessons.length - 1, prev + 1))}
+                          disabled={selectedCLessonIdx === cLessons.length - 1}
+                          className="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:opacity-30 text-xs font-bold text-white shadow-lg transition-all"
+                        >
+                          Suivante →
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-800">
+                      <select
+                        value={selectedCLessonIdx}
+                        onChange={(e) => setSelectedCLessonIdx(Number(e.target.value))}
+                        className="w-full px-4 py-3 rounded-2xl bg-slate-950 border border-slate-800 text-xs font-bold text-sky-300 focus:border-sky-500 focus:outline-none cursor-pointer"
+                      >
+                        {cLessons.map((les, idx) => (
+                          <option key={les.num} value={idx}>
+                            Leçon {les.num < 10 ? '0' + les.num : les.num} : {les.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+              
+                {/* Course Title Header Card */}
+                <div className="glass-card p-8 rounded-3xl bg-gradient-to-br from-slate-50 via-sky-50/50 to-slate-50 dark:from-slate-900 dark:via-sky-950/30 dark:to-slate-900 border border-slate-200 dark:border-sky-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-xl">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold uppercase tracking-wider">
+                        {activeCourseData.subdomain_name}
+                      </span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5" /> 10 min de lecture
+                      </span>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                      {activeCourseData.title}
+                    </h2>
+                  </div>
+
+                  <button
+                    onClick={() => toggleCourseCompleted(activeCourseData.id, activeCourseData.is_completed)}
+                    className={`flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-bold text-xs shadow-lg transition-all shrink-0 ${
+                      activeCourseData.is_completed
+                        ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-emerald-500/20'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    }`}
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {activeCourseData.is_completed ? 'Terminé (Maîtrisé)' : 'Marquer comme Terminé'}
+                  </button>
+                </div>
 
               {/* Coursera Lesson Navigation Tabs */}
               <div className="flex flex-wrap border-b border-slate-200 dark:border-slate-800 gap-2 sm:gap-6">
@@ -517,7 +585,7 @@ const Courses = () => {
                   }`}
                 >
                   <Video className="w-4 h-4 text-red-500" /> Vidéo Explicative
-                  {selectedCourse.video_url && (
+                  {activeCourseData.video_url && (
                     <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                   )}
                 </button>
@@ -556,7 +624,7 @@ const Courses = () => {
                         <Play className="w-6 h-6 fill-current" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Leçon Vidéo • {selectedCourse.title}</h3>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Leçon Vidéo • {activeCourseData.title}</h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400">Support vidéo du cours et explication pas à pas (Style Coursera)</p>
                       </div>
                     </div>
@@ -565,13 +633,13 @@ const Courses = () => {
                     </span>
                   </div>
 
-                  {selectedCourse.video_url ? (
-                    selectedCourse.video_url.includes('drive.google.com') ? (
+                  {activeCourseData.video_url ? (
+                    activeCourseData.video_url.includes('drive.google.com') ? (
                       <div className="space-y-4">
                         <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                           <iframe
-                            src={selectedCourse.video_url.replace(/\/view(\?.*)?$/, '/preview')}
-                            title={selectedCourse.title}
+                            src={activeCourseData.video_url.replace(/\/view(\?.*)?$/, '/preview')}
+                            title={activeCourseData.title}
                             className="w-full h-full border-0"
                             allow="autoplay"
                             allowFullScreen
@@ -582,7 +650,7 @@ const Courses = () => {
                             ☁️ <strong>Vidéo HD Google Drive :</strong> Streaming direct et sécurisé sans aucune publicité.
                           </span>
                           <a
-                            href={selectedCourse.video_url}
+                            href={activeCourseData.video_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
@@ -595,8 +663,8 @@ const Courses = () => {
                       <div className="space-y-4">
                         <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                           <iframe
-                            src={getEmbedUrl(selectedCourse.video_url)}
-                            title={selectedCourse.title}
+                            src={getEmbedUrl(activeCourseData.video_url)}
+                            title={activeCourseData.title}
                             className="w-full h-full border-0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -607,7 +675,7 @@ const Courses = () => {
                             💡 <strong>Conseil pédagogique :</strong> Regardez la vidéo puis passez aux exercices pratiques et QCM.
                           </span>
                           <a
-                            href={selectedCourse.video_url}
+                            href={activeCourseData.video_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
@@ -629,9 +697,9 @@ const Courses = () => {
                 </div>
               ) : activeTab !== 'qcm' ? (
                 <div className="glass-card p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl min-h-[400px]">
-                  {activeTab === 'content' && <MarkdownViewer content={selectedCourse.content} />}
-                  {activeTab === 'examples' && <MarkdownViewer content={selectedCourse.examples} />}
-                  {activeTab === 'astuces' && <MarkdownViewer content={selectedCourse.astuces} />}
+                  {activeTab === 'content' && <MarkdownViewer content={activeCourseData.content} />}
+                  {activeTab === 'examples' && <MarkdownViewer content={activeCourseData.examples} />}
+                  {activeTab === 'astuces' && <MarkdownViewer content={activeCourseData.astuces} />}
                 </div>
               ) : (
                 /* Tab 4: Accordion QCM List (Collapsed by Default) */
@@ -781,7 +849,8 @@ const Courses = () => {
               )}
 
             </div>
-          ) : (
+            );
+          })() : (
             <div className="glass-card p-12 rounded-3xl text-center text-slate-500 dark:text-slate-400 text-sm">
               Sélectionnez un module de cours dans le menu de gauche pour commencer la lecture.
             </div>
