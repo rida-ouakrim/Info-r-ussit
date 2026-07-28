@@ -505,14 +505,14 @@ const Exams = () => {
             className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
             onClick={() => setDeleteConfirmId(null)}
           />
-          <div className="relative glass-card w-full max-w-sm p-6 rounded-3xl border border-red-500/20 bg-slate-900/90 dark:bg-slate-950/95 text-center space-y-6 shadow-2xl">
+          <div className="dark-hero relative glass-card w-full max-w-sm p-6 rounded-3xl border border-red-500/20 text-center space-y-6 shadow-2xl" style={{background: 'rgba(15, 23, 42, 0.97)', color: '#ffffff'}}>
             <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center mx-auto">
               <Trash2 className="w-6 h-6 animate-pulse" />
             </div>
             
             <div className="space-y-2">
-              <h3 className="text-lg font-bold text-white">Confirmation de suppression</h3>
-              <p className="text-xs text-slate-400 leading-relaxed font-medium">
+              <h3 className="text-lg font-bold" style={{color: '#ffffff'}}>Confirmation de suppression</h3>
+              <p className="text-xs leading-relaxed font-medium" style={{color: '#94a3b8'}}>
                 Voulez-vous vraiment supprimer ce test enregistré de votre historique ?
               </p>
             </div>
@@ -520,7 +520,8 @@ const Exams = () => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all"
+                className="flex-1 py-3 rounded-xl text-xs font-bold transition-all"
+                style={{background: '#1e293b', color: '#ffffff'}}
               >
                 Annuler
               </button>
@@ -760,7 +761,8 @@ const Exams = () => {
             </button>
             <button
               onClick={() => setQuizActive(false)}
-              className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs"
+              className="px-6 py-3 rounded-xl font-bold text-xs"
+              style={{background: '#1e293b', color: '#ffffff'}}
             >
               Fermer le test
             </button>
@@ -773,14 +775,14 @@ const Exams = () => {
             className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
             onClick={() => setDeleteConfirmId(null)}
           />
-          <div className="relative glass-card w-full max-w-sm p-6 rounded-3xl border border-red-500/20 bg-slate-900/90 dark:bg-slate-950/95 text-center space-y-6 shadow-2xl">
+          <div className="dark-hero relative glass-card w-full max-w-sm p-6 rounded-3xl border border-red-500/20 text-center space-y-6 shadow-2xl" style={{background: 'rgba(15, 23, 42, 0.97)', color: '#ffffff'}}>
             <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center mx-auto">
               <Trash2 className="w-6 h-6 animate-pulse" />
             </div>
             
             <div className="space-y-2">
-              <h3 className="text-lg font-bold text-white">Confirmation de suppression</h3>
-              <p className="text-xs text-slate-400 leading-relaxed font-medium">
+              <h3 className="text-lg font-bold" style={{color: '#ffffff'}}>Confirmation de suppression</h3>
+              <p className="text-xs leading-relaxed font-medium" style={{color: '#94a3b8'}}>
                 Voulez-vous vraiment supprimer ce test enregistré de votre historique ?
               </p>
             </div>
@@ -788,7 +790,8 @@ const Exams = () => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all"
+                className="flex-1 py-3 rounded-xl text-xs font-bold transition-all"
+                style={{background: '#1e293b', color: '#ffffff'}}
               >
                 Annuler
               </button>

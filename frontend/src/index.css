@@ -139,86 +139,96 @@ html.light input::placeholder {
   color: #94a3b8;
 }
 
-/* -- Light Mode: Fix dark Tailwind backgrounds used in Courses.jsx -- */
-/* Header Hero stays intentionally dark (brand color), no override */
+/* =====================================================================
+   LIGHT MODE — Backgrounds fixes
+   Only target backgrounds that are visually broken (too dark) in light mode.
+   We do NOT globally override bg-slate-800 because buttons (bg-slate-800
+   text-white) would lose their dark background and text becomes invisible.
+   ===================================================================== */
 
-html.light .bg-slate-50 { background-color: #f8fafc; }
-html.light .bg-slate-100 { background-color: #f1f5f9; }
-html.light .bg-slate-200 { background-color: #e2e8f0; }
-html.light .bg-white\/50 { background-color: rgba(255, 255, 255, 0.7); }
+/* Sidebar module accordion headers — dark bg turned light */
+html.light .bg-slate-50\/70,
+html.light [class*="bg-slate-50/70"] { background-color: #f8fafc !important; }
 
-/* Override dark pill/badge backgrounds in light mode */
-html.light .bg-slate-800 { background-color: #f1f5f9 !important; }
-html.light .bg-slate-800\/60 { background-color: rgba(241, 245, 249, 0.8) !important; }
-html.light .bg-slate-800\/80 { background-color: rgba(241, 245, 249, 0.95) !important; }
-html.light .bg-slate-950 { background-color: #f8fafc !important; }
-html.light .bg-slate-950\/40 { background-color: rgba(248, 250, 252, 0.6) !important; }
-html.light .bg-slate-900\/40 { background-color: rgba(248, 250, 252, 0.6) !important; }
-html.light .bg-slate-900\/60 { background-color: rgba(241, 245, 249, 0.8) !important; }
-html.light .bg-slate-900\/80 { background-color: rgba(255,255,255, 0.97) !important; }
-html.light .bg-slate-900\/90 { background-color: rgba(255,255,255, 0.98) !important; }
-html.light .bg-white\/80 { background-color: rgba(255,255,255,0.95) !important; }
+html.light [class*="bg-slate-900\/60"]:not(.dark-hero):not(.dark-hero *) { background-color: #f8fafc !important; }
+html.light [class*="bg-slate-800\/80"]:not(.dark-hero):not(.dark-hero *) { background-color: rgba(241, 245, 249, 0.9) !important; }
+html.light [class*="bg-slate-950\/40"]:not(.dark-hero):not(.dark-hero *) { background-color: rgba(255,255,255,0.95) !important; }
+html.light [class*="bg-slate-950"]:not(button):not(.dark-hero):not(.dark-hero *) { background-color: #f8fafc !important; }
+html.light [class*="bg-slate-900\/80"]:not(.dark-hero):not(.dark-hero *) { background-color: rgba(255,255,255,0.97) !important; }
+html.light [class*="bg-slate-900\/40"]:not(.dark-hero):not(.dark-hero *) { background-color: rgba(248,250,252,0.8) !important; }
 
-/* Text overrides for light mode */
-html.light .text-slate-300 { color: #475569 !important; }
-html.light .text-slate-400 { color: #64748b !important; }
-html.light .text-white { color: #0f172a; }
+/* =====================================================================
+   LIGHT MODE — Text color fixes
+   Only fix text-slate-* colors that appear too faint or wrong on white.
+   We do NOT touch text-white (it's intentional on colored buttons/icons).
+   ===================================================================== */
+html.light .text-slate-300:not(.dark-hero *) { color: #475569 !important; }
+html.light .text-slate-400:not(.dark-hero *) { color: #64748b !important; }
+html.light .text-slate-200:not(.dark-hero *) { color: #e2e8f0 !important; }
 
-/* Exceptions: ALL children of .dark-hero keep white text */
-html.light .dark-hero,
-html.light .dark-hero * {
+/* =====================================================================
+   LIGHT MODE — dark-hero sections (Hero banner + Lesson Hero card)
+   Keep EVERYTHING white inside these intentionally dark sections.
+   ===================================================================== */
+html.light .dark-hero {
+  background: linear-gradient(to right, #0f172a, #020617, #1e1b4b) !important;
   color: #ffffff !important;
 }
 
-/* But keep interactive blue/sky colors inside hero */
-html.light .dark-hero .text-sky-400 { color: #38bdf8 !important; }
-html.light .dark-hero .text-emerald-400 { color: #34d399 !important; }
-html.light .dark-hero .text-sky-200 { color: #bae6fd !important; }
-
-/* glass-card overrides stay white on light bg */
-html.light .glass-card:not(.dark-hero) {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06) !important;
+html.light .dark-hero * {
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.15) !important;
 }
 
-/* Fix text inside light mode glass-card */
-html.light .glass-card:not(.dark-hero) .text-slate-900 { color: #0f172a !important; }
-html.light .glass-card:not(.dark-hero) .text-slate-700 { color: #334155 !important; }
-html.light .glass-card:not(.dark-hero) .text-slate-600 { color: #475569 !important; }
-html.light .glass-card:not(.dark-hero) .text-slate-500 { color: #64748b !important; }
+/* Preserve accent colors inside hero */
+html.light .dark-hero .text-sky-400,
+html.light .dark-hero [class*="text-sky-"] { color: #38bdf8 !important; }
+html.light .dark-hero .text-emerald-400,
+html.light .dark-hero [class*="text-emerald-"] { color: #34d399 !important; }
+html.light .dark-hero .text-amber-400,
+html.light .dark-hero [class*="text-amber-"] { color: #fbbf24 !important; }
+html.light .dark-hero .text-indigo-400,
+html.light .dark-hero [class*="text-indigo-4"] { color: #818cf8 !important; }
 
-/* Border overrides */
-html.light .border-slate-800 { border-color: #e2e8f0 !important; }
-html.light .border-slate-800\/80 { border-color: #e2e8f0 !important; }
-html.light .border-slate-800\/90 { border-color: #e2e8f0 !important; }
-html.light .border-slate-700 { border-color: #cbd5e1 !important; }
+/* Preserve dark-bg buttons inside hero (lesson nav buttons) */
+html.light .dark-hero button { background-color: rgba(255,255,255,0.1) !important; color: #ffffff !important; }
+html.light .dark-hero .bg-sky-600,
+html.light .dark-hero .bg-sky-500 { background-color: #0284c7 !important; color: #ffffff !important; }
 
-/* Accordion & module card backgrounds in light mode */
-html.light .bg-white\/50 { background-color: rgba(255,255,255,0.9) !important; }
+/* =====================================================================
+   LIGHT MODE — glass-card (non hero)
+   Make content cards white with subtle shadow.
+   ===================================================================== */
+html.light .glass-card:not(.dark-hero) {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.07) !important;
+}
+
+/* Fix text color inside non-hero cards - but NOT for buttons with colored bg */
+html.light .glass-card:not(.dark-hero) > * { color: #0f172a; }
+html.light .glass-card:not(.dark-hero) h1,
+html.light .glass-card:not(.dark-hero) h2,
+html.light .glass-card:not(.dark-hero) h3,
+html.light .glass-card:not(.dark-hero) h4,
+html.light .glass-card:not(.dark-hero) h5,
+html.light .glass-card:not(.dark-hero) p,
+html.light .glass-card:not(.dark-hero) span:not(button span):not([class*="bg-"] span),
+html.light .glass-card:not(.dark-hero) label { color: inherit; }
+
+/* =====================================================================
+   LIGHT MODE — Borders fix
+   ===================================================================== */
+html.light .border-slate-800:not(.dark-hero):not(.dark-hero *) { border-color: #e2e8f0 !important; }
+html.light .border-slate-700:not(.dark-hero):not(.dark-hero *) { border-color: #cbd5e1 !important; }
+
+/* Accordion module border */
 html.light .rounded-2xl.border:not(.dark-hero) { border-color: #e2e8f0 !important; }
 
-/* Fix the sidebar module accordion bg */
-html.light .bg-slate-900\/60 { background-color: #f8fafc !important; }
-html.light .bg-white.dark\:bg-slate-950 { background-color: #ffffff !important; }
-
-/* Progress ring track */
-html.light .text-slate-200 { color: #e2e8f0 !important; }
-html.light .text-slate-800 { color: #1e293b !important; }
-
-/* Tabs bar in light mode */
-html.light .bg-slate-100 { background-color: #f1f5f9 !important; }
-html.light .bg-slate-900\/90 { background-color: #f8fafc !important; }
-
-/* Bottom nav bar */
-html.light .glass-card .bg-slate-100 { background-color: #f1f5f9 !important; }
-html.light .glass-card .bg-slate-800 { background-color: #f1f5f9 !important; }
-html.light .glass-card .text-slate-700 { color: #334155 !important; }
-html.light .glass-card .text-slate-300 { color: #475569 !important; }
-
 /* Domain tabs & subdomain chips */
-html.light button.glass-card { background: #ffffff !important; color: #475569 !important; }
+html.light button.glass-card { color: #475569 !important; }
+
+
 
 /* -- Code Blocks Always Dark -- */
 html.light pre {
