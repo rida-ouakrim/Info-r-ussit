@@ -8,7 +8,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONCOURS_DB = os.path.join(BASE_DIR, "concours.db")
 DJANGO_DB = os.path.join(BASE_DIR, "backend", "db.sqlite3")
 
-# Exact mapping of videos sorted by video number (from 09 to 59)
 RAW_VIDEOS = [
     {"num": 9, "title": "Caractère de fin de chaîne (\\0)", "url": "https://drive.google.com/file/d/1_26DzhIlhx9Ah7S-UOi28E4X2jzpoBWf/view?usp=sharing"},
     {"num": 10, "title": "Les opérateurs arithmétiques (+, -, *, /, %)", "url": "https://drive.google.com/file/d/1bWftn086PRxJBuS48bYMP74kgPVU54D2/view?usp=sharing"},
@@ -62,10 +61,7 @@ RAW_VIDEOS = [
     {"num": 59, "title": "Organisation et Modularité des Headers", "url": "https://drive.google.com/file/d/1KPdg7aeFAfUfvajLRmSfTCXaK0beRRq8/view?usp=sharing"}
 ]
 
-# Sort by video number
 RAW_VIDEOS.sort(key=lambda x: x["num"])
-
-print(f"Total classified videos: {len(RAW_VIDEOS)}")
 
 def generate_course_content(idx, title):
     content = f"""# {idx:02d}. {title}
@@ -96,9 +92,8 @@ for db_path in [CONCOURS_DB, DJANGO_DB]:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         table_name = "courses" if db_path == CONCOURS_DB else "syllabus_course"
-
-        # Clear previous DEV_PROG_WEB C courses
         col = "subdomain_code" if db_path == CONCOURS_DB else "subdomain_id"
+
         cursor.execute(f"DELETE FROM {table_name} WHERE {col} = 'DEV_PROG_WEB'")
 
         for idx, item in enumerate(RAW_VIDEOS, 1):
@@ -121,4 +116,4 @@ for db_path in [CONCOURS_DB, DJANGO_DB]:
         print(f"Successfully populated {len(RAW_VIDEOS)} C courses in: {db_path}")
         conn.close()
 
-print("All C Language courses populated with 100% exact GDrive video mapping!")
+print("All 50 C Language courses populated successfully into DEV_PROG_WEB!")
