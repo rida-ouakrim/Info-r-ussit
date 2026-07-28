@@ -430,6 +430,34 @@ const parseInlineFormatting = (text) => {
     });
   }
 
+  // Handle LaTeX Inline Math: $expression$ or $$expression$$
+  if (text.includes('$')) {
+    const parts = text.split(/(\$\$.*?\$\$|\$.*?\$)/g);
+    if (parts.length > 1) {
+      return parts.map((part, i) => {
+        if ((part.startsWith('$$') && part.endsWith('$$')) || (part.startsWith('$') && part.endsWith('$'))) {
+          const mathContent = part.replace(/^\$\$|\$\$$|^\$|\$$/g, '').trim();
+          const cleanMath = mathContent
+            .replace(/\\log_?2?/g, 'log')
+            .replace(/\\lfloor/g, '⌊')
+            .replace(/\\rfloor/g, '⌋')
+            .replace(/\\rightarrow/g, '→')
+            .replace(/\\times/g, '×');
+
+          return (
+            <span 
+              key={`math-${i}`} 
+              className="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 border border-sky-500/20 text-sky-700 dark:text-sky-300 font-mono font-bold text-xs shadow-2xs align-baseline"
+            >
+              {cleanMath}
+            </span>
+          );
+        }
+        return parseInlineFormatting(part);
+      });
+    }
+  }
+
   const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
