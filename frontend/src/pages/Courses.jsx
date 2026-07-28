@@ -6,7 +6,7 @@ import {
   BookOpen, CheckCircle2, Circle, Search, 
   HelpCircle, Code2, RefreshCw, Clock, 
   ChevronRight, Zap, Play, PlayCircle, Filter, 
-  FileText, Star, ChevronDown, ChevronUp, User, Globe, Award, Sparkles, Layers
+  FileText, Star, ChevronDown, ChevronUp, User, Globe, Award, Sparkles, Layers, Video
 } from 'lucide-react';
 
 // Circular Progress Ring Component (Coursera / Vercel style)
