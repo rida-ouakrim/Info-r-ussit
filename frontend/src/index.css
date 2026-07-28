@@ -233,21 +233,6 @@ html.light [class*="bg-slate-950"]:not(button):not(.dark-hero):not(.dark-hero *)
 html.light [class*="bg-slate-900\/80"]:not(.dark-hero):not(.dark-hero *) { background-color: rgba(255,255,255,0.97) !important; }
 html.light [class*="bg-slate-900\/40"]:not(.dark-hero):not(.dark-hero *) { background-color: rgba(248,250,252,0.8) !important; }
 
-/* Light mode tone overrides to unify warm beige surfaces */
-html.light .bg-white { background-color: #fbf5ed !important; }
-html.light .bg-slate-50 { background-color: #f7efe2 !important; }
-html.light .bg-slate-100 { background-color: #f3e7d8 !important; }
-html.light .bg-slate-200 { background-color: #e7dccf !important; }
-html.light .border-slate-200 { border-color: rgba(216,192,168,0.55) !important; }
-html.light .text-sky-600 { color: #a55d11 !important; }
-html.light .bg-sky-600 { background-color: #bb620c !important; }
-html.light .bg-purple-600 { background-color: #a15a2d !important; }
-html.light .text-purple-600 { color: #9b582b !important; }
-html.light .text-slate-900 { color: #102a43 !important; }
-html.light .text-slate-800 { color: #1f2937 !important; }
-html.light .bg-slate-900 { background-color: #1f2937 !important; }
-html.light .bg-slate-950 { background-color: #111827 !important; }
-
 /* =====================================================================
    LIGHT MODE — Text color fixes
    Only fix text-slate-* colors that appear too faint or wrong on white.
@@ -349,13 +334,13 @@ html.light pre code * {
   border-radius: 9999px;
   background: var(--accent-light);
   color: var(--accent);
-  border: 1px solid rgba(161, 106, 46, 0.15);
+  border: 1px solid rgba(37, 99, 235, 0.15);
 }
 
 html.light .badge-academic {
-  background: #faf0dd;
-  color: #8a4c0f;
-  border-color: rgba(161, 106, 46, 0.25);
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
 }
 
 /* Primary Button */
@@ -363,9 +348,9 @@ html.light .badge-academic {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 12px 26px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.02em;
   background: var(--accent);
@@ -374,13 +359,13 @@ html.light .badge-academic {
   border: none;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 10px 24px rgba(161, 106, 46, 0.18);
+  box-shadow: 0 14px 30px rgba(161, 106, 46, 0.16);
 }
 
 .btn-primary:hover {
   background: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 14px 30px rgba(161, 106, 46, 0.22);
+  box-shadow: 0 18px 36px rgba(161, 106, 46, 0.2);
 }
 
 /* Ghost Button */
@@ -388,9 +373,9 @@ html.light .badge-academic {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 11px 22px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.01em;
   background: transparent;

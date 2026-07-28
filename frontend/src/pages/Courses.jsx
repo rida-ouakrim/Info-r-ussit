@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import API from '../services/api';
 import MarkdownViewer from '../components/MarkdownViewer';
 import { cLessons } from '../data/cLessons';
-import PageWrapper from '../components/PageWrapper';
 import { 
   BookOpen, CheckCircle2, Circle, Search, 
   HelpCircle, Code2, RefreshCw, Clock, 
@@ -34,7 +33,7 @@ const ProgressRing = ({ percentage = 0, size = 64, strokeWidth = 6 }) => {
           r={radius}
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-amber-600 transition-all duration-500 ease-out"
+          className="text-sky-500 transition-all duration-500 ease-out"
           fill="transparent"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
@@ -476,16 +475,16 @@ const Courses = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex items-center gap-3 text-amber-600 font-medium">
+        <div className="flex items-center gap-3 text-sky-500 font-medium">
           <RefreshCw className="w-6 h-6 animate-spin" />
-          <span>Chargement de la plateforme d'apprentissage...</span>
+          <span>Chargement de la plateforme d'apprentissage Coursera / Linear...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <PageWrapper className="space-y-8 py-4 text-slate-900 dark:text-slate-100 font-sans">
+    <div className="space-y-8 py-4 text-slate-900 dark:text-slate-100 font-sans">
       
       {/* -------------------------------------------------------- */}
       {/* HEADER PREMIUM (Breadcrumb, Progression, Ring SVG, Actions) */}
@@ -497,7 +496,7 @@ const Courses = () => {
           <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-40" />
           <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors">{currentDomainObj?.name || 'Développement'}</span>
           <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-40" />
-          <span className="text-amber-700 dark:text-amber-300 font-bold">{currentSubdomainObj?.name || 'Sous-domaine'}</span>
+          <span className="text-sky-600 dark:text-sky-400 font-bold">{currentSubdomainObj?.name || 'Sous-domaine'}</span>
           {activeCourseData && (
             <>
               <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-40" />
@@ -507,38 +506,38 @@ const Courses = () => {
         </nav>
 
         {/* Header Hero Banner (Linear / Vercel Style) */}
-        <div className="glass-card p-6 sm:p-7 rounded-2xl bg-slate-950 text-white border border-slate-800 shadow-xl relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="dark-hero glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-950 to-indigo-950 text-white border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6" style={{background: 'linear-gradient(to right, #0f172a, #020617, #1e1b4b)', color: '#ffffff'}}>
           <div className="space-y-3 max-w-2xl z-10">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-3 py-1 rounded-full bg-amber-500/15 text-amber-700 border border-amber-200 text-[10px] font-black tracking-wide">
+              <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black tracking-wide">
                 PARCOURS OFFICIEL 2026
               </span>
-              <span className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-200 text-[10px] font-semibold flex items-center gap-1.5 border border-slate-700">
-                <Clock className="w-3.5 h-3.5 text-amber-300" />
+              <span className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-300 text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
+                <Clock className="w-3.5 h-3.5 text-sky-400" />
                 {isCLanguage ? '50 Leçons • 6 h de formation' : `${courses.length} Modules de cours`}
               </span>
-              <span className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-200 text-[10px] font-semibold flex items-center gap-1.5 border border-slate-700">
-                <Award className="w-3.5 h-3.5 text-amber-300" /> Niveau Débutant à Avancé
+              <span className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-300 text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
+                <Award className="w-3.5 h-3.5 text-amber-400" /> Niveau Débutant à Avancé
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
               {currentSubdomainObj?.name || 'Formation Informatique CRMEF'}
             </h1>
-            <p className="text-sm text-slate-300 leading-relaxed max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
               {currentSubdomainObj?.description || 'Maîtrisez les concepts clés de l\'épreuve écrite et pratique grâce aux leçons vidéo HD, fiches théoriques et QCM d\'annales.'}
             </p>
           </div>
 
           {/* Progress Ring & Fast Actions */}
-          <div className="z-10 flex items-center gap-5 bg-slate-900/90 p-4 rounded-2xl border border-slate-800 shrink-0 self-start lg:self-center">
-            <ProgressRing percentage={stats?.percentage || 0} size={64} strokeWidth={6} />
+          <div className="z-10 flex items-center gap-6 bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shrink-0 self-start lg:self-center">
+            <ProgressRing percentage={stats?.percentage || 0} size={72} strokeWidth={7} />
             
             <div className="space-y-2">
               <div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Maîtrise du Parcours</div>
-                <div className="text-base font-extrabold text-white">
-                  {stats?.completed || 0} / {stats?.total || 0} <span className="text-[10px] font-medium text-slate-400">validés</span>
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Maîtrise du Parcours</div>
+                <div className="text-lg font-black text-white">
+                  {stats?.completed || 0} / {stats?.total || 0} <span className="text-xs font-medium text-slate-400">validés</span>
                 </div>
               </div>
 
@@ -546,14 +545,14 @@ const Courses = () => {
                 <button
                   type="button"
                   onClick={() => toggleCourseCompleted(activeCourseData.id, activeCourseData.is_completed)}
-                  className={`px-3 py-2 rounded-xl font-semibold text-[11px] shadow-sm transition-all flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-1.5 ${
                     activeCourseData.is_completed
                       ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
-                      : 'bg-amber-600 text-white hover:bg-amber-500'
+                      : 'bg-sky-600 text-white hover:bg-sky-500'
                   }`}
                 >
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  {activeCourseData.is_completed ? 'Terminé' : 'Marquer Terminé'}
+                  {activeCourseData.is_completed ? 'Terminé' : 'Marquer comme Terminé'}
                 </button>
               )}
             </div>
@@ -572,7 +571,7 @@ const Courses = () => {
               onClick={() => handleDomainChange(dom.code)}
               className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
                 isSelected
-                  ? 'bg-amber-600 text-white shadow-lg shadow-amber-500/25 scale-[1.02]'
+                  ? 'bg-sky-600 text-white shadow-lg shadow-sky-500/25 scale-[1.02]'
                   : 'glass-card text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
@@ -612,13 +611,13 @@ const Courses = () => {
         {/* SIDEBAR GAUCHE (Modules Accordéons & Timeline des Leçons) */}
         {/* -------------------------------------------------------- */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="glass-card p-5 rounded-2xl border-slate-200 dark:border-slate-800/90 shadow-xl space-y-4">
+          <div className="glass-card p-5 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-xl space-y-4">
             
             {/* Sidebar Title & Search */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-amber-700" /> Sommaire du Parcours
+                  <Layers className="w-4 h-4 text-sky-500" /> Sommaire du Parcours
                 </h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                   {isCLanguage ? '50 Leçons' : `${courses.length} Modules`}
@@ -632,7 +631,7 @@ const Courses = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Rechercher une leçon ou notion..."
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-amber-500 focus:outline-none"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-sky-500 focus:outline-none"
                 />
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
               </div>
@@ -650,7 +649,7 @@ const Courses = () => {
                     onClick={() => setStatusFilter(f.id)}
                     className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shrink-0 ${
                       statusFilter === f.id
-                        ? 'bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300'
+                        ? 'bg-sky-500/15 border border-sky-500/30 text-sky-600 dark:text-sky-400'
                         : 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
@@ -660,6 +659,7 @@ const Courses = () => {
               </div>
             </div>
 
+            {/* Accordion Modules List */}
             <div className="space-y-3 pt-2 max-h-[650px] overflow-y-auto pr-1">
               {groupedModules.map((mod) => {
                 const isOpen = openModuleIds[mod.id] !== false; // Default open
@@ -678,7 +678,7 @@ const Courses = () => {
                           <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">
                             {mod.title}
                           </h4>
-                          <span className="text-[10px] font-extrabold text-amber-700 dark:text-amber-300 shrink-0">
+                          <span className="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 shrink-0">
                             {mod.completedCount}/{mod.lessonsCount}
                           </span>
                         </div>
@@ -686,7 +686,7 @@ const Courses = () => {
                         {/* Module Mini Progress Bar */}
                         <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                           <div
-                            className="bg-amber-500 h-full transition-all duration-300 rounded-full"
+                            className="bg-sky-500 h-full transition-all duration-300 rounded-full"
                             style={{ width: `${mod.percentage}%` }}
                           ></div>
                         </div>
@@ -716,7 +716,7 @@ const Courses = () => {
                               }}
                               className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium text-left transition-all ${
                                 les.isActive
-                                  ? 'bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 font-bold shadow-2xs'
+                                  ? 'bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300 font-bold shadow-2xs'
                                   : 'hover:bg-slate-100 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300'
                               }`}
                             >
@@ -725,7 +725,7 @@ const Courses = () => {
                                 {les.isDone ? (
                                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                                 ) : les.isActive ? (
-                                  <PlayCircle className="w-4 h-4 text-amber-600 animate-pulse shrink-0" />
+                                  <PlayCircle className="w-4 h-4 text-sky-500 animate-pulse shrink-0" />
                                 ) : (
                                   <Circle className="w-4 h-4 text-slate-400 dark:text-slate-600 shrink-0" />
                                 )}
@@ -762,16 +762,16 @@ const Courses = () => {
             <div className="space-y-6">
               
               {/* Hero Card de la Leçon (Coursera / Linear Style) */}
-              <div className="glass-card p-5 sm:p-6 rounded-2xl bg-slate-950 text-white border border-slate-800 shadow-xl space-y-4">
-                <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-800 pb-3">
+              <div className="dark-hero glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border border-slate-800 shadow-2xl space-y-4" style={{background: 'linear-gradient(to bottom right, #0f172a, #020617, #0f172a)', color: '#ffffff'}}>
+                <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="px-3 py-1 rounded-full bg-amber-500/15 text-amber-700 border border-amber-200 text-[10px] font-black">
+                    <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black">
                       {isCLanguage ? `Leçon ${currentCLesson.num} / 50` : activeCourseData.subdomain_name}
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-200 text-[10px] font-semibold flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-amber-300" /> 10 min de vidéo & lecture
+                    <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-sky-400" /> 10 min de vidéo & lecture
                     </span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
                       Débutant à Avancé
                     </span>
                   </div>
@@ -781,7 +781,7 @@ const Courses = () => {
                     <button
                       type="button"
                       onClick={handlePrevLesson}
-                      className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-[11px] font-semibold text-slate-200 transition-all flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition-all flex items-center gap-1"
                       title="Raccourci Clavier: Touche Flèche Gauche ←"
                     >
                       ← <span className="hidden sm:inline">Précédente</span> <kbd className="text-[9px] px-1 py-0.5 bg-slate-950 rounded text-slate-400">←</kbd>
@@ -789,15 +789,15 @@ const Courses = () => {
                     <button
                       type="button"
                       onClick={handleNextLesson}
-                      className="px-3 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-[11px] font-semibold text-white shadow-sm transition-all flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-bold text-white shadow-md transition-all flex items-center gap-1"
                       title="Raccourci Clavier: Touche Flèche Droite →"
                     >
-                      <span className="hidden sm:inline">Suivante</span> → <kbd className="text-[9px] px-1 py-0.5 bg-amber-800 rounded text-amber-200">→</kbd>
+                      <span className="hidden sm:inline">Suivante</span> → <kbd className="text-[9px] px-1 py-0.5 bg-sky-950 rounded text-sky-200">→</kbd>
                     </button>
                   </div>
                 </div>
 
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-extrabold text-white tracking-tight leading-snug">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-snug">
                   {activeCourseData.title}
                 </h2>
               </div>
@@ -807,11 +807,11 @@ const Courses = () => {
               {/* -------------------------------------------------------- */}
               <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar">
                 {[
-                  { id: 'content', label: 'Fiche de Révision', icon: BookOpen, color: 'text-amber-700' },
-                  { id: 'video', label: 'Leçon Vidéo', icon: Video, color: 'text-amber-700', badge: activeCourseData.video_url },
-                  { id: 'examples', label: 'Pratique & Exemples', icon: Code2, color: 'text-amber-700' },
-                  { id: 'astuces', label: 'Astuces & Pièges', icon: Zap, color: 'text-amber-700' },
-                  { id: 'qcm', label: `Quiz Ciblés (${targetedQuestions.length})`, icon: HelpCircle, color: 'text-amber-700' }
+                  { id: 'content', label: 'Fiche de Révision', icon: BookOpen, color: 'text-sky-500' },
+                  { id: 'video', label: 'Leçon Vidéo', icon: Video, color: 'text-red-500', badge: activeCourseData.video_url },
+                  { id: 'examples', label: 'Pratique & Exemples', icon: Code2, color: 'text-indigo-500' },
+                  { id: 'astuces', label: 'Astuces & Pièges', icon: Zap, color: 'text-amber-500' },
+                  { id: 'qcm', label: `Quiz Ciblés (${targetedQuestions.length})`, icon: HelpCircle, color: 'text-purple-500' }
                 ].map((tab) => {
                   const isActive = activeTab === tab.id;
                   const Icon = tab.icon;
@@ -820,16 +820,16 @@ const Courses = () => {
                       key={tab.id}
                       type="button"
                       onClick={() => setActiveTab(tab.id)}
-                      className={`px-3 py-2 rounded-xl text-[11px] font-bold transition-all flex items-center gap-2 shrink-0 ${
+                      className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
                         isActive
-                          ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-800 scale-[1.01]'
+                          ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-md border border-slate-200 dark:border-slate-800 scale-[1.01]'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800/50'
                       }`}
                     >
                       <Icon className={`w-4 h-4 ${tab.color}`} />
                       <span>{tab.label}</span>
                       {tab.badge && (
-                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                       )}
                     </button>
                   );
@@ -840,7 +840,7 @@ const Courses = () => {
               {/* LECTEUR VIDÉO HD (16/9 Centré Style Coursera / Udemy) */}
               {/* -------------------------------------------------------- */}
               {activeTab === 'video' ? (
-                <div className="glass-card p-6 sm:p-8 rounded-2xl border-slate-200 dark:border-slate-800/90 shadow-xl space-y-6">
+                <div className="glass-card p-6 sm:p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl space-y-6">
                   <div className="flex items-center justify-between flex-wrap gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
                     <div className="flex items-center gap-3">
                       <div className="p-3 rounded-2xl bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
@@ -859,7 +859,7 @@ const Courses = () => {
                   {activeCourseData.video_url ? (
                     activeCourseData.video_url.includes('drive.google.com') ? (
                       <div className="space-y-4">
-                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-xl border border-slate-800">
+                        <div className="relative w-full aspect-video rounded-3xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                           <iframe
                             src={activeCourseData.video_url.replace(/\/view(\?.*)?$/, '/preview')}
                             title={activeCourseData.title}
@@ -876,7 +876,7 @@ const Courses = () => {
                             href={activeCourseData.video_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-amber-700 dark:text-amber-300 font-bold hover:underline shrink-0"
+                            className="text-sky-600 dark:text-sky-400 font-bold hover:underline shrink-0"
                           >
                             Ouvrir dans Google Drive ↗
                           </a>
@@ -884,7 +884,7 @@ const Courses = () => {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-xl border border-slate-800">
+                        <div className="relative w-full aspect-video rounded-3xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
                           <iframe
                             src={getEmbedUrl(activeCourseData.video_url)}
                             title={activeCourseData.title}
@@ -908,13 +908,13 @@ const Courses = () => {
                   {/* Section Objectifs Pédagogiques sous la Vidéo */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                     <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 space-y-1">
-                      <div className="text-xs font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">
+                      <div className="text-xs font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1">
                         <Sparkles className="w-3.5 h-3.5" /> Ce que vous apprendrez
                       </div>
                       <p className="text-xs text-slate-600 dark:text-slate-400">Maîtrise complète de la syntaxe et pièges des épreuves érites.</p>
                     </div>
                     <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 space-y-1">
-                      <div className="text-xs font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">
+                      <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5" /> Prérequis
                       </div>
                       <p className="text-xs text-slate-600 dark:text-slate-400">Notions d'algorithmique et structures de données de base.</p>
@@ -929,7 +929,7 @@ const Courses = () => {
                 </div>
               ) : activeTab !== 'qcm' ? (
                 /* Tab 1, 3, 4: Markdown Content Viewer (Fiche, Pratique, Astuces) */
-                <div className="glass-card p-5 rounded-2xl border-slate-200 dark:border-slate-800/90 shadow-xl min-h-[360px]">
+                <div className="glass-card p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl min-h-[400px]">
                   {activeTab === 'content' && <MarkdownViewer content={activeCourseData.content} />}
                   {activeTab === 'examples' && <MarkdownViewer content={activeCourseData.examples} />}
                   {activeTab === 'astuces' && <MarkdownViewer content={activeCourseData.astuces} />}
@@ -940,7 +940,7 @@ const Courses = () => {
                   <div className="glass-card p-6 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                        <HelpCircle className="w-5 h-5 text-amber-700 dark:text-amber-300" /> QCM Ciblés du Module ({targetedQuestions.length})
+                        <HelpCircle className="w-5 h-5 text-purple-600 dark:text-purple-400" /> QCM Ciblés du Module ({targetedQuestions.length})
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         Cliquez sur une question pour l'ouvrir, répondre et voir la correction détaillée.
@@ -966,7 +966,7 @@ const Courses = () => {
                   </div>
 
                   {targetedQuestions.length === 0 ? (
-                    <div className="glass-card p-10 rounded-2xl text-center text-slate-500 dark:text-slate-400 text-sm">
+                    <div className="glass-card p-12 rounded-3xl text-center text-slate-500 dark:text-slate-400 text-sm">
                       Aucun QCM ciblé disponible pour ce module.
                     </div>
                   ) : (
@@ -984,7 +984,7 @@ const Courses = () => {
                               className="p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer bg-slate-50/50 dark:bg-slate-900/40 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
                             >
                               <div className="flex items-center gap-3 min-w-0 flex-1">
-                                <span className="font-bold text-xs px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 shrink-0">
+                                <span className="font-bold text-xs px-2.5 py-1 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
                                   Q{idx + 1} • {q.exam_year}
                                 </span>
 
@@ -1040,7 +1040,7 @@ const Courses = () => {
                                               : 'bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300'
                                           }`}
                                         >
-                                          <strong className="text-amber-700 dark:text-amber-300 mr-2">{optKey})</strong> {optText}
+                                          <strong className="text-sky-600 dark:text-sky-400 mr-2">{optKey})</strong> {optText}
                                         </button>
                                       );
                                     });
@@ -1054,7 +1054,7 @@ const Courses = () => {
                                     </div>
                                     <div className="leading-relaxed">{answer.explanation}</div>
                                     {q.astuce && (
-                                      <div className="mt-2 text-amber-700 dark:text-amber-300 font-medium">⚡ <strong>Astuce Concours :</strong> {q.astuce}</div>
+                                      <div className="mt-2 text-sky-600 dark:text-sky-300 font-medium">⚡ <strong>Astuce Concours :</strong> {q.astuce}</div>
                                     )}
                                   </div>
                                 )}
@@ -1089,22 +1089,22 @@ const Courses = () => {
                 <button
                   type="button"
                   onClick={handleNextLesson}
-                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-xs font-bold text-white shadow-lg shadow-amber-500/25 transition-all flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-bold text-white shadow-lg shadow-sky-500/25 transition-all flex items-center gap-2"
                 >
-                  Leçon Suivante → <kbd className="text-[10px] px-1.5 py-0.5 bg-amber-900 rounded text-amber-100">→</kbd>
+                  Leçon Suivante → <kbd className="text-[10px] px-1.5 py-0.5 bg-sky-800 rounded text-sky-200">→</kbd>
                 </button>
               </div>
 
             </div>
           ) : (
-            <div className="glass-card p-10 rounded-2xl text-center text-slate-500 dark:text-slate-400 text-sm">
+            <div className="glass-card p-12 rounded-3xl text-center text-slate-500 dark:text-slate-400 text-sm">
               Sélectionnez un module de cours dans le sommaire à gauche pour commencer la lecture.
             </div>
           )}
         </div>
 
       </div>
-    </PageWrapper>
+    </div>
   );
 };
 
