@@ -41,7 +41,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
       <div className="flex items-center justify-between px-4 py-4 border-b border-inherit">
         <Link 
           to="/" 
-          className={`items-center gap-0.5 min-w-0 ${collapsed ? 'hidden md:hidden' : 'flex'} md:flex`} 
+          className={`items-center gap-0.5 min-w-0 ${collapsed ? 'hidden md:flex' : 'flex'}`} 
           onClick={onCloseMobile}
         >
           <span className="font-extrabold text-lg tracking-tight text-blue-600">Info</span>
@@ -60,7 +60,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
               setCollapsed(true);
             }
           }} 
-          className={`p-1.5 rounded-md text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-2 shrink-0 ${collapsed ? 'hidden md:hidden' : 'block'}`}
+          className={`p-1.5 rounded-md text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ml-2 shrink-0 ${collapsed ? 'hidden' : 'block'}`}
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -88,7 +88,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
               title={collapsed ? link.name : undefined}
               className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all rounded-lg
                 ${isActive
-                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-semibold border-l-[3px] border-blue-600 rounded-l-none pl-[9px]'
+                  ? 'sidebar-active'
                   : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
             >
