@@ -8,6 +8,7 @@ using Gemini (Vertex AI), then inserts them into:
 
 Supports resuming from where it stopped via a progress JSON file.
 """
+
 import os, sys, io, json, time, sqlite3
 import pypdf
 from google import genai
