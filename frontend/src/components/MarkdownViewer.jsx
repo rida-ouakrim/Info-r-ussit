@@ -385,12 +385,11 @@ const AccessQueryIcon = () => (
     <span className="font-bold text-sky-400 text-xs">Requête !</span>
   </span>
 );
-
-// Helper for **bold**, `code`, $math$, [ICON_ACCESS_QUERY], ⚡, and images
+// Helper for **bold**, *italic*, `code`, $math$, [ICON_ACCESS_QUERY], ⚡, and images
 const parseInlineFormatting = (text) => {
   if (!text) return '';
 
-  const inlineRegex = /(\*\*.*?\*\*|`.*?`|\$\$.*?\$\$|\$.*?\$|\[ICON_ACCESS_QUERY\]|⚡|!\[.*?\]\(.*?\))/g;
+  const inlineRegex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|\$\$.*?\$\$|\$.*?\$|\[ICON_ACCESS_QUERY\]|⚡|!\[.*?\]\(.*?\))/g;
   const parts = text.split(inlineRegex);
 
   if (parts.length <= 1) {
@@ -403,6 +402,10 @@ const parseInlineFormatting = (text) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       const inner = part.slice(2, -2);
       return <strong key={`bold-${i}`} className="font-bold text-slate-900 dark:text-white">{parseInlineFormatting(inner)}</strong>;
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      const inner = part.slice(1, -1);
+      return <em key={`italic-${i}`} className="italic text-slate-800 dark:text-slate-200">{parseInlineFormatting(inner)}</em>;
     }
     if (part.startsWith('`') && part.endsWith('`')) {
       return (
@@ -452,7 +455,6 @@ const parseInlineFormatting = (text) => {
   });
 };
 
-// Excel & Markdown Table Component with Sleek Grid Styling
 const TableBlock = ({ rows }) => {
   if (!rows || rows.length === 0) return null;
 
