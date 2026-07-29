@@ -8,7 +8,7 @@ import {
   HelpCircle, Code2, RefreshCw, Clock, 
   ChevronRight, Zap, Play, PlayCircle, Filter, 
   FileText, Star, ChevronDown, ChevronUp, User, Globe, Award, Sparkles, Layers, Video,
-  Server, Cpu, Laptop, GraduationCap, Brain, Terminal, Database, Network, LayoutTemplate, ArrowLeft, Users, School
+  Server, Cpu, Laptop, GraduationCap, Brain, Terminal, Database, Network, LayoutTemplate, ArrowLeft, Users, School, Library
 } from 'lucide-react';
 
 const getDomainConfig = (code) => {
