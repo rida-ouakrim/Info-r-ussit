@@ -408,8 +408,11 @@ const Courses = () => {
   };
 
   const targetedQuestions = useMemo(() => {
-    return filterQuestionsForCourse(subQuestions, activeCourseData);
-  }, [subQuestions, activeCourseData]);
+    if (isCLanguage) {
+      return filterQuestionsForCourse(subQuestions, activeCourseData);
+    }
+    return subQuestions.filter(q => q.course === selectedCourse?.id);
+  }, [subQuestions, activeCourseData, isCLanguage, selectedCourse]);
 
   const toggleCourseCompleted = async (id, currentVal) => {
     try {

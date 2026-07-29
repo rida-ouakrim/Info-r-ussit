@@ -7,16 +7,14 @@ class QuestionSerializer(serializers.ModelSerializer):
     domain_code = serializers.CharField(source='domain.code', read_only=True, default='')
     subdomain_code = serializers.CharField(source='subdomain.code', read_only=True, default='')
     is_bookmarked = serializers.SerializerMethodField()
-
     class Meta:
         model = Question
         fields = (
             'id', 'source_type', 'exam_year', 'question_number', 'question_text',
             'option_a', 'option_b', 'option_c', 'option_d', 'option_e', 'correct_option',
             'explanation', 'astuce', 'domain_code', 'domain_name',
-            'subdomain_code', 'subdomain_name', 'is_bookmarked'
+            'subdomain_code', 'subdomain_name', 'course', 'is_bookmarked'
         )
-
     def get_is_bookmarked(self, obj):
         user = self.context.get('request').user if self.context.get('request') else None
         if user and user.is_authenticated:

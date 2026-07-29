@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from syllabus.models import Domain, Subdomain
+from syllabus.models import Domain, Subdomain, Course
 
 class Question(models.Model):
     SOURCE_TYPES = (
@@ -22,6 +22,7 @@ class Question(models.Model):
     astuce = models.TextField(blank=True, null=True)
     domain = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True, blank=True)
     subdomain = models.ForeignKey(Subdomain, on_delete=models.SET_NULL, null=True, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True, related_name='questions')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
