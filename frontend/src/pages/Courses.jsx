@@ -831,46 +831,7 @@ const Courses = () => {
           </button>
         </div>
 
-        <div className="dark-hero glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-950 to-indigo-950 text-white border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-6" style={{background: 'linear-gradient(to right, #0f172a, #020617, #1e1b4b)', color: '#ffffff'}}>
-          <div className="space-y-3 max-w-2xl z-10">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black tracking-wide">PARCOURS OFFICIEL 2026</span>
-              <span className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-300 text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
-                <Clock className="w-3.5 h-3.5 text-sky-400" /> {isCLanguage ? '50 Leçons • 6 h de formation' : `${courses.length} Modules de cours`}
-              </span>
-              <span className="px-3 py-1 rounded-full bg-slate-800/80 text-slate-300 text-xs font-semibold flex items-center gap-1.5 border border-slate-700">
-                <Award className="w-3.5 h-3.5 text-amber-400" /> Niveau Débutant à Avancé
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">{currentSubdomainObj?.name || 'Formation Informatique CRMEF'}</h1>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">{currentSubdomainObj?.description || 'Maîtrisez les concepts clés de l\'épreuve écrite et pratique.'}</p>
-          </div>
 
-          <div className="z-10 flex items-center gap-6 bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shrink-0 self-start lg:self-center">
-            {(() => {
-              const subCourses = allCourses.filter(c => c.subdomain === selectedSubdomainCode);
-              const total = subCourses.length;
-              const completed = subCourses.filter(c => c.is_completed).length;
-              const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-              return (
-                <>
-                  <ProgressRing percentage={percentage} size={72} strokeWidth={7} />
-                  <div className="space-y-2">
-                    <div>
-                      <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Maîtrise du Parcours</div>
-                      <div className="text-lg font-black text-white">{completed} / {total} <span className="text-xs font-medium text-slate-400">validés</span></div>
-                    </div>
-                    {activeCourseData && (
-                      <button type="button" onClick={() => toggleCourseCompleted(activeCourseData.id, activeCourseData.is_completed)} className={`px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-1.5 ${activeCourseData.is_completed ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400' : 'bg-sky-600 text-white hover:bg-sky-500'}`}>
-                        <CheckCircle2 className="w-3.5 h-3.5" />{activeCourseData.is_completed ? 'Terminé' : 'Marquer comme Terminé'}
-                      </button>
-                    )}
-                  </div>
-                </>
-              );
-            })()}
-          </div>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-4 space-y-4">
@@ -921,19 +882,47 @@ const Courses = () => {
           <div className="lg:col-span-8 space-y-6">
             {activeCourseData ? (
               <div className="space-y-6">
-                <div className="dark-hero glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white border border-slate-800 shadow-2xl space-y-4" style={{background: 'linear-gradient(to bottom right, #0f172a, #020617, #0f172a)', color: '#ffffff'}}>
-                  <div className="flex items-center justify-between flex-wrap gap-3 border-b border-slate-800 pb-4">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black">{isCLanguage ? `Leçon ${currentCLesson.num} / 50` : activeCourseData.subdomain_name}</span>
-                      <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-sky-400" /> 10 min de vidéo & lecture</span>
-                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">Débutant à Avancé</span>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                      {isCLanguage ? `Leçon ${currentCLesson.num} / 50` : activeCourseData.subdomain_name}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button type="button" onClick={handlePrevLesson} className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 transition-all flex items-center gap-1" title="Raccourci Clavier: Touche Flèche Gauche ←">← <span className="hidden sm:inline">Précédente</span> <kbd className="text-[9px] px-1 py-0.5 bg-slate-950 rounded text-slate-400">←</kbd></button>
-                      <button type="button" onClick={handleNextLesson} className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-bold text-white shadow-md transition-all flex items-center gap-1" title="Raccourci Clavier: Touche Flèche Droite →"><span className="hidden sm:inline">Suivante</span> → <kbd className="text-[9px] px-1 py-0.5 bg-sky-950 rounded text-sky-200">→</kbd></button>
-                    </div>
+                    <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
+                      {activeCourseData.title}
+                    </h1>
                   </div>
-                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-snug">{activeCourseData.title}</h2>
+                  
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => toggleCourseCompleted(activeCourseData.id, activeCourseData.is_completed)}
+                      className={`px-3 py-1.5 rounded-xl font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 ${
+                        activeCourseData.is_completed
+                          ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
+                          : 'bg-sky-600 text-white hover:bg-sky-500'
+                      }`}
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      {activeCourseData.is_completed ? 'Terminé' : 'Valider la leçon'}
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={handlePrevLesson}
+                      className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 transition-all font-bold text-xs"
+                      title="Précédente"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextLesson}
+                      className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 transition-all font-bold text-xs"
+                      title="Suivante"
+                    >
+                      →
+                    </button>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar">
                   {[{ id: 'content', label: 'Fiche de Révision', icon: BookOpen, color: 'text-sky-500' }, { id: 'video', label: 'Leçon Vidéo', icon: Video, color: 'text-red-500', badge: activeCourseData.video_url }, { id: 'examples', label: 'Pratique & Exemples', icon: Code2, color: 'text-indigo-500' }, { id: 'astuces', label: 'Astuces & Pièges', icon: Zap, color: 'text-amber-500' }, { id: 'qcm', label: `Quiz Ciblés (${targetedQuestions.length})`, icon: HelpCircle, color: 'text-purple-500' }].map((tab) => {
