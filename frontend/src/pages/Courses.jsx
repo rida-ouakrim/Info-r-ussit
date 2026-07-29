@@ -853,12 +853,16 @@ const Courses = () => {
               </div>
               <div className="space-y-3 pt-2 max-h-[650px] overflow-y-auto pr-1">
                 {groupedModules.map((mod) => {
-                  const isOpen = openModuleIds[mod.id] !== false;
+                  const hasActiveLesson = mod.lessons.some(l => l.isActive);
+                  const isOpen = openModuleIds[mod.id] !== undefined ? openModuleIds[mod.id] : hasActiveLesson;
                   return (
                     <div key={mod.id} className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-white/50 dark:bg-slate-950/40 shadow-xs transition-all">
                       <button type="button" onClick={() => toggleModuleOpen(mod.id)} className="w-full p-4 flex items-center justify-between gap-3 text-left bg-slate-50/70 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors">
                         <div className="space-y-1 min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-2"><h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">{mod.title}</h4><span className="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 shrink-0">{mod.completedCount}/{mod.lessonsCount}</span></div>
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="text-xs font-bold text-slate-900 dark:text-white whitespace-normal break-words leading-relaxed">{mod.title}</h4>
+                            <span className="text-[10px] font-extrabold text-sky-600 dark:text-sky-400 shrink-0 mt-0.5">{mod.completedCount}/{mod.lessonsCount}</span>
+                          </div>
                           <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden"><div className="bg-sky-500 h-full transition-all duration-300 rounded-full" style={{ width: `${mod.percentage}%` }}></div></div>
                         </div>
                         {isOpen ? <ChevronUp className="w-4 h-4 text-slate-400 shrink-0" /> : <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />}
@@ -867,7 +871,7 @@ const Courses = () => {
                         <div className="p-2 space-y-1 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
                           {mod.lessons.map((les) => (
                             <button key={les.num} type="button" onClick={() => { isCLanguage ? setSelectedCLessonIdx(les.globalIdx) : fetchCourseDetail(les.courseId); }} className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium text-left transition-all ${les.isActive ? 'bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300 font-bold shadow-2xs' : 'hover:bg-slate-100 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300'}`}>
-                              <div className="flex items-center gap-2.5 min-w-0">{les.isDone ? <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> : les.isActive ? <PlayCircle className="w-4 h-4 text-sky-500 animate-pulse shrink-0" /> : <Circle className="w-4 h-4 text-slate-400 dark:text-slate-600 shrink-0" />}<span className="truncate"><strong className="text-slate-400 mr-1.5">#{les.num}</strong>{les.title}</span></div>
+                              <div className="flex items-center gap-2.5 min-w-0">{les.isDone ? <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> : les.isActive ? <PlayCircle className="w-4 h-4 text-sky-500 animate-pulse shrink-0" /> : <Circle className="w-4 h-4 text-slate-400 dark:text-slate-600 shrink-0" />}<span className="whitespace-normal break-words"><strong className="text-slate-400 mr-1.5">#{les.num}</strong>{les.title}</span></div>
                               <div className="flex items-center gap-1.5 shrink-0 ml-2"><span className="text-[10px] text-slate-400 font-semibold">{les.duration}</span><span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold text-slate-500">{les.type}</span></div>
                             </button>
                           ))}
