@@ -389,7 +389,7 @@ const AccessQueryIcon = () => (
 const parseInlineFormatting = (text) => {
   if (!text) return '';
 
-  const inlineRegex = /(\*\*.*?\*\*|\*.*?\*|`.*?`|\$\$.*?\$\$|\$.*?\$|\[ICON_ACCESS_QUERY\]|⚡|!\[.*?\]\(.*?\))/g;
+  const inlineRegex = /(\*\*\*.*?\*\*\*|\*\*.*?\*\*|\*.*?\*|`.*?`|\$\$.*?\$\$|\$.*?\$|\[ICON_ACCESS_QUERY\]|⚡|!\[.*?\]\(.*?\))/g;
   const parts = text.split(inlineRegex);
 
   if (parts.length <= 1) {
@@ -399,6 +399,16 @@ const parseInlineFormatting = (text) => {
   return parts.map((part, i) => {
     if (!part) return null;
 
+    if (part.startsWith('***') && part.endsWith('***')) {
+      const inner = part.slice(3, -3);
+      return (
+        <strong key={`bold-italic-${i}`} className="font-bold text-slate-900 dark:text-white">
+          <em className="italic text-slate-850 dark:text-slate-200">
+            {parseInlineFormatting(inner)}
+          </em>
+        </strong>
+      );
+    }
     if (part.startsWith('**') && part.endsWith('**')) {
       const inner = part.slice(2, -2);
       return <strong key={`bold-${i}`} className="font-bold text-slate-900 dark:text-white">{parseInlineFormatting(inner)}</strong>;
@@ -571,7 +581,7 @@ export const MarkdownViewer = ({ content }) => {
       const titleText = trimmed.replace('# ', '');
       const isTitleAr = isArabicText(titleText);
       elements.push(
-        <h1 key={`h1-${index}`} className={`text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-8 mb-5 pb-3 border-b-2 border-indigo-500/30 flex items-center gap-3 ${isTitleAr ? 'flex-row-reverse text-right' : 'text-left'}`}>
+        <h1 key={`h1-${index}`} dir={isTitleAr ? 'rtl' : 'ltr'} className={`text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-8 mb-5 pb-3 border-b-2 border-indigo-500/30 flex items-center gap-3 ${isTitleAr ? 'text-right font-arabic' : 'text-left'}`}>
           <span className="w-2.5 h-8 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-full inline-block shrink-0 shadow-md"></span>
           <span className="leading-snug">{titleText}</span>
         </h1>
@@ -582,7 +592,7 @@ export const MarkdownViewer = ({ content }) => {
       const h2Text = trimmed.replace('## ', '');
       const isH2Ar = isArabicText(h2Text);
       elements.push(
-        <h2 key={`h2-${index}`} className={`text-xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-7 mb-3.5 flex items-center gap-2.5 p-2 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 ${isH2Ar ? 'flex-row-reverse text-right' : 'text-left'}`}>
+        <h2 key={`h2-${index}`} dir={isH2Ar ? 'rtl' : 'ltr'} className={`text-xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-7 mb-3.5 flex items-center gap-2.5 p-2 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 ${isH2Ar ? 'text-right font-arabic' : 'text-left'}`}>
           <span className="w-2 h-6 bg-amber-500 rounded-full inline-block shrink-0 shadow-sm"></span>
           <span className="leading-snug">{h2Text}</span>
         </h2>
@@ -593,7 +603,7 @@ export const MarkdownViewer = ({ content }) => {
       const h3Text = trimmed.replace('### ', '');
       const isH3Ar = isArabicText(h3Text);
       elements.push(
-        <h3 key={`h3-${index}`} className={`text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mt-5 mb-2 flex items-center gap-2 ${isH3Ar ? 'flex-row-reverse text-right' : 'text-left'}`}>
+        <h3 key={`h3-${index}`} dir={isH3Ar ? 'rtl' : 'ltr'} className={`text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mt-5 mb-2 flex items-center gap-2 ${isH3Ar ? 'text-right font-arabic' : 'text-left'}`}>
           <span className="w-1.5 h-4 bg-sky-500 rounded-full inline-block shrink-0"></span>
           <span>{h3Text}</span>
         </h3>
@@ -604,7 +614,7 @@ export const MarkdownViewer = ({ content }) => {
       const text = trimmed.substring(2);
       const isLiAr = isArabicText(text);
       elements.push(
-        <div key={`li-${index}`} className={`flex items-start gap-3 my-2 text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed pl-2 ${isLiAr ? 'flex-row-reverse text-right' : 'text-left'}`}>
+        <div key={`li-${index}`} dir={isLiAr ? 'rtl' : 'ltr'} className={`flex items-start gap-3 my-2 text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed pl-2 ${isLiAr ? 'text-right font-arabic' : 'text-left'}`}>
           <div className="w-2 h-2 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-2 shrink-0 shadow-xs"></div>
           <div className="flex-1">{renderTextWithMatrices(text)}</div>
         </div>
@@ -615,7 +625,7 @@ export const MarkdownViewer = ({ content }) => {
       const text = trimmed.replace('> ', '');
       const isQuoteAr = isArabicText(text);
       elements.push(
-        <div key={`quote-${index}`} className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-l-4 border-amber-500 dark:border-amber-400 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3 shadow-sm ${isQuoteAr ? 'flex-row-reverse text-right' : 'text-left'}`}>
+        <div key={`quote-${index}`} dir={isQuoteAr ? 'rtl' : 'ltr'} className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-l-4 border-amber-500 dark:border-amber-400 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3 shadow-sm ${isQuoteAr ? 'text-right font-arabic' : 'text-left'}`}>
           <Lightbulb className="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="leading-relaxed font-medium flex-1">{renderTextWithMatrices(text)}</div>
         </div>

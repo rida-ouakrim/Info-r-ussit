@@ -57,10 +57,10 @@ class Command(BaseCommand):
                 lines.append(f"  * Course ID {c.id}: {c.title}")
         courses_prompt_str = "\n".join(lines)
 
-        # Load all questions
-        questions = list(Question.objects.all())
+        # Load only unclassified questions
+        questions = list(Question.objects.filter(course__isnull=True))
         total_questions = len(questions)
-        self.stdout.write(self.style.NOTICE(f"Loaded {total_questions} questions from database for classification."))
+        self.stdout.write(self.style.NOTICE(f"Loaded {total_questions} unclassified questions from database for classification."))
 
         batch_size = 15
         batches = [questions[i:i + batch_size] for i in range(0, total_questions, batch_size)]
