@@ -149,6 +149,8 @@ const Courses = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'completed', 'in_progress', 'favorites'
   const [activeTab, setActiveTab] = useState('content'); // 'content', 'video', 'examples', 'astuces', 'qcm'
+  const [courseLang, setCourseLang] = useState('bilingual'); // 'bilingual', 'ar', 'fr'
+  const [qcmLangFilter, setQcmLangFilter] = useState('all'); // 'all', 'ar', 'fr'
 
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -231,6 +233,8 @@ const Courses = () => {
 
   const handleCourseSelect = async (course) => {
     setSelectedCourse(course);
+    setCourseLang('bilingual'); // Reset language on new course
+    setQcmLangFilter('all');   // Reset QCM language filter
     setLoading(true);
     await fetchCourseDetail(course.id);
     setCurrentStep('course_detail');
@@ -271,6 +275,25 @@ const Courses = () => {
     }
     return selectedCourse;
   }, [selectedCourse, isCLanguage, currentCLesson]);
+
+  // Detect if this is a bilingual course (has separate AR/FR content)
+  const isBilingualCourse = useMemo(() => {
+    return Boolean(activeCourseData?.content_ar || activeCourseData?.content_fr);
+  }, [activeCourseData]);
+
+  // Get the content to display based on selected language
+  const getDisplayContent = useCallback((field) => {
+    if (!activeCourseData) return '';
+    if (!isBilingualCourse || courseLang === 'bilingual') {
+      return activeCourseData[field] || '';
+    }
+    // For content tab, use language-specific version
+    if (field === 'content') {
+      if (courseLang === 'ar') return activeCourseData.content_ar || activeCourseData.content || '';
+      if (courseLang === 'fr') return activeCourseData.content_fr || activeCourseData.content || '';
+    }
+    return activeCourseData[field] || '';
+  }, [activeCourseData, isBilingualCourse, courseLang]);
 
   const fetchCourseDetail = async (id) => {
     try {
@@ -408,11 +431,22 @@ const Courses = () => {
   };
 
   const targetedQuestions = useMemo(() => {
-    if (isCLanguage) {
-      return filterQuestionsForCourse(subQuestions, activeCourseData);
+    let questions = isCLanguage
+      ? filterQuestionsForCourse(subQuestions, activeCourseData)
+      : subQuestions.filter(q => q.course === selectedCourse?.id);
+    
+    // Apply language filter for bilingual courses
+    if (isBilingualCourse && qcmLangFilter !== 'all') {
+      questions = questions.filter(q => {
+        const text = (q.question_text || '') + ' ' + (q.option_a || '');
+        const arabicCount = (text.match(/[\u0600-\u06FF]/g) || []).length;
+        const latinCount = (text.match(/\b[a-zA-Z]{4,}\b/g) || []).length;
+        const isArabic = arabicCount > 20 || (arabicCount > 5 && latinCount < 5);
+        return qcmLangFilter === 'ar' ? isArabic : !isArabic;
+      });
     }
-    return subQuestions.filter(q => q.course === selectedCourse?.id);
-  }, [subQuestions, activeCourseData, isCLanguage, selectedCourse]);
+    return questions;
+  }, [subQuestions, activeCourseData, isCLanguage, selectedCourse, isBilingualCourse, qcmLangFilter]);
 
   const toggleCourseCompleted = async (id, currentVal) => {
     try {
@@ -980,21 +1014,82 @@ const Courses = () => {
           </div>
         ) : activeTab !== 'qcm' ? (
           <div className="glass-card p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl min-h-[400px]">
-            {activeTab === 'content' && <MarkdownViewer content={activeCourseData.content} />}
-            {activeTab === 'examples' && <MarkdownViewer content={activeCourseData.examples} />}
-            {activeTab === 'astuces' && <MarkdownViewer content={activeCourseData.astuces} />}
+            {/* Language selector for bilingual courses */}
+            {isBilingualCourse && activeTab === 'content' && (
+              <div className="flex items-center gap-2 mb-6 pb-5 border-b border-slate-200 dark:border-slate-800">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Langue du cours :</span>
+                <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                  {[
+                    { id: 'fr', label: 'Français', flag: '🇫🇷' },
+                    { id: 'ar', label: 'عربي', flag: '🇲🇦' },
+                    { id: 'bilingual', label: 'Bilingue', flag: '🌐' },
+                  ].map(lang => (
+                    <button
+                      key={lang.id}
+                      type="button"
+                      onClick={() => setCourseLang(lang.id)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                        courseLang === lang.id
+                          ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-700'
+                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      <span>{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+                {courseLang === 'ar' && (
+                  <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
+                    تعرض بالعربية فقط
+                  </span>
+                )}
+                {courseLang === 'fr' && (
+                  <span className="text-[10px] font-semibold text-sky-600 dark:text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2.5 py-1 rounded-full">
+                    Affichage en français uniquement
+                  </span>
+                )}
+              </div>
+            )}
+            <div dir={isBilingualCourse && courseLang === 'ar' ? 'rtl' : undefined}>
+              {activeTab === 'content' && <MarkdownViewer content={getDisplayContent('content')} />}
+              {activeTab === 'examples' && <MarkdownViewer content={getDisplayContent('examples')} />}
+              {activeTab === 'astuces' && <MarkdownViewer content={getDisplayContent('astuces')} />}
+            </div>
           </div>
         ) : (
           <div className="space-y-6">
-            <div className="glass-card p-6 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"><HelpCircle className="w-5 h-5 text-purple-600 dark:text-purple-400" /> QCM Ciblés du Module ({targetedQuestions.length})</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Cliquez sur une question pour l'ouvrir.</p>
+            <div className="glass-card p-6 rounded-2xl flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"><HelpCircle className="w-5 h-5 text-purple-600 dark:text-purple-400" /> QCM Ciblés du Module ({targetedQuestions.length})</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Cliquez sur une question pour l&apos;ouvrir.</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button type="button" onClick={expandAllQcm} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all">Tout ouvrir</button>
+                  <button type="button" onClick={collapseAllQcm} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all">Tout fermer</button>
+                </div>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <button type="button" onClick={expandAllQcm} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all">Tout ouvrir</button>
-                <button type="button" onClick={collapseAllQcm} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all">Tout fermer</button>
-              </div>
+              {/* Language filter for bilingual QCMs */}
+              {isBilingualCourse && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Filtrer par langue :</span>
+                  {[
+                    { id: 'all', label: 'Tout', flag: '🌐' },
+                    { id: 'fr', label: 'Français', flag: '🇫🇷' },
+                    { id: 'ar', label: 'عربي', flag: '🇲🇦' },
+                  ].map(l => (
+                    <button key={l.id} type="button" onClick={() => setQcmLangFilter(l.id)}
+                      className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                        qcmLangFilter === l.id
+                          ? 'bg-purple-500/15 border border-purple-500/30 text-purple-700 dark:text-purple-400'
+                          : 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                      }`}>
+                      {l.flag} {l.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             {targetedQuestions.length === 0 ? <div className="glass-card p-12 rounded-3xl text-center text-slate-500 dark:text-slate-400 text-sm">Aucun QCM ciblé disponible.</div> : (
               <div className="space-y-3">

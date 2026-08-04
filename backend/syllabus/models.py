@@ -22,6 +22,8 @@ class Course(models.Model):
     subdomain = models.ForeignKey(Subdomain, on_delete=models.CASCADE, related_name='courses')
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True, null=True)
+    content_ar = models.TextField(blank=True, null=True, help_text="Contenu en arabe (cours bilingues)")
+    content_fr = models.TextField(blank=True, null=True, help_text="Contenu en français (cours bilingues)")
     examples = models.TextField(blank=True, null=True)
     astuces = models.TextField(blank=True, null=True)
     video_url = models.CharField(max_length=500, blank=True, null=True, help_text="Lien de la vidéo YouTube de la leçon")

@@ -13,7 +13,8 @@ const Exams = () => {
   const [mode, setMode] = useState('Entraînement');
   const [activeTab, setActiveTab] = useState('new'); // 'new' or 'saved'
   
-  const [selectedDomainFilter, setSelectedDomainFilter] = useState('ALL'); // 'ALL', 'SPECIALITE', 'DIDACTIQUE'
+  const [selectedDomainFilter, setSelectedDomainFilter] = useState('ALL'); // 'ALL', 'SPECIALITE', 'DIDACTIQUE', 'SCIENCES_EDU'
+  const [selectedLangFilter, setSelectedLangFilter] = useState('ALL'); // 'ALL', 'fr', 'ar' - for bilingual exams
   
   // Interactive Question AI Chatbot state
   const [chatModalOpen, setChatModalOpen] = useState(false);
@@ -82,13 +83,28 @@ const Exams = () => {
       }
 
       const res = await API.get(queryUrl);
-      if (res.data.length === 0) {
-        alert(`Aucune question disponible pour l'année ${targetYear}.`);
+      // Filter by language if Sciences Edu selected and language filter active
+      let filteredQuestions = res.data;
+      if ((selectedDomainFilter === 'SCIENCES_EDU' || selectedDomainFilter === 'ALL') && selectedLangFilter !== 'ALL') {
+        filteredQuestions = res.data.filter(q => {
+          const text = (q.question_text || '') + ' ' + (q.option_a || '') + ' ' + (q.option_b || '');
+          const hasArabic = /[\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/.test(text);
+          const arabicCharCount = (text.match(/[\u0600-\u06FF]/g) || []).length;
+          const latinWordCount = (text.match(/\b[a-zA-Z]{4,}\b/g) || []).length;
+          const isMainlyArabic = arabicCharCount > 20 || (arabicCharCount > 5 && latinWordCount < 5);
+          if (selectedLangFilter === 'ar') return isMainlyArabic;
+          if (selectedLangFilter === 'fr') return !isMainlyArabic;
+          return true;
+        });
+      }
+      
+      if (filteredQuestions.length === 0) {
+        alert(`Aucune question disponible pour l'année ${targetYear} avec ce filtre.`);
         setLoading(false);
         return;
       }
       
-      setQuestions(res.data);
+      setQuestions(filteredQuestions);
 
       if (targetSession) {
         setSelectedYear(targetSession.exam_year);
@@ -405,6 +421,44 @@ const Exams = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Language filter — shows when SCIENCES_EDU is selected */}
+                {selectedDomainFilter === 'SCIENCES_EDU' && (
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                      🌎 Langue de l&apos;Épreuve Sciences de l&apos;Éducation
+                    </label>
+                    <div className="grid grid-cols-3 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedLangFilter('ALL')}
+                        className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                          selectedLangFilter === 'ALL' ? 'bg-slate-800 border-slate-600 text-white shadow-sm' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                        }`}
+                      >
+                        🌐 Bilingue (FR + AR)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedLangFilter('fr')}
+                        className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                          selectedLangFilter === 'fr' ? 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-400 shadow-sm' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                        }`}
+                      >
+                        🇫🇷 Français seulement
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedLangFilter('ar')}
+                        className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                          selectedLangFilter === 'ar' ? 'bg-amber-500/15 border-amber-500 text-amber-700 dark:text-amber-400 shadow-sm' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                        }`}
+                      >
+                        🇲🇦 عربي فقط
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button
