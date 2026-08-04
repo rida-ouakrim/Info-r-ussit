@@ -35,28 +35,86 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_DJANGO = os.path.join(SCRIPT_DIR, "..", "backend", "db.sqlite3")
 DB_CONCOURS = os.path.join(SCRIPT_DIR, "..", "concours.db")
 
-# Course-specific prompt instructions for Unicode diagrams
+# Course-specific prompt instructions and image embeddings
 COURSE_METADATA = {
     29: {
-        "focus": "Didactique générale : Triangle didactique, contrat didactique, transposition didactique. Intégrez un diagramme Unicode de triangle reliant Enseignant, Apprenant et Savoir avec les relations (Pédagogique, Didactique, Apprentissage). Intégrez également un diagramme de flux Unicode montrant les étapes de la transposition didactique (Savoir savant -> Savoir à enseigner -> Savoir enseigné -> Savoir assimilé)."
+        "images": {
+            "fr": [
+                "![Le Triangle Didactique](/images/triangle_didactique.png)",
+                "![La Transposition Didactique](/images/transposition_didactique.png)"
+            ],
+            "ar": [
+                "![المثلث الديداكتيكي](/images/triangle_didactique.png)",
+                "![النقل الديداكتيكي](/images/transposition_didactique.png)"
+            ]
+        },
+        "focus": "Didactique générale : Triangle didactique (Enseignant, Apprenant, Savoir) et Transposition didactique. Intégrez l'image du triangle didactique et l'image de la transposition didactique dans leurs sections respectives."
     },
     30: {
-        "focus": "Conceptions des apprenants, représentations et obstacles didactiques (épistémologique de Bachelard, didactique, ontogénétique). Intégrez un diagramme de classification Unicode montrant les types d'obstacles et comment l'enseignant doit s'appuyer sur les représentations comme modèle explicatif."
+        "images": {
+            "fr": [
+                "![Les Obstacles Didactiques](/images/obstacles_didactiques.png)"
+            ],
+            "ar": [
+                "![العوائق الديداكتيكية](/images/obstacles_didactiques.png)"
+            ]
+        },
+        "focus": "Conceptions des apprenants, représentations et obstacles didactiques (épistémologique de Bachelard, didactique, ontogénétique). Intégrez l'image des obstacles didactiques dans la section sur les types d'obstacles."
     },
     31: {
-        "focus": "Situations-problèmes et situations didactiques en informatique. Théorie des situations didactiques (TSD) de Brousseau. Intégrez un diagramme temporel Unicode représentant le cycle de la TSD : Situation d'Action -> Situation de Formulation -> Situation de Validation -> Situation d'Institutionnalisation (avec le rôle de dévolution et d'apprentissage)."
+        "images": {
+            "fr": [
+                "![Théorie des Situations Didactiques](/images/tsd_brousseau.png)"
+            ],
+            "ar": [
+                "![نظرية الوضعيات الديداكتيكية](/images/tsd_brousseau.png)"
+            ]
+        },
+        "focus": "Situations-problèmes et situations didactiques en informatique. Théorie des situations didactiques (TSD) de Brousseau. Intégrez l'image de la TSD de Brousseau dans la section expliquant les 4 phases (action, formulation, validation, institutionnalisation)."
     },
     32: {
-        "focus": "Curriculum officiel d'informatique marocain (Secondaire collégial et qualifiant). Intégrez une carte conceptuelle Unicode montrant l'organisation modulaire du programme, la répartition des enveloppes horaires et les profils de sortie attendus au lycée."
+        "images": {
+            "fr": [
+                "![Curriculum Informatique Maroc](/images/curriculum_maroc.png)"
+            ],
+            "ar": [
+                "![منهج المعلوميات بالمغرب](/images/curriculum_maroc.png)"
+            ]
+        },
+        "focus": "Curriculum officiel d'informatique marocain (Secondaire collégial et qualifiant). Intégrez l'image du curriculum d'informatique marocain dans la section sur les programmes et enveloppes horaires."
     },
     33: {
-        "focus": "Conception et choix des ressources didactiques, manuels scolaires et TICE (Technologies de l'Information et de la Communication pour l'Éducation). Intégrez un schéma Unicode du Modèle SAMR (Substitution, Augmentation, Modification, Redéfinition) appliqué aux cours d'informatique."
+        "images": {
+            "fr": [
+                "![Le Modèle SAMR](/images/modele_samr.png)"
+            ],
+            "ar": [
+                "![نموذج SAMR](/images/modele_samr.png)"
+            ]
+        },
+        "focus": "Conception et choix des ressources didactiques, manuels scolaires et TICE. Modèle SAMR (Substitution, Augmentation, Modification, Redéfinition). Intégrez l'image du modèle SAMR dans la section correspondante."
     },
     34: {
-        "focus": "Pédagogie Par Objectifs (PPO) et Approche Par Competences (APC). Intégrez un tableau de comparaison Unicode et un schéma d'une situation d'intégration (famille de situations, ressources internes/externes, consigne, support)."
+        "images": {
+            "fr": [
+                "![Situation d'Intégration APC](/images/situation_integration.png)"
+            ],
+            "ar": [
+                "![وضعية الإدماج](/images/situation_integration.png)"
+            ]
+        },
+        "focus": "Pédagogie Par Objectifs (PPO) et Approche Par Competences (APC). La situation d'intégration (famille de situations, ressources internes/externes, consigne, support). Intégrez l'image de la situation d'intégration dans la section APC."
     },
     35: {
-        "focus": "Démarches d'investigation et d'apprentissage actif en classe d'informatique (OPHERIC, démarche de projet, classe inversée). Intégrez un cycle Unicode de la démarche d'investigation (Situation déclenchante -> Hypothèses -> Investigation -> Confrontation -> Synthèse)."
+        "images": {
+            "fr": [
+                "![La Démarche d'Investigation](/images/demarche_investigation.png)"
+            ],
+            "ar": [
+                "![خطوات تقصي المفاهيم](/images/demarche_investigation.png)"
+            ]
+        },
+        "focus": "Démarches d'investigation et d'apprentissage actif en classe d'informatique (OPHERIC, démarche de projet, classe inversée). Intégrez l'image de la démarche d'investigation dans la section correspondante."
     }
 }
 
@@ -111,9 +169,13 @@ Your goal is to write a premium, clear, and highly visual course guide in FRENCH
 Course Title: {title}
 Focus Area: {metadata["focus"]}
 
+Required Images to Embed in your Markdown:
+{chr(10).join(metadata["images"]["fr"])}
+Make sure to place these markdown images at the exact relevant places (e.g., right under the heading of each theory/concept).
+
 Design requirements:
-- Create beautiful, clear, and centered UNICODE/ASCII DIAGRAMS (using characters like ┌, ┐, └, ┘, │, ─, ┼, ──>, etc.) inside blockquotes or preformatted text blocks to illustrate the core concepts.
-- These diagrams must look extremely premium and act as visual charts.
+- Do NOT draw any Unicode/ASCII diagrams, boxes, lines, or drawings in code blocks or blockquotes. They look broken and unreadable in the app.
+- Instead, rely strictly on embedding the provided PNG images using the Markdown syntax: `![Alt Text](/images/image_name.png)`.
 
 Structure of the course:
 # {title}
@@ -125,7 +187,7 @@ Structure of the course:
 (For each key didactic concept/model:
 - Name in French and Arabic.
 - Plain, simplified explanation of the theory.
-- The Unicode diagram illustrating the concept.
+- The specific PNG image embedded (using the exact provided image Markdown).
 - Practical classroom examples in computer science (e.g. how it applies to teaching algorithms, Scratch, HTML, or databases).)
 
 ## 3. Tableaux Comparatifs
@@ -160,9 +222,13 @@ Your goal is to write a premium, clear, and highly visual course guide in ARABIC
 Course Title: {title}
 Focus Area: {metadata["focus"]}
 
+Required Images to Embed in your Markdown:
+{chr(10).join(metadata["images"]["ar"])}
+Make sure to place these markdown images at the exact relevant places.
+
 Design requirements:
-- Create beautiful, clear, and centered UNICODE/ASCII DIAGRAMS (using characters like ┌, ┐, └, ┘, │, ─, ┼, ──>, etc.) inside blockquotes or preformatted text blocks to illustrate the core concepts.
-- These diagrams must look extremely premium and act as visual charts.
+- Do NOT draw any Unicode/ASCII diagrams, boxes, lines, or drawings in code blocks or blockquotes. They look broken and unreadable in the app.
+- Instead, rely strictly on embedding the provided PNG images using the Markdown syntax: `![Alt Text](/images/image_name.png)`.
 
 Structure of the course:
 # {title}
@@ -174,7 +240,7 @@ Structure of the course:
 (لكل مفهوم ديداكتيكي أساسي:
 - المفهوم بالعربية والفرنسية.
 - الفكرة الجوهرية بتبسيط شديد.
-- الخطاطة أو الرسم التخطيطي النصي (Unicode Diagram) المدمج لتوضيح العلاقات.
+- إدراج الصورة التوضيحية المخصصة (بالمسار المحدد في الأعلى).
 - أمثلة تطبيقية ملموسة من تدريس المعلوميات (مثال: البرمجة بلغة Scratch، الخوارزميات، قواعد البيانات، إلخ).)
 
 ## 3. الجداول المقارنة والتصنيفات
