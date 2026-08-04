@@ -366,7 +366,7 @@ const Exams = () => {
 
                 <div className="md:col-span-2">
                   <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">Type d'Épreuve du Concours</label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     <button
                       type="button"
                       onClick={() => setSelectedDomainFilter('ALL')}
@@ -374,7 +374,7 @@ const Exams = () => {
                         selectedDomainFilter === 'ALL' ? 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-400 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                       }`}
                     >
-                      <span>📚 Sujet Complet (Toutes épreuves)</span>
+                      <span>📚 Sujet Complet</span>
                     </button>
                     <button
                       type="button"
@@ -392,7 +392,16 @@ const Exams = () => {
                         selectedDomainFilter === 'DIDACTIQUE' ? 'bg-indigo-500/15 border-indigo-500 text-indigo-700 dark:text-indigo-300 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                       }`}
                     >
-                      <span>🎓 Épreuve 2 : Didactique & Pédagogie</span>
+                      <span>🎓 Épreuve 2 : Didactique Info</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDomainFilter('SCIENCES_EDU')}
+                      className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                        selectedDomainFilter === 'SCIENCES_EDU' ? 'bg-amber-500/15 border-amber-500 text-amber-700 dark:text-amber-300 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                      }`}
+                    >
+                      <span>🧠 Épreuve 3 : علوم التربية</span>
                     </button>
                   </div>
                 </div>

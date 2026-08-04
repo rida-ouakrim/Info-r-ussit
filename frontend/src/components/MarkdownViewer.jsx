@@ -495,6 +495,13 @@ const TableBlock = ({ rows }) => {
   );
 };
 
+// Helper to check if text contains Arabic characters
+const isArabicText = (str) => {
+  if (!str) return false;
+  const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  return arabicRegex.test(str);
+};
+
 export const MarkdownViewer = ({ content }) => {
   if (!content) return <div className="text-slate-400 dark:text-slate-500 italic p-4">Aucun contenu disponible.</div>;
 
@@ -556,56 +563,68 @@ export const MarkdownViewer = ({ content }) => {
       return;
     }
 
+    const isAr = isArabicText(trimmed);
+    const textDirClass = isAr ? 'dir-rtl text-right font-arabic' : 'text-left';
+
     // Headings H1
     if (trimmed.startsWith('# ')) {
+      const titleText = trimmed.replace('# ', '');
+      const isTitleAr = isArabicText(titleText);
       elements.push(
-        <h1 key={`h1-${index}`} className="text-2xl font-extrabold text-slate-900 dark:text-white mt-8 mb-4 pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
-          <span className="w-2 h-7 bg-sky-500 rounded-full inline-block shrink-0"></span>
-          <span>{trimmed.replace('# ', '')}</span>
+        <h1 key={`h1-${index}`} className={`text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-8 mb-5 pb-3 border-b-2 border-indigo-500/30 flex items-center gap-3 ${isTitleAr ? 'flex-row-reverse text-right' : 'text-left'}`}>
+          <span className="w-2.5 h-8 bg-gradient-to-b from-indigo-500 to-purple-600 rounded-full inline-block shrink-0 shadow-md"></span>
+          <span className="leading-snug">{titleText}</span>
         </h1>
       );
     } 
     // Headings H2
     else if (trimmed.startsWith('## ')) {
+      const h2Text = trimmed.replace('## ', '');
+      const isH2Ar = isArabicText(h2Text);
       elements.push(
-        <h2 key={`h2-${index}`} className="text-xl font-bold text-sky-700 dark:text-sky-400 mt-6 mb-3 flex items-center gap-2">
-          <span className="w-1.5 h-5 bg-indigo-500 rounded-full inline-block shrink-0"></span>
-          <span>{trimmed.replace('## ', '')}</span>
+        <h2 key={`h2-${index}`} className={`text-xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-7 mb-3.5 flex items-center gap-2.5 p-2 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 ${isH2Ar ? 'flex-row-reverse text-right' : 'text-left'}`}>
+          <span className="w-2 h-6 bg-amber-500 rounded-full inline-block shrink-0 shadow-sm"></span>
+          <span className="leading-snug">{h2Text}</span>
         </h2>
       );
     } 
     // Headings H3
     else if (trimmed.startsWith('### ')) {
+      const h3Text = trimmed.replace('### ', '');
+      const isH3Ar = isArabicText(h3Text);
       elements.push(
-        <h3 key={`h3-${index}`} className="text-lg font-semibold text-slate-800 dark:text-slate-100 mt-5 mb-2">
-          {trimmed.replace('### ', '')}
+        <h3 key={`h3-${index}`} className={`text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 mt-5 mb-2 flex items-center gap-2 ${isH3Ar ? 'flex-row-reverse text-right' : 'text-left'}`}>
+          <span className="w-1.5 h-4 bg-sky-500 rounded-full inline-block shrink-0"></span>
+          <span>{h3Text}</span>
         </h3>
       );
     } 
     // Bullet lists
     else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       const text = trimmed.substring(2);
+      const isLiAr = isArabicText(text);
       elements.push(
-        <div key={`li-${index}`} className="flex items-start gap-3 my-2 text-slate-700 dark:text-slate-300 text-sm leading-relaxed pl-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400 mt-2 shrink-0"></div>
-          <div>{renderTextWithMatrices(text)}</div>
+        <div key={`li-${index}`} className={`flex items-start gap-3 my-2 text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed pl-2 ${isLiAr ? 'flex-row-reverse text-right' : 'text-left'}`}>
+          <div className="w-2 h-2 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-2 shrink-0 shadow-xs"></div>
+          <div className="flex-1">{renderTextWithMatrices(text)}</div>
         </div>
       );
     }
     // Blockquotes / Callouts
     else if (trimmed.startsWith('> ')) {
       const text = trimmed.replace('> ', '');
+      const isQuoteAr = isArabicText(text);
       elements.push(
-        <div key={`quote-${index}`} className="my-5 p-4 rounded-2xl bg-sky-50/80 dark:bg-sky-500/10 border-l-4 border-sky-500 text-sky-900 dark:text-sky-200 text-sm flex items-start gap-3 shadow-sm">
-          <Lightbulb className="w-5 h-5 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
-          <div className="leading-relaxed font-medium">{renderTextWithMatrices(text)}</div>
+        <div key={`quote-${index}`} className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-l-4 border-amber-500 dark:border-amber-400 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3 shadow-sm ${isQuoteAr ? 'flex-row-reverse text-right' : 'text-left'}`}>
+          <Lightbulb className="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="leading-relaxed font-medium flex-1">{renderTextWithMatrices(text)}</div>
         </div>
       );
     }
     // Standard paragraph / block
     else {
       elements.push(
-        <div key={`p-${index}`} className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed my-2.5">
+        <div key={`p-${index}`} className={`text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed my-2.5 ${textDirClass}`}>
           {renderTextWithMatrices(trimmed)}
         </div>
       );

@@ -9,15 +9,15 @@ import {
 
 /* ── Stats ──────────────────────────────────────────────── */
 const STATS = [
-  { value: '39', label: 'Fiches de Cours' },
-  { value: '600+', label: 'Questions d\'Annales' },
+  { value: '40', label: 'Fiches de Cours Magistrales' },
+  { value: '1100+', label: 'QCM & Questions Corrigées' },
   { value: '8', label: 'Examens Réels (2018–2025)' },
-  { value: '6', label: 'Types de Concours Couverts' },
+  { value: '3 Épreuves', label: 'Spécialité, Didactique & علوم التربية' },
 ];
 
 /* ── Concours Types ─────────────────────────────────────── */
 const CONCOURS = [
-  { code: '01', title: 'CRMEF Secondaire', desc: 'Concours de recrutement des enseignants d\'informatique du secondaire qualifiant.' },
+  { code: '01', title: 'CRMEF Secondaire', desc: 'Concours de recrutement des enseignants d\'informatique du secondaire (Épreuves 1, 2 et علوم التربية).' },
   { code: '02', title: 'Agrégation Informatique', desc: 'Épreuves théoriques et pratiques du concours d\'agrégation marocain.' },
   { code: '03', title: 'Master & Doctorat', desc: 'Concours d\'accès aux masters spécialisés et formations doctorales.' },
   { code: '04', title: 'Ingénieur d\'État', desc: 'Concours de recrutement des ingénieurs informaticiens des services publics.' },
@@ -29,13 +29,13 @@ const CONCOURS = [
 const FEATURES = [
   {
     icon: BookOpen,
-    title: '39 Fiches de Cours Structurées',
-    desc: 'Cours complets organisés par domaine avec théorie, exemples, algorithmes et méthodes pour chaque type de concours.',
+    title: '40 Fiches de Cours Structurées & Bilingues',
+    desc: 'Cours complets organisés par domaine avec théorie, exemples, algorithmes et fiches bilingues (Arabe/Français) en Sciences de l\'Éducation.',
   },
   {
     icon: FileCheck,
-    title: '600+ Questions d\'Annales Corrigées',
-    desc: 'Examens officiels 2018–2025 avec corrections détaillées, barème et explication des points fréquents au jury.',
+    title: '1100+ Questions d\'Annales & QCM Corrigés',
+    desc: 'Examens officiels 2018–2025 (Spécialité Info + Didactique + علوم التربية) avec corrections détaillées et astuces du jury.',
   },
   {
     icon: Sparkles,
