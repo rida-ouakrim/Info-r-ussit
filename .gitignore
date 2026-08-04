@@ -68,7 +68,7 @@ desktop.ini
 # Fichiers PDF et données brutes
 # ===========================
 *.pdf
-images/
+/images/
 concours.db
 
 # ===========================
