@@ -3,67 +3,91 @@ import sys
 import re
 sys.stdout.reconfigure(encoding='utf-8')
 
-def has_arabic(text):
-    """Check if text contains Arabic characters."""
-    if not text:
-        return False
-    return bool(re.search(r'[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]', text))
+def clean_fr_content(content: str) -> str:
+    """Remove Arabic label markers from French content."""
+    if not content:
+        return content
+    
+    # Remove "- **بالفرنسية**: " prefix from bullet points
+    content = re.sub(r'[-*]\s*\*\*بالفرنسية\*\*:\s*', '', content)
+    content = re.sub(r'[-*]\s*\*\*[Ee]n fran[cç]ais\*\*:\s*', '', content)
+    
+    # Clean any standalone "بالفرنسية:" prefix
+    content = re.sub(r'\*\*بالفرنسية\*\*:\s*', '', content)
+    content = re.sub(r'بالفرنسية:\s*', '', content)
+    
+    # Remove "[FR]" markers
+    content = re.sub(r'\*?\*?\[FR\]\*?\*?\s*', '', content)
+    
+    # Clean double blank lines
+    content = re.sub(r'\n{3,}', '\n\n', content)
+    
+    return content.strip()
 
-def has_french(text):
-    """Check if text is predominantly French (latin chars, common FR words)."""
-    if not text:
-        return False
-    return bool(re.search(r'[a-zA-Z]{2,}', text))
+def clean_ar_content(content: str) -> str:
+    """Remove French label markers from Arabic content."""
+    if not content:
+        return content
+    
+    # Remove "- **بالعربية**: " prefix from bullet points  
+    content = re.sub(r'[-*]\s*\*\*بالعربية\*\*:\s*', '', content)
+    content = re.sub(r'\*\*بالعربية\*\*:\s*', '', content)
+    content = re.sub(r'بالعربية:\s*', '', content)
+    
+    # Remove "[AR]" markers
+    content = re.sub(r'\*?\*?\[AR\]\*?\*?\s*', '', content)
+    
+    # Clean double blank lines
+    content = re.sub(r'\n{3,}', '\n\n', content)
+    
+    return content.strip()
+
 
 conn = sqlite3.connect('backend/db.sqlite3')
 c = conn.cursor()
 
-# Check for mixed questions (both AR + FR in same question_text)
-c.execute("""
-    SELECT id, exam_year, question_number, question_text, explanation, subdomain_id
-    FROM exams_question 
-    WHERE subdomain_id IN ('EDU_PSYCHO', 'EDU_SOCIO')
-    ORDER BY id
-""")
-rows = c.fetchall()
+COURSE_IDS = [36, 37, 38, 39]
 
-mixed_count = 0
-for r in rows:
-    q_text = r[3] or ''
-    explanation = r[4] or ''
+for cid in COURSE_IDS:
+    c.execute("SELECT id, title, content_ar, content_fr FROM syllabus_course WHERE id = ?", (cid,))
+    row = c.fetchone()
+    if not row:
+        print(f"Course {cid} not found")
+        continue
     
-    q_has_ar = has_arabic(q_text)
-    q_has_fr = has_french(q_text)
+    cid_r, title, content_ar, content_fr = row
     
-    # Significant mixing: both languages with substantial content
-    # Arabic chars > 50 and French words > 3
-    arabic_chars = len(re.findall(r'[\u0600-\u06FF]', q_text))
-    french_words = len(re.findall(r'\b[a-zA-Z]{3,}\b', q_text))
+    print(f"\n{'='*60}")
+    print(f"Course {cid_r}: {title[:60]}")
     
-    if arabic_chars > 30 and french_words > 3:
-        mixed_count += 1
-        if mixed_count <= 5:
-            print(f"\nMIXED - ID {r[0]} | {r[1]} | {r[2]} | {r[5]}")
-            print(f"  Arabic chars: {arabic_chars}, French words: {french_words}")
-            print(f"  Q: {q_text[:200]}")
+    cleaned_fr = clean_fr_content(content_fr)
+    cleaned_ar = clean_ar_content(content_ar)
+    
+    print(f"  FR: {len(content_fr or '')} -> {len(cleaned_fr)} chars")
+    print(f"  AR: {len(content_ar or '')} -> {len(cleaned_ar)} chars")
+    
+    # Show before/after sample
+    if content_fr:
+        # Find a spot with بالفرنسية in the original
+        idx = (content_fr or '').find('بالفرنسية')
+        if idx > -1:
+            print(f"  FR BEFORE: ...{content_fr[max(0,idx-20):idx+80]}...")
+    
+    c.execute(
+        "UPDATE syllabus_course SET content_ar = ?, content_fr = ? WHERE id = ?",
+        (cleaned_ar, cleaned_fr, cid_r)
+    )
 
-print(f"\n\nTotal mixed questions: {mixed_count} / {len(rows)}")
+conn.commit()
 
-# Check specific questions for the QCM display on platform  
-c.execute("SELECT COUNT(*) FROM exams_question WHERE subdomain_id IN ('EDU_PSYCHO', 'EDU_SOCIO')")
-total = c.fetchone()[0]
-print(f"Total EDU questions: {total}")
+# Verify
+print("\n\n=== VERIFICATION - Course 36 content_fr first 800 chars ===")
+c.execute("SELECT content_fr FROM syllabus_course WHERE id = 36")
+print(c.fetchone()[0][:800])
 
-# Check language distribution
-c.execute("""
-    SELECT exam_year, COUNT(*) as total,
-           SUM(CASE WHEN question_text GLOB '*[ا-ي]*' THEN 1 ELSE 0 END) as ar_count
-    FROM exams_question 
-    WHERE subdomain_id IN ('EDU_PSYCHO', 'EDU_SOCIO')
-    GROUP BY exam_year
-""")
-print("\nDistribution by year:")
-for r in c.fetchall():
-    print(f"  {r[0]}: {r[1]} total, ~{r[2]} AR")
+print("\n=== VERIFICATION - Course 36 content_ar first 800 chars ===")
+c.execute("SELECT content_ar FROM syllabus_course WHERE id = 36")
+print(c.fetchone()[0][:800])
 
 conn.close()
+print("\n✅ All courses cleaned!")

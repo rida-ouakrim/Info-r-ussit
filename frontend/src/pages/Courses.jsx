@@ -149,7 +149,7 @@ const Courses = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'completed', 'in_progress', 'favorites'
   const [activeTab, setActiveTab] = useState('content'); // 'content', 'video', 'examples', 'astuces', 'qcm'
-  const [courseLang, setCourseLang] = useState('bilingual'); // 'bilingual', 'ar', 'fr'
+  const [courseLang, setCourseLang] = useState('fr'); // 'ar', 'fr'
   const [qcmLangFilter, setQcmLangFilter] = useState('all'); // 'all', 'ar', 'fr'
 
   const [stats, setStats] = useState(null);
@@ -233,7 +233,7 @@ const Courses = () => {
 
   const handleCourseSelect = async (course) => {
     setSelectedCourse(course);
-    setCourseLang('bilingual'); // Reset language on new course
+    setCourseLang('fr'); // Default to French for bilingual courses
     setQcmLangFilter('all');   // Reset QCM language filter
     setLoading(true);
     await fetchCourseDetail(course.id);
@@ -284,11 +284,8 @@ const Courses = () => {
   // Get the content to display based on selected language
   const getDisplayContent = useCallback((field) => {
     if (!activeCourseData) return '';
-    if (!isBilingualCourse || courseLang === 'bilingual') {
-      return activeCourseData[field] || '';
-    }
-    // For content tab, use language-specific version
-    if (field === 'content') {
+    // For bilingual courses, use language-specific content
+    if (isBilingualCourse && field === 'content') {
       if (courseLang === 'ar') return activeCourseData.content_ar || activeCourseData.content || '';
       if (courseLang === 'fr') return activeCourseData.content_fr || activeCourseData.content || '';
     }
@@ -1016,39 +1013,34 @@ const Courses = () => {
           <div className="glass-card p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl min-h-[400px]">
             {/* Language selector for bilingual courses */}
             {isBilingualCourse && activeTab === 'content' && (
-              <div className="flex items-center gap-2 mb-6 pb-5 border-b border-slate-200 dark:border-slate-800">
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Langue du cours :</span>
-                <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                  {[
-                    { id: 'fr', label: 'Français', flag: '🇫🇷' },
-                    { id: 'ar', label: 'عربي', flag: '🇲🇦' },
-                    { id: 'bilingual', label: 'Bilingue', flag: '🌐' },
-                  ].map(lang => (
-                    <button
-                      key={lang.id}
-                      type="button"
-                      onClick={() => setCourseLang(lang.id)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                        courseLang === lang.id
-                          ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-700'
-                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                      }`}
-                    >
-                      <span>{lang.flag}</span>
-                      <span>{lang.label}</span>
-                    </button>
-                  ))}
+              <div className="flex items-center gap-3 mb-6 pb-5 border-b border-slate-200 dark:border-slate-800">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest shrink-0">Langue</span>
+                <div className="flex items-center gap-1 p-0.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setCourseLang('fr')}
+                    className={`px-4 py-2 rounded-[10px] text-xs font-bold transition-all duration-200 flex items-center gap-1.5 ${
+                      courseLang === 'fr'
+                        ? 'bg-white dark:bg-slate-950 text-sky-600 dark:text-sky-400 shadow-sm border border-slate-200/60 dark:border-slate-700'
+                        : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                    }`}
+                  >
+                    <span className="text-sm">🇫🇷</span>
+                    <span>Français</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCourseLang('ar')}
+                    className={`px-4 py-2 rounded-[10px] text-xs font-bold transition-all duration-200 flex items-center gap-1.5 ${
+                      courseLang === 'ar'
+                        ? 'bg-white dark:bg-slate-950 text-amber-600 dark:text-amber-400 shadow-sm border border-slate-200/60 dark:border-slate-700'
+                        : 'text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                    }`}
+                  >
+                    <span className="text-sm">🇲🇦</span>
+                    <span>عربي</span>
+                  </button>
                 </div>
-                {courseLang === 'ar' && (
-                  <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
-                    تعرض بالعربية فقط
-                  </span>
-                )}
-                {courseLang === 'fr' && (
-                  <span className="text-[10px] font-semibold text-sky-600 dark:text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2.5 py-1 rounded-full">
-                    Affichage en français uniquement
-                  </span>
-                )}
               </div>
             )}
             <div dir={isBilingualCourse && courseLang === 'ar' ? 'rtl' : undefined}>
