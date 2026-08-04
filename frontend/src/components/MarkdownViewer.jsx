@@ -385,6 +385,66 @@ const AccessQueryIcon = () => (
     <span className="font-bold text-sky-400 text-xs">Requête !</span>
   </span>
 );
+// Zoomable Image Component with custom keyframe animations and modal view
+const ZoomableImage = ({ src, alt }) => {
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  return (
+    <>
+      <style>{`
+        @keyframes zoomFadeIn {
+          from { opacity: 0; backdrop-filter: blur(0px); }
+          to { opacity: 1; backdrop-filter: blur(4px); }
+        }
+        @keyframes zoomScaleUp {
+          from { transform: scale(0.94); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
+      
+      <img 
+        src={src} 
+        alt={alt} 
+        onClick={() => setIsZoomed(true)}
+        className="my-4 max-w-full rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md mx-auto block max-h-[300px] object-contain cursor-zoom-in hover:scale-[1.02] active:scale-[0.98] transition-all duration-300" 
+      />
+
+      {isZoomed && (
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 backdrop-blur-sm cursor-zoom-out"
+          style={{ animation: 'zoomFadeIn 0.2s ease-out forwards' }}
+          onClick={() => setIsZoomed(false)}
+        >
+          <div className="relative max-w-[92vw] max-h-[92vh] flex flex-col items-center justify-center p-4">
+            <button 
+              className="absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2.5 rounded-full transition-colors duration-200 backdrop-blur-md z-10"
+              onClick={() => setIsZoomed(false)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <img 
+              src={src} 
+              alt={alt} 
+              className="max-w-full max-h-[82vh] rounded-2xl object-contain shadow-2xl border border-white/10" 
+              style={{ animation: 'zoomScaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' }}
+            />
+            {alt && (
+              <span 
+                className="mt-4 text-white/90 font-sans text-xs bg-slate-900/80 px-4 py-2 rounded-full border border-white/10 backdrop-blur-md shadow-md"
+                style={{ animation: 'zoomFadeIn 0.3s ease-out forwards' }}
+              >
+                {alt}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 // Helper for **bold**, *italic*, `code`, $math$, [ICON_ACCESS_QUERY], ⚡, and images
 const parseInlineFormatting = (text) => {
   if (!text) return '';
@@ -451,14 +511,7 @@ const parseInlineFormatting = (text) => {
     if (part.startsWith('![') && part.includes('](')) {
       const alt = part.substring(part.indexOf('![') + 2, part.indexOf(']('));
       const src = part.substring(part.indexOf('](') + 2, part.length - 1);
-      return (
-        <img 
-          key={`img-${i}`} 
-          src={src} 
-          alt={alt} 
-          className="my-4 max-w-full rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md mx-auto block max-h-[300px] object-contain" 
-        />
-      );
+      return <ZoomableImage key={`img-${i}`} src={src} alt={alt} />;
     }
 
     return part;
