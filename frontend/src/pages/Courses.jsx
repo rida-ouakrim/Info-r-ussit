@@ -614,27 +614,30 @@ const Courses = () => {
         transition={{ duration: 0.25 }}
         className="space-y-8"
       >
-        <div className="dark-hero glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-950 to-indigo-950 text-white border border-slate-800 shadow-2xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6" style={{background: 'linear-gradient(to right, #0f172a, #020617, #1e1b4b)', color: '#ffffff'}}>
+        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ backgroundImage: 'url(/images/soft_banana_bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+          {/* Subtle overlay for dark mode readability */}
+          <div className="absolute inset-0 bg-white/10 dark:bg-slate-950/40 pointer-events-none"></div>
+
           <div className="space-y-3 max-w-2xl z-10">
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black tracking-wide">
+              <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20 text-xs font-black tracking-wide">
                 PRÉPARATION AUX CONCOURS 2026
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
               Fiches de Cours Académiques
             </h1>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-650 dark:text-slate-200 leading-relaxed max-w-xl font-medium">
               Choisissez un grand module informatique ci-dessous pour démarrer vos révisions.
             </p>
           </div>
 
-          <div className="z-10 flex items-center gap-6 bg-slate-900/90 p-5 rounded-2xl border border-slate-800 shrink-0">
+          <div className="z-10 flex items-center gap-6 bg-white/80 dark:bg-slate-900/90 p-5 rounded-2xl border border-slate-200/60 dark:border-slate-800 shrink-0 shadow-sm backdrop-blur-md">
             <ProgressRing percentage={stats?.percentage || 0} size={72} strokeWidth={7} />
             <div>
-              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Progression Globale</div>
-              <div className="text-lg font-black text-white">
-                {stats?.completed || 0} / {stats?.total || 0} <span className="text-xs font-medium text-slate-400">validés</span>
+              <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Progression Globale</div>
+              <div className="text-lg font-black text-slate-900 dark:text-white">
+                {stats?.completed || 0} / {stats?.total || 0} <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">validés</span>
               </div>
             </div>
           </div>
