@@ -580,6 +580,7 @@ export const MarkdownViewer = ({ content }) => {
   let inCode = false;
   let currentLanguage = '';
   let currentTableRows = [];
+  let currentBlockquoteLines = [];
 
   const flushTable = (keyIndex) => {
     if (currentTableRows.length > 0) {
@@ -588,9 +589,41 @@ export const MarkdownViewer = ({ content }) => {
     }
   };
 
+  const flushBlockquote = (keyIndex) => {
+    if (currentBlockquoteLines.length > 0) {
+      const contentText = currentBlockquoteLines.join('\n');
+      const isQuoteAr = isArabicText(contentText);
+      
+      const paragraphs = currentBlockquoteLines.map((line, pIdx) => {
+        const trimmedLine = line.trim();
+        if (!trimmedLine) return <div key={pIdx} className="h-2"></div>;
+        return (
+          <div key={pIdx} className="my-1.5">
+            {renderTextWithMatrices(trimmedLine)}
+          </div>
+        );
+      });
+
+      elements.push(
+        <div 
+          key={`quote-${keyIndex}`} 
+          dir={isQuoteAr ? 'rtl' : 'ltr'} 
+          className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-l-4 border-amber-500 dark:border-amber-400 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3 shadow-sm ${isQuoteAr ? 'text-right font-arabic' : 'text-left'}`}
+        >
+          <Lightbulb className="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="leading-relaxed font-medium flex-1">
+            {paragraphs}
+          </div>
+        </div>
+      );
+      currentBlockquoteLines = [];
+    }
+  };
+
   lines.forEach((line, index) => {
     if (line.trim().startsWith('```')) {
       flushTable(index);
+      flushBlockquote(index);
       if (inCode) {
         elements.push(<CodeBlock key={`code-${index}`} code={currentCodeBlock.join('\n')} language={currentLanguage} />);
         currentCodeBlock = [];
@@ -612,10 +645,20 @@ export const MarkdownViewer = ({ content }) => {
 
     // Check for Markdown Table Rows
     if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+      flushBlockquote(index);
       currentTableRows.push(trimmed);
       return;
     } else {
       flushTable(index);
+    }
+
+    // Check for Blockquotes
+    if (trimmed.startsWith('>')) {
+      const quoteText = trimmed.startsWith('> ') ? trimmed.substring(2) : trimmed.substring(1);
+      currentBlockquoteLines.push(quoteText);
+      return;
+    } else {
+      flushBlockquote(index);
     }
 
     if (!trimmed) {
@@ -666,7 +709,38 @@ export const MarkdownViewer = ({ content }) => {
           <span>{h3Text}</span>
         </h3>
       );
-    } 
+    }
+    // Headings H4
+    else if (trimmed.startsWith('#### ')) {
+      const h4Text = trimmed.replace('#### ', '');
+      const isH4Ar = isArabicText(h4Text);
+      elements.push(
+        <h4 key={`h4-${index}`} dir={isH4Ar ? 'rtl' : 'ltr'} className={`text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200 mt-4 mb-1.5 flex items-center gap-1.5 ${isH4Ar ? 'text-right font-arabic' : 'text-left'}`}>
+          <span className="w-1.5 h-3 bg-emerald-500 rounded-full inline-block shrink-0"></span>
+          <span>{h4Text}</span>
+        </h4>
+      );
+    }
+    // Headings H5
+    else if (trimmed.startsWith('##### ')) {
+      const h5Text = trimmed.replace('##### ', '');
+      const isH5Ar = isArabicText(h5Text);
+      elements.push(
+        <h5 key={`h5-${index}`} dir={isH5Ar ? 'rtl' : 'ltr'} className={`text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-350 mt-3.5 mb-1 ${isH5Ar ? 'text-right font-arabic' : 'text-left'}`}>
+          <span>{h5Text}</span>
+        </h5>
+      );
+    }
+    // Headings H6
+    else if (trimmed.startsWith('###### ')) {
+      const h6Text = trimmed.replace('###### ', '');
+      const isH6Ar = isArabicText(h6Text);
+      elements.push(
+        <h6 key={`h6-${index}`} dir={isH6Ar ? 'rtl' : 'ltr'} className={`text-xs font-medium text-slate-600 dark:text-slate-400 mt-3 mb-1 uppercase tracking-wider ${isH6Ar ? 'text-right font-arabic' : 'text-left'}`}>
+          <span>{h6Text}</span>
+        </h6>
+      );
+    }
     // Bullet lists
     else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       const text = trimmed.substring(2);
@@ -675,17 +749,6 @@ export const MarkdownViewer = ({ content }) => {
         <div key={`li-${index}`} dir={isLiAr ? 'rtl' : 'ltr'} className={`flex items-start gap-3 my-2 text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed pl-2 ${isLiAr ? 'text-right font-arabic' : 'text-left'}`}>
           <div className="w-2 h-2 rounded-full bg-indigo-500 dark:bg-indigo-400 mt-2 shrink-0 shadow-xs"></div>
           <div className="flex-1">{renderTextWithMatrices(text)}</div>
-        </div>
-      );
-    }
-    // Blockquotes / Callouts
-    else if (trimmed.startsWith('> ')) {
-      const text = trimmed.replace('> ', '');
-      const isQuoteAr = isArabicText(text);
-      elements.push(
-        <div key={`quote-${index}`} dir={isQuoteAr ? 'rtl' : 'ltr'} className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-l-4 border-amber-500 dark:border-amber-400 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3 shadow-sm ${isQuoteAr ? 'text-right font-arabic' : 'text-left'}`}>
-          <Lightbulb className="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
-          <div className="leading-relaxed font-medium flex-1">{renderTextWithMatrices(text)}</div>
         </div>
       );
     }
@@ -700,6 +763,7 @@ export const MarkdownViewer = ({ content }) => {
   });
 
   flushTable('end');
+  flushBlockquote('end');
 
   return <div className="space-y-1">{elements}</div>;
 };
