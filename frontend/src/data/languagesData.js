@@ -906,6 +906,208 @@ export const LESSONS_CONFIG = [
   }
 ];
 
+export const PRESTORED_LESSONS = {
+  lesson_conjugation: {
+    lesson_id: "lesson_conjugation",
+    title: "Parler & Conjuguer sans Faute",
+    intro: "En tant qu'enseignant, la précision verbale à l'oral est votre carte de visite. Maîtriser les verbes irréguliers et les auxiliaires donne une image de rigueur et d'autorité bienveillante devant vos élèves.",
+    rule: "À l'oral, les verbes de modalité (devoir, pouvoir, vouloir, savoir) sont TOUJOURS suivis directement de l'infinitif sans préposition (ni 'de', ni 'à'). De plus, les verbes de mouvement se conjuguent au passé composé avec l'auxiliaire 'être' et s'accordent avec le sujet.",
+    examples: [
+      {
+        wrong: "Je dois de préparer mon cours.",
+        correct: "Je dois préparer mon cours.",
+        explanation: "Devoir + infinitif direct. Jamais de 'de' entre devoir et l'infinitif."
+      },
+      {
+        wrong: "Elle a parti à l'école à 8 heures.",
+        correct: "Elle est partie à l'école à 8 heures.",
+        explanation: "Partir exprime un déplacement : il se conjugue obligatoirement avec 'être' et s'accorde au féminin ('partie')."
+      },
+      {
+        wrong: "Si j'aurais du temps, je réviserais.",
+        correct: "Si j'avais du temps, je réviserais.",
+        explanation: "La règle d'or : les 'si' n'aiment pas les 'rai'. Après 'si' de condition, on utilise l'imparfait, jamais le conditionnel."
+      }
+    ],
+    astuce: "Règle mnémonique : 'Les SI n'aiment pas les RAI !' → Si j'AVAIS (imparfait), je FERAIS (conditionnel).",
+    quiz: [
+      {
+        question: "Quelle est la forme correcte à l'oral formel ?",
+        options: ["Je peux de vous aider.", "Je peux vous aider.", "Je peux à vous aider.", "Je peux que vous aider."],
+        correct: 1,
+        explanation: "'Pouvoir' est suivi directement de l'infinitif sans préposition."
+      },
+      {
+        question: "Choisissez la bonne phrase au passé composé :",
+        options: ["Les enseignants ont venus tôt.", "Les enseignants sont venus tôt.", "Les enseignants sont venir tôt.", "Les enseignants ont venir tôt."],
+        correct: 1,
+        explanation: "'Venir' se conjugue avec 'être' et s'accorde au pluriel ('venus')."
+      },
+      {
+        question: "Complétez : Si vous ___ des questions, n'hésitez pas.",
+        options: ["auriez", "aviez", "aurez", "aurez eu"],
+        correct: 1,
+        explanation: "Après 'si', on utilise l'imparfait ('aviez') pour exprimer une condition."
+      }
+    ],
+    motivation: "Chaque verbe bien conjugué renforce votre assurance naturelle à l'oral. Bravo pour votre investissement quotidien !"
+  },
+  lesson_gender: {
+    lesson_id: "lesson_gender",
+    title: "Le Masculin et le Féminin",
+    intro: "Les erreurs de genre (un/une, le/la) sont très fréquentes à l'oral spontané. Savoir repérer le genre des noms abstraits et techniques vous permettra de parler sans hésitation.",
+    rule: "Les mots finissant par -ème (problème, système, thème, programme) et -age (espace, passage, apprentissage) sont presque tous MASCULINS. Les mots finissant par -ion (solution, réflexion, évaluation) et -té (qualité, égalité) sont FÉMININS.",
+    examples: [
+      {
+        wrong: "C'est une grand problème dans le système.",
+        correct: "C'est un grand problème dans le système.",
+        explanation: "'Problème' et 'système' sont masculins (un problème, un système)."
+      },
+      {
+        wrong: "J'ai trouvé un bonne solution.",
+        correct: "J'ai trouvé une bonne solution.",
+        explanation: "Les noms en '-ion' sont féminins : une solution, une évaluation."
+      },
+      {
+        wrong: "Il faut garder le même espace et la même rôle.",
+        correct: "Il faut garder le même espace et le même rôle.",
+        explanation: "'Espace' et 'rôle' sont tous les deux masculins (un espace, un rôle)."
+      }
+    ],
+    astuce: "Retenez le quatuor MASCULIN : Le problème, Le système, Le programme, Le thème !",
+    quiz: [
+      {
+        question: "Quel groupe contient UNIQUEMENT des mots masculins ?",
+        options: [
+          "Problème, système, programme, espace",
+          "Solution, évaluation, méthode, rôle",
+          "Égalité, qualité, schéma, réponse",
+          "Ambiance, erreur, étape, contexte"
+        ],
+        correct: 0,
+        explanation: "Problème, système, programme et espace sont tous les 4 masculins !"
+      },
+      {
+        question: "Comment qualifie-t-on correctement 'une erreur' ?",
+        options: ["un erreur manifeste", "une erreur manifeste", "un erreur manifeste", "une erreur manifestant"],
+        correct: 1,
+        explanation: "'Erreur' est féminin : une erreur manifeste."
+      },
+      {
+        question: "Complétez : Le professeur présente ___ de la séance.",
+        options: ["la thème", "le thème", "une thème", "les thème"],
+        correct: 1,
+        explanation: "'Thème' prend le suffixe grec '-ème' qui indique le masculin : le thème."
+      }
+    ],
+    motivation: "En maîtrisant le genre des mots clés, vous parlez avec fluidité et précision. Vous faites un travail remarquable !"
+  },
+  lesson_structure: {
+    lesson_id: "lesson_structure",
+    title: "Structurer ses Phrases à l'Oral",
+    subtitle: "Syntaxe, prépositions et négations formelles",
+    icon: "🧩",
+    color: "orange",
+    image: "/images/languages/banana_structure.png",
+    intro: "La clarté d'un cours repose sur la structure des phrases. Une syntaxe bien articulée avec les bons connecteurs logiques aide vos élèves à suivre le fil de votre pensée.",
+    rule: "En français formel, la négation est double (ne ... pas / ne ... rien). Les prépositions introduisent la logique : 'grâce à' (positif), 'à cause de' (négatif), 'afin de' + infinitif (objectif). Ne sautez jamais le 'ne' devant le verbe à l'oral d'un enseignant.",
+    examples: [
+      {
+        wrong: "Je comprends pas cette méthode.",
+        correct: "Je ne comprends pas cette méthode.",
+        explanation: "En contexte académique et professionnel, le 'ne' de négation est indispensable."
+      },
+      {
+        wrong: "On a réussi à cause de votre aide.",
+        correct: "On a réussi grâce à votre aide.",
+        explanation: "'Grâce à' s'utilise pour une cause positive. 'À cause de' s'utilise pour une cause négative."
+      },
+      {
+        wrong: "Je vous explique pour que vous comprenez.",
+        correct: "Je vous explique pour que vous compreniez.",
+        explanation: "'Pour que' exige le subjonctif ('compreniez'), alors que 'afin de' prend l'infinitif ('afin de comprendre')."
+      }
+    ],
+    astuce: "Règle de cause : 'Grâce à' = Merci ! 🌸 / 'À cause de' = Oups ! 🌧️",
+    quiz: [
+      {
+        question: "Laquelle de ces phrases est correcte pour un cours formel ?",
+        options: [
+          "J'ai pas eu le temps de finir.",
+          "Je n'ai pas eu le temps de finir.",
+          "J'ai eu pas le temps de finir.",
+          "Je n'ai eu le temps de pas finir."
+        ],
+        correct: 1,
+        explanation: "La négation académique complète est : Je N'ai PAS eu."
+      },
+      {
+        question: "Choisissez la préposition correcte : Les élèves ont progressé ___ leurs efforts.",
+        options: ["à cause de", "grâce à", "en raison de mauvais", "par manque de"],
+        correct: 1,
+        explanation: "Les efforts sont une cause positive → 'grâce à'."
+      },
+      {
+        question: "Complétez : Il révise chaque soir ___ réussir son examen.",
+        options: ["pour que", "afin de", "parce que", "vu que"],
+        correct: 1,
+        explanation: "'Afin de' est suivi directement de l'infinitif ('réussir')."
+      }
+    ],
+    motivation: "Des phrases bien structurées transforment les idées complexes en explications limpides. Continuez ainsi !"
+  },
+  lesson_agreement: {
+    lesson_id: "lesson_agreement",
+    title: "L'Accord des Adjectifs et Participes",
+    intro: "À l'oral, les accords féminins et pluriels modifient la prononciation des consonnes finales muettes (grand → grande, fait → faite, écrit → écrite). Entendre et prononcer ces consonnes est le secret d'un oral parfait.",
+    rule: "Au masculin, la consonne finale est souvent muette (petit, grand, pris). Au féminin, l'ajout du 'e' rend la consonne sonore (petite /t/, grande /d/, prise /z/). Le participe passé avec 'être' s'accorde en genre et en nombre avec le sujet.",
+    examples: [
+      {
+        wrong: "La séance est fini à 11 heures.",
+        correct: "La séance est finie à 11 heures.",
+        explanation: "'Séance' est féminin, avec l'auxiliaire être : 'finie'."
+      },
+      {
+        wrong: "Cette explication est très grand.",
+        correct: "Cette explication est très grande.",
+        explanation: "'Explication' est féminin singulier : l'adjectif 'grand' devient 'grande' à l'oral (/d/ sonore)."
+      },
+      {
+        wrong: "Les remarques que j'ai fait sont importantes.",
+        correct: "Les remarques que j'ai faites sont importantes.",
+        explanation: "Avec 'avoir', le participe passé s'accorde avec le COD placé AVANT ('les remarques' = féminin pluriel → 'faites')."
+      }
+    ],
+    astuce: "À l'oral, écoutez la consonne qui se réveille au féminin : Grand (/d/ silencieux) → GranDE (/d/ parlé) !",
+    quiz: [
+      {
+        question: "Prononciation orale : Quel adjectif fait entendre une consonne finale au féminin ?",
+        options: ["Joli → Jolie", "Vrai → Vraie", "Petit → Petite", "Bleu → Bleue"],
+        correct: 2,
+        explanation: "Dans 'Petite', le 't' final devient sonore (/t/), alors qu'il était muet dans 'petit'."
+      },
+      {
+        question: "Accordez correctement : La décision a été ___ hier.",
+        options: ["prendre", "pris", "prise", "prises"],
+        correct: 2,
+        explanation: "'La décision' (féminin singulier) avec la voix passive ('a été') → 'prise'."
+      },
+      {
+        question: "Choisissez la bonne phrase :",
+        options: [
+          "Les compétences requises sont clairement définies.",
+          "Les compétences requis sont clairement défini.",
+          "Les compétences requise sont clairement définie.",
+          "Les compétences requises sont clairement défini."
+        ],
+        correct: 0,
+        explanation: "'Compétences' est féminin pluriel → 'requises' et 'définies'."
+      }
+    ],
+    motivation: "Vous maîtrisez maintenant les subtilités de l'oral d'un enseignant. Votre rigueur fait toute la différence !"
+  }
+};
+
 // ───────────────────────────────────────────────────────────────────────────────
 // DIAGNOSTIC QUIZ — 10 static MCQ focused on oral French traps
 // ───────────────────────────────────────────────────────────────────────────────

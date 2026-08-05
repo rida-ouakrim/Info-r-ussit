@@ -6,7 +6,7 @@ import {
   ChevronRight, Loader2, MessageSquare, Lightbulb, Award, Star,
   RefreshCw, ArrowRight, ArrowLeft, Pencil, Languages
 } from 'lucide-react';
-import { VOCABULARY, STORIES, LESSONS_CONFIG, DIAGNOSTIC_QUIZ } from '../data/languagesData';
+import { VOCABULARY, STORIES, LESSONS_CONFIG, DIAGNOSTIC_QUIZ, PRESTORED_LESSONS } from '../data/languagesData';
 
 const TABS = [
   { id: 'lessons', label: '📚 Leçons', icon: BookOpen },
@@ -150,33 +150,16 @@ function StoryRenderer({ story }) {
 // ─── Lessons Tab ─────────────────────────────────────────────────────────────
 function LessonsTab() {
   const [selectedLesson, setSelectedLesson] = useState(null);
-  const [lessonData, setLessonData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
 
-  const fetchLesson = useCallback(async (lesson) => {
-    if (lessonData?.lesson_id === lesson.id) return;
+  const selectLesson = (lesson) => {
     setSelectedLesson(lesson);
-    setLessonData(null);
-    setError('');
     setQuizAnswers({});
     setQuizSubmitted(false);
-    setLoading(true);
-    try {
-      const res = await API.post('ai/languages-academy/', {
-        action: 'generate_lesson',
-        lesson_id: lesson.id,
-        lesson_title: lesson.title
-      });
-      setLessonData(res.data.lesson);
-    } catch (e) {
-      setError("Erreur lors de la génération de la leçon. Réessayez.");
-    } finally {
-      setLoading(false);
-    }
-  }, [lessonData]);
+  };
+
+  const lessonData = selectedLesson ? PRESTORED_LESSONS[selectedLesson.id] : null;
 
   const handleQuizAnswer = (qIdx, optIdx) => {
     if (quizSubmitted) return;
@@ -200,7 +183,7 @@ function LessonsTab() {
           return (
             <button
               key={lesson.id}
-              onClick={() => fetchLesson(lesson)}
+              onClick={() => selectLesson(lesson)}
               className={`glass-card w-full text-left p-4 rounded-2xl border-2 transition-all duration-300 hover:shadow-lg hover:scale-[1.01] ${isActive ? `border-${lesson.color}-400 ring-2 ${c.ring}` : 'border-slate-200 dark:border-slate-800'}`}
             >
               <div className="flex items-center gap-3">
@@ -223,30 +206,11 @@ function LessonsTab() {
             <div className="glass-card p-12 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 text-center space-y-4">
               <img src="/images/languages/banana_hero.png" alt="Welcome" className="w-28 mx-auto" />
               <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300">Sélectionnez une leçon à gauche</h3>
-              <p className="text-xs text-slate-400">L'IA va générer une leçon personnalisée avec règles, exemples, astuces et quiz interactif.</p>
+              <p className="text-xs text-slate-400">Accédez instantanément à la leçon complète, avec règles, exemples, astuces et quiz interactif.</p>
             </div>
           )}
 
-          {loading && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="glass-card p-16 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-6">
-              <img src="/images/languages/banana_hero.png" alt="Loading" className="w-24 mx-auto animate-bounce" />
-              <div className="space-y-2">
-                <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto" />
-                <p className="text-sm font-bold text-slate-700 dark:text-slate-300">L'IA prépare votre leçon...</p>
-                <p className="text-xs text-slate-400">Cela peut prendre quelques secondes.</p>
-              </div>
-            </motion.div>
-          )}
-
-          {error && (
-            <div className="glass-card p-8 rounded-3xl border border-red-200 dark:border-red-900/30 text-center space-y-2">
-              <XCircle className="w-10 h-10 text-red-500 mx-auto" />
-              <p className="text-sm font-bold text-red-600">{error}</p>
-              <button onClick={() => fetchLesson(selectedLesson)} className="text-xs text-blue-600 hover:underline">Réessayer</button>
-            </div>
-          )}
-
-          {lessonData && !loading && (
+          {lessonData && (
             <motion.div key={lessonData.lesson_id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
               {/* Header */}
               <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/10">
