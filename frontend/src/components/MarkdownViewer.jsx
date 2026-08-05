@@ -344,7 +344,12 @@ const renderTextWithMatrices = (text) => {
     const contentPart = match[2];
 
     const rows = contentPart.split('/').map(r => r.trim().split(/\s+/).filter(Boolean));
-    const isRealMatrix = rows.length > 0 && rows.every(row => row.length > 0 && row.every(cell => cell.length <= 4));
+    const isAllNumeric = rows.every(row => row.every(cell => /^-?\d+$/.test(cell)));
+    const hasMultipleColumns = rows.some(row => row.length > 1);
+    const hasManyRows = rows.length >= 3;
+    const isRealMatrix = rows.length > 0 && 
+                         rows.every(row => row.length > 0 && row.every(cell => cell.length <= 4)) && 
+                         (hasMultipleColumns || hasManyRows || isAllNumeric);
 
     if (matchStart > lastIndex) {
       elements.push(parseInlineFormatting(text.slice(lastIndex, matchStart)));
