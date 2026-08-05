@@ -385,7 +385,7 @@ const Exams = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     <button
                       type="button"
-                      onClick={() => setSelectedDomainFilter('ALL')}
+                      onClick={() => { setSelectedDomainFilter('ALL'); setSelectedLangFilter('ALL'); }}
                       className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
                         selectedDomainFilter === 'ALL' ? 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-400 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                       }`}
@@ -394,7 +394,7 @@ const Exams = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setSelectedDomainFilter('SPECIALITE')}
+                      onClick={() => { setSelectedDomainFilter('SPECIALITE'); setSelectedLangFilter('ALL'); }}
                       className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
                         selectedDomainFilter === 'SPECIALITE' ? 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-400 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                       }`}
@@ -403,7 +403,7 @@ const Exams = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setSelectedDomainFilter('DIDACTIQUE')}
+                      onClick={() => { setSelectedDomainFilter('DIDACTIQUE'); setSelectedLangFilter('ALL'); }}
                       className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
                         selectedDomainFilter === 'DIDACTIQUE' ? 'bg-indigo-500/15 border-indigo-500 text-indigo-700 dark:text-indigo-300 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                       }`}
@@ -412,7 +412,7 @@ const Exams = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setSelectedDomainFilter('SCIENCES_EDU')}
+                      onClick={() => { setSelectedDomainFilter('SCIENCES_EDU'); setSelectedLangFilter('fr'); }}
                       className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
                         selectedDomainFilter === 'SCIENCES_EDU' ? 'bg-amber-500/15 border-amber-500 text-amber-700 dark:text-amber-300 shadow-sm font-black' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                       }`}
@@ -428,16 +428,7 @@ const Exams = () => {
                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
                       🌎 Langue de l&apos;Épreuve Sciences de l&apos;Éducation
                     </label>
-                    <div className="grid grid-cols-3 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedLangFilter('ALL')}
-                        className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
-                          selectedLangFilter === 'ALL' ? 'bg-slate-800 border-slate-600 text-white shadow-sm' : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                        }`}
-                      >
-                        🌐 Bilingue (FR + AR)
-                      </button>
+                    <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() => setSelectedLangFilter('fr')}

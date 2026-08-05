@@ -19,6 +19,7 @@ const getDomainConfig = (code) => {
         gradient: 'from-blue-500/10 to-indigo-500/10 hover:border-blue-500/35',
         iconBg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
         badge: 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20',
+        topBorder: 'border-t-4 border-t-blue-500',
         description: 'Algorithmique, structures de données, programmation et développement WEB, bases de données.'
       };
     case 'SYS_RES':
@@ -27,6 +28,7 @@ const getDomainConfig = (code) => {
         gradient: 'from-cyan-500/10 to-sky-500/10 hover:border-cyan-500/35',
         iconBg: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
         badge: 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border-cyan-500/20',
+        topBorder: 'border-t-4 border-t-cyan-500',
         description: 'Systèmes d’exploitation, architecture des ordinateurs et réseaux informatiques.'
       };
     case 'LOG':
@@ -35,6 +37,7 @@ const getDomainConfig = (code) => {
         gradient: 'from-emerald-500/10 to-teal-500/10 hover:border-emerald-500/35',
         iconBg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
         badge: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
+        topBorder: 'border-t-4 border-t-emerald-500',
         description: 'Technologies de l’information et de la communication, bureautique et multimédia.'
       };
     case 'DIDACTIQUE':
@@ -43,6 +46,7 @@ const getDomainConfig = (code) => {
         gradient: 'from-purple-500/10 to-indigo-500/10 hover:border-purple-500/35',
         iconBg: 'bg-purple-500/10 text-purple-600 dark:text-purple-400',
         badge: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20',
+        topBorder: 'border-t-4 border-t-purple-500',
         description: 'Concepts, curricula, approches et démarches didactiques appliqués à l’informatique.'
       };
     case 'SCIENCES_EDU':
@@ -51,6 +55,7 @@ const getDomainConfig = (code) => {
         gradient: 'from-amber-500/10 to-rose-500/10 hover:border-amber-500/35',
         iconBg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
         badge: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20',
+        topBorder: 'border-t-4 border-t-amber-500',
         description: 'Psychologie, sociologie de l’éducation et théories de l’apprentissage.'
       };
     default:
@@ -59,6 +64,7 @@ const getDomainConfig = (code) => {
         gradient: 'from-slate-500/10 to-slate-600/10 hover:border-slate-500/35',
         iconBg: 'bg-slate-500/10 text-slate-600 dark:text-slate-400',
         badge: 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20',
+        topBorder: 'border-t-4 border-t-slate-500',
         description: 'Module général de préparation au concours.'
       };
   }
@@ -614,10 +620,7 @@ const Courses = () => {
         transition={{ duration: 0.25 }}
         className="space-y-8"
       >
-        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ backgroundImage: 'url(/images/soft_banana_bg.png)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-          {/* Subtle overlay for dark mode readability */}
-          <div className="absolute inset-0 bg-white/10 dark:bg-slate-950/40 pointer-events-none"></div>
-
+        <div className="glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-blue-500/10 dark:from-sky-950/60 dark:via-slate-900 dark:to-indigo-950/60 border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl z-10">
             <div className="flex items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20 text-xs font-black tracking-wide">
@@ -659,7 +662,7 @@ const Courses = () => {
                 key={dom.code}
                 type="button"
                 onClick={() => handleDomainChange(dom.code)}
-                className="group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 hover:bg-white dark:hover:bg-slate-900 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[220px]"
+                className={`group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${config.topBorder} bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[220px]`}
               >
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-sky-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
@@ -791,7 +794,7 @@ const Courses = () => {
                 key={sub.code}
                 type="button"
                 onClick={() => handleSubdomainChange(sub.code)}
-                className="group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 hover:bg-white dark:hover:bg-slate-900 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[200px]"
+                className={`group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${domainConfig.topBorder} bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[200px]`}
               >
                 <div className="space-y-4 w-full">
                   <div className="flex items-start justify-between">
@@ -897,7 +900,7 @@ const Courses = () => {
                 key={c.id}
                 type="button"
                 onClick={() => handleCourseSelect(c)}
-                className="group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 hover:bg-white dark:hover:bg-slate-900 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[180px]"
+                className={`group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${domainConfig.topBorder} bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[180px]`}
               >
                 <div className="space-y-3 w-full">
                   <div className="flex items-center justify-between">

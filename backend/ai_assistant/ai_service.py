@@ -6,19 +6,20 @@ from pydantic import BaseModel, Field
 from typing import List
 
 class GeneratedQuestionSchema(BaseModel):
-    question_text: str = Field(description="Question text in French")
-    option_a: str = Field(description="Option A text in French")
-    option_b: str = Field(description="Option B text in French")
-    option_c: str = Field(description="Option C text in French")
-    option_d: str = Field(description="Option D text in French")
+    question_text: str = Field(description="Question text")
+    option_a: str = Field(description="Option A text")
+    option_b: str = Field(description="Option B text")
+    option_c: str = Field(description="Option C text")
+    option_d: str = Field(description="Option D text")
     correct_option: str = Field(description="Single correct option: A, B, C, or D")
-    explanation: str = Field(description="Detailed explanation in French")
-    astuce: str = Field(description="Exam tip or shortcut rule in French")
+    explanation: str = Field(description="Detailed explanation")
+    astuce: str = Field(description="Exam tip or shortcut rule")
 
 class PageQuestionsSchema(BaseModel):
     questions: List[GeneratedQuestionSchema] = Field(description="List of MCQ questions")
 
-def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_description="", num_q=5, difficulty="Moyen"):
+def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_description="", num_q=5, difficulty="Moyen", lang="fr"):
+    lang_name = "Arabic (العربية)" if lang == "ar" else "French"
     prompt = f"""
     You are a senior computer science professor and head of jury for competitive computer science recruitment exams (CRMEF, Master, Agrégation, Engineers, Technicians).
     Please generate exactly {num_q} original, high-quality Multiple Choice Questions (QCM) targeting the official syllabus subdomain: "{subdomain_name}" ({subdomain_code}) under domain "{domain_name}".
@@ -27,10 +28,10 @@ def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_d
     Syllabus description: {subdomain_description}
     
     Each question MUST:
-    1. Be written in French, clear and academically rigorous.
+    1. Be written in {lang_name}, clear and academically rigorous.
     2. Have exactly 4 options (A, B, C, D) with exactly one correct option.
-    3. Include a detailed, educational explanation in French explaining why the correct answer is correct and why the others are incorrect.
-    4. Include a short, practical tip, shortcut, or key rule (astuce in French) to quickly solve this question under exam constraints.
+    3. Include a detailed, educational explanation in {lang_name} explaining why the correct answer is correct and why the others are incorrect.
+    4. Include a short, practical tip, shortcut, or key rule (astuce in {lang_name}) to quickly solve this question under exam constraints.
     
     Return strictly a JSON object matching the PageQuestionsSchema schema.
     """

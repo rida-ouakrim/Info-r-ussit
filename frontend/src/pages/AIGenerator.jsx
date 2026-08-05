@@ -15,6 +15,7 @@ const AIGenerator = () => {
 
   const [numQuestions, setNumQuestions] = useState(5);
   const [difficulty, setDifficulty] = useState('Moyen');
+  const [qcmLanguage, setQcmLanguage] = useState('fr'); // 'fr' or 'ar' for Sciences de l'education
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('generate'); // 'generate' or 'history'
@@ -157,7 +158,8 @@ const AIGenerator = () => {
       const res = await API.post('ai/generate-qcm/', {
         subdomain_code: selectedSubdomainCode,
         num_questions: numQuestions,
-        difficulty: difficulty
+        difficulty: difficulty,
+        lang: selectedDomainCode === 'SCIENCES_EDU' ? qcmLanguage : 'fr'
       });
       
       const qList = res.data.questions || res.data;
@@ -393,6 +395,38 @@ const AIGenerator = () => {
                 </select>
               </div>
             </div>
+
+            {selectedDomainCode === 'SCIENCES_EDU' && (
+              <div className="p-4.5 rounded-2xl bg-purple-500/5 border border-purple-500/10 space-y-3">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                  🌎 Langue de génération pour Sciences de l'Éducation
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setQcmLanguage('fr')}
+                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                      qcmLanguage === 'fr' 
+                        ? 'bg-purple-600 border-purple-600 text-white shadow-md' 
+                        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    🇫🇷 Français
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQcmLanguage('ar')}
+                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                      qcmLanguage === 'ar' 
+                        ? 'bg-purple-600 border-purple-600 text-white shadow-md' 
+                        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    🇲🇦 عربي
+                  </button>
+                </div>
+              </div>
+            )}
 
             {limitError ? (
               <div className="p-6 rounded-2xl border border-red-500/30 bg-red-500/5 text-center space-y-4">

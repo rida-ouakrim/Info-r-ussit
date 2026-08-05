@@ -18,6 +18,9 @@ class GenerateQCMView(APIView):
             num_q = 5
 
         difficulty = request.data.get('difficulty', 'Moyen')
+        lang = request.data.get('lang', 'fr')
+        if lang not in ['fr', 'ar']:
+            lang = 'fr'
 
         # Input validation
         if num_q < 3 or num_q > 15:
@@ -68,7 +71,8 @@ class GenerateQCMView(APIView):
                 domain_name=subdomain.domain.name,
                 subdomain_description=subdomain.description or '',
                 num_q=num_q,
-                difficulty=difficulty
+                difficulty=difficulty,
+                lang=lang
             )
 
             created_questions = []
