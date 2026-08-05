@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import {
   BookOpen, FileText, Sparkles, Star, AlertCircle,
-  LayoutDashboard, LogOut, ShieldCheck, Sun, Moon, ChevronLeft, ChevronRight
+  LayoutDashboard, LogOut, ShieldCheck, Sun, Moon, ChevronLeft, ChevronRight,
+  Compass
 } from 'lucide-react';
 
 const navLinks = [
@@ -14,6 +15,7 @@ const navLinks = [
   { name: 'Assistant IA',     path: '/generator',   icon: Sparkles,        protected: true },
   { name: 'Questions Favoris',path: '/bookmarks',   icon: Star,            protected: true },
   { name: "Carnet d'Erreurs", path: '/errors',      icon: AlertCircle,     protected: true },
+  { name: 'Plan',             path: '/plan',        icon: Compass,         protected: true },
 ];
 
 export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMobile }) {

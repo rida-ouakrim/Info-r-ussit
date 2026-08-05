@@ -17,6 +17,7 @@ import AIGenerator from './pages/AIGenerator';
 import Bookmarks from './pages/Bookmarks';
 import ErrorNotebook from './pages/ErrorNotebook';
 import AdminDashboard from './pages/AdminDashboard';
+import Plan from './pages/Plan';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -90,6 +91,7 @@ function AppContent() {
             <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
             <Route path="/errors"    element={<ProtectedRoute><ErrorNotebook /></ProtectedRoute>} />
             <Route path="/admin"     element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+            <Route path="/plan"      element={<ProtectedRoute><Plan /></ProtectedRoute>} />
             <Route path="*"          element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>

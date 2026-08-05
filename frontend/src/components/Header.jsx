@@ -13,6 +13,7 @@ const PAGE_TITLES = {
   '/bookmarks': 'Questions Favorites',
   '/errors':    "Carnet d'Erreurs",
   '/admin':     'Administration',
+  '/plan':      'Plan de Répartition & Révisions',
 };
 
 export default function Header({ onMenuClick }) {
