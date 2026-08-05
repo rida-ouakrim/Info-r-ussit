@@ -1,14 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
+import API from '../services/api';
 import {
   BookOpen, Sparkles, HelpCircle, RotateCcw, CheckCircle2, XCircle,
   ChevronRight, Loader2, MessageSquare, Lightbulb, Award, Star,
   RefreshCw, ArrowRight, ArrowLeft, Pencil, Languages
 } from 'lucide-react';
 import { VOCABULARY, STORIES, LESSONS_CONFIG, DIAGNOSTIC_QUIZ } from '../data/languagesData';
-
-const API_BASE = import.meta.env.VITE_API_URL || '';
 
 const TABS = [
   { id: 'lessons', label: '📚 Leçons', icon: BookOpen },
@@ -167,7 +165,7 @@ function LessonsTab() {
     setQuizSubmitted(false);
     setLoading(true);
     try {
-      const res = await axios.post(`${API_BASE}/api/ai/languages-academy/`, {
+      const res = await API.post('ai/languages-academy/', {
         action: 'generate_lesson',
         lesson_id: lesson.id,
         lesson_title: lesson.title
@@ -595,7 +593,7 @@ function CorrectorTab() {
     setResult(null);
     setError('');
     try {
-      const res = await axios.post(`${API_BASE}/api/ai/languages-academy/`, {
+      const res = await API.post('ai/languages-academy/', {
         action: 'check_text',
         text: text
       });
