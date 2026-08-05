@@ -1,3 +1,4 @@
+import os
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -143,3 +144,62 @@ class QuestionChatAssistantView(APIView):
             return Response({"reply": ai_reply}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": f"Erreur de l'Assistant IA : {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class AcademicLanguagesAIView(APIView):
+    """AI endpoint for Academic Languages Tutor (Admin Only)."""
+    permission_classes = [permissions.IsAdminUser]
+
+    LESSONS_CACHE_FILE = os.path.join(os.path.dirname(__file__), 'cached_lessons.json')
+
+    def _load_cache(self):
+        import json as _json
+        if os.path.exists(self.LESSONS_CACHE_FILE):
+            try:
+                with open(self.LESSONS_CACHE_FILE, 'r', encoding='utf-8') as f:
+                    return _json.load(f)
+            except Exception:
+                return {}
+        return {}
+
+    def _save_cache(self, cache: dict):
+        import json as _json
+        with open(self.LESSONS_CACHE_FILE, 'w', encoding='utf-8') as f:
+            _json.dump(cache, f, ensure_ascii=False, indent=2)
+
+    def post(self, request):
+        action = request.data.get('action', '')
+
+        if action == 'generate_lesson':
+            lesson_id = request.data.get('lesson_id', '')
+            lesson_title = request.data.get('lesson_title', '')
+            if not lesson_id or not lesson_title:
+                return Response({"error": "lesson_id and lesson_title required"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Check cache first
+            cache = self._load_cache()
+            if lesson_id in cache:
+                return Response({"lesson": cache[lesson_id], "cached": True}, status=status.HTTP_200_OK)
+
+            # Generate via AI
+            from .ai_service import generate_language_lesson
+            try:
+                lesson = generate_language_lesson(lesson_id=lesson_id, lesson_title=lesson_title)
+                cache[lesson_id] = lesson
+                self._save_cache(cache)
+                return Response({"lesson": lesson, "cached": False}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"error": f"Erreur de génération : {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        elif action == 'check_text':
+            text = request.data.get('text', '').strip()
+            if not text:
+                return Response({"error": "text is required"}, status=status.HTTP_400_BAD_REQUEST)
+            from .ai_service import check_language_text
+            try:
+                result = check_language_text(text)
+                return Response({"result": result}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({"error": f"Erreur de correction : {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({"error": "Invalid action. Use 'generate_lesson' or 'check_text'."}, status=status.HTTP_400_BAD_REQUEST)

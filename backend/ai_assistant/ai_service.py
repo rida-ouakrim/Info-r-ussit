@@ -178,3 +178,148 @@ Explication officielle : {explanation}
 
     raise Exception(f"Erreur Assistant IA : {str(last_error)}")
 
+
+def _get_ai_clients():
+    """Returns a list of Gemini clients to try in order."""
+    clients = []
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip().strip('"').strip("'")
+    if api_key:
+        try:
+            clients.append(genai.Client(api_key=api_key))
+        except Exception:
+            pass
+    project_id = os.environ.get("GCP_PROJECT_ID", "chrome-backbone-496013-p4")
+    for loc in ["us-east4", "europe-west1", "us-central1"]:
+        try:
+            clients.append(genai.Client(
+                vertexai=True,
+                project=project_id,
+                location=loc,
+                http_options=types.HttpOptions(timeout=90000)
+            ))
+        except Exception:
+            pass
+    return clients
+
+
+def _call_ai_text(prompt, temperature=0.6):
+    """Generic AI text call with client/model fallback."""
+    models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+    last_error = None
+    for client in _get_ai_clients():
+        for model in models:
+            try:
+                response = client.models.generate_content(
+                    model=model,
+                    contents=[prompt],
+                    config=types.GenerateContentConfig(temperature=temperature)
+                )
+                return response.text
+            except Exception as e:
+                last_error = e
+                continue
+    raise Exception(f"AI service unavailable: {last_error}")
+
+
+def generate_language_lesson(lesson_id: str, lesson_title: str) -> dict:
+    """
+    Generates a complete French language lesson for an admin user.
+    Returns a structured dict with content, vocabulary, story, exercises, quiz, and motivation.
+    """
+    prompt = f"""
+Tu es un professeur de français académique expert, bienveillant et motivant.
+Tu dois créer une leçon complète, claire, interactive et encourageante pour un futur professeur marocain qui souhaite améliorer son français oral et écrit.
+
+LEÇON : "{lesson_title}" (ID: {lesson_id})
+
+Génère en JSON exactement cette structure:
+{{
+  "lesson_id": "{lesson_id}",
+  "title": "{lesson_title}",
+  "intro": "Courte introduction motivante (2-3 phrases) expliquant pourquoi cette compétence est essentielle pour un enseignant.",
+  "rule": "La règle principale expliquée de manière simple, claire, sans jargon technique. Utiliser des analogies si possible.",
+  "examples": [
+    {{"wrong": "Exemple incorrect", "correct": "Exemple correct", "explanation": "Pourquoi c'est incorrect et comment corriger"}},
+    {{"wrong": "Exemple incorrect", "correct": "Exemple correct", "explanation": "Explication claire"}},
+    {{"wrong": "Exemple incorrect", "correct": "Exemple correct", "explanation": "Explication claire"}}
+  ],
+  "astuce": "Astuce mnémotechnique courte et mémorable pour retenir la règle rapidement.",
+  "quiz": [
+    {{
+      "question": "Question de compréhension ou d'application de la règle",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct": 0,
+      "explanation": "Explication détaillée et encourageante de la bonne réponse."
+    }},
+    {{
+      "question": "Deuxième question pratique",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct": 1,
+      "explanation": "Explication avec bienveillance."
+    }},
+    {{
+      "question": "Troisième question sur un cas piège",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct": 2,
+      "explanation": "Explication du piège et de la règle correcte."
+    }}
+  ],
+  "motivation": "Message de motivation chaleureux, sincère, personnel et encourageant (3-4 phrases) pour continuer l'apprentissage."
+}}
+
+Réponds UNIQUEMENT en JSON valide. Pas de markdown, pas de texte avant ou après.
+"""
+    result = _call_ai_text(prompt, temperature=0.5)
+    cleaned = result.strip()
+    if cleaned.startswith("```"):
+        parts = cleaned.split("```")
+        cleaned = parts[1] if len(parts) > 1 else cleaned
+        if cleaned.startswith("json"):
+            cleaned = cleaned[4:]
+    cleaned = cleaned.strip().rstrip("`").strip()
+    return json.loads(cleaned)
+
+
+def check_language_text(text: str) -> dict:
+    """
+    Analyzes a French text for grammar, spelling, and conjugation errors.
+    Returns corrected text, highlighted errors with explanations.
+    """
+    prompt = f"""
+Tu es un correcteur de français académique, bienveillant et pédagogique.
+Un futur professeur t'envoie ce texte pour correction. Tu dois l'aider à progresser.
+
+TEXTE À ANALYSER :
+\"\"\"
+{text}
+\"\"\"
+
+Génère en JSON exactement cette structure:
+{{
+  "corrected_text": "Le texte entièrement corrigé, fluide et académique.",
+  "errors": [
+    {{
+      "original": "Expression ou mot incorrect exact",
+      "correction": "Expression ou mot correct",
+      "rule": "La règle grammaticale violée (conjugaison, accord, orthographe...)",
+      "explanation": "Explication simple et bienveillante de pourquoi c est une erreur et comment l eviter.",
+      "type": "orthographe"
+    }}
+  ],
+  "score": 85,
+  "level": "Intermédiaire",
+  "summary": "Résumé global bienveillant et motivant du niveau d ecriture.",
+  "main_advice": "Conseil principal personnalisé pour progresser rapidement."
+}}
+
+Réponds UNIQUEMENT en JSON valide. Pas de markdown, pas de texte avant ou après.
+"""
+    result = _call_ai_text(prompt, temperature=0.3)
+    cleaned = result.strip()
+    if cleaned.startswith("```"):
+        parts = cleaned.split("```")
+        cleaned = parts[1] if len(parts) > 1 else cleaned
+        if cleaned.startswith("json"):
+            cleaned = cleaned[4:]
+    cleaned = cleaned.strip().rstrip("`").strip()
+    return json.loads(cleaned)

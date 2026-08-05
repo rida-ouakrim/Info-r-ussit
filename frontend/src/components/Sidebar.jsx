@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import {
   BookOpen, FileText, Sparkles, Star, AlertCircle,
   LayoutDashboard, LogOut, ShieldCheck, Sun, Moon, ChevronLeft, ChevronRight,
-  Compass
+  Compass, Languages
 } from 'lucide-react';
 
 const navLinks = [
@@ -27,7 +27,10 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
   const handleLogout = () => { logout(); navigate('/login'); };
 
   const allLinks = user?.is_staff
-    ? [...navLinks, { name: 'Administration', path: '/admin', icon: ShieldCheck, protected: true }]
+    ? [...navLinks,
+        { name: 'Administration', path: '/admin', icon: ShieldCheck, protected: true },
+        { name: 'Académie des Langues', path: '/languages-academy', icon: Languages, protected: true, adminOnly: true },
+      ]
     : navLinks;
 
   return (

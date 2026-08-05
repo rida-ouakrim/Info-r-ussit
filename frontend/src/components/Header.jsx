@@ -14,6 +14,7 @@ const PAGE_TITLES = {
   '/errors':    "Carnet d'Erreurs",
   '/admin':     'Administration',
   '/plan':      'Plan de Répartition & Révisions',
+  '/languages-academy': '🎓 Académie des Langues',
 };
 
 export default function Header({ onMenuClick }) {
