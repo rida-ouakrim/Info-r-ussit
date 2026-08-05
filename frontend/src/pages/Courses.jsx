@@ -662,7 +662,7 @@ const Courses = () => {
                 key={dom.code}
                 type="button"
                 onClick={() => handleDomainChange(dom.code)}
-                className={`group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${config.topBorder} bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[220px]`}
+                className={`group relative glass-card flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${config.topBorder} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[220px]`}
               >
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-sky-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 
@@ -794,7 +794,7 @@ const Courses = () => {
                 key={sub.code}
                 type="button"
                 onClick={() => handleSubdomainChange(sub.code)}
-                className={`group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${domainConfig.topBorder} bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[200px]`}
+                className={`group relative glass-card flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${domainConfig.topBorder} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[200px]`}
               >
                 <div className="space-y-4 w-full">
                   <div className="flex items-start justify-between">
@@ -900,7 +900,7 @@ const Courses = () => {
                 key={c.id}
                 type="button"
                 onClick={() => handleCourseSelect(c)}
-                className={`group relative flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${domainConfig.topBorder} bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[180px]`}
+                className={`group relative glass-card flex flex-col justify-between p-6 rounded-3xl border border-slate-200 dark:border-slate-800 ${domainConfig.topBorder} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left cursor-pointer overflow-hidden min-h-[180px]`}
               >
                 <div className="space-y-3 w-full">
                   <div className="flex items-center justify-between">
