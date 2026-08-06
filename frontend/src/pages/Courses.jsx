@@ -8,7 +8,8 @@ import {
   HelpCircle, Code2, RefreshCw, Clock, 
   ChevronRight, Zap, Play, PlayCircle, Filter, 
   FileText, Star, ChevronDown, ChevronUp, User, Globe, Award, Sparkles, Layers, Video,
-  Server, Cpu, Laptop, GraduationCap, Brain, Terminal, Database, Network, LayoutTemplate, ArrowLeft, Users, School, Library
+  Server, Cpu, Laptop, GraduationCap, Brain, Terminal, Database, Network, LayoutTemplate, ArrowLeft, Users, School, Library,
+  Save, Trash2, Copy, Download, Check
 } from 'lucide-react';
 
 const getDomainConfig = (code) => {
@@ -164,6 +165,17 @@ const Courses = () => {
   const [userAnswers, setUserAnswers] = useState({});
   const [openQcmIds, setOpenQcmIds] = useState({});
 
+  const [notes, setNotes] = useState(() => {
+    try {
+      const saved = localStorage.getItem('user_course_notes');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  });
+  const [noteSaveStatus, setNoteSaveStatus] = useState('');
+  const [copiedNote, setCopiedNote] = useState(false);
+
   const getEmbedUrl = (url) => {
     if (!url) return null;
     const vMatch = url.match(/(?:v=|\/embed\/|\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -281,6 +293,60 @@ const Courses = () => {
     }
     return selectedCourse;
   }, [selectedCourse, isCLanguage, currentCLesson]);
+
+  const currentNoteKey = useMemo(() => {
+    if (!selectedCourse) return '';
+    if (isCLanguage && currentCLesson) {
+      return `note_c_lesson_${currentCLesson.num}`;
+    }
+    return `note_course_${selectedCourse.id}`;
+  }, [selectedCourse, isCLanguage, currentCLesson]);
+
+  const handleNoteChange = (text) => {
+    if (!currentNoteKey) return;
+    const updated = { ...notes, [currentNoteKey]: text };
+    setNotes(updated);
+    setNoteSaveStatus('Sauvegarde...');
+    try {
+      localStorage.setItem('user_course_notes', JSON.stringify(updated));
+      setTimeout(() => setNoteSaveStatus('Sauvegardé ✓'), 400);
+    } catch (e) {
+      console.error('Save note error:', e);
+    }
+  };
+
+  const handleClearNote = () => {
+    if (!currentNoteKey) return;
+    if (window.confirm('Voulez-vous vraiment effacer vos notes pour ce cours ?')) {
+      const updated = { ...notes };
+      delete updated[currentNoteKey];
+      setNotes(updated);
+      try {
+        localStorage.setItem('user_course_notes', JSON.stringify(updated));
+      } catch (e) {}
+    }
+  };
+
+  const handleCopyNote = () => {
+    const text = notes[currentNoteKey] || '';
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopiedNote(true);
+    setTimeout(() => setCopiedNote(false), 2000);
+  };
+
+  const handleDownloadNote = () => {
+    const text = notes[currentNoteKey] || '';
+    if (!text) return;
+    const title = activeCourseData?.title || 'note';
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Notes_${title.replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   // Detect if this is a bilingual course (has separate AR/FR content)
   const isBilingualCourse = useMemo(() => {
@@ -953,6 +1019,7 @@ const Courses = () => {
             { id: 'video', label: 'Leçon Vidéo', icon: Video, color: 'text-red-500', badge: activeCourseData.video_url },
             { id: 'examples', label: 'Pratique & Exemples', icon: Code2, color: 'text-indigo-500' },
             { id: 'astuces', label: 'Astuces & Pièges', icon: Zap, color: 'text-amber-500' },
+            { id: 'notes', label: 'Mes Notes', icon: FileText, color: 'text-emerald-500', badge: Boolean(notes[currentNoteKey]?.trim()) },
             { id: 'qcm', label: `Quiz Ciblés (${targetedQuestions.length})`, icon: HelpCircle, color: 'text-purple-500' }
           ].map((tab) => {
             const isActive = activeTab === tab.id;
@@ -970,7 +1037,7 @@ const Courses = () => {
               >
                 <Icon className={`w-4 h-4 ${tab.color}`} />
                 <span>{tab.label}</span>
-                {tab.badge && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>}
+                {tab.badge && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>}
               </button>
             );
           })}
@@ -1014,6 +1081,84 @@ const Courses = () => {
                 <p className="text-xs text-slate-500 max-w-md mx-auto">Consultez la fiche de révision théorique et les exemples de code ci-dessous.</p>
               </div>
             )}
+          </div>
+        ) : activeTab === 'notes' ? (
+          <div className="glass-card p-6 sm:p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    Mes Notes Personnelles
+                    {noteSaveStatus && (
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        {noteSaveStatus}
+                      </span>
+                    )}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {activeCourseData?.title} • Enregistrement automatique local
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={handleCopyNote}
+                  disabled={!notes[currentNoteKey]}
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {copiedNote ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedNote ? 'Copié !' : 'Copier'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDownloadNote}
+                  disabled={!notes[currentNoteKey]}
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Exporter (.txt)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleClearNote}
+                  disabled={!notes[currentNoteKey]}
+                  className="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold transition-all flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Effacer</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="relative">
+                <textarea
+                  value={notes[currentNoteKey] || ''}
+                  onChange={(e) => handleNoteChange(e.target.value)}
+                  placeholder="Prenez vos notes personnelles ici pour cette leçon (astuces, résumés, formules, questions à revoir)... Elles sont enregistrées automatiquement !"
+                  rows={12}
+                  className="w-full p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500/50 resize-y transition-all placeholder:text-slate-400 dark:placeholder:text-slate-600 shadow-inner"
+                />
+              </div>
+
+              {notes[currentNoteKey]?.trim() && (
+                <div className="p-5 rounded-2xl bg-slate-50/50 dark:bg-slate-950/50 border border-slate-200/80 dark:border-slate-800/80 space-y-3">
+                  <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-500" /> Aperçu rendu de vos notes (Markdown)
+                  </div>
+                  <div className="prose dark:prose-invert max-w-none text-sm leading-relaxed">
+                    <MarkdownViewer content={notes[currentNoteKey]} />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ) : activeTab !== 'qcm' ? (
           <div className="glass-card p-8 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-2xl min-h-[400px]">
