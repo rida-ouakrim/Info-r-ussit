@@ -487,13 +487,25 @@ function LessonsTab({ onZoom }) {
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {cat.expressions.map((exp, ei) => (
-                            <div key={ei} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 space-y-1 shadow-sm">
-                              <div className="text-xs sm:text-sm text-blue-700 dark:text-blue-300 font-black">
-                                {exp.phrase}
+                            <div key={ei} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/85 space-y-3 shadow-sm flex flex-col justify-between">
+                              <div>
+                                <div className="text-xs sm:text-sm text-blue-700 dark:text-blue-300 font-black">
+                                  {exp.phrase}
+                                </div>
+                                <div className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-semibold mt-1 bg-slate-50 dark:bg-slate-950 px-2 py-0.5 rounded-lg inline-block">
+                                  Contexte : {exp.context}
+                                </div>
                               </div>
-                              <div className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
-                                {exp.context}
-                              </div>
+                              {exp.explanation && (
+                                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1">
+                                  <div className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
+                                    💡 Pourquoi cette conjugaison ?
+                                  </div>
+                                  <p className="text-[11px] sm:text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                                    {exp.explanation}
+                                  </p>
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>

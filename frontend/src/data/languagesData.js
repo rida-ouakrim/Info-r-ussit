@@ -1048,17 +1048,41 @@ export const PRESTORED_LESSONS = {
       {
         category: "Demander le Silence & l'Attention",
         expressions: [
-          { phrase: "« S'il vous plaît, veuillez vous taire un instant. »", context: "Pour réclamer le calme avant d'expliquer une règle complexe." },
-          { phrase: "« J'exige un silence complet pendant que votre camarade s'exprime. »", context: "Pour instaurer le respect mutuel lors des interventions." },
-          { phrase: "« Chuchotez s'il vous plaît durant le travail d'équipe. »", context: "Pour maintenir un volume sonore agréable." }
+          {
+            phrase: "« S'il vous plaît, veuillez vous taire un instant. »",
+            context: "Pour réclamer le calme avant d'expliquer une règle complexe.",
+            explanation: "Le verbe 'vouloir' est au présent du subjonctif poli ('veuillez'), employé ici comme formule d'impératif atténué pour exprimer un ordre courtois. Différence : l'indicatif présent 'vous voulez' constate simplement un fait présent, alors que le subjonctif 'veuillez' exprime une invitation polie à agir."
+          },
+          {
+            phrase: "« J'exige un silence complet pendant que votre camarade s'exprime. »",
+            context: "Pour instaurer le respect mutuel lors des interventions.",
+            explanation: "Le verbe 'exiger' et le verbe pronominal 's'exprimer' sont à l'indicatif présent pour exprimer une certitude immédiate et une consigne d'autorité directe. Différence : on emploie l'indicatif pour ce qui est réel ou immédiat, contrairement au subjonctif ou au conditionnel."
+          },
+          {
+            phrase: "« Chuchotez s'il vous plaît durant le travail d'équipe. »",
+            context: "Pour maintenir un volume sonore agréable.",
+            explanation: "Le verbe 'chuchoter' est à l'impératif présent (2e personne du pluriel 'vous') qui sert à formuler des instructions claires et directes. Différence : à l'oral d'un enseignant, l'impératif direct évite les phrases trop longues tout en restant respectueux grâce au 's'il vous plaît'."
+          }
         ]
       },
       {
         category: "Inviter un étudiant à répondre",
         expressions: [
-          { phrase: "« Je te donne la parole, dis-moi ce que tu en penses. »", context: "Pour désigner un élève précis avec bienveillance." },
-          { phrase: "« N'hésite pas à intervenir, l'erreur fait partie de l'apprentissage. »", context: "Pour encourager un élève timide à prendre la parole." },
-          { phrase: "« Peux-tu reformuler ta réponse avec plus de précision ? »", context: "Pour pousser l'élève à mieux structurer sa phrase." }
+          {
+            phrase: "« Je te donne la parole, dis-moi ce que tu en penses. »",
+            context: "Pour désigner un élève précis avec bienveillance.",
+            explanation: "'Donne' et 'penses' sont à l'indicatif présent (action réelle en cours), tandis que 'dis-moi' est à l'impératif singulier. Différence : l'indicatif s'adresse à l'élève pour le valoriser, tandis que l'impératif l'invite à réagir immédiatement."
+          },
+          {
+            phrase: "« N'hésite pas à intervenir, l'erreur fait partie de l'apprentissage. »",
+            context: "Pour encourager un élève timide à prendre la parole.",
+            explanation: "'Hésite' est à l'impératif présent à la forme négative. Attention à l'absence de 's' à la 2e personne du singulier pour les verbes du 1er groupe ('hésite' et non 'hésites'). Différence : 'tu n'hésites pas' (indicatif) énonce une habitude, tandis que l'impératif est une incitation."
+          },
+          {
+            phrase: "« Peux-tu reformuler ta réponse avec plus de précision ? »",
+            context: "Pour pousser l'élève à mieux structurer sa phrase.",
+            explanation: "Utilise le verbe 'pouvoir' au présent de l'indicatif à la forme interrogative inversée. Différence : 'peux-tu' est plus poli et pédagogiquement plus stimulant que 'reformule ta réponse' à l'impératif."
+          }
         ]
       }
     ],
@@ -1185,17 +1209,41 @@ export const PRESTORED_LESSONS = {
       {
         category: "Désigner les Espaces de Travail",
         expressions: [
-          { phrase: "« Veillez à laisser un espace propre entre vos lignes. »", context: "Rappel : 'Espace' est masculin (UN espace)." },
-          { phrase: "« Regardez l'affichage au tableau pour copier l'exemple. »", context: "Rappel : 'Affichage' (masculin) et 'Exemple' (masculin : UN exemple)." },
-          { phrase: "« Ouvrez vos cahiers à la page indiquée. »", context: "Rappel : 'Cahier' est masculin, 'Page' est féminin." }
+          {
+            phrase: "« Veillez à laisser un espace propre entre vos lignes. »",
+            context: "Rappel : 'Espace' est masculin (UN espace).",
+            explanation: "'Veillez' est conjugué à l'impératif présent pour indiquer une consigne bienveillante mais ferme. 'Espace' prend la marque du genre masculin. Différence : l'indicatif présent est 'vous veillez à', mais l'impératif direct 'veillez à' est privilégié pour fixer une consigne visuelle au tableau."
+          },
+          {
+            phrase: "« Regardez l'affichage au tableau pour copier l'exemple. »",
+            context: "Rappel : 'Affichage' (masculin) et 'Exemple' (masculin : UN exemple).",
+            explanation: "'Regardez' est à l'impératif présent. 'Affichage' et 'exemple' sont masculins. Différence : on dit 'un exemple' (masculin) et jamais 'une exemple' (faute très courante chez les élèves que l'enseignant doit corriger par l'exemple)."
+          },
+          {
+            phrase: "« Ouvrez vos cahiers à la page indiquée. »",
+            context: "Rappel : 'Cahier' est masculin, 'Page' est féminin.",
+            explanation: "'Ouvrez' est à l'impératif présent. L'adjectif 'indiquée' s'accorde au féminin singulier avec 'page'. Différence : la consonne muette 'd' de 'indiqué' s'entend clairement au féminin pluriel/singulier 'indiquée' (/d/ sonore)."
+          }
         ]
       },
       {
         category: "Guider l'Évaluation",
         expressions: [
-          { phrase: "« C'est une erreur fréquente, nous allons la corriger ensemble. »", context: "Rappel : 'Erreur' est féminin (UNE erreur)." },
-          { phrase: "« Cette évaluation mesurera votre progression. »", context: "Rappel : 'Évaluation' et 'Progression' sont féminins (-ion)." },
-          { phrase: "« Nous allons analyser ce système étape par étape. »", context: "Rappel : 'Système' et 'Problème' sont masculins (-ème)." }
+          {
+            phrase: "« C'est une erreur fréquente, nous allons la corriger ensemble. »",
+            context: "Rappel : 'Erreur' est féminin (UNE erreur).",
+            explanation: "Le présent de l'indicatif ('est') affirme un fait de manière neutre. 'Erreur' est féminin, donc accord au féminin de l'adjectif 'fréquente'. Différence : on dit 'une erreur fréquente' et pas 'un erreur fréquent'."
+          },
+          {
+            phrase: "« Cette évaluation mesurera votre progression. »",
+            context: "Rappel : 'Évaluation' et 'Progression' sont féminins (-ion).",
+            explanation: "Le verbe 'mesurer' est au futur simple ('mesurera') pour projeter l'action dans l'avenir de la séance. Les mots en '-ion' sont toujours féminins. Différence : le futur simple exprime une certitude dans le futur, contrairement au conditionnel présent ('mesurerait') qui exprimerait un doute."
+          },
+          {
+            phrase: "« Nous allons analyser ce système étape par étape. »",
+            context: "Rappel : 'Système' et 'Problème' sont masculins (-ème).",
+            explanation: "Utilise le futur proche ('allons analyser') pour indiquer une action imminente dans la séance. Les mots grecs en '-ème' sont masculins. Différence : le futur proche montre un lien fort et immédiat avec le présent du cours."
+          }
         ]
       }
     ],
@@ -1322,17 +1370,41 @@ export const PRESTORED_LESSONS = {
       {
         category: "Expliquer les Règles & le But",
         expressions: [
-          { phrase: "« Je ne comprends pas votre démarche, veuillez la réexpliquer. »", context: "Rappel : Maintenez le 'ne' à l'oral." },
-          { phrase: "« Je vous distribue cette fiche afin de consolider vos acquis. »", context: "Rappel : 'Afin de' + infinitif." },
-          { phrase: "« J'aimerais que vous fassiez des phrases complètes pour que tout le monde comprenne. »", context: "Rappel : 'Pour que' + subjonctif ('fassiez', 'comprenne')." }
+          {
+            phrase: "« Je ne comprends pas votre démarche, veuillez la réexpliquer. »",
+            context: "Rappel : Maintenez le 'ne' à l'oral.",
+            explanation: "Le 'ne' de négation est obligatoire devant le verbe. 'Veuillez' est au présent du subjonctif poli (impératif atténué). Différence : en français familier oral, le 'ne' est souvent omis ('Je comprends pas'), mais devant les élèves, il est crucial d'utiliser la structure complète 'ne... pas' pour montrer l'exemple."
+          },
+          {
+            phrase: "« Je vous distribue cette fiche afin de consolider vos acquis. »",
+            context: "Rappel : 'Afin de' + infinitif.",
+            explanation: "Le verbe principal 'distribue' est au présent de l'indicatif. La locution conjonctive 'afin de' est suivie de l'infinitif ('consolider') car le sujet (le professeur) effectue les deux actions. Différence : si le sujet était différent, on emploierait 'afin que + subjonctif' (ex: afin que vous consolidiez)."
+          },
+          {
+            phrase: "« J'aimerais que vous fassiez des phrases complètes pour que tout le monde comprenne. »",
+            context: "Rappel : 'Pour que' + subjonctif ('fassiez', 'comprenne').",
+            explanation: "'J'aimerais' est au conditionnel présent pour adoucir le souhait. 'Fassiez' et 'comprenne' sont au présent du subjonctif, imposé par 'que' après un souhait et la locution 'pour que'. Différence : le subjonctif exprime l'intention, le but et le souhait, contrairement à l'indicatif qui exprime des faits certains."
+          }
         ]
       },
       {
         category: "Établir des Causes (Positives / Négatives)",
         expressions: [
-          { phrase: "« Grâce à vos efforts constants, la classe progresse rapidement. »", context: "Rappel : 'Grâce à' s'utilise uniquement pour une cause positive." },
-          { phrase: "« Nous avons pris du retard dans la séquence à cause de la coupure de réseau. »", context: "Rappel : 'À cause de' s'utilise pour un problème / cause négative." },
-          { phrase: "« Ce résultat est obtenu grâce à une méthode rigoureuse. »", context: "Rappel : Rendu de cause positif." }
+          {
+            phrase: "« Grâce à vos efforts constants, la classe progresse rapidement. »",
+            context: "Rappel : 'Grâce à' s'utilise uniquement pour une cause positive.",
+            explanation: "Le verbe 'progresse' est à l'indicatif présent pour énoncer un fait réel. 'Grâce à' introduit une cause positive. Différence : ne dites jamais 'à cause de vos efforts' car 'à cause de' a une connotation négative ou défavorable."
+          },
+          {
+            phrase: "« Nous avons pris du retard dans la séquence à cause de la coupure de réseau. »",
+            context: "Rappel : 'À cause de' s'utilise pour un problème / cause négative.",
+            explanation: "'Avons pris' est au passé composé (action achevée). 'À cause de' introduit un obstacle négatif. Différence : on oppose 'grâce à' (allié) à 'à cause de' (responsable d'un problème)."
+          },
+          {
+            phrase: "« Ce résultat est obtenu grâce à une méthode rigoureuse. »",
+            context: "Rappel : Rendu de cause positif.",
+            explanation: "Le verbe 'est obtenu' est à la voix passive au présent de l'indicatif. La cause heureuse est introduite par 'grâce à'. Différence : la voix passive met en valeur le 'résultat', tandis que la voix active ('nous obtenons ce résultat grâce à...') mettrait l'accent sur les acteurs."
+          }
         ]
       }
     ],
@@ -1454,17 +1526,41 @@ export const PRESTORED_LESSONS = {
       {
         category: "Donner des Consignes d'Organisation",
         expressions: [
-          { phrase: "« L'exercice est composé de deux parties, chacune est obligatoire. »", context: "Rappel : Féminin singulier sonore ('composée', 'obligatoire')." },
-          { phrase: "« La feuille de route que je vous ai distribuée doit être remplie. »", context: "Rappel : Accord du participe avec le COD placé avant ('distribuée')." },
-          { phrase: "« Toutes les instructions sont écrites au verso de votre fiche. »", context: "Rappel : Féminin pluriel sonore ('écrites')." }
+          {
+            phrase: "« L'exercice est composé de deux parties, chacune est obligatoire. »",
+            context: "Rappel : Féminin singulier sonore ('composée', 'obligatoire').",
+            explanation: "Le verbe 'est composé' est au passif au présent. L'adjectif 'obligatoire' qualifie le pronom féminin 'chacune'. Différence : au féminin, le participe 'composé' prend un 'e' final ('composée') qui reste muet à l'oral, mais l'accord à l'écrit est indispensable."
+          },
+          {
+            phrase: "« La feuille de route que je vous ai distribuée doit être remplie. »",
+            context: "Rappel : Accord du participe avec le COD placé avant ('distribuée').",
+            explanation: "Le participe passé 'distribuée' s'accorde au féminin singulier avec 'la feuille de route' car le pronom relatif COD 'que' (qui représente la feuille) est placé avant l'auxiliaire avoir ('ai'). Différence : si le COD était placé après, le participe resterait invariable (ex: j'ai distribué la feuille)."
+          },
+          {
+            phrase: "« Toutes les instructions sont écrites au verso de votre fiche. »",
+            context: "Rappel : Féminin pluriel sonore ('écrites').",
+            explanation: "'Sont écrites' est conjugué à la voix passive au présent. Le participe s'accorde en genre et en nombre avec 'instructions' (féminin pluriel). Différence : la consonne finale 't', muette au masculin 'écrit', devient sonore au féminin pluriel 'écrites' (/t/ sonore)."
+          }
         ]
       },
       {
         category: "Valider les Réponses",
         expressions: [
-          { phrase: "« Votre réponse est tout à fait correcte, je vous félicite. »", context: "Rappel : Féminin singulier ('correcte')." },
-          { phrase: "« Les compétences requises pour cet exercice sont acquises. »", context: "Rappel : Accords sonores au féminin pluriel ('requises', 'acquises')." },
-          { phrase: "« La parole est prise à tour de rôle, s'il vous plaît. »", context: "Rappel : 'Prise' (féminin singulier sonore /z/)." }
+          {
+            phrase: "« Votre réponse est tout à fait correcte, je vous félicite. »",
+            context: "Rappel : Féminin singulier ('correcte').",
+            explanation: "Le présent de l'indicatif sert à exprimer une vérité immédiate. L'adjectif 'correcte' qualifie le nom féminin 'réponse'. Différence : le masculin singulier s'écrit 'correct' (le 't' final s'entend déjà un peu, mais le doublement graphique au féminin 'correcte' fixe l'accord)."
+          },
+          {
+            phrase: "« Les compétences requises pour cet exercice sont acquises. »",
+            context: "Rappel : Accords sonores au féminin pluriel ('requises', 'acquises').",
+            explanation: "Les adjectifs 'requises' et 'acquises' qualifient le sujet féminin pluriel 'compétences'. Différence : la consonne finale 's', muette au masculin ('requis', 'acquis'), devient un son de sifflement sonore /z/ au féminin pluriel ('requises', 'acquises')."
+          },
+          {
+            phrase: "« La parole est prise à tour de rôle, s'il vous plaît. »",
+            context: "Rappel : 'Prise' (féminin singulier sonore /z/).",
+            explanation: "Le verbe 'est prise' est au présent à la voix passive. Le participe passé s'accorde avec 'la parole' (féminin singulier). Différence : la consonne finale 's' se réveille au féminin sous forme de son /z/ ('prise'), marquant clairement l'accord à l'oral."
+          }
         ]
       }
     ],
