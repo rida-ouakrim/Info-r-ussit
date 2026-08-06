@@ -82,4 +82,5 @@ seed_*.py
 cahier_des_charges_pfe.md
 !backend/db.sqlite3
 Video algorithme/
+/scratch/
 
