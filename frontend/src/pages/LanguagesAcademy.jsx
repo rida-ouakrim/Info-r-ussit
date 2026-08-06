@@ -5,7 +5,7 @@ import {
   BookOpen, Sparkles, HelpCircle, RotateCcw, CheckCircle2, XCircle,
   ChevronRight, Loader2, MessageSquare, Lightbulb, Award, Star,
   RefreshCw, ArrowRight, ArrowLeft, Pencil, Languages,
-  ZoomIn, ZoomOut, Maximize2, X
+  ZoomIn, ZoomOut, Maximize2, X, Type
 } from 'lucide-react';
 import { VOCABULARY, STORIES, LESSONS_CONFIG, DIAGNOSTIC_QUIZ, PRESTORED_LESSONS } from '../data/languagesData';
 
@@ -15,6 +15,42 @@ const TABS = [
   { id: 'quiz', label: '🧠 Quiz Diagnostic', icon: HelpCircle },
   { id: 'corrector', label: '🤖 Correcteur IA', icon: Sparkles },
 ];
+
+const FONT_CLASSES = {
+  normal: {
+    heroTitle: 'text-xl sm:text-2xl font-extrabold',
+    heroBody: 'text-xs sm:text-sm',
+    cardTitle: 'text-base sm:text-xl font-black',
+    sectionTitle: 'text-xs sm:text-sm font-black',
+    body: 'text-xs sm:text-sm leading-relaxed',
+    ruleText: 'text-xs sm:text-sm leading-relaxed font-medium',
+    exampleText: 'text-xs sm:text-sm',
+    dialogueText: 'text-xs sm:text-sm leading-relaxed',
+    tableText: 'text-xs sm:text-sm',
+  },
+  large: {
+    heroTitle: 'text-2xl sm:text-4xl font-black',
+    heroBody: 'text-sm sm:text-base leading-relaxed',
+    cardTitle: 'text-lg sm:text-2xl font-black',
+    sectionTitle: 'text-sm sm:text-base font-black',
+    body: 'text-sm sm:text-base leading-relaxed font-medium',
+    ruleText: 'text-sm sm:text-base leading-relaxed font-medium',
+    exampleText: 'text-sm sm:text-base',
+    dialogueText: 'text-sm sm:text-base leading-relaxed',
+    tableText: 'text-sm sm:text-base',
+  },
+  xlarge: {
+    heroTitle: 'text-3xl sm:text-5xl font-black',
+    heroBody: 'text-base sm:text-lg leading-loose',
+    cardTitle: 'text-xl sm:text-3xl font-black',
+    sectionTitle: 'text-base sm:text-lg font-black',
+    body: 'text-base sm:text-lg leading-loose font-semibold',
+    ruleText: 'text-base sm:text-lg leading-loose font-semibold',
+    exampleText: 'text-base sm:text-lg',
+    dialogueText: 'text-base sm:text-lg leading-loose',
+    tableText: 'text-base sm:text-lg',
+  }
+};
 
 // ─── Color helpers ──────────────────────────────────────────────────────────
 const COLOR_MAP = {
@@ -131,7 +167,7 @@ function ImageZoomModal({ zoomData, onClose }) {
           />
         </div>
         
-        <p className="text-[11px] text-slate-400 mt-4 font-medium text-center">
+        <p className="text-xs text-slate-400 mt-4 font-medium text-center">
           Cliquez sur <span className="text-red-400 font-bold">X</span> ou en dehors de l'image pour fermer
         </p>
       </motion.div>
@@ -148,8 +184,8 @@ function ZoomableImage({ src, alt, title = "", className = "", containerClassNam
     >
       <img src={src} alt={alt} className={`w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 ${className}`} />
       <div className="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center pointer-events-none">
-        <span className="bg-slate-900/85 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full border border-slate-700 flex items-center gap-1.5 shadow-xl backdrop-blur-sm">
-          <Maximize2 className="w-3 h-3 text-blue-400" /> Zoom
+        <span className="bg-slate-900/85 text-white text-xs font-extrabold px-3 py-1.5 rounded-full border border-slate-700 flex items-center gap-1.5 shadow-xl backdrop-blur-sm">
+          <Maximize2 className="w-3.5 h-3.5 text-blue-400" /> Zoom
         </span>
       </div>
     </div>
@@ -157,13 +193,13 @@ function ZoomableImage({ src, alt, title = "", className = "", containerClassNam
 }
 
 // ─── FlipCard component ──────────────────────────────────────────────────────
-function FlipCard({ word }) {
+function FlipCard({ word, fStyle }) {
   const [flipped, setFlipped] = useState(false);
   const c = COLOR_MAP[word.color] || COLOR_MAP.blue;
 
   return (
     <div
-      className="cursor-pointer h-60 sm:h-64 perspective-1000"
+      className="cursor-pointer h-64 sm:h-72 perspective-1000"
       onClick={() => setFlipped(f => !f)}
       title="Cliquez pour retourner la carte"
     >
@@ -173,35 +209,35 @@ function FlipCard({ word }) {
       >
         {/* Front */}
         <div
-          className={`absolute inset-0 backface-hidden rounded-3xl border-2 ${c.border} bg-gradient-to-br ${c.card} flex flex-col items-center justify-center p-6 space-y-3.5 shadow-md`}
+          className={`absolute inset-0 backface-hidden rounded-3xl border-2 ${c.border} bg-gradient-to-br ${c.card} flex flex-col items-center justify-center p-6 space-y-4 shadow-md`}
           style={{ backfaceVisibility: 'hidden' }}
         >
-          <span className={`text-xs font-black uppercase tracking-widest ${c.text} ${c.bg} px-3 py-1 rounded-full`}>
+          <span className={`text-xs sm:text-sm font-black uppercase tracking-widest ${c.text} ${c.bg} px-3.5 py-1 rounded-full`}>
             {word.type}
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white text-center leading-tight">{word.word}</div>
-          <div className={`w-9 h-9 rounded-full ${c.badge} flex items-center justify-center animate-bounce shadow-md`}>
-            <span className="text-white text-sm font-bold">↩</span>
+          <div className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white text-center leading-tight">{word.word}</div>
+          <div className={`w-10 h-10 rounded-full ${c.badge} flex items-center justify-center animate-bounce shadow-md`}>
+            <span className="text-white text-base font-bold">↩</span>
           </div>
           <p className="text-xs font-bold text-slate-500 dark:text-slate-400 text-center">Cliquez pour voir la définition</p>
         </div>
 
         {/* Back (Fixed for 100% visibility in Light and Dark Mode) */}
         <div
-          className="absolute inset-0 backface-hidden rounded-3xl bg-white dark:bg-slate-900 border-2 border-blue-400 dark:border-slate-700 flex flex-col justify-between p-5 space-y-3 shadow-xl"
+          className="absolute inset-0 backface-hidden rounded-3xl bg-white dark:bg-slate-900 border-2 border-blue-400 dark:border-slate-700 flex flex-col justify-between p-5 sm:p-6 space-y-3 shadow-xl"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
-          <div className="space-y-2.5 overflow-y-auto pr-1 no-scrollbar flex-1">
+          <div className="space-y-3 overflow-y-auto pr-1 no-scrollbar flex-1">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black text-blue-600 dark:text-blue-400 border-b border-blue-100 dark:border-slate-800 pb-1.5">
               📖 Définition
             </div>
-            <p className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 leading-relaxed">
+            <p className={`${fStyle.body} font-bold text-slate-800 dark:text-slate-100`}>
               {word.definition}
             </p>
             
             <div className="pt-1 space-y-1">
               <div className="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">💡 Exemple en Classe</div>
-              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 italic font-semibold leading-relaxed bg-amber-50 dark:bg-amber-950/30 p-2 rounded-xl border border-amber-200/60 dark:border-amber-900/30">
+              <p className={`${fStyle.body} text-slate-700 dark:text-slate-200 italic font-semibold bg-amber-50 dark:bg-amber-950/30 p-2.5 rounded-xl border border-amber-200/60 dark:border-amber-900/30`}>
                 « {word.example} »
               </p>
             </div>
@@ -209,13 +245,13 @@ function FlipCard({ word }) {
             {word.conjugation && (
               <div className="pt-1 space-y-0.5">
                 <div className="text-xs font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🔀 Conjugaison Utile</div>
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{word.conjugation}</p>
+                <p className={`${fStyle.body} text-slate-700 dark:text-slate-300 font-medium`}>{word.conjugation}</p>
               </div>
             )}
           </div>
 
-          <div className="px-3 py-2 rounded-xl bg-blue-50 dark:bg-slate-800 border border-blue-200 dark:border-slate-700 mt-auto shrink-0">
-            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-normal">
+          <div className="px-3.5 py-2 rounded-xl bg-blue-50 dark:bg-slate-800 border border-blue-200 dark:border-slate-700 mt-auto shrink-0">
+            <p className={`${fStyle.body} text-slate-700 dark:text-slate-300 font-medium`}>
               <span className="text-amber-600 dark:text-yellow-400 font-black">✨ Astuce : </span>{word.tip}
             </p>
           </div>
@@ -226,7 +262,7 @@ function FlipCard({ word }) {
 }
 
 // ─── Story Renderer ──────────────────────────────────────────────────────────
-function StoryRenderer({ story, onZoom }) {
+function StoryRenderer({ story, onZoom, fStyle }) {
   const colorTextMap = {
     blue: 'text-blue-600 dark:text-blue-400 bg-blue-100/70 dark:bg-blue-900/30 px-1.5 py-0.5 rounded-md font-bold',
     purple: 'text-purple-600 dark:text-purple-400 bg-purple-100/70 dark:bg-purple-900/30 px-1.5 py-0.5 rounded-md font-bold',
@@ -234,21 +270,21 @@ function StoryRenderer({ story, onZoom }) {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="flex items-center gap-4">
         <div 
           onClick={() => onZoom({ src: "/images/languages/banana_story.png", title: story.title })}
-          className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 cursor-zoom-in group"
+          className="w-16 h-16 sm:w-22 sm:h-22 shrink-0 cursor-zoom-in group"
         >
           <ZoomableImage src="/images/languages/banana_story.png" alt="Story" title={story.title} containerClassName="w-full h-full" />
         </div>
         <div>
-          <h4 className="text-base sm:text-lg font-extrabold text-slate-800 dark:text-white">{story.title}</h4>
-          <p className="text-xs sm:text-sm text-slate-400">L'histoire de Nano & Banana</p>
+          <h4 className={`${fStyle.cardTitle} text-slate-800 dark:text-white`}>{story.title}</h4>
+          <p className="text-xs sm:text-sm text-slate-400 font-medium">L'histoire de Nano & Banana</p>
         </div>
       </div>
 
-      <div className="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 text-sm sm:text-base leading-relaxed text-slate-800 dark:text-slate-200">
+      <div className={`glass-card p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800 ${fStyle.body} text-slate-800 dark:text-slate-200`}>
         {story.text.map((part, i) =>
           part.type === 'text' ? (
             <span key={i}>{part.content}</span>
@@ -260,8 +296,8 @@ function StoryRenderer({ story, onZoom }) {
         )}
       </div>
 
-      <div className="flex items-center gap-3 p-4 sm:p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/30 text-xs sm:text-sm text-amber-800 dark:text-amber-300 font-semibold leading-relaxed">
-        <span className="text-lg">🍌</span>
+      <div className={`flex items-center gap-3.5 p-5 sm:p-6 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/30 ${fStyle.body} text-amber-900 dark:text-amber-300 font-semibold`}>
+        <span className="text-2xl">🍌</span>
         <span className="italic">{story.moral}</span>
       </div>
     </div>
@@ -269,7 +305,7 @@ function StoryRenderer({ story, onZoom }) {
 }
 
 // ─── Lessons Tab ─────────────────────────────────────────────────────────────
-function LessonsTab({ onZoom }) {
+function LessonsTab({ onZoom, fStyle }) {
   const [selectedLesson, setSelectedLesson] = useState(LESSONS_CONFIG[0]);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
@@ -294,7 +330,7 @@ function LessonsTab({ onZoom }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
       {/* Lesson Cards */}
-      <div className="lg:col-span-4 space-y-3 sm:space-y-4">
+      <div className="lg:col-span-4 space-y-4">
         <h2 className="text-xs sm:text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
           Choisissez une Leçon
         </h2>
@@ -307,7 +343,7 @@ function LessonsTab({ onZoom }) {
               onClick={() => selectLesson(lesson)}
               className={`glass-card w-full text-left p-4 sm:p-5 rounded-3xl border-2 transition-all duration-300 hover:shadow-lg hover:scale-[1.01] ${isActive ? `border-${lesson.color}-400 ring-2 ${c.ring}` : 'border-slate-200 dark:border-slate-800'}`}
             >
-              <div className="flex items-center gap-3.5">
+              <div className="flex items-center gap-4">
                 <div 
                   onClick={(e) => { e.stopPropagation(); onZoom({ src: lesson.image, title: lesson.title }); }}
                   className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 rounded-2xl overflow-hidden cursor-zoom-in shadow-sm"
@@ -336,10 +372,10 @@ function LessonsTab({ onZoom }) {
                   <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/40 px-3 py-1 rounded-full">
                     {selectedLesson.icon} Leçon Pédagogique Détaillée
                   </span>
-                  <h2 className="text-xl sm:text-3xl font-black text-slate-900 dark:text-white leading-tight">
+                  <h2 className={`${fStyle.heroTitle} text-slate-900 dark:text-white leading-tight`}>
                     {lessonData.title}
                   </h2>
-                  <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">{lessonData.intro}</p>
+                  <p className={`${fStyle.heroBody} text-slate-700 dark:text-slate-200 font-medium`}>{lessonData.intro}</p>
                 </div>
                 <div 
                   onClick={() => onZoom({ src: selectedLesson.image, title: lessonData.title })}
@@ -352,25 +388,25 @@ function LessonsTab({ onZoom }) {
               {/* Posture & Pédagogie de l'Enseignant */}
               {lessonData.pedagogical_context && (
                 <div className="glass-card p-6 sm:p-7 rounded-3xl border border-indigo-200 dark:border-indigo-900/40 bg-gradient-to-r from-indigo-50/60 to-blue-50/60 dark:from-indigo-950/20 dark:to-blue-950/20 space-y-3">
-                  <h3 className="text-sm sm:text-base font-black text-indigo-800 dark:text-indigo-300 uppercase tracking-widest flex items-center gap-2">
+                  <h3 className={`${fStyle.sectionTitle} text-indigo-800 dark:text-indigo-300 uppercase tracking-widest flex items-center gap-2`}>
                     🎓 Posture & Pédagogie de l'Enseignant en Classe
                   </h3>
-                  <p className="text-sm sm:text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{lessonData.pedagogical_context}</p>
+                  <p className={`${fStyle.body} text-slate-800 dark:text-slate-200 font-medium`}>{lessonData.pedagogical_context}</p>
                 </div>
               )}
 
               {/* Règle Principale (Structured Numbered Points) */}
               <div className="glass-card p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
-                <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest flex items-center gap-2">
+                <h3 className={`${fStyle.sectionTitle} text-slate-900 dark:text-slate-100 uppercase tracking-widest flex items-center gap-2`}>
                   <BookOpen className="w-5 h-5 text-blue-500" /> La Règle Fondamentale
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {lessonData.rule.split('\n').map((rulePoint, rIdx) => (
-                    <div key={rIdx} className="p-4 rounded-2xl bg-blue-50/50 dark:bg-slate-900 border border-blue-100 dark:border-slate-800/80 flex items-start gap-3.5 shadow-sm">
-                      <span className="w-7 h-7 rounded-full bg-blue-600 text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                    <div key={rIdx} className="p-4 sm:p-5 rounded-2xl bg-blue-50/50 dark:bg-slate-900 border border-blue-100 dark:border-slate-800/80 flex items-start gap-4 shadow-sm">
+                      <span className="w-8 h-8 rounded-full bg-blue-600 text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                         {rIdx + 1}
                       </span>
-                      <p className="text-sm sm:text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
+                      <p className={`${fStyle.ruleText} text-slate-800 dark:text-slate-200`}>
                         {rulePoint.replace(/^\d+\.\s*/, '')}
                       </p>
                     </div>
@@ -381,17 +417,17 @@ function LessonsTab({ onZoom }) {
               {/* Nuances & Distinctions de Mots Confondus */}
               {lessonData.word_distinctions?.length > 0 && (
                 <div className="glass-card p-6 sm:p-8 rounded-3xl border border-amber-200 dark:border-amber-900/40 bg-gradient-to-r from-amber-50/40 to-orange-50/40 dark:from-amber-950/20 dark:to-orange-950/10 space-y-5">
-                  <h3 className="text-sm sm:text-base font-black text-amber-800 dark:text-amber-400 uppercase tracking-widest flex items-center gap-2">
+                  <h3 className={`${fStyle.sectionTitle} text-amber-800 dark:text-amber-400 uppercase tracking-widest flex items-center gap-2`}>
                     🔍 Nuances & Différences entre Mots Clés
                   </h3>
                   <div className="space-y-4">
                     {lessonData.word_distinctions.map((dist, di) => (
-                      <div key={di} className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-amber-800/40 space-y-2 shadow-sm">
-                        <div className="text-base sm:text-lg font-black text-amber-900 dark:text-amber-300 flex items-center gap-2">
+                      <div key={di} className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-amber-800/40 space-y-2.5 shadow-sm">
+                        <div className={`${fStyle.cardTitle} text-amber-900 dark:text-amber-300 flex items-center gap-2`}>
                           <span className="text-amber-500">⚡</span> {dist.pair}
                         </div>
-                        <p className="text-sm sm:text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{dist.difference}</p>
-                        <div className="text-xs sm:text-sm text-amber-900 dark:text-amber-200 italic bg-amber-50 dark:bg-amber-950/40 p-3 rounded-xl border border-amber-200/50 dark:border-amber-900/30">
+                        <p className={`${fStyle.body} text-slate-800 dark:text-slate-200`}>{dist.difference}</p>
+                        <div className={`${fStyle.body} text-amber-900 dark:text-amber-200 italic bg-amber-50 dark:bg-amber-950/40 p-3.5 rounded-xl border border-amber-200/50 dark:border-amber-900/30`}>
                           <span className="font-bold text-amber-800 dark:text-amber-300">Exemple en classe : </span>« {dist.example} »
                         </div>
                       </div>
@@ -403,17 +439,17 @@ function LessonsTab({ onZoom }) {
               {/* Tableaux de Conjugaison Utiles */}
               {lessonData.conjugation_tables?.length > 0 && (
                 <div className="glass-card p-6 sm:p-8 rounded-3xl border border-purple-200 dark:border-purple-900/40 space-y-5">
-                  <h3 className="text-sm sm:text-base font-black text-purple-800 dark:text-purple-300 uppercase tracking-widest flex items-center gap-2">
+                  <h3 className={`${fStyle.sectionTitle} text-purple-800 dark:text-purple-300 uppercase tracking-widest flex items-center gap-2`}>
                     🔀 Conjugaison des Verbes les Plus Utilisés en Enseignement
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {lessonData.conjugation_tables.map((table, ti) => (
                       <div key={ti} className="p-5 rounded-2xl bg-purple-50/60 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800/40 space-y-3 shadow-sm">
-                        <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-2">
-                          <span className="text-sm sm:text-base font-black text-purple-900 dark:text-purple-200">{table.verb}</span>
-                          <span className="text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/50 px-2.5 py-1 rounded-full">{table.tense}</span>
+                        <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-2.5">
+                          <span className={`${fStyle.cardTitle} text-purple-900 dark:text-purple-200`}>{table.verb}</span>
+                          <span className="text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/50 px-3 py-1 rounded-full">{table.tense}</span>
                         </div>
-                        <ul className="text-sm sm:text-base text-slate-800 dark:text-slate-200 space-y-1.5 font-medium">
+                        <ul className={`${fStyle.tableText} text-slate-800 dark:text-slate-200 space-y-2 font-medium`}>
                           {table.forms.map((form, fi) => (
                             <li key={fi} className="flex justify-between border-b border-purple-100/50 dark:border-slate-800/50 py-1">
                               <span>{form}</span>
@@ -421,7 +457,7 @@ function LessonsTab({ onZoom }) {
                           ))}
                         </ul>
                         {table.note && (
-                          <p className="text-xs text-purple-800 dark:text-purple-300 italic pt-1"><span className="font-bold">⚠️ Piège : </span>{table.note}</p>
+                          <p className={`${fStyle.body} text-purple-800 dark:text-purple-300 italic pt-1`}><span className="font-bold">⚠️ Piège : </span>{table.note}</p>
                         )}
                       </div>
                     ))}
@@ -431,19 +467,19 @@ function LessonsTab({ onZoom }) {
 
               {/* Exemples Pratiques (Incorrect vs Correct) */}
               <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-5">
-                <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest flex items-center gap-2"><MessageSquare className="w-5 h-5 text-emerald-500" /> Exemples d'Erreurs Courantes & Corrections</h3>
+                <h3 className={`${fStyle.sectionTitle} text-slate-900 dark:text-slate-100 uppercase tracking-widest flex items-center gap-2`}><MessageSquare className="w-5 h-5 text-emerald-500" /> Exemples d'Erreurs Courantes & Corrections</h3>
                 {lessonData.examples?.map((ex, i) => (
                   <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 space-y-1.5">
+                    <div className="p-4 sm:p-5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 space-y-2">
                       <div className="text-xs font-black text-red-600 uppercase tracking-wider">❌ À ÉVITER ABSOLUMENT</div>
-                      <div className="text-sm sm:text-base text-red-800 dark:text-red-300 italic font-semibold">{ex.wrong}</div>
+                      <div className={`${fStyle.exampleText} text-red-800 dark:text-red-300 italic font-semibold`}>{ex.wrong}</div>
                     </div>
-                    <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 space-y-1.5">
+                    <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 space-y-2">
                       <div className="text-xs font-black text-emerald-600 uppercase tracking-wider">✅ FORMULATION ACADÉMIQUE</div>
-                      <div className="text-sm sm:text-base text-emerald-800 dark:text-emerald-300 font-black">{ex.correct}</div>
+                      <div className={`${fStyle.exampleText} text-emerald-800 dark:text-emerald-300 font-black`}>{ex.correct}</div>
                     </div>
                     {ex.explanation && (
-                      <div className="col-span-1 sm:col-span-2 text-xs sm:text-sm text-slate-700 dark:text-slate-300 italic p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800">
+                      <div className={`col-span-1 sm:col-span-2 ${fStyle.body} text-slate-700 dark:text-slate-300 italic p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800`}>
                         <span className="font-bold text-slate-800 dark:text-slate-200">Pourquoi ? </span>{ex.explanation}
                       </div>
                     )}
@@ -454,19 +490,19 @@ function LessonsTab({ onZoom }) {
               {/* Classroom Dialogues (Mises en Situation) */}
               {lessonData.classroom_dialogues?.length > 0 && (
                 <div className="glass-card p-6 sm:p-8 rounded-3xl border border-blue-200 dark:border-blue-900/40 space-y-5">
-                  <h3 className="text-sm sm:text-base font-black text-blue-800 dark:text-blue-300 uppercase tracking-widest flex items-center gap-2">
+                  <h3 className={`${fStyle.sectionTitle} text-blue-800 dark:text-blue-300 uppercase tracking-widest flex items-center gap-2`}>
                     💬 Mises en Situation Reelles en Classe
                   </h3>
                   <div className="space-y-4">
                     {lessonData.classroom_dialogues.map((diag, dgi) => (
-                      <div key={dgi} className="p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 space-y-2.5 shadow-sm">
-                        <div className="text-sm font-extrabold text-blue-900 dark:text-blue-200 flex items-center gap-2">
+                      <div key={dgi} className="p-5 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 space-y-3 shadow-sm">
+                        <div className={`${fStyle.cardTitle} text-blue-900 dark:text-blue-200 flex items-center gap-2`}>
                           📌 {diag.situation}
                         </div>
-                        <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 text-sm sm:text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
+                        <div className={`p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 ${fStyle.dialogueText} text-slate-800 dark:text-slate-200 font-medium`}>
                           « {diag.dialogue} »
                         </div>
-                        <div className="text-xs sm:text-sm text-blue-900 dark:text-blue-300 italic font-medium"><span className="font-bold">Analyse du prof : </span>{diag.analysis}</div>
+                        <div className={`${fStyle.body} text-blue-900 dark:text-blue-300 italic font-medium`}><span className="font-bold">Analyse du prof : </span>{diag.analysis}</div>
                       </div>
                     ))}
                   </div>
@@ -475,24 +511,24 @@ function LessonsTab({ onZoom }) {
 
               {/* Astuce */}
               <div className="p-5 sm:p-6 rounded-3xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/70 dark:border-amber-800/30 flex gap-4 items-start">
-                <Lightbulb className="w-6 h-6 text-amber-500 shrink-0 mt-0.5" />
+                <Lightbulb className="w-7 h-7 text-amber-500 shrink-0 mt-0.5" />
                 <div>
                   <div className="text-xs sm:text-sm font-black text-amber-700 dark:text-amber-400 mb-1">✨ Astuce Mnémotechnique Rapide</div>
-                  <p className="text-sm sm:text-base text-amber-900 dark:text-amber-200 font-semibold leading-relaxed">{lessonData.astuce}</p>
+                  <p className={`${fStyle.body} text-amber-900 dark:text-amber-200 font-semibold`}>{lessonData.astuce}</p>
                 </div>
               </div>
 
               {/* Quiz */}
               <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-5">
-                <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest flex items-center gap-2"><HelpCircle className="w-5 h-5 text-purple-500" /> Quiz de Validation de la Leçon</h3>
+                <h3 className={`${fStyle.sectionTitle} text-slate-900 dark:text-slate-100 uppercase tracking-widest flex items-center gap-2`}><HelpCircle className="w-5 h-5 text-purple-500" /> Quiz de Validation de la Leçon</h3>
                 {lessonData.quiz?.map((q, qi) => (
                   <div key={qi} className="space-y-3">
-                    <p className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200">{qi + 1}. {q.question}</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <p className={`${fStyle.cardTitle} text-slate-800 dark:text-slate-200`}>{qi + 1}. {q.question}</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {q.options.map((opt, oi) => {
                         const chosen = quizAnswers[qi] === oi;
                         const isCorrect = oi === q.correct;
-                        let btnClass = 'px-4 py-3 rounded-xl text-xs sm:text-sm text-left border transition-all font-medium ';
+                        let btnClass = `px-4 py-3.5 rounded-2xl border transition-all ${fStyle.body} text-left `;
                         if (quizSubmitted) {
                           if (isCorrect) btnClass += 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-400 text-emerald-700 dark:text-emerald-300 font-bold';
                           else if (chosen) btnClass += 'bg-red-100 dark:bg-red-900/30 border-red-400 text-red-700 dark:text-red-300';
@@ -510,7 +546,7 @@ function LessonsTab({ onZoom }) {
                       })}
                     </div>
                     {quizSubmitted && (
-                      <div className={`text-xs sm:text-sm p-3.5 rounded-xl ${quizAnswers[qi] === q.correct ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300'}`}>
+                      <div className={`${fStyle.body} p-4 rounded-2xl ${quizAnswers[qi] === q.correct ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-300' : 'bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300'}`}>
                         {quizAnswers[qi] === q.correct ? '✅ Bravo ! ' : '💡 Explication : '}{q.explanation}
                       </div>
                     )}
@@ -520,15 +556,15 @@ function LessonsTab({ onZoom }) {
                   <button
                     onClick={() => setQuizSubmitted(true)}
                     disabled={Object.keys(quizAnswers).length < (lessonData.quiz?.length || 0)}
-                    className="w-full py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-sm font-bold transition-all shadow-md shadow-blue-500/20"
+                    className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-sm sm:text-base font-bold transition-all shadow-md shadow-blue-500/20"
                   >
                     Valider mes Réponses
                   </button>
                 ) : (
                   <div className="text-center space-y-2 pt-2">
-                    <div className="text-3xl font-black text-slate-900 dark:text-white">{quizScore}/{lessonData.quiz?.length}</div>
-                    <p className="text-xs sm:text-sm text-slate-500 font-medium">{quizScore === lessonData.quiz?.length ? '🎉 Parfait !' : quizScore > lessonData.quiz?.length / 2 ? '👍 Bien joué !' : '📚 Continuez à pratiquer !'}</p>
-                    <button onClick={() => { setQuizAnswers({}); setQuizSubmitted(false); }} className="text-xs sm:text-sm text-blue-600 hover:underline flex items-center gap-1 mx-auto font-bold">
+                    <div className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">{quizScore}/{lessonData.quiz?.length}</div>
+                    <p className="text-sm sm:text-base text-slate-500 font-medium">{quizScore === lessonData.quiz?.length ? '🎉 Parfait !' : quizScore > lessonData.quiz?.length / 2 ? '👍 Bien joué !' : '📚 Continuez à pratiquer !'}</p>
+                    <button onClick={() => { setQuizAnswers({}); setQuizSubmitted(false); }} className="text-sm sm:text-base text-blue-600 hover:underline flex items-center gap-1.5 mx-auto font-bold">
                       <RotateCcw className="w-4 h-4" /> Recommencer
                     </button>
                   </div>
@@ -544,8 +580,8 @@ function LessonsTab({ onZoom }) {
                   <ZoomableImage src="/images/languages/banana_winner.png" alt="Motivation" title="Message de Motivation" containerClassName="w-full h-full" />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-emerald-700 dark:text-emerald-400 mb-1">🌟 Message de Banana pour toi</p>
-                  <p className="text-sm sm:text-base text-emerald-900 dark:text-emerald-200 leading-relaxed italic font-semibold">{lessonData.motivation}</p>
+                  <p className="text-sm sm:text-base font-black text-emerald-700 dark:text-emerald-400 mb-1">🌟 Message de Banana pour toi</p>
+                  <p className={`${fStyle.body} text-emerald-900 dark:text-emerald-200 italic font-semibold`}>{lessonData.motivation}</p>
                 </div>
               </div>
             </motion.div>
@@ -557,7 +593,7 @@ function LessonsTab({ onZoom }) {
 }
 
 // ─── Vocabulary Tab ───────────────────────────────────────────────────────────
-function VocabTab({ onZoom }) {
+function VocabTab({ onZoom, fStyle }) {
   const TOTAL_DAYS = 34;
   const [selectedDay, setSelectedDay] = useState(1);
   const [storyIdx, setStoryIdx] = useState(0);
@@ -580,30 +616,30 @@ function VocabTab({ onZoom }) {
   }));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       {/* Day selector */}
-      <div className="glass-card p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+      <div className="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-          <h2 className="text-xs sm:text-sm font-extrabold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+          <h2 className={`${fStyle.cardTitle} text-slate-700 dark:text-slate-300 flex items-center gap-2`}>
             <div 
               onClick={() => onZoom({ src: "/images/languages/banana_vocab.png", title: "Vocabulaire Jour par Jour" })}
-              className="w-8 h-8 shrink-0 cursor-zoom-in"
+              className="w-9 h-9 shrink-0 cursor-zoom-in"
             >
               <ZoomableImage src="/images/languages/banana_vocab.png" alt="vocab" title="Vocabulaire Jour par Jour" containerClassName="w-full h-full" />
             </div>
             Programme 34 Jours — 3 mots/jour
           </h2>
-          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-3 py-1 rounded-full">
+          <span className="text-xs sm:text-sm font-extrabold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-3.5 py-1 rounded-full">
             Jour {selectedDay} / {TOTAL_DAYS}
           </span>
         </div>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-2">
           {Array.from({ length: TOTAL_DAYS }, (_, i) => i + 1).map(d => (
             <button
               key={d}
               onClick={() => { setSelectedDay(d); setChallengeAnswers({}); setChallengeSubmitted(false); setStoryIdx(0); }}
-              className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl text-[10px] sm:text-xs font-bold transition-all ${selectedDay === d
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+              className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-xs sm:text-sm font-extrabold transition-all ${selectedDay === d
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-blue-100 dark:hover:bg-blue-900/30'
               }`}
             >
@@ -615,44 +651,46 @@ function VocabTab({ onZoom }) {
 
       {/* Flashcards */}
       <div>
-        <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest mb-3">🃏 Cartes Mémo du Jour {selectedDay}</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {dayWords.map(w => <FlipCard key={w.id} word={w} />)}
+        <h3 className={`${fStyle.sectionTitle} text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4`}>
+          🃏 Cartes Mémo du Jour {selectedDay}
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {dayWords.map(w => <FlipCard key={w.id} word={w} fStyle={fStyle} />)}
         </div>
       </div>
 
       {/* Story */}
       {currentStory && (
-        <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div className="glass-card p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest">📖 L'Histoire de Nano & Banana</h3>
+            <h3 className={`${fStyle.sectionTitle} text-slate-500 uppercase tracking-widest`}>📖 L'Histoire de Nano & Banana</h3>
             {dayStories.length > 1 && (
               <div className="flex gap-2">
-                <button onClick={() => setStoryIdx(i => Math.max(0, i - 1))} className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><ArrowLeft className="w-3.5 h-3.5" /></button>
-                <button onClick={() => setStoryIdx(i => i + 1)} className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><ArrowRight className="w-3.5 h-3.5" /></button>
+                <button onClick={() => setStoryIdx(i => Math.max(0, i - 1))} className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><ArrowLeft className="w-4 h-4" /></button>
+                <button onClick={() => setStoryIdx(i => i + 1)} className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><ArrowRight className="w-4 h-4" /></button>
               </div>
             )}
           </div>
-          <StoryRenderer story={currentStory} onZoom={onZoom} />
+          <StoryRenderer story={currentStory} onZoom={onZoom} fStyle={fStyle} />
         </div>
       )}
 
       {/* Daily Challenge */}
-      <div className="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-        <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
-          <Star className="w-3.5 h-3.5 text-amber-500" /> Défi du Jour
+      <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-5">
+        <h3 className={`${fStyle.sectionTitle} text-slate-500 uppercase tracking-widest flex items-center gap-2`}>
+          <Star className="w-4 h-4 text-amber-500" /> Défi du Jour
         </h3>
-        <p className="text-xs text-slate-500">Choisissez le bon mot pour compléter chaque phrase.</p>
+        <p className={`${fStyle.body} text-slate-500`}>Choisissez le bon mot pour compléter chaque phrase.</p>
         {challenges.map((ch, i) => (
-          <div key={i} className="space-y-2">
-            <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{ch.sentence}</p>
-            <div className="flex flex-wrap gap-2">
+          <div key={i} className="space-y-3">
+            <p className={`${fStyle.body} font-bold text-slate-800 dark:text-slate-200`}>{ch.sentence}</p>
+            <div className="flex flex-wrap gap-2.5">
               {ch.options.map((opt, oi) => {
                 const chosen = challengeAnswers[i] === opt;
                 const isCorrect = opt === ch.word;
-                let cls = 'px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ';
+                let cls = `px-4 py-2 rounded-xl border transition-all ${fStyle.body} `;
                 if (challengeSubmitted) {
-                  if (isCorrect) cls += 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-400 text-emerald-700 dark:text-emerald-300';
+                  if (isCorrect) cls += 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-400 text-emerald-700 dark:text-emerald-300 font-bold';
                   else if (chosen) cls += 'bg-red-100 dark:bg-red-900/30 border-red-400 text-red-700 dark:text-red-300 line-through opacity-70';
                   else cls += 'border-slate-200 dark:border-slate-700 text-slate-400 opacity-50';
                 } else {
@@ -673,20 +711,20 @@ function VocabTab({ onZoom }) {
           <button
             onClick={() => setChallengeSubmitted(true)}
             disabled={Object.keys(challengeAnswers).length < challenges.length}
-            className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-white text-xs font-bold transition-all shadow-md shadow-amber-500/20"
+            className="w-full py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-white text-sm sm:text-base font-bold transition-all shadow-md shadow-amber-500/20"
           >
             Vérifier mes Réponses ⚡
           </button>
         ) : (
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Award className="w-5 h-5 text-amber-500" />
-              <span className="text-sm font-black text-slate-800 dark:text-white">
+            <div className="flex items-center gap-2.5">
+              <Award className="w-6 h-6 text-amber-500" />
+              <span className="text-base sm:text-lg font-black text-slate-800 dark:text-white">
                 {Object.entries(challengeAnswers).filter(([k, v]) => v === challenges[+k]?.word).length}/{challenges.length} correct !
               </span>
             </div>
-            <button onClick={() => { setChallengeAnswers({}); setChallengeSubmitted(false); }} className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-              <RefreshCw className="w-3 h-3" /> Recommencer
+            <button onClick={() => { setChallengeAnswers({}); setChallengeSubmitted(false); }} className="text-sm text-blue-600 hover:underline flex items-center gap-1 font-bold">
+              <RefreshCw className="w-4 h-4" /> Recommencer
             </button>
           </div>
         )}
@@ -696,37 +734,37 @@ function VocabTab({ onZoom }) {
 }
 
 // ─── Diagnostic Quiz Tab ──────────────────────────────────────────────────────
-function QuizTab({ onZoom }) {
+function QuizTab({ onZoom, fStyle }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
   const score = DIAGNOSTIC_QUIZ.reduce((acc, q, i) => acc + (answers[i] === q.correct ? 1 : 0), 0);
 
   return (
-    <div className="space-y-6">
-      <div className="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-5 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/10 text-center sm:text-left">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/20 dark:to-purple-950/10 text-center sm:text-left">
         <div 
           onClick={() => onZoom({ src: "/images/languages/banana_hero.png", title: "Quiz Diagnostic" })}
-          className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 cursor-zoom-in"
+          className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 cursor-zoom-in"
         >
           <ZoomableImage src="/images/languages/banana_hero.png" alt="Quiz" title="Quiz Diagnostic" containerClassName="w-full h-full" />
         </div>
         <div>
-          <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">Quiz Diagnostic de Niveau</h2>
-          <p className="text-xs text-slate-500 mt-0.5">10 questions sur les pièges du français oral. Mesurez votre niveau actuel.</p>
+          <h2 className={`${fStyle.heroTitle} text-slate-900 dark:text-white`}>Quiz Diagnostic de Niveau</h2>
+          <p className={`${fStyle.heroBody} text-slate-500 mt-1`}>10 questions sur les pièges du français oral. Mesurez votre niveau actuel.</p>
         </div>
       </div>
 
       {DIAGNOSTIC_QUIZ.map((q, qi) => (
-        <div key={q.id} className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
-          <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
-            <span className="text-blue-600 dark:text-blue-400 font-black mr-1.5">{qi + 1}.</span>{q.question}
+        <div key={q.id} className="glass-card p-6 sm:p-7 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+          <p className={`${fStyle.cardTitle} text-slate-800 dark:text-slate-200`}>
+            <span className="text-blue-600 dark:text-blue-400 font-black mr-2">{qi + 1}.</span>{q.question}
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {q.options.map((opt, oi) => {
               const chosen = answers[qi] === oi;
               const isCorrect = oi === q.correct;
-              let cls = 'px-3 py-2.5 rounded-xl text-xs text-left border transition-all font-medium ';
+              let cls = `px-4 py-3 rounded-2xl border transition-all ${fStyle.body} `;
               if (submitted) {
                 if (isCorrect) cls += 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-400 text-emerald-700 dark:text-emerald-300 font-bold';
                 else if (chosen) cls += 'bg-red-100 dark:bg-red-900/30 border-red-400 text-red-700 dark:text-red-300 line-through opacity-80';
@@ -738,13 +776,13 @@ function QuizTab({ onZoom }) {
               }
               return (
                 <button key={oi} onClick={() => !submitted && setAnswers(p => ({ ...p, [qi]: oi }))} className={cls}>
-                  <span className="font-black mr-1.5">{String.fromCharCode(65 + oi)}.</span>{opt}
+                  <span className="font-black mr-2">{String.fromCharCode(65 + oi)}.</span>{opt}
                 </button>
               );
             })}
           </div>
           {submitted && (
-            <div className={`p-3 rounded-xl text-[10px] leading-relaxed ${answers[qi] === q.correct ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-200' : 'bg-blue-50 dark:bg-blue-950/20 text-blue-800 dark:text-blue-200'}`}>
+            <div className={`p-4 rounded-2xl ${fStyle.body} ${answers[qi] === q.correct ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-800 dark:text-emerald-200' : 'bg-blue-50 dark:bg-blue-950/20 text-blue-800 dark:text-blue-200'}`}>
               <span className="font-bold">{answers[qi] === q.correct ? '✅ Bravo ! ' : '💡 Explication : '}</span>{q.explanation}
               <br /><span className="font-bold text-amber-600 dark:text-amber-400">✨ Astuce : </span>{q.astuce}
             </div>
@@ -756,20 +794,20 @@ function QuizTab({ onZoom }) {
         <button
           onClick={() => setSubmitted(true)}
           disabled={Object.keys(answers).length < DIAGNOSTIC_QUIZ.length}
-          className="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm transition-all shadow-lg shadow-indigo-500/20"
+          className="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white font-bold text-sm sm:text-base transition-all shadow-lg shadow-indigo-500/20"
         >
           Voir mon Résultat ({Object.keys(answers).length}/{DIAGNOSTIC_QUIZ.length} réponses)
         </button>
       ) : (
-        <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-4">
+        <div className="glass-card p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-5">
           <div 
             onClick={() => onZoom({ src: score >= 7 ? "/images/languages/banana_winner.png" : "/images/languages/banana_hero.png", title: "Résultat du Quiz" })}
-            className="w-24 h-24 sm:w-28 sm:h-28 mx-auto cursor-zoom-in"
+            className="w-28 h-28 sm:w-32 sm:h-32 mx-auto cursor-zoom-in"
           >
             <ZoomableImage src={score >= 7 ? "/images/languages/banana_winner.png" : "/images/languages/banana_hero.png"} alt="Result" title="Résultat du Quiz" containerClassName="w-full h-full" />
           </div>
-          <div className={`text-3xl sm:text-4xl font-black ${score >= 8 ? 'text-emerald-600' : score >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{score}/10</div>
-          <div className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300">
+          <div className={`text-4xl sm:text-5xl font-black ${score >= 8 ? 'text-emerald-600' : score >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{score}/10</div>
+          <div className={`${fStyle.cardTitle} text-slate-700 dark:text-slate-300`}>
             {score === 10 ? '🎉 Excellent ! Vous maîtrisez le français formel !'
               : score >= 7 ? '👏 Très bien ! Continuez à travailler les quelques points faibles.'
               : score >= 5 ? '📚 Bien ! Révisez les leçons pour consolider vos bases.'
@@ -785,7 +823,7 @@ function QuizTab({ onZoom }) {
 }
 
 // ─── AI Corrector Tab ─────────────────────────────────────────────────────────
-function CorrectorTab({ onZoom }) {
+function CorrectorTab({ onZoom, fStyle }) {
   const [text, setText] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -818,98 +856,98 @@ function CorrectorTab({ onZoom }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-5 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/10 text-center sm:text-left">
+    <div className="space-y-6 sm:space-y-8">
+      <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-6 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/10 text-center sm:text-left">
         <div 
           onClick={() => onZoom({ src: "/images/languages/banana_agreement.png", title: "Correcteur IA" })}
-          className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 cursor-zoom-in"
+          className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 cursor-zoom-in"
         >
           <ZoomableImage src="/images/languages/banana_agreement.png" alt="Corrector" title="Correcteur IA" containerClassName="w-full h-full" />
         </div>
         <div>
-          <h2 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white">Correcteur IA d'Orthographe</h2>
-          <p className="text-xs text-slate-500 mt-0.5">Saisissez un texte (e-mail, paragraphe, brouillon) et l'IA détecte vos erreurs avec des explications bienveillantes.</p>
+          <h2 className={`${fStyle.heroTitle} text-slate-900 dark:text-white`}>Correcteur IA d'Orthographe</h2>
+          <p className={`${fStyle.heroBody} text-slate-500 mt-1`}>Saisissez un texte (e-mail, paragraphe, brouillon) et l'IA détecte vos erreurs avec des explications bienveillantes.</p>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <textarea
           value={text}
           onChange={e => setText(e.target.value)}
           rows={6}
           placeholder="Exemple : Je doit commancer a écrire des cours. Jai pas bcp de temps mais je veux progresser..."
-          className="w-full px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs sm:text-sm text-slate-800 dark:text-slate-200 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+          className={`w-full px-5 py-4 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 ${fStyle.body} text-slate-800 dark:text-slate-200 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400`}
         />
         <button
           onClick={handleCheck}
           disabled={!text.trim() || loading}
-          className="btn-primary w-full justify-center py-3 text-xs sm:text-sm disabled:opacity-50"
+          className="btn-primary w-full justify-center py-4 text-sm sm:text-base disabled:opacity-50 font-bold rounded-2xl shadow-lg"
         >
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Pencil className="w-4 h-4" />}
+          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Pencil className="w-5 h-5" />}
           {loading ? 'Correction en cours...' : 'Analyser et Corriger'}
         </button>
       </div>
 
       {error && (
-        <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs sm:text-sm text-red-600">
+        <div className={`p-5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 ${fStyle.body} text-red-600`}>
           {error}
         </div>
       )}
 
       {result && (
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
           {/* Score */}
-          <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className={`text-2xl sm:text-3xl font-black ${result.score >= 80 ? 'text-emerald-600' : result.score >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
+          <div className="glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-5">
+              <div className={`text-3xl sm:text-4xl font-black ${result.score >= 80 ? 'text-emerald-600' : result.score >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
                 {result.score}/100
               </div>
               <div>
-                <div className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white">{result.level}</div>
-                <div className="text-[10px] sm:text-xs text-slate-500">{result.summary}</div>
+                <div className={`${fStyle.cardTitle} text-slate-800 dark:text-white`}>{result.level}</div>
+                <div className={`${fStyle.body} text-slate-500`}>{result.summary}</div>
               </div>
             </div>
             <div 
               onClick={() => onZoom({ src: "/images/languages/banana_winner.png", title: "Score de Correction" })}
-              className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 cursor-zoom-in"
+              className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 cursor-zoom-in"
             >
               <ZoomableImage src="/images/languages/banana_winner.png" alt="Score" title="Score de Correction" containerClassName="w-full h-full" />
             </div>
           </div>
 
           {/* Corrected text */}
-          <div className="glass-card p-5 rounded-2xl border border-emerald-200 dark:border-emerald-900/30 space-y-2">
-            <h3 className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Texte Corrigé</h3>
-            <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed italic bg-emerald-50 dark:bg-emerald-950/20 p-3 rounded-xl">
+          <div className="glass-card p-6 rounded-3xl border border-emerald-200 dark:border-emerald-900/30 space-y-3">
+            <h3 className={`${fStyle.sectionTitle} text-emerald-600 dark:text-emerald-400 uppercase tracking-widest flex items-center gap-2`}><CheckCircle2 className="w-5 h-5" /> Texte Corrigé</h3>
+            <p className={`${fStyle.body} text-slate-800 dark:text-slate-200 leading-relaxed italic bg-emerald-50 dark:bg-emerald-950/20 p-4 rounded-2xl`}>
               « {result.corrected_text} »
             </p>
           </div>
 
           {/* Errors */}
           {result.errors?.length > 0 && (
-            <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
-              <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest">🔍 Erreurs Détectées ({result.errors.length})</h3>
+            <div className="glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+              <h3 className={`${fStyle.sectionTitle} text-slate-500 uppercase tracking-widest`}>🔍 Erreurs Détectées ({result.errors.length})</h3>
               {result.errors.map((err, i) => (
-                <div key={i} className={`p-3 rounded-xl border text-xs space-y-1 ${TYPE_COLOR[err.type] || TYPE_COLOR.orthographe}`}>
-                  <div className="flex items-center gap-2">
+                <div key={i} className={`p-4 rounded-2xl border ${fStyle.body} space-y-1.5 ${TYPE_COLOR[err.type] || TYPE_COLOR.orthographe}`}>
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold line-through opacity-70">"{err.original}"</span>
-                    <ArrowRight className="w-3 h-3 shrink-0" />
+                    <ArrowRight className="w-4 h-4 shrink-0" />
                     <span className="font-black">"{err.correction}"</span>
-                    <span className="ml-auto px-1.5 py-0.5 rounded-full bg-white/50 dark:bg-black/20 text-[8px] font-bold uppercase">{err.type}</span>
+                    <span className="ml-auto px-2 py-0.5 rounded-full bg-white/60 dark:bg-black/30 text-xs font-bold uppercase">{err.type}</span>
                   </div>
                   <div><span className="font-bold">Règle : </span>{err.rule}</div>
-                  <div className="opacity-80">{err.explanation}</div>
+                  <div className="opacity-90">{err.explanation}</div>
                 </div>
               ))}
             </div>
           )}
 
           {/* Advice */}
-          <div className="p-4 rounded-2xl bg-blue-50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/30 flex gap-3 items-start">
-            <Lightbulb className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+          <div className="p-5 rounded-3xl bg-blue-50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-800/30 flex gap-4 items-start">
+            <Lightbulb className="w-6 h-6 text-blue-500 shrink-0 mt-0.5" />
             <div>
-              <div className="text-xs font-extrabold text-blue-600 dark:text-blue-400 mb-0.5">💡 Conseil Principal</div>
-              <p className="text-xs text-blue-800 dark:text-blue-200">{result.main_advice}</p>
+              <div className="text-xs sm:text-sm font-black text-blue-600 dark:text-blue-400 mb-1">💡 Conseil Principal</div>
+              <p className={`${fStyle.body} text-blue-900 dark:text-blue-200 font-medium`}>{result.main_advice}</p>
             </div>
           </div>
         </motion.div>
@@ -922,56 +960,90 @@ function CorrectorTab({ onZoom }) {
 export default function LanguagesAcademy() {
   const [activeTab, setActiveTab] = useState('lessons');
   const [zoomData, setZoomData] = useState(null);
+  const [fontSizeKey, setFontSizeKey] = useState('large'); // Default to LARGE size
+
+  const fStyle = FONT_CLASSES[fontSizeKey] || FONT_CLASSES.large;
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto py-2 sm:py-4 px-2 sm:px-4">
+    <div className="space-y-6 sm:space-y-8 max-w-6xl mx-auto py-3 sm:py-6 px-3 sm:px-6">
       {/* Lightbox Zoom Modal */}
       <ImageZoomModal zoomData={zoomData} onClose={() => setZoomData(null)} />
 
       {/* Hero Banner */}
-      <div className="glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 dark:from-slate-900 dark:via-indigo-950/40 dark:to-purple-950/30 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-        <div className="space-y-3 max-w-xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-[10px] sm:text-xs font-black">
+      <div className="glass-card p-6 sm:p-9 rounded-3xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 dark:from-slate-900 dark:via-indigo-950/40 dark:to-purple-950/30 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+        <div className="space-y-4 max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs sm:text-sm font-black">
             🔒 Espace Exclusif Admin • Académie des Langues
           </div>
-          <h1 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+          <h1 className={`${fStyle.heroTitle} text-slate-900 dark:text-white leading-tight`}>
             Parler & Écrire le Français <span className="text-blue-600 dark:text-blue-400">sans Faute</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-            100 mots académiques, 50 histoires de Nano & Banana, 4 leçons interactives, et un correcteur d'orthographe intelligent pour réussir votre posture d'enseignant.
+          <p className={`${fStyle.heroBody} text-slate-600 dark:text-slate-300`}>
+            100 mots académiques, 50 histoires de Nano & Banana, 4 leçons interactives détaillées, et un correcteur d'orthographe intelligent.
           </p>
         </div>
         <div 
           onClick={() => setZoomData({ src: "/images/languages/banana_hero.png", title: "Académie des Langues - Nano & Banana" })}
-          className="w-32 h-32 sm:w-40 sm:h-40 shrink-0 cursor-zoom-in hover:scale-105 transition-transform"
+          className="w-36 h-36 sm:w-44 sm:h-44 shrink-0 cursor-zoom-in hover:scale-105 transition-transform"
         >
           <ZoomableImage src="/images/languages/banana_hero.png" alt="Nano & Banana" title="Académie des Langues - Nano & Banana" containerClassName="w-full h-full" />
         </div>
       </div>
 
-      {/* Navigation Tabs (Scrollable on Mobile) */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar border-b border-slate-200 dark:border-slate-800 pb-0">
-        {TABS.map(tab => (
+      {/* Toolbar: Navigation Tabs + Font Size Adjuster */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-2">
+        {/* Navigation Tabs (Scrollable on Mobile) */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 sm:px-5 py-3 text-xs sm:text-sm font-black rounded-2xl border transition-all whitespace-nowrap ${activeTab === tab.id
+                ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 shadow-sm'
+                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Font Size Adjuster (Moyenne | Grande | Très Grande) */}
+        <div className="flex items-center justify-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shrink-0 self-center sm:self-auto">
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 px-2 flex items-center gap-1.5">
+            <Type className="w-4 h-4 text-blue-500" /> Taille :
+          </span>
           <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`px-3.5 sm:px-4 py-2.5 text-xs font-bold rounded-t-xl border-b-2 whitespace-nowrap transition-all ${activeTab === tab.id
-              ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/20'
-              : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-            }`}
+            onClick={() => setFontSizeKey('normal')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${fontSizeKey === 'normal' ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+            title="Taille moyenne"
           >
-            {tab.label}
+            A
           </button>
-        ))}
+          <button
+            onClick={() => setFontSizeKey('large')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${fontSizeKey === 'large' ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+            title="Taille grande (recommandée)"
+          >
+            A+
+          </button>
+          <button
+            onClick={() => setFontSizeKey('xlarge')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all ${fontSizeKey === 'xlarge' ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-md' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}`}
+            title="Taille très grande"
+          >
+            A++
+          </button>
+        </div>
       </div>
 
       {/* Tab Content */}
       <AnimatePresence mode="wait">
         <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
-          {activeTab === 'lessons' && <LessonsTab onZoom={setZoomData} />}
-          {activeTab === 'vocab' && <VocabTab onZoom={setZoomData} />}
-          {activeTab === 'quiz' && <QuizTab onZoom={setZoomData} />}
-          {activeTab === 'corrector' && <CorrectorTab onZoom={setZoomData} />}
+          {activeTab === 'lessons' && <LessonsTab onZoom={setZoomData} fStyle={fStyle} />}
+          {activeTab === 'vocab' && <VocabTab onZoom={setZoomData} fStyle={fStyle} />}
+          {activeTab === 'quiz' && <QuizTab onZoom={setZoomData} fStyle={fStyle} />}
+          {activeTab === 'corrector' && <CorrectorTab onZoom={setZoomData} fStyle={fStyle} />}
         </motion.div>
       </AnimatePresence>
     </div>
