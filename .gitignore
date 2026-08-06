@@ -74,11 +74,11 @@ concours.db
 # ===========================
 # Scripts locaux / Scratch
 # ===========================
-app.py
-db.py
-db_status.py
-parser.py
-seed_*.py
+scripts/app.py
+scripts/db.py
+scripts/db_status.py
+scripts/parser.py
+scripts/seed_*.py
 cahier_des_charges_pfe.md
 !backend/db.sqlite3
 Video algorithme/
