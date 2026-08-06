@@ -9,14 +9,14 @@
 // ───────────────────────────────────────────────────────────────────────────────
 export const VOCABULARY = [
   // DAY 1
-  { id: 1, day: 1, word: "acquérir", type: "verbe", definition: "Obtenir quelque chose par un effort ou un apprentissage.", example: "L'élève acquiert de nouvelles compétences chaque jour.", conjugation: "J'acquiers, tu acquiers, il acquiert, nous acquérons, vous acquérez, ils acquièrent.", tip: "Ne pas confondre avec 'à quérir' — 'acquérir' s'écrit avec 'ck' phonétiquement.", color: "blue" },
+  { id: 1, day: 1, word: "se taire", type: "verbe", definition: "Garder le silence, cesser de parler ou de faire du bruit.", example: "Les élèves doivent se taire lorsque l'enseignant ou un camarade prend la parole.", conjugation: "Je me tais, tu te tais, il se tait, nous nous taisons, vous vous taisez, ils se taisent.", tip: "À l'impératif poli pour demander le silence : 'Taisez-vous s'il vous plaît' ou 'Faites silence'.", color: "blue" },
   { id: 2, day: 1, word: "rigueur", type: "nom féminin", definition: "Exactitude, sérieux et précision dans le travail.", example: "La rigueur est une qualité indispensable à tout bon enseignant.", conjugation: null, tip: "Féminin. On dit 'la rigueur' et non 'le rigueur'.", color: "purple" },
-  { id: 3, day: 1, word: "pertinent(e)", type: "adjectif", definition: "Qui convient exactement à la situation, juste et adapté.", example: "Votre remarque est très pertinente.", conjugation: "Masculin: pertinent / Féminin: pertinente / Pluriel: pertinents, pertinentes.", tip: "Astuce : 'pertinent' rime avec 'évident' — tous les deux désignent quelque chose de juste.", color: "orange" },
+  { id: 3, day: 1, word: "s'exprimer", type: "verbe", definition: "Prendre la parole pour exprimer sa pensée, ses sentiments ou son opinion.", example: "Il est fondamental de laisser chaque étudiant s'exprimer à l'oral pendant la séance.", conjugation: "Je m'exprime, tu t'exprimes, il s'exprime, nous nous exprimons, vous vous exprimez, ils s'expriment.", tip: "S'exprimer sans crainte d'erreur permet de progresser rapidement en classe.", color: "orange" },
 
   // DAY 2
   { id: 4, day: 2, word: "élaborer", type: "verbe", definition: "Préparer soigneusement et en détail quelque chose.", example: "Le professeur a élaboré un programme de révision complet.", conjugation: "J'élabore, tu élabores, il élabore, nous élaborons, vous élaborez, ils élaborent.", tip: "Le préfixe 'é-' vient du latin. Verbe du 1er groupe, conjugaison régulière.", color: "blue" },
   { id: 5, day: 2, word: "cohérence", type: "nom féminin", definition: "Le fait d'être logique et harmonieux dans ses idées ou actions.", example: "La cohérence entre les objectifs et les activités est essentielle.", conjugation: null, tip: "Féminin. L'adjectif correspondant est 'cohérent(e)'.", color: "purple" },
-  { id: 6, day: 2, word: "susciter", type: "verbe", definition: "Provoquer, faire naître un sentiment ou une réaction.", example: "Ce cours a suscité beaucoup d'intérêt chez les élèves.", conjugation: "Je suscite, tu suscites, il suscite, nous suscitons, vous suscitez, ils suscitent.", tip: "Verbe régulier du 1er groupe. Synonymes : provoquer, engendrer, créer.", color: "orange" },
+  { id: 6, day: 2, word: "intervenir", type: "verbe", definition: "Prendre la parole dans un cours ou une discussion pour apporter son avis ou poser une question.", example: "Le professeur encourage les étudiants timides à intervenir durant le débat.", conjugation: "J'interviens, tu interviens, il intervient, nous intervenons, vous intervenez, ils se plaisent à intervenir.", tip: "Se conjugue comme le verbe venir. Participe passé : je suis intervenu.", color: "orange" },
 
   // DAY 3
   { id: 7, day: 3, word: "transmettre", type: "verbe", definition: "Faire passer un savoir, une information d'une personne à une autre.", example: "Transmettre le savoir avec passion est le cœur du métier.", conjugation: "Je transmets, tu transmets, il transmet, nous transmettons, vous transmettez, ils transmettent.", tip: "Verbe du 3e groupe, irrégulier. Même famille que 'mettre'.", color: "blue" },
@@ -24,24 +24,24 @@ export const VOCABULARY = [
   { id: 9, day: 3, word: "valoriser", type: "verbe", definition: "Mettre en valeur, reconnaître les efforts et les qualités.", example: "Il faut valoriser les efforts de chaque élève, pas seulement les résultats.", conjugation: "Je valorise, tu valorises, il valorise, nous valorisons, vous valorisez, ils valorisent.", tip: "Verbe régulier du 1er groupe. Synonymes : encourager, souligner, reconnaître.", color: "orange" },
 
   // DAY 4
-  { id: 10, day: 4, word: "démarche", type: "nom féminin", definition: "Façon d'aborder un problème ou d'organiser son travail.", example: "Adoptez une démarche progressive pour introduire les nouveaux concepts.", conjugation: null, tip: "Féminin. On dit 'la démarche pédagogique' ou 'une démarche scientifique'.", color: "blue" },
-  { id: 11, day: 4, word: "formuler", type: "verbe", definition: "Exprimer clairement une idée, une demande ou une règle.", example: "Le professeur a formulé sa question de manière claire et précise.", conjugation: "Je formule, tu formules, il formule, nous formulons, vous formulez, ils formulent.", tip: "Verbe du 1er groupe. Synonyme : énoncer, exprimer, rédiger.", color: "purple" },
-  { id: 12, day: 4, word: "aptitude", type: "nom féminin", definition: "Capacité naturelle ou acquise à réaliser quelque chose.", example: "Cet étudiant montre de grandes aptitudes pour l'enseignement.", conjugation: null, tip: "Féminin. Pluriel : des aptitudes. Synonymes : compétence, talent, capacité.", color: "orange" },
+  { id: 10, day: 4, word: "chuchoter", type: "verbe", definition: "Parler à voix très basse, à voix chuchotée.", example: "Veuillez chuchoter lors du travail de groupe pour préserver le calme en classe.", conjugation: "Je chuchote, tu chuchotes, il chuchote, nous chuchonons, vous chuchotez, ils chuchotent.", tip: "Verbe régulier du 1er groupe. Le nom correspondant est 'un chuchotement'.", color: "blue" },
+  { id: 11, day: 4, word: "formuler", type: "verbe", definition: "Exprimer clairement une idée, une demande ou une règle.", example: "Le professeur a formulé sa question de manière claire et précise.", conjugation: "Je formule, tu formules, il formule, nous formulons, vous formulez, ils formulent.", tip: "Verbe du 1er groupe. Synonyme : Énoncer, exprimer, rédiger.", color: "purple" },
+  { id: 12, day: 4, word: "reformuler", type: "verbe", definition: "Exprimer à nouveau une idée d'une manière différente et plus compréhensible.", example: "Pouvez-vous reformuler votre réponse avec vos propres mots ?", conjugation: "Je reformule, tu reformules, il reformule, nous reformulons, vous reformulez, ils reformulent.", tip: "La reformulation permet de vérifier si une consigne ou une explication est bien acquise.", color: "orange" },
 
   // DAY 5
-  { id: 13, day: 5, word: "progressif(ve)", type: "adjectif", definition: "Qui avance par étapes successives, de façon graduelle.", example: "Une introduction progressive facilite la compréhension des concepts difficiles.", conjugation: "Masculin: progressif / Féminin: progressive / Pluriel: progressifs, progressives.", tip: "Pensez à bien prononcer le 'f' au masculin et le 'v' au féminin.", color: "blue" },
-  { id: 14, day: 5, word: "solliciter", type: "verbe", definition: "Demander quelque chose à quelqu'un, faire appel à.", example: "N'hésitez pas à solliciter l'aide de vos collègues.", conjugation: "Je sollicite, tu sollicites, il sollicite, nous sollicitons, vous sollicitez, ils sollicitent.", tip: "Verbe régulier du 1er groupe. Synonymes : demander, requérir, interpeller.", color: "purple" },
+  { id: 13, day: 5, word: "capter", type: "verbe", definition: "Réussir à attirer et à retenir l'attention ou l'intérêt de la classe.", example: "Le professeur utilise un schéma coloré au tableau pour capter le regard des élèves.", conjugation: "Je capte, tu captes, il capte, nous captons, vous captez, ils captent.", tip: "Capter l'attention exige de varier les supports et de parler avec dynamisme.", color: "blue" },
+  { id: 14, day: 5, word: "solliciter", type: "verbe", definition: "Faire appel à la participation d'un élève, lui demander de répondre.", example: "Le professeur sollicite un étudiant précis pour lire le texte à voix haute.", conjugation: "Je sollicite, tu sollicites, il sollicite, nous sollicitons, vous sollicitez, ils sollicitent.", tip: "Solliciter la participation permet de réactiver l'attention des élèves distraits.", color: "purple" },
   { id: 15, day: 5, word: "mettre en œuvre", type: "expression verbale", definition: "Réaliser concrètement, appliquer dans la pratique.", example: "Il est temps de mettre en œuvre la stratégie pédagogique planifiée.", conjugation: "Je mets en œuvre, nous mettons en œuvre (comme 'mettre').", tip: "Attention à l'orthographe de 'œuvre' — c'est la ligature 'œ'.", color: "orange" },
 
   // DAY 6
-  { id: 16, day: 6, word: "comprendre", type: "verbe", definition: "Saisir le sens, la signification de quelque chose.", example: "Comprendre avant de mémoriser est la clé de la réussite.", conjugation: "Je comprends, tu comprends, il comprend, nous comprenons, vous comprenez, ils comprennent.", tip: "Verbe du 3e groupe. Pas de 's' à la 3e personne du singulier au présent.", color: "blue" },
+  { id: 16, day: 6, word: "interpeller", type: "verbe", definition: "Adresser la parole à un élève de façon directe pour le faire réagir ou répondre.", example: "N'hésitez pas à interpeller un élève par son prénom pour l'inviter à répondre.", conjugation: "J'interpelle, tu interpelles, il interpelle, nous interpellons, vous interpellez, ils interpellent.", tip: "Attention aux deux 'l' devant un 'e' muet (j'interpelle, vous interpellez).", color: "blue" },
   { id: 17, day: 6, word: "synthèse", type: "nom féminin", definition: "Résumé qui réunit les éléments essentiels d'un sujet.", example: "Faites une synthèse des points importants à la fin du cours.", conjugation: null, tip: "Féminin. Attention à l'accent grave sur le 'è'. L'adjectif est 'synthétique'.", color: "purple" },
-  { id: 18, day: 6, word: "distinguer", type: "verbe", definition: "Reconnaître la différence entre des choses similaires.", example: "Il est important de distinguer les faits des opinions.", conjugation: "Je distingue, tu distingues, il distingue, nous distinguons, vous distinguez, ils distinguent.", tip: "Verbe du 1er groupe. Synonymes : différencier, discriminer, séparer.", color: "orange" },
+  { id: 18, day: 6, word: "consigner", type: "verbe", definition: "Noter par écrit des informations importantes ou des consignes de travail.", example: "Pensez à consigner vos remarques importantes sur votre cahier.", conjugation: "Je consigne, tu consignes, il consigne, nous consignons, vous consignez, ils consignent.", tip: "Verbe régulier. Permet d'avoir une trace écrite solide d'un cours.", color: "orange" },
 
   // DAY 7
   { id: 19, day: 7, word: "structurer", type: "verbe", definition: "Organiser de façon logique et cohérente.", example: "Un bon enseignant sait structurer ses explications.", conjugation: "Je structure, tu structures, il structure, nous structurons, vous structurez, ils structurent.", tip: "Verbe régulier du 1er groupe. Synonymes : organiser, ordonner, agencer.", color: "blue" },
-  { id: 20, day: 7, word: "autonomie", type: "nom féminin", definition: "Capacité à agir et à apprendre de façon indépendante.", example: "Favoriser l'autonomie des élèves est un objectif pédagogique majeur.", conjugation: null, tip: "Féminin. L'adjectif est 'autonome'. On dit 'développer l'autonomie'.", color: "purple" },
-  { id: 21, day: 7, word: "concis(e)", type: "adjectif", definition: "Bref, mais complet ; qui exprime l'essentiel sans superflu.", example: "Soyez concis dans vos explications orales.", conjugation: "Masculin: concis / Féminin: concise. Pluriel: concis, concises.", tip: "Synonymes : bref, succinct, laconique. Antonyme : prolixe, verbeux.", color: "orange" },
+  { id: 20, day: 7, word: "instaurer", type: "verbe", definition: "Établir, mettre en place de manière durable (un climat, des règles).", example: "Il est crucial d'instaurer un climat de confiance pour encourager les élèves à s'exprimer.", conjugation: "J'instaure, tu instaures, il instaure, nous instaurons, vous instaurez, ils instaurent.", tip: "Instaurer le silence par le regard ou un signal sonore plutôt que par des cris.", color: "purple" },
+  { id: 21, day: 7, word: "remédier", type: "verbe", definition: "Apporter une solution pour corriger une difficulté d'apprentissage ou une lacune.", example: "Nous allons remédier à ces erreurs d'orthographe récurrentes lors de cette séance.", conjugation: "Je remédie, tu remédies, il remédie, nous remédions, vous remédiez, ils remédient.", tip: "Se construit toujours avec la préposition 'à' : remédier à un problème.", color: "orange" },
 
   // DAY 8
   { id: 22, day: 8, word: "interagir", type: "verbe", definition: "Agir mutuellement, avoir des échanges avec autrui.", example: "Les élèves doivent interagir entre eux pour mieux apprendre.", conjugation: "J'interagis, tu interagis, il interagit, nous interagissons, vous interagissez, ils interagissent.", tip: "Verbe du 2e groupe. Même terminaison que 'finir'.", color: "blue" },
@@ -49,7 +49,7 @@ export const VOCABULARY = [
   { id: 24, day: 8, word: "rigoureux(se)", type: "adjectif", definition: "Qui fait preuve de rigueur, de précision et de sérieux.", example: "Un professeur rigoureux prépare ses cours avec soin.", conjugation: "Masculin: rigoureux / Féminin: rigoureuse. Pluriel: rigoureux, rigoureuses.", tip: "La terminaison 'eux/euse' est typique des adjectifs masculin/féminin.", color: "orange" },
 
   // DAY 9
-  { id: 25, day: 9, word: "consolider", type: "verbe", definition: "Renforcer ce qui existe déjà, rendre plus solide.", example: "Ces exercices permettent de consolider les acquis.", conjugation: "Je consolide, tu consolides, il consolide, nous consolidons, vous consolidez, ils consolident.", tip: "Verbe régulier du 1er groupe. Synonymes : renforcer, stabiliser, affermir.", color: "blue" },
+  { id: 25, day: 9, word: "capter", type: "verbe", definition: "Réussir à attirer et à retenir l'attention ou l'intérêt de la classe.", example: "Le professeur utilise un schéma coloré au tableau pour capter le regard des élèves.", conjugation: "Je capte, tu captes, il capte, nous captons, vous captez, ils captent.", tip: "Capter l'attention exige de varier les supports et de parler avec dynamisme.", color: "blue" },
   { id: 26, day: 9, word: "exigence", type: "nom féminin", definition: "Ce qui est requis, le niveau de qualité attendu.", example: "Le niveau d'exigence pour le concours est très élevé.", conjugation: null, tip: "Féminin. L'adjectif est 'exigeant(e)'. Pluriel : les exigences.", color: "purple" },
   { id: 27, day: 9, word: "manifeste", type: "adjectif", definition: "Évident, visible, qui ne peut être nié.", example: "Son progrès est manifeste depuis le début de l'année.", conjugation: "Invariable en genre. Pluriel : manifestes.", tip: "Synonymes : évident, flagrant, indéniable. Ne pas confondre avec le nom 'un manifeste'.", color: "orange" },
 
@@ -1044,6 +1044,24 @@ export const PRESTORED_LESSONS = {
         explanation: "Après 'si', on utilise l'imparfait ('étaient') suivi du conditionnel ('serait')."
       }
     ],
+    classroom_phrases: [
+      {
+        category: "Demander le Silence & l'Attention",
+        expressions: [
+          { phrase: "« S'il vous plaît, veuillez vous taire un instant. »", context: "Pour réclamer le calme avant d'expliquer une règle complexe." },
+          { phrase: "« J'exige un silence complet pendant que votre camarade s'exprime. »", context: "Pour instaurer le respect mutuel lors des interventions." },
+          { phrase: "« Chuchotez s'il vous plaît durant le travail d'équipe. »", context: "Pour maintenir un volume sonore agréable." }
+        ]
+      },
+      {
+        category: "Inviter un étudiant à répondre",
+        expressions: [
+          { phrase: "« Je te donne la parole, dis-moi ce que tu en penses. »", context: "Pour désigner un élève précis avec bienveillance." },
+          { phrase: "« N'hésite pas à intervenir, l'erreur fait partie de l'apprentissage. »", context: "Pour encourager un élève timide à prendre la parole." },
+          { phrase: "« Peux-tu reformuler ta réponse avec plus de précision ? »", context: "Pour pousser l'élève à mieux structurer sa phrase." }
+        ]
+      }
+    ],
     motivation: "Chaque verbe bien conjugué renforce votre assurance naturelle et votre crédibilité devant vos élèves. Vous êtes sur la voie de l'excellence !"
   },
 
@@ -1161,6 +1179,24 @@ export const PRESTORED_LESSONS = {
         options: ["la thème", "le thème", "une thème", "les thème"],
         correct: 1,
         explanation: "'Thème' prend le suffixe grec '-ème' qui indique le masculin : le thème."
+      }
+    ],
+    classroom_phrases: [
+      {
+        category: "Désigner les Espaces de Travail",
+        expressions: [
+          { phrase: "« Veillez à laisser un espace propre entre vos lignes. »", context: "Rappel : 'Espace' est masculin (UN espace)." },
+          { phrase: "« Regardez l'affichage au tableau pour copier l'exemple. »", context: "Rappel : 'Affichage' (masculin) et 'Exemple' (masculin : UN exemple)." },
+          { phrase: "« Ouvrez vos cahiers à la page indiquée. »", context: "Rappel : 'Cahier' est masculin, 'Page' est féminin." }
+        ]
+      },
+      {
+        category: "Guider l'Évaluation",
+        expressions: [
+          { phrase: "« C'est une erreur fréquente, nous allons la corriger ensemble. »", context: "Rappel : 'Erreur' est féminin (UNE erreur)." },
+          { phrase: "« Cette évaluation mesurera votre progression. »", context: "Rappel : 'Évaluation' et 'Progression' sont féminins (-ion)." },
+          { phrase: "« Nous allons analyser ce système étape par étape. »", context: "Rappel : 'Système' et 'Problème' sont masculins (-ème)." }
+        ]
       }
     ],
     motivation: "En maîtrisant le genre des mots clés de votre discipline, vos explications deviennent naturelles, élégantes et captivantes !"
@@ -1282,6 +1318,24 @@ export const PRESTORED_LESSONS = {
         explanation: "'Afin de' est suivi directement de l'infinitif ('réussir')."
       }
     ],
+    classroom_phrases: [
+      {
+        category: "Expliquer les Règles & le But",
+        expressions: [
+          { phrase: "« Je ne comprends pas votre démarche, veuillez la réexpliquer. »", context: "Rappel : Maintenez le 'ne' à l'oral." },
+          { phrase: "« Je vous distribue cette fiche afin de consolider vos acquis. »", context: "Rappel : 'Afin de' + infinitif." },
+          { phrase: "« J'aimerais que vous fassiez des phrases complètes pour que tout le monde comprenne. »", context: "Rappel : 'Pour que' + subjonctif ('fassiez', 'comprenne')." }
+        ]
+      },
+      {
+        category: "Établir des Causes (Positives / Négatives)",
+        expressions: [
+          { phrase: "« Grâce à vos efforts constants, la classe progresse rapidement. »", context: "Rappel : 'Grâce à' s'utilise uniquement pour une cause positive." },
+          { phrase: "« Nous avons pris du retard dans la séquence à cause de la coupure de réseau. »", context: "Rappel : 'À cause de' s'utilise pour un problème / cause négative." },
+          { phrase: "« Ce résultat est obtenu grâce à une méthode rigoureuse. »", context: "Rappel : Rendu de cause positif." }
+        ]
+      }
+    ],
     motivation: "Des phrases bien articulées rendent le savoir accessible et passionnant pour tous vos élèves !"
   },
 
@@ -1394,6 +1448,24 @@ export const PRESTORED_LESSONS = {
         ],
         correct: 0,
         explanation: "'Compétences' est féminin pluriel → 'requises' (/z/) et 'définies'."
+      }
+    ],
+    classroom_phrases: [
+      {
+        category: "Donner des Consignes d'Organisation",
+        expressions: [
+          { phrase: "« L'exercice est composé de deux parties, chacune est obligatoire. »", context: "Rappel : Féminin singulier sonore ('composée', 'obligatoire')." },
+          { phrase: "« La feuille de route que je vous ai distribuée doit être remplie. »", context: "Rappel : Accord du participe avec le COD placé avant ('distribuée')." },
+          { phrase: "« Toutes les instructions sont écrites au verso de votre fiche. »", context: "Rappel : Féminin pluriel sonore ('écrites')." }
+        ]
+      },
+      {
+        category: "Valider les Réponses",
+        expressions: [
+          { phrase: "« Votre réponse est tout à fait correcte, je vous félicite. »", context: "Rappel : Féminin singulier ('correcte')." },
+          { phrase: "« Les compétences requises pour cet exercice sont acquises. »", context: "Rappel : Accords sonores au féminin pluriel ('requises', 'acquises')." },
+          { phrase: "« La parole est prise à tour de rôle, s'il vous plaît. »", context: "Rappel : 'Prise' (féminin singulier sonore /z/)." }
+        ]
       }
     ],
     motivation: "Vous maîtrisez désormais les détails qui font la différence entre un discours ordinaire et un discours d'enseignant d'exception !"

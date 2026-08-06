@@ -473,6 +473,36 @@ function LessonsTab({ onZoom }) {
                 </div>
               )}
 
+              {/* Paroles de Classe: silence, sollicitations etc. */}
+              {lessonData.classroom_phrases?.length > 0 && (
+                <div className="glass-card p-6 sm:p-8 rounded-3xl border border-blue-200 dark:border-blue-900/40 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/20 dark:to-indigo-950/20 space-y-5">
+                  <h3 className="text-xs sm:text-sm font-black text-blue-800 dark:text-blue-300 uppercase tracking-widest flex items-center gap-2">
+                    🗣️ Paroles de Classe : Parler avec les étudiants
+                  </h3>
+                  <div className="space-y-5">
+                    {lessonData.classroom_phrases.map((cat, ci) => (
+                      <div key={ci} className="space-y-3">
+                        <h4 className="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-1.5 flex items-center gap-2">
+                          📌 {cat.category}
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {cat.expressions.map((exp, ei) => (
+                            <div key={ei} className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 space-y-1 shadow-sm">
+                              <div className="text-xs sm:text-sm text-blue-700 dark:text-blue-300 font-black">
+                                {exp.phrase}
+                              </div>
+                              <div className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+                                {exp.context}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Astuce */}
               <div className="p-5 sm:p-6 rounded-3xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/70 dark:border-amber-800/30 flex gap-4 items-start">
                 <Lightbulb className="w-6 h-6 text-amber-500 shrink-0 mt-0.5" />
