@@ -163,9 +163,9 @@ function FlipCard({ word }) {
 
   return (
     <div
-      className="cursor-pointer h-52 perspective-1000"
+      className="cursor-pointer h-56 perspective-1000"
       onClick={() => setFlipped(f => !f)}
-      title="Cliquez pour retourner"
+      title="Cliquez pour retourner la carte"
     >
       <div
         className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${flipped ? 'rotate-y-180' : ''}`}
@@ -176,37 +176,48 @@ function FlipCard({ word }) {
           className={`absolute inset-0 backface-hidden rounded-2xl border-2 ${c.border} bg-gradient-to-br ${c.card} flex flex-col items-center justify-center p-5 space-y-3 shadow-md`}
           style={{ backfaceVisibility: 'hidden' }}
         >
-          <span className={`text-xs font-black uppercase tracking-widest ${c.text} ${c.bg} px-2 py-0.5 rounded-full`}>
+          <span className={`text-xs font-black uppercase tracking-widest ${c.text} ${c.bg} px-2.5 py-0.5 rounded-full`}>
             {word.type}
           </span>
           <div className="text-2xl font-black text-slate-900 dark:text-white text-center leading-tight">{word.word}</div>
-          <div className={`w-8 h-8 rounded-full ${c.badge} flex items-center justify-center animate-bounce`}>
-            <span className="text-white text-xs">↩</span>
+          <div className={`w-8 h-8 rounded-full ${c.badge} flex items-center justify-center animate-bounce shadow-md`}>
+            <span className="text-white text-xs font-bold">↩</span>
           </div>
-          <p className="text-[9px] text-slate-400 text-center">Cliquez pour voir la définition</p>
+          <p className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 text-center">Cliquez pour voir la définition</p>
         </div>
 
-        {/* Back */}
+        {/* Back (Fixed for 100% visibility in Light and Dark Mode) */}
         <div
-          className="absolute inset-0 backface-hidden rounded-2xl bg-slate-900 dark:bg-slate-950 border border-slate-700 flex flex-col justify-between p-4 space-y-2 shadow-md"
+          className="absolute inset-0 backface-hidden rounded-2xl bg-white dark:bg-slate-900 border-2 border-blue-400 dark:border-slate-700 flex flex-col justify-between p-4 space-y-2 shadow-xl"
           style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
         >
-          <div>
-            <div className="text-xs font-bold text-slate-400 mb-1">📖 Définition</div>
-            <p className="text-xs text-slate-200 leading-relaxed">{word.definition}</p>
-          </div>
-          <div>
-            <div className="text-xs font-bold text-amber-400 mb-0.5">💡 Exemple</div>
-            <p className="text-[10px] text-amber-200 italic leading-snug">« {word.example} »</p>
-          </div>
-          {word.conjugation && (
-            <div>
-              <div className="text-xs font-bold text-blue-400 mb-0.5">🔀 Conjugaison</div>
-              <p className="text-[9px] text-blue-200 leading-snug">{word.conjugation}</p>
+          <div className="space-y-2 overflow-y-auto pr-1 no-scrollbar flex-1">
+            <div className="flex items-center gap-1 text-xs font-black text-blue-600 dark:text-blue-400 border-b border-blue-100 dark:border-slate-800 pb-1">
+              📖 Définition
             </div>
-          )}
-          <div className={`px-2 py-1 rounded-lg bg-slate-800 border border-slate-700`}>
-            <p className="text-[9px] text-slate-400"><span className="text-yellow-400 font-bold">✨ Astuce: </span>{word.tip}</p>
+            <p className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-snug">
+              {word.definition}
+            </p>
+            
+            <div className="pt-1">
+              <div className="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">💡 Exemple en Classe</div>
+              <p className="text-[11px] text-slate-700 dark:text-slate-300 italic font-semibold leading-snug bg-amber-50 dark:bg-amber-950/30 p-1.5 rounded-lg border border-amber-200/50 dark:border-amber-900/30">
+                « {word.example} »
+              </p>
+            </div>
+
+            {word.conjugation && (
+              <div className="pt-1">
+                <div className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400">🔀 Conjugaison Utile</div>
+                <p className="text-[10px] text-slate-700 dark:text-slate-300 font-medium leading-snug">{word.conjugation}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="px-2.5 py-1.5 rounded-xl bg-blue-50 dark:bg-slate-800 border border-blue-200 dark:border-slate-700 mt-auto shrink-0">
+            <p className="text-[10px] text-slate-700 dark:text-slate-300 font-medium">
+              <span className="text-amber-600 dark:text-yellow-400 font-black">✨ Astuce : </span>{word.tip}
+            </p>
           </div>
         </div>
       </div>
@@ -259,7 +270,7 @@ function StoryRenderer({ story, onZoom }) {
 
 // ─── Lessons Tab ─────────────────────────────────────────────────────────────
 function LessonsTab({ onZoom }) {
-  const [selectedLesson, setSelectedLesson] = useState(null);
+  const [selectedLesson, setSelectedLesson] = useState(LESSONS_CONFIG[0]);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
 
@@ -269,7 +280,7 @@ function LessonsTab({ onZoom }) {
     setQuizSubmitted(false);
   };
 
-  const lessonData = selectedLesson ? PRESTORED_LESSONS[selectedLesson.id] : null;
+  const lessonData = selectedLesson ? PRESTORED_LESSONS[selectedLesson.id] : PRESTORED_LESSONS.lesson_conjugation;
 
   const handleQuizAnswer = (qIdx, optIdx) => {
     if (quizSubmitted) return;
@@ -317,78 +328,150 @@ function LessonsTab({ onZoom }) {
       {/* Lesson Content */}
       <div className="lg:col-span-8">
         <AnimatePresence mode="wait">
-          {!selectedLesson && (
-            <div className="glass-card p-8 sm:p-12 rounded-3xl border border-dashed border-slate-300 dark:border-slate-700 text-center space-y-4">
-              <div 
-                onClick={() => onZoom({ src: "/images/languages/banana_hero.png", title: "Académie des Langues" })}
-                className="w-28 sm:w-32 h-28 sm:h-32 mx-auto cursor-zoom-in"
-              >
-                <ZoomableImage src="/images/languages/banana_hero.png" alt="Welcome" title="Académie des Langues" containerClassName="w-full h-full" />
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-700 dark:text-slate-300">Sélectionnez une leçon à gauche</h3>
-              <p className="text-xs text-slate-400 max-w-md mx-auto">Accédez instantanément à la leçon complète, avec règles, exemples, astuces et quiz interactif.</p>
-            </div>
-          )}
-
           {lessonData && selectedLesson && (
-            <motion.div key={lessonData.lesson_id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+            <motion.div key={lessonData.lesson_id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
               {/* Feature Header Card with Lesson Illustration */}
               <div className="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 dark:from-slate-900 dark:to-indigo-950/40 flex flex-col sm:flex-row items-center justify-between gap-5">
                 <div className="space-y-2 flex-1 text-center sm:text-left">
                   <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-2.5 py-1 rounded-full">
-                    {selectedLesson.icon} Leçon Sélectionnée
+                    {selectedLesson.icon} Leçon Pédagogique Détaillée
                   </span>
-                  <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight">
+                  <h2 className="text-lg sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
                     {lessonData.title}
                   </h2>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{lessonData.intro}</p>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">{lessonData.intro}</p>
                 </div>
                 <div 
                   onClick={() => onZoom({ src: selectedLesson.image, title: lessonData.title })}
-                  className="w-24 h-24 sm:w-28 sm:h-28 shrink-0 cursor-zoom-in"
+                  className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 cursor-zoom-in"
                 >
                   <ZoomableImage src={selectedLesson.image} alt={lessonData.title} title={lessonData.title} containerClassName="w-full h-full" />
                 </div>
               </div>
 
-              {/* Rule */}
-              <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
-                <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> La Règle</h3>
-                <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed">{lessonData.rule}</p>
+              {/* Posture & Pédagogie de l'Enseignant */}
+              {lessonData.pedagogical_context && (
+                <div className="glass-card p-5 rounded-2xl border border-indigo-200 dark:border-indigo-900/40 bg-gradient-to-r from-indigo-50/50 to-blue-50/50 dark:from-indigo-950/20 dark:to-blue-950/20 space-y-2">
+                  <h3 className="text-xs font-black text-indigo-700 dark:text-indigo-300 uppercase tracking-widest flex items-center gap-2">
+                    🎓 Posture de l'Enseignant en Classe
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed">{lessonData.pedagogical_context}</p>
+                </div>
+              )}
+
+              {/* Règle Principale */}
+              <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
+                <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><BookOpen className="w-4 h-4 text-blue-500" /> La Règle Fondamentale</h3>
+                <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{lessonData.rule}</p>
               </div>
 
-              {/* Examples */}
-              <div className="glass-card p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
-                <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><MessageSquare className="w-3.5 h-3.5" /> Exemples Pratiques</h3>
+              {/* Nuances & Distinctions de Mots Confondus (si disponible) */}
+              {lessonData.word_distinctions?.length > 0 && (
+                <div className="glass-card p-5 sm:p-6 rounded-3xl border border-amber-200 dark:border-amber-900/40 bg-gradient-to-r from-amber-50/30 to-orange-50/30 dark:from-amber-950/20 dark:to-orange-950/10 space-y-4">
+                  <h3 className="text-xs font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest flex items-center gap-2">
+                    🔍 Nuances & Différences entre Mots Clés
+                  </h3>
+                  <div className="space-y-3">
+                    {lessonData.word_distinctions.map((dist, di) => (
+                      <div key={di} className="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-amber-800/40 space-y-1.5 shadow-sm">
+                        <div className="text-xs sm:text-sm font-black text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+                          <span>⚡</span> {dist.pair}
+                        </div>
+                        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{dist.difference}</p>
+                        <div className="text-[11px] text-amber-900 dark:text-amber-200 italic bg-amber-50/80 dark:bg-amber-950/40 p-2 rounded-xl">
+                          <span className="font-bold">Exemple en classe : </span>« {dist.example} »
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Tableaux de Conjugaison Utiles (si disponible) */}
+              {lessonData.conjugation_tables?.length > 0 && (
+                <div className="glass-card p-5 sm:p-6 rounded-3xl border border-purple-200 dark:border-purple-900/40 space-y-4">
+                  <h3 className="text-xs font-black text-purple-700 dark:text-purple-300 uppercase tracking-widest flex items-center gap-2">
+                    🔀 Conjugaison des Verbes les Plus Utilisés en Enseignement
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {lessonData.conjugation_tables.map((table, ti) => (
+                      <div key={ti} className="p-4 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800/40 space-y-2">
+                        <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-1.5">
+                          <span className="text-xs font-black text-purple-900 dark:text-purple-200">{table.verb}</span>
+                          <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/40 px-2 py-0.5 rounded-full">{table.tense}</span>
+                        </div>
+                        <ul className="text-xs text-slate-800 dark:text-slate-200 space-y-1 font-mono">
+                          {table.forms.map((form, fi) => (
+                            <li key={fi} className="flex justify-between border-b border-slate-100 dark:border-slate-800/50 py-0.5">
+                              <span>{form}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        {table.note && (
+                          <p className="text-[10px] text-purple-700 dark:text-purple-300 italic pt-1"><span className="font-bold">⚠️ Piège : </span>{table.note}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Exemples Pratiques (Incorrect vs Correct) */}
+              <div className="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><MessageSquare className="w-4 h-4 text-emerald-500" /> Exemples d'Erreurs Courantes & Corrections</h3>
                 {lessonData.examples?.map((ex, i) => (
-                  <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30">
-                      <div className="text-[9px] font-black text-red-500 uppercase mb-0.5">❌ Incorrect</div>
-                      <div className="text-xs text-red-700 dark:text-red-300 italic">{ex.wrong}</div>
+                  <div key={i} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 space-y-1">
+                      <div className="text-[10px] font-black text-red-500 uppercase tracking-wider">❌ À ÉVITER ABSOLUMENT</div>
+                      <div className="text-xs sm:text-sm text-red-700 dark:text-red-300 italic font-medium">{ex.wrong}</div>
                     </div>
-                    <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30">
-                      <div className="text-[9px] font-black text-emerald-500 uppercase mb-0.5">✅ Correct</div>
-                      <div className="text-xs text-emerald-700 dark:text-emerald-300 font-semibold">{ex.correct}</div>
+                    <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 space-y-1">
+                      <div className="text-[10px] font-black text-emerald-500 uppercase tracking-wider">✅ FORMULATION ACADÉMIQUE</div>
+                      <div className="text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 font-bold">{ex.correct}</div>
                     </div>
                     {ex.explanation && (
-                      <div className="col-span-1 sm:col-span-2 text-[10px] text-slate-500 italic px-1">{ex.explanation}</div>
+                      <div className="col-span-1 sm:col-span-2 text-xs text-slate-600 dark:text-slate-400 italic px-2 bg-slate-50 dark:bg-slate-900 p-2 rounded-xl border border-slate-200/60 dark:border-slate-800">
+                        <span className="font-bold text-slate-700 dark:text-slate-300">Pourquoi ? </span>{ex.explanation}
+                      </div>
                     )}
                   </div>
                 ))}
               </div>
 
+              {/* Classroom Dialogues (Mises en Situation) */}
+              {lessonData.classroom_dialogues?.length > 0 && (
+                <div className="glass-card p-5 sm:p-6 rounded-3xl border border-blue-200 dark:border-blue-900/40 space-y-4">
+                  <h3 className="text-xs font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest flex items-center gap-2">
+                    💬 Mises en Situation Reelles en Classe
+                  </h3>
+                  <div className="space-y-3">
+                    {lessonData.classroom_dialogues.map((diag, dgi) => (
+                      <div key={dgi} className="p-4 rounded-2xl bg-blue-50/40 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 space-y-2">
+                        <div className="text-xs font-bold text-blue-900 dark:text-blue-200 flex items-center gap-1.5">
+                          📌 {diag.situation}
+                        </div>
+                        <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
+                          « {diag.dialogue} »
+                        </div>
+                        <div className="text-[11px] text-blue-800 dark:text-blue-300 italic"><span className="font-bold">Analyse du prof : </span>{diag.analysis}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Astuce */}
               <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/30 flex gap-3 items-start">
                 <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-xs font-extrabold text-amber-600 dark:text-amber-400 mb-0.5">✨ Astuce Mnémotechnique</div>
-                  <p className="text-xs sm:text-sm text-amber-800 dark:text-amber-200">{lessonData.astuce}</p>
+                  <div className="text-xs font-extrabold text-amber-600 dark:text-amber-400 mb-0.5">✨ Astuce Mnémotechnique Rapide</div>
+                  <p className="text-xs sm:text-sm text-amber-800 dark:text-amber-200 font-medium">{lessonData.astuce}</p>
                 </div>
               </div>
 
               {/* Quiz */}
-              <div className="glass-card p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-                <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><HelpCircle className="w-3.5 h-3.5" /> Quiz de la Leçon</h3>
+              <div className="glass-card p-5 sm:p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+                <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-widest flex items-center gap-1.5"><HelpCircle className="w-4 h-4 text-purple-500" /> Quiz de Validation de la Leçon</h3>
                 {lessonData.quiz?.map((q, qi) => (
                   <div key={qi} className="space-y-2">
                     <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">{qi + 1}. {q.question}</p>
@@ -396,7 +479,7 @@ function LessonsTab({ onZoom }) {
                       {q.options.map((opt, oi) => {
                         const chosen = quizAnswers[qi] === oi;
                         const isCorrect = oi === q.correct;
-                        let btnClass = 'px-3 py-2.5 rounded-xl text-xs text-left border transition-all font-medium ';
+                        let btnClass = 'px-3.5 py-2.5 rounded-xl text-xs text-left border transition-all font-medium ';
                         if (quizSubmitted) {
                           if (isCorrect) btnClass += 'bg-emerald-100 dark:bg-emerald-900/30 border-emerald-400 text-emerald-700 dark:text-emerald-300 font-bold';
                           else if (chosen) btnClass += 'bg-red-100 dark:bg-red-900/30 border-red-400 text-red-700 dark:text-red-300';
@@ -414,8 +497,8 @@ function LessonsTab({ onZoom }) {
                       })}
                     </div>
                     {quizSubmitted && (
-                      <div className={`text-[10px] p-2.5 rounded-lg ${quizAnswers[qi] === q.correct ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400'}`}>
-                        {quizAnswers[qi] === q.correct ? '✅ ' : '💡 '}{q.explanation}
+                      <div className={`text-xs p-3 rounded-xl ${quizAnswers[qi] === q.correct ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400'}`}>
+                        {quizAnswers[qi] === q.correct ? '✅ Bravo ! ' : '💡 Explication : '}{q.explanation}
                       </div>
                     )}
                   </div>
@@ -449,7 +532,7 @@ function LessonsTab({ onZoom }) {
                 </div>
                 <div>
                   <p className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 mb-1">🌟 Message de Banana pour toi</p>
-                  <p className="text-xs sm:text-sm text-emerald-800 dark:text-emerald-200 leading-relaxed italic">{lessonData.motivation}</p>
+                  <p className="text-xs sm:text-sm text-emerald-800 dark:text-emerald-200 leading-relaxed italic font-medium">{lessonData.motivation}</p>
                 </div>
               </div>
             </motion.div>

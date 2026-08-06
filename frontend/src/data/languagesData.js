@@ -909,9 +909,93 @@ export const LESSONS_CONFIG = [
 export const PRESTORED_LESSONS = {
   lesson_conjugation: {
     lesson_id: "lesson_conjugation",
-    title: "Parler & Conjuguer sans Faute",
-    intro: "En tant qu'enseignant, la précision verbale à l'oral est votre carte de visite. Maîtriser les verbes irréguliers et les auxiliaires donne une image de rigueur et d'autorité bienveillante devant vos élèves.",
-    rule: "À l'oral, les verbes de modalité (devoir, pouvoir, vouloir, savoir) sont TOUJOURS suivis directement de l'infinitif sans préposition (ni 'de', ni 'à'). De plus, les verbes de mouvement se conjuguent au passé composé avec l'auxiliaire 'être' et s'accordent avec le sujet.",
+    title: "Parler & Conjuguer sans Faute en Classe",
+    intro: "En tant qu'enseignant, la précision verbale à l'oral est votre première carte de visite. Maîtriser les temps, les verbes irréguliers et les formules d'explication donne une image d'autorité bienveillante et de professionnalisme irréprochable devant vos élèves et vos collègues.",
+    pedagogical_context: "Un professeur qui conjugue sans hésitation inspire confiance. Lorsqu'on explique une notion au tableau, l'attention des élèves se fixe sur votre langage. Utiliser des temps précis (présent de vérité générale, subjonctif après l'obligation, conditionnel de politesse) aide les élèves à structurer leur propre pensée.",
+    rule: "1. À l'oral formel, les verbes de modalité (devoir, pouvoir, vouloir, savoir) sont TOUJOURS suivis directement de l'infinitif sans préposition (jamais 'de' ou 'à').\n2. Les verbes de mouvement (partir, aller, venir, arriver) se conjuguent au passé composé avec l'auxiliaire 'être' et s'accordent avec le sujet.\n3. Après 'SI' exprimant une condition, on utilise l'imparfait (jamais le conditionnel en 'rai').",
+    word_distinctions: [
+      {
+        pair: "Apprendre vs Enseigner",
+        difference: "Le professeur ENSEIGNE (il donne le savoir), tandis que l'élève APPREND (il reçoit et acquiert le savoir). Ne dites jamais 'Je vais vous apprendre la leçon' si vous voulez dire 'Je vais vous enseigner/expliquer la leçon'.",
+        example: "Le professeur enseigne les algorithmes et l'élève apprend à les coder."
+      },
+      {
+        pair: "Savoir vs Connaître",
+        difference: "SAVOIR est suivi d'un verbe à l'infinitif ou d'une proposition (savoir faire, savoir que...). CONNAÎTRE est suivi d'un nom direct (connaître une règle, connaître un élève).",
+        example: "Je connais ce chapitre et je sais résoudre ce problème."
+      },
+      {
+        pair: "Se rappeler de (faux) vs Se souvenir de (correct)",
+        difference: "On dit 'se rappeler QUELQUE CHOSE' (sans 'de') ou 'se souvenir DE quelque chose'. Dire 'Je me rappelle de ce cours' est une faute très courante à éviter !",
+        example: "Je me rappelle cette leçon / Je me souviens de cette leçon."
+      }
+    ],
+    conjugation_tables: [
+      {
+        verb: "TRANSMETTRE (3e groupe)",
+        tense: "Présent de l'indicatif (Usage : expliquer)",
+        forms: [
+          "Je transmets",
+          "Tu transmets",
+          "Il / Elle transmet",
+          "Nous transmettons",
+          "Vous transmettez",
+          "Ils / Elles transmettent"
+        ],
+        note: "Attention au 't' seul à la 3e personne du singulier : 'Il transmet' (pas de 's')."
+      },
+      {
+        verb: "EXPLIQUER (1er groupe)",
+        tense: "Subjonctif Présent (Usage : obligation)",
+        forms: [
+          "Que j'explique",
+          "Que tu expliques",
+          "Qu'il / elle explique",
+          "Que nous expliquions",
+          "Que vous expliquiez",
+          "Qu'ils / elles expliquent"
+        ],
+        note: "Indispensable après 'Il faut que...' : 'Il faut que vous expliquiez clairement.'"
+      },
+      {
+        verb: "SAVOIR (3e groupe)",
+        tense: "Présent de l'indicatif (Usage : compétences)",
+        forms: [
+          "Je sais",
+          "Tu sais",
+          "Il / Elle sait",
+          "Nous savons",
+          "Vous savez",
+          "Ils / Elles savent"
+        ],
+        note: "Participe passé : su. Imparfait : je savais, nous savions."
+      },
+      {
+        verb: "DEVOIR (3e groupe)",
+        tense: "Conditionnel Présent (Usage : conseil poli)",
+        forms: [
+          "Je devrais",
+          "Tu devrais",
+          "Il / Elle devrait",
+          "Nous devrions",
+          "Vous devriez",
+          "Ils / Elles devraient"
+        ],
+        note: "Formulation idéale pour conseiller un élève sans être autoritaire : 'Vous devriez revoir ce point.'"
+      }
+    ],
+    classroom_dialogues: [
+      {
+        situation: "Donner une consigne orale de révision en début de cours",
+        dialogue: "« Chers élèves, avant de démarrer la séance, je veux que vous preniez vos cahiers. Si vous aviez des questions sur le chapitre précédent, nous les aborderons ensemble. »",
+        analysis: "Utilisation parfaite du subjonctif ('preniez') après 'je veux que' et de l'imparfait ('aviez') après 'si'."
+      },
+      {
+        situation: "Rappeler une règle de travail à un groupe d'élèves",
+        dialogue: "« Pour réussir cet exercice, vous devez appliquer la démarche étape par étape. Si vous suiviez cette méthode, vous éviteriez les erreurs de syntaxe. »",
+        analysis: "Emploi direct de 'devez + infinitif' et respect du couple 'Si + imparfait → conditionnel'."
+      }
+    ],
     examples: [
       {
         wrong: "Je dois de préparer mon cours.",
@@ -927,36 +1011,105 @@ export const PRESTORED_LESSONS = {
         wrong: "Si j'aurais du temps, je réviserais.",
         correct: "Si j'avais du temps, je réviserais.",
         explanation: "La règle d'or : les 'si' n'aiment pas les 'rai'. Après 'si' de condition, on utilise l'imparfait, jamais le conditionnel."
+      },
+      {
+        wrong: "Je me rappelle de cette formule.",
+        correct: "Je me rappelle cette formule (ou Je me souviens de cette formule).",
+        explanation: "'Se rappeler' ne prend pas la préposition 'de'. On se rappelle quelque chose."
       }
     ],
-    astuce: "Règle mnémonique : 'Les SI n'aiment pas les RAI !' → Si j'AVAIS (imparfait), je FERAIS (conditionnel).",
+    astuce: "Règle mnémonique : 'Les SI n'aiment pas les RAI !' → Si j'AVAIS (imparfait), je FERAIS (conditionnel). Et 'Je me RAPPELLE le cours' sans 'de' !",
     quiz: [
       {
-        question: "Quelle est la forme correcte à l'oral formel ?",
+        question: "Quelle est la forme correcte à l'oral formel d'un enseignant ?",
         options: ["Je peux de vous aider.", "Je peux vous aider.", "Je peux à vous aider.", "Je peux que vous aider."],
         correct: 1,
         explanation: "'Pouvoir' est suivi directement de l'infinitif sans préposition."
       },
       {
-        question: "Choisissez la bonne phrase au passé composé :",
-        options: ["Les enseignants ont venus tôt.", "Les enseignants sont venus tôt.", "Les enseignants sont venir tôt.", "Les enseignants ont venir tôt."],
+        question: "Quelle phrase exprime une différenciation correcte ?",
+        options: [
+          "Je vais vous apprendre la leçon d'informatique.",
+          "Je vais vous enseigner la leçon d'informatique.",
+          "L'élève enseigne sa leçon au professeur.",
+          "Le professeur apprend le cours aux élèves."
+        ],
         correct: 1,
-        explanation: "'Venir' se conjugue avec 'être' et s'accorde au pluriel ('venus')."
+        explanation: "Le professeur enseigne (donne le savoir), l'élève apprend (reçoit le savoir)."
       },
       {
-        question: "Complétez : Si vous ___ des questions, n'hésitez pas.",
-        options: ["auriez", "aviez", "aurez", "aurez eu"],
+        question: "Complétez : Si les élèves ___ plus attentifs, le cours serait plus efficace.",
+        options: ["seraient", "étaient", "sont", "seront"],
         correct: 1,
-        explanation: "Après 'si', on utilise l'imparfait ('aviez') pour exprimer une condition."
+        explanation: "Après 'si', on utilise l'imparfait ('étaient') suivi du conditionnel ('serait')."
       }
     ],
-    motivation: "Chaque verbe bien conjugué renforce votre assurance naturelle à l'oral. Bravo pour votre investissement quotidien !"
+    motivation: "Chaque verbe bien conjugué renforce votre assurance naturelle et votre crédibilité devant vos élèves. Vous êtes sur la voie de l'excellence !"
   },
+
   lesson_gender: {
     lesson_id: "lesson_gender",
-    title: "Le Masculin et le Féminin",
-    intro: "Les erreurs de genre (un/une, le/la) sont très fréquentes à l'oral spontané. Savoir repérer le genre des noms abstraits et techniques vous permettra de parler sans hésitation.",
-    rule: "Les mots finissant par -ème (problème, système, thème, programme) et -age (espace, passage, apprentissage) sont presque tous MASCULINS. Les mots finissant par -ion (solution, réflexion, évaluation) et -té (qualité, égalité) sont FÉMININS.",
+    title: "Le Masculin et le Féminin dans le Vocabulaire Pédagogique",
+    intro: "Les hésitations de genre (un/une, le/la) sont les fautes orales les plus rapidement remarquées lors d'une présentation ou d'un cours. Maîtriser le genre exact des termes académiques et informatiques garantit un discours fluide et naturel.",
+    pedagogical_context: "Un enseignant qui dit 'une grand problème' ou 'la thème' perd en crédibilité. De nombreux mots scientifiques et pédagogiques empruntés au grec ou au latin possèdent un genre fixé par leur terminaison. En les retenant par familles, vous ne ferez plus jamais de faute d'accord à l'oral.",
+    rule: "1. MASCULINS : Les mots en -ème (le problème, le système, le thème, le programme) et les mots en -age (un espace, un affichage, l'apprentissage).\n2. FÉMININS : Les mots en -ion (une solution, une évaluation, la notion) et les mots en -té (la qualité, la compétence, l'égalité).\n3. PIÈGES À RETENIR : 'un espace' (masculin en informatique/maths), 'un rôle' (masculin), 'une erreur' (féminin).",
+    word_distinctions: [
+      {
+        pair: "Un Espace vs Une Espace",
+        difference: "En français général et en informatique, ESPACE est MASCULIN : 'un espace de travail', 'un grand espace'. (L'usage féminin est réservé uniquement à la typographie imprimée ancienne).",
+        example: "L'enseignant réserve un espace suffisant au tableau."
+      },
+      {
+        pair: "Un Exemple vs Une Exemple (faux)",
+        difference: "EXEMPLE est toujours MASCULIN : 'un exemple concret', 'un bon exemple'. Ne dites jamais 'une exemple'.",
+        example: "Voici un exemple clair pour illustrer la règle."
+      },
+      {
+        pair: "Basé sur (anglicisme) vs Fondé sur / Axé sur (français académique)",
+        difference: "Dire 'Mon cours est basé sur...' est un calque de l'anglais 'based on'. En français formel, dites : 'Mon cours est FONDÉ sur...' ou 'AXÉ sur...'.",
+        example: "Cette évaluation est fondée sur les compétences officielles."
+      }
+    ],
+    conjugation_tables: [
+      {
+        verb: "ÉVALUER (1er groupe)",
+        tense: "Présent de l'indicatif (Usage : mesurer les acquis)",
+        forms: [
+          "J'évalue",
+          "Tu me évalues",
+          "Il / Elle évalue",
+          "Nous évaluons",
+          "Vous évaluez",
+          "Ils / Elles évaluent"
+        ],
+        note: "Attention à l'accord de l'adjectif féminin associatif : 'Une évaluation formative' (féminin)."
+      },
+      {
+        verb: "CONCEVOIR (3e groupe)",
+        tense: "Présent de l'indicatif (Usage : préparer un support)",
+        forms: [
+          "Je conçois",
+          "Tu conçois",
+          "Il / Elle conçoit",
+          "Nous concevons",
+          "Vous concevez",
+          "Ils / Elles conçoivent"
+        ],
+        note: "On conçoit un programme (masculin) ou une séance (féminin)."
+      }
+    ],
+    classroom_dialogues: [
+      {
+        situation: "Présenter le sommaire du cours aux élèves",
+        dialogue: "« Aujourd'hui, nous aborderons un thème fondamental. Nous allons étudier un nouveau système de stockage et chercher une solution efficace à ce problème. »",
+        analysis: "Genre irréprochable : UN thème (masculin), UN système (masculin), UNE solution (féminin), CE problème (masculin)."
+      },
+      {
+        situation: "Faire une remarque sur la tenue du cahier",
+        dialogue: "« Veillez à laisser un espace propre entre chaque exercice afin que l'affichage des résultats soit lisible. »",
+        analysis: "Utilisation correcte des masculins : UN espace, UN affichage."
+      }
+    ],
     examples: [
       {
         wrong: "C'est une grand problème dans le système.",
@@ -972,9 +1125,14 @@ export const PRESTORED_LESSONS = {
         wrong: "Il faut garder le même espace et la même rôle.",
         correct: "Il faut garder le même espace et le même rôle.",
         explanation: "'Espace' et 'rôle' sont tous les deux masculins (un espace, un rôle)."
+      },
+      {
+        wrong: "Mon cours est basé sur le programme.",
+        correct: "Mon cours est fondé sur le programme (ou axé sur).",
+        explanation: "'Basé sur' est un anglicisme à éviter en contexte académique."
       }
     ],
-    astuce: "Retenez le quatuor MASCULIN : Le problème, Le système, Le programme, Le thème !",
+    astuce: "Retenez le quatuor MASCULIN des cours : Le problème, Le système, Le programme, Le thème ! Et dites 'UN espace'.",
     quiz: [
       {
         question: "Quel groupe contient UNIQUEMENT des mots masculins ?",
@@ -988,10 +1146,15 @@ export const PRESTORED_LESSONS = {
         explanation: "Problème, système, programme et espace sont tous les 4 masculins !"
       },
       {
-        question: "Comment qualifie-t-on correctement 'une erreur' ?",
-        options: ["un erreur manifeste", "une erreur manifeste", "un erreur manifeste", "une erreur manifestant"],
+        question: "Quelle formulation est recommandée en français académique ?",
+        options: [
+          "Ce devoir est basé sur le premier chapitre.",
+          "Ce devoir est fondé sur le premier chapitre.",
+          "Ce devoir est basant sur le premier chapitre.",
+          "Ce devoir est basé de le premier chapitre."
+        ],
         correct: 1,
-        explanation: "'Erreur' est féminin : une erreur manifeste."
+        explanation: "'Fondé sur' ou 'axé sur' est préférable à l'anglicisme 'basé sur'."
       },
       {
         question: "Complétez : Le professeur présente ___ de la séance.",
@@ -1000,17 +1163,72 @@ export const PRESTORED_LESSONS = {
         explanation: "'Thème' prend le suffixe grec '-ème' qui indique le masculin : le thème."
       }
     ],
-    motivation: "En maîtrisant le genre des mots clés, vous parlez avec fluidité et précision. Vous faites un travail remarquable !"
+    motivation: "En maîtrisant le genre des mots clés de votre discipline, vos explications deviennent naturelles, élégantes et captivantes !"
   },
+
   lesson_structure: {
     lesson_id: "lesson_structure",
-    title: "Structurer ses Phrases à l'Oral",
-    subtitle: "Syntaxe, prépositions et négations formelles",
-    icon: "🧩",
-    color: "orange",
-    image: "/images/languages/banana_structure.png",
-    intro: "La clarté d'un cours repose sur la structure des phrases. Une syntaxe bien articulée avec les bons connecteurs logiques aide vos élèves à suivre le fil de votre pensée.",
-    rule: "En français formel, la négation est double (ne ... pas / ne ... rien). Les prépositions introduisent la logique : 'grâce à' (positif), 'à cause de' (négatif), 'afin de' + infinitif (objectif). Ne sautez jamais le 'ne' devant le verbe à l'oral d'un enseignant.",
+    title: "Structurer ses Phrases & Expliquer à l'Oral",
+    intro: "La clarté d'un cours repose avant tout sur l'articulation logique des phrases. Savoir relier les idées avec les bons connecteurs et utiliser la négation complète garantit que vos élèves vous comprennent sans effort.",
+    pedagogical_context: "À l'oral spontané, on a tendance à abréger ses phrases ('J'ai pas compris', 'C'est à cause de que...'). En tant qu'enseignant, maintenir une syntaxe exemplaire montre la voie aux élèves et facilite la prise de notes.",
+    rule: "1. NÉGATION : À l'oral d'un professeur, le 'NE' de négation est OBLIGATOIRE (Ne dites pas 'Je sais pas', mais 'Je ne sais pas').\n2. CONNECTEURS DE CAUSE : 'Grâce à' s'utilise pour une cause heureuse/positive. 'À cause de' s'utilise pour une cause négative.\n3. CONNECTEURS DE BUT : 'Afin de' + Infinitif / 'Pour que' + Subjonctif.",
+    word_distinctions: [
+      {
+        pair: "Séance vs Séquence Pédagogique",
+        difference: "Une SÉANCE est une seule unité de cours (ex: 1 heure de cours). Une SÉQUENCE est un ensemble structuré de plusieurs séances autour d'un même objectif.",
+        example: "Cette séquence sur les réseaux comprend quatre séances de 2 heures."
+      },
+      {
+        pair: "Évaluer vs Noter",
+        difference: "NOTER consiste à attribuer un chiffre/note. ÉVALUER est un processus beaucoup plus large qui consiste à analyser les acquis, diagnostiquer les lacunes et guider l'élève.",
+        example: "Le professeur évalue la compréhension orale tout au long de la séance sans forcément noter."
+      },
+      {
+        pair: "Grâce à vs À cause de",
+        difference: "'Grâce à' exprime un résultat positif (remerciement). 'À cause de' exprime un problème ou un élément défavorable.",
+        example: "Les élèves ont réussi grâce à leur rigueur / Le cours est retardé à cause de la coupure d'électricité."
+      }
+    ],
+    conjugation_tables: [
+      {
+        verb: "COMPRENDRE (3e groupe)",
+        tense: "Subjonctif Présent (Usage : vérification du but)",
+        forms: [
+          "Que je me comprenne",
+          "Que tu me me comprennes",
+          "Qu'il / elle me comprenne",
+          "Que nous comprenions",
+          "Que vous compreniez",
+          "Qu'ils / elles comprennent"
+        ],
+        note: "Incontournable après 'Afin que' ou 'Pour que' : 'Afin que vous compreniez le sujet.'"
+      },
+      {
+        verb: "ORGANISER (1er groupe)",
+        tense: "Présent de l'indicatif (Usage : structuration)",
+        forms: [
+          "J'organise",
+          "Tu organises",
+          "Il / Elle organise",
+          "Nous organisons",
+          "Vous organisez",
+          "Ils / Elles organisent"
+        ],
+        note: "On organise une séquence (féminin) ou un travail de groupe (masculin)."
+      }
+    ],
+    classroom_dialogues: [
+      {
+        situation: "Expliquer un objectif de cours aux élèves",
+        dialogue: "« Nous abordons cette notion afin de vous donner les outils nécessaires. Je ne veux pas que vous appreniez par cœur sans comprendre la logique. »",
+        analysis: "Syntaxe modèle : 'afin de + infinitif' et 'ne pas que + subjonctif ('appreniez')."
+      },
+      {
+        situation: "Faire le bilan d'un travail d'équipe",
+        dialogue: "« Grâce à votre collaboration, le projet est terminé dans les temps. N'oubliez pas de relire votre travail afin d'éviter les erreurs inattention. »",
+        analysis: "Usage parfait de 'Grâce à' (positif) et 'afin de' (but)."
+      }
+    ],
     examples: [
       {
         wrong: "Je comprends pas cette méthode.",
@@ -1026,9 +1244,14 @@ export const PRESTORED_LESSONS = {
         wrong: "Je vous explique pour que vous comprenez.",
         correct: "Je vous explique pour que vous compreniez.",
         explanation: "'Pour que' exige le subjonctif ('compreniez'), alors que 'afin de' prend l'infinitif ('afin de comprendre')."
+      },
+      {
+        wrong: "Aujourd'hui nous faisons la première séquence du chapitre.",
+        correct: "Aujourd'hui nous faisons la première séance de la séquence.",
+        explanation: "La séance est une tranche de cours (1h), la séquence rassemble plusieurs séances."
       }
     ],
-    astuce: "Règle de cause : 'Grâce à' = Merci ! 🌸 / 'À cause de' = Oups ! 🌧️",
+    astuce: "Règle de cause : 'Grâce à' = Merci ! 🌸 / 'À cause de' = Oups ! 🌧️ Et n'oubliez jamais le 'NE' dans 'Je ne sais pas' !",
     quiz: [
       {
         question: "Laquelle de ces phrases est correcte pour un cours formel ?",
@@ -1042,10 +1265,15 @@ export const PRESTORED_LESSONS = {
         explanation: "La négation académique complète est : Je N'ai PAS eu."
       },
       {
-        question: "Choisissez la préposition correcte : Les élèves ont progressé ___ leurs efforts.",
-        options: ["à cause de", "grâce à", "en raison de mauvais", "par manque de"],
+        question: "Choisissez la distinction exacte entre séance et séquence :",
+        options: [
+          "Une séance contient plusieurs séquences.",
+          "Une séquence est constituée de plusieurs séances de cours.",
+          "Les deux termes désignent exactement la même chose.",
+          "Une séquence dure 15 minutes seulement."
+        ],
         correct: 1,
-        explanation: "Les efforts sont une cause positive → 'grâce à'."
+        explanation: "La séquence est l'ensemble pédagogique complet, divisé en séances individuelles."
       },
       {
         question: "Complétez : Il révise chaque soir ___ réussir son examen.",
@@ -1054,13 +1282,72 @@ export const PRESTORED_LESSONS = {
         explanation: "'Afin de' est suivi directement de l'infinitif ('réussir')."
       }
     ],
-    motivation: "Des phrases bien structurées transforment les idées complexes en explications limpides. Continuez ainsi !"
+    motivation: "Des phrases bien articulées rendent le savoir accessible et passionnant pour tous vos élèves !"
   },
+
   lesson_agreement: {
     lesson_id: "lesson_agreement",
-    title: "L'Accord des Adjectifs et Participes",
-    intro: "À l'oral, les accords féminins et pluriels modifient la prononciation des consonnes finales muettes (grand → grande, fait → faite, écrit → écrite). Entendre et prononcer ces consonnes est le secret d'un oral parfait.",
-    rule: "Au masculin, la consonne finale est souvent muette (petit, grand, pris). Au féminin, l'ajout du 'e' rend la consonne sonore (petite /t/, grande /d/, prise /z/). Le participe passé avec 'être' s'accorde en genre et en nombre avec le sujet.",
+    title: "L'Accord des Adjectifs & Participes à l'Oral",
+    intro: "À l'oral, les accords féminins et pluriels ne sont pas invisibles ! Ils modifient directement la prononciation des consonnes finales (grand → grande, fait → faite, écrit → écrite). Prononcer ces consonnes avec précision est le secret d'un français oral impeccable.",
+    pedagogical_context: "Lorsque vous dictez une consigne ou formulez un retour oral sur le travail d'un élève, oublier l'accord ('La remarque est important' au lieu de 'importante') s'entend immédiatement. Prononcer les consonnes finales au féminin montre une parfaite maîtrise de la langue.",
+    rule: "1. CONSONNES FINALES SONORES : Au masculin, la consonne finale est souvent muette (petit, grand, écrit, pris). Au féminin, l'ajout du 'E' la rend sonore : peTIte (/t/), granDE (/d/), écriTE (/t/), priSE (/z/).\n2. ACCORD DU PARTICIPE PASSÉ : Avec l'auxiliaire ÊTRE, le participe s'accorde avec le sujet ('Elle est partie'). Avec AVOIR, il s'accorde avec le COD placé AVANT le verbe ('Les questions qu'il a posées').",
+    word_distinctions: [
+      {
+        pair: "Inclus vs Incluse",
+        difference: "Au masculin : 'Ce document est inclus' (s muet). Au féminin : 'La pièce jointe est incluse' (s prononcé /z/).",
+        example: "Le corrigé est inclus dans le livre / La fiche est incluse."
+      },
+      {
+        pair: "Acquis vs Acquise",
+        difference: "Au masculin : 'Un savoir acquis' (s muet). Au féminin : 'Une compétence acquise' (s prononcé /z/).",
+        example: "Cette notion est désormais acquise par l'ensemble des élèves."
+      },
+      {
+        pair: "Pris vs Prise",
+        difference: "Au masculin : 'Un cours pris en note'. Au féminin : 'La parole a été prise par le délégué'.",
+        example: "La décision a été prise de façon collégiale."
+      }
+    ],
+    conjugation_tables: [
+      {
+        verb: "ACQUÉRIR (3e groupe)",
+        tense: "Passé Composé (Usage : validation des acquis)",
+        forms: [
+          "J'ai acquis",
+          "Tu as acquis",
+          "Il / Elle a acquis (La notion est acquise)",
+          "Nous avons acquis",
+          "Vous avez acquis",
+          "Ils / Elles ont acquis"
+        ],
+        note: "Attention au féminin : la compétence est ACQUISE (/z/ sonore)."
+      },
+      {
+        verb: "METTRE (3e groupe)",
+        tense: "Passé Composé (Usage : mise en œuvre)",
+        forms: [
+          "J'ai mis",
+          "Tu as mis",
+          "Il / Elle a mis (La consigne est mise)",
+          "Nous avons mis",
+          "Vous avez mis",
+          "Ils / Elles ont mis"
+        ],
+        note: "Féminin : 'La méthode a été mise en œuvre' (/z/ sonore)."
+      }
+    ],
+    classroom_dialogues: [
+      {
+        situation: "Faire le bilan d'une évaluation avec la classe",
+        dialogue: "« Les notions que nous avons étudiées la semaine dernière sont désormais bien acquises. La note que vous avez obtenue reflète votre travail. »",
+        analysis: "Accords parfaits : 'étudiées' (accord avec le COD 'notions' placé avant) et 'acquises' (/z/ sonore)."
+      },
+      {
+        situation: "Distribuer des consignes écrites",
+        dialogue: "« L'activité est composée de trois étapes. Chaque étape validée vous donne accès à la suite. »",
+        analysis: "Accord féminin sonore : 'composée' et 'validée'."
+      }
+    ],
     examples: [
       {
         wrong: "La séance est fini à 11 heures.",
@@ -1076,9 +1363,14 @@ export const PRESTORED_LESSONS = {
         wrong: "Les remarques que j'ai fait sont importantes.",
         correct: "Les remarques que j'ai faites sont importantes.",
         explanation: "Avec 'avoir', le participe passé s'accorde avec le COD placé AVANT ('les remarques' = féminin pluriel → 'faites')."
+      },
+      {
+        wrong: "La fiche d'exercice est inclus.",
+        correct: "La fiche d'exercice est incluse.",
+        explanation: "Au féminin, 'inclus' devient 'incluse' avec le son /z/ bien audible."
       }
     ],
-    astuce: "À l'oral, écoutez la consonne qui se réveille au féminin : Grand (/d/ silencieux) → GranDE (/d/ parlé) !",
+    astuce: "À l'oral, écoutez la consonne qui se réveille au féminin : Grand (/d/ silencieux) → GranDE (/d/ parlé) ! Inclus → IncluSE !",
     quiz: [
       {
         question: "Prononciation orale : Quel adjectif fait entendre une consonne finale au féminin ?",
@@ -1087,10 +1379,10 @@ export const PRESTORED_LESSONS = {
         explanation: "Dans 'Petite', le 't' final devient sonore (/t/), alors qu'il était muet dans 'petit'."
       },
       {
-        question: "Accordez correctement : La décision a été ___ hier.",
+        question: "Accordez correctement : La décision a été ___ hier par le jury.",
         options: ["prendre", "pris", "prise", "prises"],
         correct: 2,
-        explanation: "'La décision' (féminin singulier) avec la voix passive ('a été') → 'prise'."
+        explanation: "'La décision' (féminin singulier) avec la voix passive ('a été') → 'prise' (/z/ sonore)."
       },
       {
         question: "Choisissez la bonne phrase :",
@@ -1101,10 +1393,10 @@ export const PRESTORED_LESSONS = {
           "Les compétences requises sont clairement défini."
         ],
         correct: 0,
-        explanation: "'Compétences' est féminin pluriel → 'requises' et 'définies'."
+        explanation: "'Compétences' est féminin pluriel → 'requises' (/z/) et 'définies'."
       }
     ],
-    motivation: "Vous maîtrisez maintenant les subtilités de l'oral d'un enseignant. Votre rigueur fait toute la différence !"
+    motivation: "Vous maîtrisez désormais les détails qui font la différence entre un discours ordinaire et un discours d'enseignant d'exception !"
   }
 };
 
