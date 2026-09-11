@@ -63,9 +63,9 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 h-10 flex items-center justify-between">
           {/* Left: contact info */}
           <div className="flex items-center gap-6">
-            <a href="mailto:contact@inforeussite.online" className="flex items-center gap-1.5 hover:text-[#03594e] transition-colors font-medium">
+            <a href="mailto:ridaouakrim0@gmail.com" className="flex items-center gap-1.5 hover:text-[#03594e] transition-colors font-medium">
               <Mail className="w-3.5 h-3.5 text-[#03594e]" />
-              contact@inforeussite.online
+              ridaouakrim0@gmail.com
             </a>
             <a href="tel:+212702555943" className="flex items-center gap-1.5 hover:text-[#03594e] transition-colors font-medium">
               <Phone className="w-3.5 h-3.5 text-[#03594e]" />

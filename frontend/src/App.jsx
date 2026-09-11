@@ -19,6 +19,8 @@ import ErrorNotebook from './pages/ErrorNotebook';
 import AdminDashboard from './pages/AdminDashboard';
 import Plan from './pages/Plan';
 import LanguagesAcademy from './pages/LanguagesAcademy';
+import TermsOfService from './pages/TermsOfService';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -35,7 +37,7 @@ const AdminRoute = ({ children }) => {
 };
 
 /* Pages publiques sans sidebar */
-const PUBLIC_PATHS = ['/', '/login', '/register'];
+const PUBLIC_PATHS = ['/', '/login', '/register', '/terms', '/privacy'];
 
 function AppContent() {
   const location = useLocation();
@@ -44,7 +46,7 @@ function AppContent() {
 
   const isPublic = PUBLIC_PATHS.includes(location.pathname);
 
-  /* ── Layout Public (Home / Login / Register) ── */
+  /* ── Layout Public (Home / Login / Register / Legal) ── */
   if (isPublic) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -54,6 +56,8 @@ function AppContent() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

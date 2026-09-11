@@ -935,7 +935,7 @@ export default function Home() {
               <h4 style={{ fontWeight: 800, fontSize: 20, color: '#1B1D21', margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Contact</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, fontSize: 15, color: '#64748b' }}>
                 <div><span style={{ fontWeight: 700, color: '#1B1D21' }}>Téléphone :</span> <a href="tel:+212702555943" style={{ color: '#64748b', textDecoration: 'none' }}>+212 702 555 943</a></div>
-                <div><span style={{ fontWeight: 700, color: '#1B1D21' }}>E-mail :</span> <a href="mailto:contact@inforeussite.online" style={{ color: '#64748b', textDecoration: 'none' }}>contact@inforeussite.online</a></div>
+                <div><span style={{ fontWeight: 700, color: '#1B1D21' }}>E-mail :</span> <a href="mailto:ridaouakrim0@gmail.com" style={{ color: '#64748b', textDecoration: 'none' }}>ridaouakrim0@gmail.com</a></div>
                 <div><span style={{ fontWeight: 700, color: '#1B1D21' }}>Adresse :</span> Casablanca, Maroc</div>
               </div>
             </div>
@@ -1013,9 +1013,9 @@ export default function Home() {
             }}
             className="copyright-green"
           >
-            <a href="#" style={{ color: '#fff', textDecoration: 'none', opacity: 0.95 }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.95}>Conditions d'utilisation</a>
+            <Link to="/terms" style={{ color: '#fff', textDecoration: 'none', opacity: 0.95 }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.95}>Conditions d'utilisation</Link>
             <span style={{ opacity: 0.5 }}>-</span>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none', opacity: 0.95 }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.95}>Politique de confidentialité</a>
+            <Link to="/privacy" style={{ color: '#fff', textDecoration: 'none', opacity: 0.95 }} onMouseEnter={e => e.currentTarget.style.opacity = 1} onMouseLeave={e => e.currentTarget.style.opacity = 0.95}>Politique de confidentialité</Link>
             <span style={{ opacity: 0.5 }}>-</span>
             <Link to="/login" style={{ color: '#F8C62F', textDecoration: 'none', fontWeight: 700 }}>Connexion & Inscription</Link>
           </div>
