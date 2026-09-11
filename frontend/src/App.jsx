@@ -64,7 +64,12 @@ function AppContent() {
   /* ── Layout Espace Candidat / Admin (avec Sidebar) ── */
 
   return (
-    <div className="min-h-screen flex bg-slate-50 dark:bg-[#0c1220]">
+    <div className="min-h-screen flex bg-[#f0f9f8] dark:bg-[#090e1a] relative overflow-x-hidden">
+      {/* Educeet Background Shapes */}
+      <img src="assets/img/shape/gallary-bg-4-1.png" alt="" className="fixed inset-0 w-full h-full object-cover opacity-[0.06] pointer-events-none z-0" onError={e => e.target.style.display = 'none'} />
+      <img src="assets/img/shape/about-6-2.png" alt="" className="fixed top-24 right-8 w-28 opacity-35 pointer-events-none z-0 hidden lg:block" onError={e => e.target.style.display = 'none'} />
+      <img src="assets/img/shape/course-1-2.png" alt="" className="fixed bottom-12 right-16 w-32 opacity-30 pointer-events-none z-0 hidden lg:block" onError={e => e.target.style.display = 'none'} />
+
       {/* Backdrop overlay for mobile drawer */}
       {mobileOpen && (
         <div 

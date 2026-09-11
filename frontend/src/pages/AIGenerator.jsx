@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import API from '../services/api';
 import MarkdownViewer from '../components/MarkdownViewer';
+import ReferenceTextModal, { hasReferenceText } from '../components/ReferenceTextModal';
+import LoadingSpinner from '../components/LoadingSpinner';
 import { 
   Sparkles, RefreshCw, Play, CheckCircle2, Star, 
   ChevronLeft, ChevronRight, Trophy, BookOpen, XCircle,
-  History, Trash2, Clock, Eye, Pause, Save
+  History, Trash2, Clock, Eye, Pause, Save, FileText
 } from 'lucide-react';
 
 const AIGenerator = () => {
@@ -26,6 +28,7 @@ const AIGenerator = () => {
   const [userAnswers, setUserAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
+  const [showTextModal, setShowTextModal] = useState(false);
   
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [historyList, setHistoryList] = useState([]);
@@ -278,76 +281,69 @@ const AIGenerator = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex items-center gap-3 text-sky-400 font-medium">
-          <RefreshCw className="w-6 h-6 animate-spin" />
-          <span>Chargement de l'Assistant IA...</span>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Chargement de l'Assistant IA Concours..." />;
   }
 
   // --- HOME VIEW (GENERATOR FORM & HISTORY LIST) ---
   if (aiQuestions.length === 0 && !showResults) {
     return (
       <div className="max-w-4xl mx-auto py-8 space-y-8">
-        {/* Header Banner */}
-        <div className="glass-card p-8 rounded-3xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-sky-500/10 dark:from-purple-950/70 dark:via-slate-900 dark:to-indigo-950/70 border border-purple-500/20 dark:border-purple-500/30">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-700 dark:text-purple-400 text-xs font-semibold">
-                <Sparkles className="w-4 h-4" />
-                Assistant IA Concours Pédagogique
-              </div>
-              <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Générateur de QCM Sur-Mesure</h1>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                Ciblez un sous-domaine spécifique du programme officiel pour générer un test d'entraînement personnalisé et suivez vos performances.
-              </p>
+        {/* Compact Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#03594e]/10 text-[#03594e] dark:bg-[#F8C62F]/10 dark:text-[#F8C62F] text-xs font-bold">
+              <Sparkles className="w-3.5 h-3.5" />
+              Assistant IA Concours Pédagogique
             </div>
-            {allowedGenerations !== null && (
-              <div className="shrink-0 px-4 py-2.5 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold text-center">
-                Générations restantes : <span className="text-sm font-black font-mono text-purple-700 dark:text-purple-300">{allowedGenerations === 99999 ? "Illimité" : allowedGenerations}</span>
-              </div>
-            )}
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Générateur de QCM Sur-Mesure
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+              Ciblez un sous-domaine spécifique du programme officiel pour générer un test d'entraînement personnalisé.
+            </p>
           </div>
+          {allowedGenerations !== null && (
+            <div className="shrink-0 px-4 py-2.5 rounded-2xl bg-[#e6f5f3] dark:bg-slate-800 border border-[#b3e6df] dark:border-slate-700 text-slate-800 dark:text-white text-xs font-bold text-center">
+              Générations restantes : <span className="text-sm font-black font-mono text-[#03594e] dark:text-[#F8C62F]">{allowedGenerations === 99999 ? "Illimité" : allowedGenerations}</span>
+            </div>
+          )}
         </div>
 
         {/* Tab switcher */}
-        <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-2">
+        <div className="flex items-center gap-3 border-b border-[#e8f5f3] pb-2">
           <button
             onClick={() => setActiveTab('generate')}
-            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all ${
               activeTab === 'generate'
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
-                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+                ? 'bg-[#03594e] text-white shadow-lg'
+                : 'bg-white text-slate-600 hover:text-slate-900 border border-[#d4ede9]'
             }`}
           >
-            <Sparkles className="w-4 h-4" /> 🚀 Générer un QCM
+            <Sparkles className="w-4 h-4 text-[#F8C62F]" /> 🚀 Générer un QCM
           </button>
 
           <button
             onClick={() => { setActiveTab('history'); fetchHistory(); }}
-            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all ${
               activeTab === 'history'
-                ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
-                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+                ? 'bg-[#03594e] text-white shadow-lg'
+                : 'bg-white text-slate-600 hover:text-slate-900 border border-[#d4ede9]'
             }`}
           >
-            <History className="w-4 h-4" /> 💾 Mes QCM IA Enregistrés ({historyList.length})
+            <History className="w-4 h-4 text-[#F8C62F]" /> 💾 Mes QCM IA Enregistrés ({historyList.length})
           </button>
         </div>
 
         {/* TAB 1: FORM GENERATOR */}
         {activeTab === 'generate' && (
-          <form onSubmit={handleGenerate} className="glass-card p-8 rounded-3xl space-y-6">
+          <form onSubmit={handleGenerate} className="p-8 rounded-3xl space-y-6 bg-white border border-[#d4ede9]" style={{ boxShadow: '0 8px 30px rgba(3,89,78,0.06)' }}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Domaine principal</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Domaine principal</label>
                 <select
                   value={selectedDomainCode}
                   onChange={handleDomainChange}
-                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-[#d4ede9] text-slate-900 text-sm focus:border-[#03594e] focus:outline-none"
                 >
                   {(Array.isArray(domains) ? domains : []).map(d => (
                     <option key={d.code} value={d.code}>{d.name}</option>
@@ -356,11 +352,11 @@ const AIGenerator = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Sous-domaine Cible</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Sous-domaine Cible</label>
                 <select
                   value={selectedSubdomainCode}
                   onChange={(e) => setSelectedSubdomainCode(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-[#d4ede9] text-slate-900 text-sm focus:border-[#03594e] focus:outline-none"
                 >
                   {(Array.isArray(subdomains) ? subdomains : []).map(sd => (
                     <option key={sd.code} value={sd.code}>{sd.name}</option>
@@ -371,23 +367,23 @@ const AIGenerator = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Nombre de questions : {numQuestions}</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Nombre de questions : {numQuestions}</label>
                 <input
                   type="range"
                   min="3"
                   max="15"
                   value={numQuestions}
                   onChange={(e) => setNumQuestions(Number(e.target.value))}
-                  className="w-full accent-purple-600 dark:accent-purple-400"
+                  className="w-full accent-[#03594e]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Niveau de difficulté</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Niveau de difficulté</label>
                 <select
                   value={difficulty}
                   onChange={(e) => setDifficulty(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm"
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-[#d4ede9] text-slate-900 text-sm focus:border-[#03594e] focus:outline-none"
                 >
                   <option value="Facile">Facile</option>
                   <option value="Moyen">Moyen (Niveau Concours)</option>
@@ -397,18 +393,18 @@ const AIGenerator = () => {
             </div>
 
             {selectedDomainCode === 'SCIENCES_EDU' && (
-              <div className="p-4.5 rounded-2xl bg-purple-500/5 border border-purple-500/10 space-y-3">
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+              <div className="p-4.5 rounded-2xl bg-[#f0f9f8] border border-[#d4ede9] space-y-3">
+                <label className="block text-xs font-bold text-slate-700">
                   🌎 Langue de génération pour Sciences de l'Éducation
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setQcmLanguage('fr')}
-                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 cursor-pointer ${
                       qcmLanguage === 'fr' 
-                        ? 'bg-purple-600 border-purple-600 text-white shadow-md' 
-                        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        ? 'bg-[#03594e] border-[#03594e] text-white shadow-md' 
+                        : 'bg-white border-[#d4ede9] text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     🇫🇷 Français
@@ -416,10 +412,10 @@ const AIGenerator = () => {
                   <button
                     type="button"
                     onClick={() => setQcmLanguage('ar')}
-                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${
+                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 cursor-pointer ${
                       qcmLanguage === 'ar' 
-                        ? 'bg-purple-600 border-purple-600 text-white shadow-md' 
-                        : 'bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        ? 'bg-[#03594e] border-[#03594e] text-white shadow-md' 
+                        : 'bg-white border-[#d4ede9] text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     🇲🇦 عربي
@@ -449,15 +445,20 @@ const AIGenerator = () => {
               <button
                 type="submit"
                 disabled={generating}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-bold text-base shadow-xl shadow-purple-500/20 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-2xl font-extrabold text-base shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]"
+                style={{
+                  background: 'linear-gradient(135deg, #03594e 0%, #046a5d 100%)',
+                  color: '#ffffff',
+                  boxShadow: '0 12px 32px rgba(3,89,78,0.25)',
+                }}
               >
                 {generating ? (
                   <>
-                    <RefreshCw className="w-5 h-5 animate-spin" /> Génération du QCM par l'IA...
+                    <RefreshCw className="w-5 h-5 animate-spin text-[#F8C62F]" /> Génération du QCM par l'IA...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-5 h-5" /> Générer le QCM Intelligent
+                    <Sparkles className="w-5 h-5 text-[#F8C62F]" /> Générer le QCM Intelligent
                   </>
                 )}
               </button>
@@ -489,35 +490,36 @@ const AIGenerator = () => {
                   return (
                     <div 
                       key={session.id} 
-                      className="glass-card p-6 rounded-3xl space-y-4 border border-slate-200 dark:border-slate-800 hover:border-purple-500/40 transition-all flex flex-col justify-between"
+                      className="p-6 rounded-3xl space-y-4 bg-white border border-[#d4ede9] hover:border-[#03594e]/40 transition-all flex flex-col justify-between"
+                      style={{ boxShadow: '0 4px 20px rgba(3,89,78,0.04)' }}
                     >
                       <div className="space-y-3">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="px-3 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 text-xs font-extrabold">
+                          <span className="px-3 py-1 rounded-full text-xs font-extrabold" style={{ background: '#F8C62F', color: '#1B1D21' }}>
                             Générateur IA
                           </span>
                           <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                             isSubmitted 
-                              ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30' 
-                              : 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30'
+                              ? 'bg-emerald-500/15 text-emerald-700 border border-emerald-500/30' 
+                              : 'bg-amber-500/15 text-amber-700 border border-amber-500/30'
                           }`}>
                             {isSubmitted ? '🟢 Terminé' : `🟡 En cours (Q${session.current_index + 1})`}
                           </span>
                         </div>
 
                         <div>
-                          <h4 className="font-bold text-slate-900 dark:text-white text-base">
+                          <h4 className="font-bold text-slate-900 text-base">
                             {subName || 'Module Informatique'}
                           </h4>
-                          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-1">
-                            <Clock className="w-3.5 h-3.5" /> Enregistré le {dateStr}
+                          <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                            <Clock className="w-3.5 h-3.5 text-[#03594e]" /> Enregistré le {dateStr}
                           </div>
                         </div>
 
-                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Score :</span>
-                          <span className="text-sm font-extrabold text-purple-600 dark:text-purple-400">
-                            {session.quiz_score} / {total} <span className="text-xs font-medium text-slate-400">({scorePct}%)</span>
+                        <div className="p-3 rounded-xl bg-[#f0f9f8] border border-[#d4ede9] flex items-center justify-between">
+                          <span className="text-xs font-semibold text-slate-600">Score :</span>
+                          <span className="text-sm font-extrabold text-[#03594e]">
+                            {session.quiz_score} / {total} <span className="text-xs font-medium text-slate-500">({scorePct}%)</span>
                           </span>
                         </div>
                       </div>
@@ -525,15 +527,15 @@ const AIGenerator = () => {
                       <div className="flex items-center gap-2 pt-2">
                         <button
                           onClick={() => resumeSession(session)}
-                          className="flex-1 py-2.5 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-1.5"
+                          className="flex-1 py-2.5 px-4 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
                         >
-                          {isSubmitted ? <Eye className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                          {isSubmitted ? <Eye className="w-4 h-4 text-[#F8C62F]" /> : <Play className="w-4 h-4 text-[#F8C62F]" />}
                           {isSubmitted ? 'Correction' : 'Reprendre le QCM'}
                         </button>
 
                         <button
                           onClick={(e) => handleDeleteSession(session.id, e)}
-                          className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-red-500/20 hover:text-red-600 text-slate-400 border border-slate-200 dark:border-slate-800 transition-colors"
+                          className="p-2.5 rounded-xl bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-400 border border-slate-200 transition-colors cursor-pointer"
                           title="Supprimer la session"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -710,12 +712,12 @@ const AIGenerator = () => {
     <div className="max-w-4xl mx-auto py-4 sm:py-8 space-y-4 sm:space-y-6 px-1 sm:px-0">
 
       {/* Top Controls Header */}
-      <div className="glass-card p-4 sm:p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="p-4 sm:p-6 rounded-2xl bg-white border border-[#d4ede9] flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
         <div>
-          <span className="text-[10px] sm:text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-bold text-[#03594e] uppercase tracking-wider">
             Assistant IA • {getSubdomainName(selectedSubdomainCode)}
           </span>
-          <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-0.5">Question {currentIndex + 1} / {aiQuestions.length}</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5">Question {currentIndex + 1} / {aiQuestions.length}</h2>
         </div>
 
         <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
@@ -723,7 +725,7 @@ const AIGenerator = () => {
           <select
             value={currentIndex}
             onChange={(e) => handleJump(Number(e.target.value))}
-            className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-[11px] font-medium focus:outline-none"
+            className="px-2.5 py-1.5 rounded-xl bg-white border border-[#d4ede9] text-slate-900 text-[11px] font-medium focus:outline-none"
           >
             {aiQuestions.map((q, idx) => (
               <option key={idx} value={idx}>Aller à Q{idx + 1}</option>
@@ -733,15 +735,15 @@ const AIGenerator = () => {
           {/* MANUAL SAVE BUTTON */}
           <button
             onClick={handleManualSave}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-[11px] shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white font-extrabold text-[11px] shadow-sm cursor-pointer"
             title="Enregistrer mon avancement"
           >
-            <Save className="w-3.5 h-3.5" /> Enregistrer
+            <Save className="w-3.5 h-3.5 text-[#F8C62F]" /> Enregistrer
           </button>
 
           <button
             onClick={handlePause}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-[11px] shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-[#d4ede9] text-slate-700 font-bold text-[11px] shadow-sm cursor-pointer"
           >
             <Pause className="w-3.5 h-3.5" /> Quitter
           </button>
@@ -749,14 +751,26 @@ const AIGenerator = () => {
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-slate-200 dark:bg-slate-900 rounded-full h-1.5 overflow-hidden">
-        <div className="bg-purple-600 h-1.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex + 1) / aiQuestions.length) * 100}%` }}></div>
+      <div className="w-full bg-[#e8f5f3] rounded-full h-1.5 overflow-hidden">
+        <div className="bg-[#03594e] h-1.5 rounded-full transition-all duration-300" style={{ width: `${((currentIndex + 1) / aiQuestions.length) * 100}%` }}></div>
       </div>
 
       {/* Main Question Card */}
-      <div className="glass-card p-4 sm:p-8 rounded-2xl sm:rounded-3xl space-y-4 sm:space-y-6 relative">
-        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs sm:text-sm leading-relaxed">
-          <div className="font-bold text-purple-600 dark:text-purple-400 mb-1.5">{currentQ.question_number} :</div>
+      <div className="p-4 sm:p-8 rounded-2xl sm:rounded-3xl space-y-4 sm:space-y-6 relative bg-white border border-[#d4ede9]" style={{ boxShadow: '0 8px 30px rgba(3,89,78,0.06)' }}>
+        {hasReferenceText(currentQ) && (
+          <div className="flex justify-end mb-2">
+            <button
+              type="button"
+              onClick={() => setShowTextModal(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-300 border border-amber-500/40 text-xs font-extrabold transition-all cursor-pointer shadow-xs hover:scale-105"
+            >
+              <FileText className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span>📄 عرض نص الانطلاق (الوثيقة المرجعية)</span>
+            </button>
+          </div>
+        )}
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#f0f9f8] border border-[#d4ede9] text-slate-900 text-xs sm:text-sm leading-relaxed">
+          <div className="font-extrabold text-[#03594e] mb-1.5">{currentQ.question_number} :</div>
           <MarkdownViewer content={currentQ.question_text} />
         </div>
 
@@ -776,15 +790,15 @@ const AIGenerator = () => {
                   key={optKey}
                   onClick={() => handleOptionSelect(currentQ.id, optKey)}
                   disabled={Boolean(currentAnswer)}
-                  className={`p-3 sm:p-4 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all ${
+                  className={`p-3 sm:p-4 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all cursor-pointer ${
                     isFullWidth ? 'sm:col-span-2' : ''
                   } ${
                     isChosen
-                      ? (isCorrect ? 'bg-emerald-500/20 border-emerald-500 text-emerald-800 dark:text-emerald-300 font-bold' : 'bg-red-500/20 border-red-500 text-red-800 dark:text-red-300 font-bold')
-                      : 'bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200'
+                      ? (isCorrect ? 'bg-emerald-500/20 border-emerald-500 text-emerald-800 font-bold' : 'bg-red-500/20 border-red-500 text-red-800 font-bold')
+                      : 'bg-white hover:bg-slate-50 border-[#d4ede9] text-slate-700'
                   }`}
                 >
-                  <strong className="text-purple-600 dark:text-purple-400 mr-1.5">{optKey})</strong> {optText}
+                  <strong className="text-[#03594e] mr-1.5">{optKey})</strong> {optText}
                 </button>
               );
             });
@@ -793,12 +807,19 @@ const AIGenerator = () => {
 
         {/* Explanation */}
         {currentAnswer && (
-          <div className={`p-3 sm:p-4 rounded-xl text-[11px] sm:text-xs space-y-1.5 ${currentAnswer.is_correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300'}`}>
-            <div className="font-bold">
+          <div dir="auto" className={`p-3 sm:p-4 rounded-xl text-[11px] sm:text-xs space-y-2 bidi-plaintext ${currentAnswer.is_correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-700' : 'bg-red-500/10 border border-red-500/30 text-red-700'}`}>
+            <div className="font-bold" dir="ltr">
               {currentAnswer.is_correct ? '✔️ Correct !' : `❌ Incorrect. Bonne réponse : ${currentAnswer.correct_option}`}
             </div>
-            <div>{currentAnswer.explanation}</div>
-            {currentQ.astuce && <div className="mt-2 text-sky-600 dark:text-sky-300">⚡ <strong>Astuce :</strong> {currentQ.astuce}</div>}
+            <div dir="auto" className="leading-relaxed bidi-plaintext">{currentAnswer.explanation}</div>
+            {currentQ.astuce && (
+              <div dir="auto" className="mt-2 text-[#03594e] font-medium bidi-plaintext space-y-1">
+                <div className="font-extrabold flex items-center gap-1.5" dir="ltr">
+                  <span>⚡</span> <span>Astuce :</span>
+                </div>
+                <div dir="auto" className="leading-relaxed bidi-plaintext">{currentQ.astuce}</div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -808,7 +829,7 @@ const AIGenerator = () => {
         <button
           onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
           disabled={currentIndex === 0}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs disabled:opacity-50 shadow-sm"
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white border border-[#d4ede9] text-slate-700 font-bold text-xs disabled:opacity-50 shadow-sm cursor-pointer"
         >
           <ChevronLeft className="w-4 h-4" /> Précédent
         </button>
@@ -816,9 +837,9 @@ const AIGenerator = () => {
         {currentIndex < aiQuestions.length - 1 ? (
           <button
             onClick={() => setCurrentIndex(prev => prev + 1)}
-            className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md"
+            className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white font-extrabold text-xs shadow-md cursor-pointer"
           >
-            Suivant <ChevronRight className="w-4 h-4" />
+            Suivant <ChevronRight className="w-4 h-4 text-[#F8C62F]" />
           </button>
         ) : (
           <button
@@ -867,6 +888,11 @@ const AIGenerator = () => {
           </div>
         </div>
       )}
+      <ReferenceTextModal
+        isOpen={showTextModal}
+        onClose={() => setShowTextModal(false)}
+        question={currentQ}
+      />
       {toast && (
         <div className="fixed bottom-6 right-6 z-[9999] px-6 py-4 rounded-2xl bg-slate-900/95 dark:bg-slate-950/95 border border-emerald-500/30 text-emerald-400 text-sm font-semibold shadow-2xl flex items-center gap-2 animate-bounce">
           <CheckCircle2 className="w-5 h-5" />

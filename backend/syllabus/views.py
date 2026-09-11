@@ -5,12 +5,12 @@ from .models import Domain, Subdomain, Course, CourseProgress
 from .serializers import DomainSerializer, SubdomainSerializer, CourseSerializer, CourseDetailSerializer
 
 class DomainListView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     serializer_class = DomainSerializer
     queryset = Domain.objects.all().prefetch_related('subdomains')
 
 class CourseListView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     serializer_class = CourseSerializer
 
     def get_queryset(self):
@@ -21,7 +21,7 @@ class CourseListView(generics.ListAPIView):
         return queryset
 
 class CourseDetailView(generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     serializer_class = CourseDetailSerializer
     queryset = Course.objects.all().select_related('subdomain', 'subdomain__domain')
 

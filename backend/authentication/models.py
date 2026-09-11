@@ -19,3 +19,12 @@ class LicenseKey(models.Model):
 
     def __str__(self):
         return f"{self.key_code} - {'Utilisée' if self.is_used else 'Disponible'}"
+
+class EmailVerificationCode(models.Model):
+    email = models.EmailField(db_index=True)
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.email} - {self.code} ({'Utilisé' if self.is_used else 'Actif'})"

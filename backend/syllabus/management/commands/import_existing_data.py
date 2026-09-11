@@ -6,116 +6,137 @@ from syllabus.models import Domain, Subdomain, Course
 from exams.models import Question
 
 class Command(BaseCommand):
-    help = 'Imports domains, subdomains, courses, and questions from concours.db'
+    help = 'Importe (ou met à jour) domaines, sous-domaines, cours et questions depuis concours.db'
 
     def handle(self, *args, **kwargs):
         from django.conf import settings
         db_path = os.path.join(settings.BASE_DIR.parent, 'concours.db')
         
         if not os.path.exists(db_path):
-            self.stderr.write(f"Source database not found at {db_path}")
+            self.stderr.write(f"Base source introuvable : {db_path}")
             return
 
-        self.stdout.write(f"Connecting to source database: {db_path}")
+        self.stdout.write(f"Connexion à la base source : {db_path}")
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
 
-        # 1. Import Domains
+        # ─── 1. Import Domains ───────────────────────────────────────────
         cursor.execute("SELECT code, name, description FROM syllabus_domains")
-        domains_count = 0
+        created, updated = 0, 0
         for row in cursor.fetchall():
-            Domain.objects.update_or_create(
+            _, was_created = Domain.objects.update_or_create(
                 code=row['code'],
                 defaults={'name': row['name'], 'description': row['description']}
             )
-            domains_count += 1
-        self.stdout.write(self.style.SUCCESS(f"Imported {domains_count} Domains"))
+            if was_created:
+                created += 1
+            else:
+                updated += 1
+        self.stdout.write(self.style.SUCCESS(f"Domaines — créés: {created}, mis à jour: {updated}"))
 
-        # 2. Import Subdomains
+        # ─── 2. Import Subdomains ────────────────────────────────────────
         cursor.execute("SELECT code, domain_code, name, description FROM syllabus_subdomains")
-        subdomains_count = 0
+        created, updated = 0, 0
         for row in cursor.fetchall():
             domain = Domain.objects.filter(code=row['domain_code']).first()
             if domain:
-                Subdomain.objects.update_or_create(
+                _, was_created = Subdomain.objects.update_or_create(
                     code=row['code'],
                     defaults={'domain': domain, 'name': row['name'], 'description': row['description']}
                 )
-                subdomains_count += 1
-        self.stdout.write(self.style.SUCCESS(f"Imported {subdomains_count} Subdomains"))
+                if was_created:
+                    created += 1
+                else:
+                    updated += 1
+        self.stdout.write(self.style.SUCCESS(f"Sous-domaines — créés: {created}, mis à jour: {updated}"))
 
-        # 3. Import Courses
-        # Check if video_url column exists in cursor table info
+        # ─── 3. Import Courses ───────────────────────────────────────────
+        # Détecter les colonnes disponibles dans la table courses de concours.db
         columns = [col[1] for col in cursor.execute("PRAGMA table_info(courses)").fetchall()]
-        has_video_url = 'video_url' in columns
+        has_video_url   = 'video_url'   in columns
+        has_content_ar  = 'content_ar'  in columns
+        has_content_fr  = 'content_fr'  in columns
 
-        query = "SELECT subdomain_code, title, content, examples, astuces, video_url FROM courses" if has_video_url else "SELECT subdomain_code, title, content, examples, astuces FROM courses"
-        cursor.execute(query)
-        courses_count = 0
+        cursor.execute("SELECT * FROM courses")
+        created, updated = 0, 0
         for row in cursor.fetchall():
             subdomain = Subdomain.objects.filter(code=row['subdomain_code']).first()
             if subdomain:
-                video_val = row['video_url'] if has_video_url and 'video_url' in row.keys() else None
-                Course.objects.update_or_create(
+                defaults = {
+                    'content':  row['content'],
+                    'examples': row['examples'],
+                    'astuces':  row['astuces'],
+                    'video_url':    row['video_url']   if has_video_url   else None,
+                    'content_ar':   row['content_ar']  if has_content_ar  else None,
+                    'content_fr':   row['content_fr']  if has_content_fr  else None,
+                }
+                _, was_created = Course.objects.update_or_create(
                     subdomain=subdomain,
                     title=row['title'],
-                    defaults={
-                        'content': row['content'],
-                        'examples': row['examples'],
-                        'astuces': row['astuces'],
-                        'video_url': video_val
-                    }
+                    defaults=defaults
                 )
-                courses_count += 1
-        self.stdout.write(self.style.SUCCESS(f"Imported {courses_count} Courses"))
+                if was_created:
+                    created += 1
+                else:
+                    updated += 1
+        self.stdout.write(self.style.SUCCESS(f"Cours — créés: {created}, mis à jour: {updated}"))
 
-        # 4. Import Questions
-        cursor.execute("SELECT source_type, exam_year, question_number, question_text, option_a, option_b, option_c, option_d, correct_option, explanation, astuce, domain_code, subdomain_code FROM questions")
-        questions_count = 0
+        # ─── 4. Import Questions ─────────────────────────────────────────
+        q_columns = [col[1] for col in cursor.execute("PRAGMA table_info(questions)").fetchall()]
+        has_option_e = 'option_e' in q_columns
+
+        cursor.execute("SELECT * FROM questions")
+        created, skipped = 0, 0
         for row in cursor.fetchall():
-            domain = Domain.objects.filter(code=row['domain_code']).first() if row['domain_code'] else None
+            domain    = Domain.objects.filter(code=row['domain_code']).first()    if row['domain_code']    else None
             subdomain = Subdomain.objects.filter(code=row['subdomain_code']).first() if row['subdomain_code'] else None
-            
-            existing_q = Question.objects.filter(
+
+            # Clé unique : texte + année + numéro → évite les doublons
+            _, was_created = Question.objects.get_or_create(
                 question_text=row['question_text'],
                 exam_year=row['exam_year'],
-                question_number=row['question_number']
-            ).first()
-            if not existing_q:
-                Question.objects.create(
-                    question_text=row['question_text'],
-                    source_type=row['source_type'] or 'past_exam',
-                    exam_year=row['exam_year'],
-                    question_number=row['question_number'],
-                    option_a=row['option_a'],
-                    option_b=row['option_b'],
-                    option_c=row['option_c'],
-                    option_d=row['option_d'],
-                    correct_option=row['correct_option'],
-                    explanation=row['explanation'],
-                    astuce=row['astuce'],
-                    domain=domain,
-                    subdomain=subdomain
-                )
-            questions_count += 1
-        self.stdout.write(self.style.SUCCESS(f"Imported {questions_count} Questions"))
+                question_number=row['question_number'],
+                defaults={
+                    'source_type':    row['source_type'] or 'past_exam',
+                    'option_a':       row['option_a'],
+                    'option_b':       row['option_b'],
+                    'option_c':       row['option_c'],
+                    'option_d':       row['option_d'],
+                    'option_e':       row['option_e'] if has_option_e else None,
+                    'correct_option': row['correct_option'],
+                    'explanation':    row['explanation'],
+                    'astuce':         row['astuce'],
+                    'domain':         domain,
+                    'subdomain':      subdomain,
+                }
+            )
+            if was_created:
+                created += 1
+            else:
+                skipped += 1
+        self.stdout.write(self.style.SUCCESS(f"Questions — créées: {created}, déjà existantes: {skipped}"))
 
-        # 5. Create Default License Keys
+        # ─── 5. Clés de licence par défaut ──────────────────────────────
         default_keys = ["PASS-CONCOURS-2026", "DEMO-KEY-2026", "INFO-CRMEF-2026", "ADMIN-SECRET-KEY"]
+        keys_created = 0
         for key_str in default_keys:
-            LicenseKey.objects.get_or_create(key_code=key_str)
-        self.stdout.write(self.style.SUCCESS(f"Generated default License Keys: {default_keys}"))
+            _, was_created = LicenseKey.objects.get_or_create(key_code=key_str)
+            if was_created:
+                keys_created += 1
+        self.stdout.write(self.style.SUCCESS(f"Clés de licence — créées: {keys_created}/{len(default_keys)}"))
 
-        # 6. Create Superuser (Admin)
+        # ─── 6. Superuser admin ─────────────────────────────────────────
         if not User.objects.filter(username='admin').exists():
-            admin_user = User.objects.create_superuser(
+            User.objects.create_superuser(
                 username='admin',
                 email='admin@concours-info.ma',
                 password='admin123',
                 target_exam='Administrateur Plateforme'
             )
-            self.stdout.write(self.style.SUCCESS("Created Superuser: admin / admin123"))
+            self.stdout.write(self.style.SUCCESS("Superuser créé : admin / admin123"))
+        else:
+            self.stdout.write("Superuser 'admin' existe déjà — aucune modification")
 
         conn.close()
-        self.stdout.write(self.style.SUCCESS("Data import completed successfully!"))
+        self.stdout.write(self.style.SUCCESS("\n✅ Import terminé avec succès !"))

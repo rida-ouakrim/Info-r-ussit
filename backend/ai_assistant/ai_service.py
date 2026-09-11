@@ -19,22 +19,89 @@ class PageQuestionsSchema(BaseModel):
     questions: List[GeneratedQuestionSchema] = Field(description="List of MCQ questions")
 
 def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_description="", num_q=5, difficulty="Moyen", lang="fr"):
-    lang_name = "Arabic (العربية)" if lang == "ar" else "French"
-    prompt = f"""
-    You are a senior computer science professor and head of jury for competitive computer science recruitment exams (CRMEF, Master, Agrégation, Engineers, Technicians).
-    Please generate exactly {num_q} original, high-quality Multiple Choice Questions (QCM) targeting the official syllabus subdomain: "{subdomain_name}" ({subdomain_code}) under domain "{domain_name}".
-    Difficulty level: {difficulty}.
-    
-    Syllabus description: {subdomain_description}
-    
-    Each question MUST:
-    1. Be written in {lang_name}, clear and academically rigorous.
-    2. Have exactly 4 options (A, B, C, D) with exactly one correct option.
-    3. Include a detailed, educational explanation in {lang_name} explaining why the correct answer is correct and why the others are incorrect.
-    4. Include a short, practical tip, shortcut, or key rule (astuce in {lang_name}) to quickly solve this question under exam constraints.
-    
-    Return strictly a JSON object matching the PageQuestionsSchema schema.
+    lang_name = "arabe (العربية)" if lang == "ar" else "français"
+
+    difficulty_instructions = {
+        "Facile": """
+    NIVEAU FACILE — Compréhension directe :
+    - Questions qui testent la mémorisation et la reconnaissance des définitions clés.
+    - Les distracteurs sont des termes du même domaine mais clairement distincts.
+    - 1 ou 2 pièges subtils maximum par série (confusion de termes proches).
+    """,
+        "Moyen": """
+    NIVEAU MOYEN — Application et analyse :
+    - Questions qui nécessitent de comprendre les concepts ET de les appliquer à des situations concrètes.
+    - Les distracteurs doivent être plausibles : vraies définitions mais de mauvais concepts (ex : bonnes propriétés mais du mauvais algorithme).
+    - Inclure des situations-pièges basées sur des erreurs classiques des candidats (confusion entre concepts voisins).
+    - Au moins 50% des questions doivent présenter un scénario ou une situation pratique avant de poser la question.
+    """,
+        "Difficile": """
+    NIVEAU DIFFICILE — Évaluation et synthèse (style concours CRMEF expert) :
+    - Questions qui nécessitent une analyse approfondie, une comparaison rigoureuse ou un raisonnement multi-étapes.
+    - Tous les distracteurs doivent être crédibles : des candidats qui n'ont pas étudié en profondeur pourraient choisir n'importe quelle option.
+    - Construire des pièges sophistiqués : affirmations vraies en général mais fausses dans le contexte spécifique, exceptions à la règle, ou nuances terminologiques fines.
+    - Présenter des cas limites, des contre-exemples, ou des scénarios d'application complexes.
+    - Minimum 70% des questions doivent nécessiter une déduction ou un raisonnement (pas de réponse immédiate par simple mémorisation).
     """
+    }
+
+    diff_guide = difficulty_instructions.get(difficulty, difficulty_instructions["Moyen"])
+
+    prompt = f"""
+Tu es un membre expérimenté du jury national du concours CRMEF (Centre Régional des Métiers de l'Éducation et de la Formation) au Maroc, spécialisé en Informatique et Didactique des Sciences.
+Ton rôle est de créer des QCM de HAUTE QUALITÉ qui distinguent vraiment les candidats qui ont compris en profondeur de ceux qui ont mémorisé superficiellement.
+
+=== CONTEXTE ===
+Sous-domaine : "{subdomain_name}" ({subdomain_code})
+Domaine : "{domain_name}"
+Description officielle : {subdomain_description}
+Nombre de questions : {num_q}
+Difficulté : {difficulty}
+Langue de rédaction : {lang_name}
+
+=== CONSIGNES DE NIVEAU ===
+{diff_guide}
+
+=== RÈGLES ABSOLUES POUR CHAQUE QUESTION ===
+
+**Structure de la question :**
+1. Commence par une MISE EN SITUATION réelle (scénario professionnel, code, erreur courante, comparaison entre deux approches) au lieu d'une simple définition à réciter.
+2. Pose une question précise qui teste la compréhension, l'analyse ou l'application — PAS la simple mémorisation.
+3. Utilise des formulations comme : "Lequel des énoncés suivants est INCORRECT ?", "Dans ce contexte précis, quelle est la meilleure approche ?", "Parmi ces affirmations, laquelle est vraie UNIQUEMENT dans ce cas ?", "Quel est le résultat de...?".
+
+**Construction des distracteurs (options incorrectes) :**
+- Option B, C, D doivent être des PIÈGES RÉALISTES basés sur :
+  a) Confusions classiques entre concepts voisins (ex: FIFO vs LIFO, compilateur vs interpréteur, héritage vs composition)
+  b) Définitions vraies mais appliquées au mauvais concept
+  c) Affirmations partiellement vraies qui deviennent fausses dans ce contexte précis
+  d) Erreurs de raisonnement que font souvent les candidats non préparés
+- JAMAIS de distracteurs fantaisistes ou manifestement absurdes qui se repèrent en 2 secondes.
+- JAMAIS de "Toutes les réponses ci-dessus" ou "Aucune des réponses".
+
+**Explication (explanation) :**
+- Expliquer clairement POURQUOI la bonne réponse est correcte.
+- Pour CHAQUE mauvaise réponse, expliquer précisément le piège qu'elle représente et pourquoi elle est fausse.
+- Citer des principes fondamentaux, des auteurs ou des exemples concrets si pertinent.
+- Longueur : 80 à 200 mots, structurée et pédagogique.
+
+**Astuce (astuce) :**
+- Donner une règle mnémotechnique, un mot-clé, ou une technique de déduction rapide spécifique à cette question.
+- L'astuce doit permettre à un candidat d'éliminer les mauvaises réponses même sous pression du temps.
+- Format court : 1-3 phrases maximum.
+
+=== EXEMPLES DE MAUVAISES QUESTIONS (À ÉVITER) ===
+❌ "Qu'est-ce qu'un algorithme ?" → trop basique, mémorisation pure
+❌ "Quel est le rôle du système d'exploitation ?" → trop vague
+❌ "Lequel est un langage de programmation : A) Python B) HTML C) TCP D) Aucun" → distracteurs absurdes
+
+=== EXEMPLES DE BONNES QUESTIONS (À IMITER) ===
+✅ "Un enseignant remarque qu'après avoir introduit la récursivité avec l'exemple de la factorielle, la moitié de ses élèves continue à produire des fonctions récursives sans cas de base. Selon Brousseau, ce phénomène illustre principalement : A) Un contrat didactique défaillant B) Un obstacle épistémologique C) Une transposition didactique incorrecte D) Un problème de différenciation pédagogique"
+✅ "Considérez ces deux algorithmes de tri : Tri à bulles O(n²) et Tri rapide O(n log n) en moyenne. Un développeur choisit systématiquement le tri rapide. Dans quel cas PRÉCIS ce choix est-il contre-productif ? A) Listes de grande taille B) Listes déjà triées ou quasi-triées C) Listes contenant des doublons D) Listes de chaînes de caractères"
+
+=== FORMAT DE SORTIE ===
+Retourne STRICTEMENT un objet JSON valide correspondant au schéma PageQuestionsSchema.
+Pas de markdown, pas de texte avant ou après le JSON.
+"""
 
     clients_to_try = []
     
@@ -74,6 +141,9 @@ def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_d
     ]
     last_error = None
 
+    # Higher temperature for creative variety; Difficile slightly lower for precision
+    gen_temperature = 0.85 if difficulty == "Difficile" else 0.92
+
     for client in clients_to_try:
         for model_name in models_to_try:
             try:
@@ -83,7 +153,7 @@ def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_d
                     config=types.GenerateContentConfig(
                         response_mime_type="application/json",
                         response_schema=PageQuestionsSchema,
-                        temperature=0.7
+                        temperature=gen_temperature
                     )
                 )
                 data = json.loads(response.text)
@@ -323,3 +393,52 @@ Réponds UNIQUEMENT en JSON valide. Pas de markdown, pas de texte avant ou aprè
             cleaned = cleaned[4:]
     cleaned = cleaned.strip().rstrip("`").strip()
     return json.loads(cleaned)
+
+
+def answer_course_chat_query(user_message: str, course_title: str = "", chat_history: list = None) -> str:
+    """
+    Answers a student's question during a course or video lesson.
+    Produces clean, perfectly structured responses in Arabic or French based on candidate preference.
+    """
+    history_context = ""
+    if chat_history and isinstance(chat_history, list):
+        for msg in chat_history:
+            role = "Candidat" if msg.get("role") in ["user", "sender_user"] or msg.get("sender") == "user" else "Tuteur IA"
+            text = msg.get("text", msg.get("content", ""))
+            history_context += f"{role}: {text}\n"
+
+    course_ctx = course_title if course_title else "Informatique / Didactique"
+
+    prompt = f"""
+Tu es un Tuteur Pédagogique IA expert et bienveillant pour la préparation aux concours enseignants (CRMEF) et concours de l'État en Informatique et Didactique au Maroc.
+
+Un candidat étudie le cours "{course_ctx}" et te pose la question suivante :
+
+--- HISTORIQUE DE LA DISCUSSION ---
+{history_context}
+
+--- QUESTION / DEMANDE DU CANDIDAT ---
+{user_message}
+
+--- CONSIGNES DE STRUCTURATION ET DE RÉDACTION (STRICTES) ---
+
+1. **Langue de la réponse** :
+   - Si le candidat demande une définition/explication "en arabe" (ex: "en arabe", "بالعربية", "c'est quoi X en arabe ?") OU écrit en arabe :
+     -> Rédige **l'intégralité de la réponse en Arabe clair et fluide (الفصحى)**, avec les termes techniques français équivalents entre parenthèses.
+   - Sinon, réponds en **Français académique clair**.
+
+2. **Structure exacte de la réponse** (Utilise ce plan synthétique sans verbosité) :
+   - **Titre principal** (H2 ou H3 en Markdown)
+   - **Définition synthétique** (2 à 3 lignes directes et précises)
+   - **Les 3 étapes / composantes fondamentales** (présentées avec des puces très bien structurées)
+   - **Exemple concret en Informatique / Pédagogie** (scénario concis adapté au contexte éducatif marocain)
+   - **Mot de fin / Encouragement** (1 phrase dynamique et motivante)
+
+3. **Formatage** :
+   - Utilise un Markdown propre, aéré et élégant (listes, gras, puces).
+   - Évite les introductions longues, le bavardage inutile ou les répétitions multiples.
+"""
+
+    return _call_ai_text(prompt, temperature=0.4)
+
+

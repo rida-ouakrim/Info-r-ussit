@@ -1,300 +1,448 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Code2, Server, Laptop, GraduationCap, Brain, 
-  ArrowRight, BookOpen, Sparkles, FileText, Award,
-  CheckCircle2, Compass, ArrowDown, HelpCircle, AlertCircle
+import {
+  Code2, GraduationCap, Brain,
+  ArrowRight, BookOpen, Sparkles,
+  CheckCircle2, Compass, Database, Network,
+  Server, Globe, Cpu, BarChart3, Clock, Target,
+  ChevronRight, Play, Zap
 } from 'lucide-react';
+
+// ─── CRMEF Roadmap Data (7 modules) ──────────────────────────────────────────
+const CRMEF_NODES = [
+  {
+    id: 'algo_base',
+    category: 'INFO',
+    num: 1,
+    icon: Code2,
+    title: 'Algorithmique & Bases de Programmation',
+    subtitle: 'La base indispensable pour démarrer',
+    weight: '40% du programme',
+    duration: '7 à 10 jours',
+    priority: 'Élevée',
+    color: { tag: 'bg-[#03594e]/10 text-[#03594e] dark:text-[#F8C62F]', border: 'border-[#03594e]', dot: 'bg-[#03594e]', ring: 'ring-[#03594e]/20 dark:ring-[#F8C62F]/20', badge: 'bg-[#03594e]' },
+    description: 'Maîtriser la syntaxe algorithmique, les variables, les structures conditionnelles, les boucles et la modularité. Préparer également les bases du Langage C et du Développement Web.',
+    topics: [
+      'Variables, constantes, types de données & opérateurs (DEV_ALGO 01–04)',
+      'Structures conditionnelles (Si/Sinon/Selon) et Boucles (Pour, TantQue, Répéter)',
+      'Tableaux 1D et 2D (vecteurs et matrices), Chaînes de caractères',
+      'Procédures, fonctions, passage de paramètres et modularité',
+      'Bases du Langage C & HTML5 / CSS3 / JavaScript / PHP'
+    ],
+    subdomains: ['DEV_ALGO', 'DEV_PROG_WEB'],
+    actionLink: '/courses',
+    actionLabel: 'Réviser les Fiches Algorithmique',
+    generatorLink: '/generator?subdomain=DEV_ALGO',
+    generatorLabel: 'Générer un Test IA Algo'
+  },
+  {
+    id: 'struct_data',
+    category: 'INFO',
+    num: 2,
+    icon: BarChart3,
+    title: 'Structures de Données & Complexité',
+    subtitle: 'Le cœur technique de la Spécialité',
+    weight: '40% du programme',
+    duration: '10 à 12 jours',
+    priority: 'Élevée',
+    color: { tag: 'bg-[#03594e]/10 text-[#03594e] dark:text-[#F8C62F]', border: 'border-[#03594e]', dot: 'bg-[#03594e]', ring: 'ring-[#03594e]/20 dark:ring-[#F8C62F]/20', badge: 'bg-[#03594e]' },
+    description: 'Comprendre comment stocker, organiser et traiter efficacement les données, et calculer la complexité des algorithmes avec la notation O.',
+    topics: [
+      'Complexité algorithmique : Notation Grand-O, analyse temporelle et spatiale',
+      'Structures linéaires : Piles, Files, Listes chaînées (statiques et dynamiques)',
+      'Algorithmes de Tri : Bulle, Sélection, Insertion, Rapide (QuickSort), Fusion',
+      'Algorithmes de Recherche : Séquentielle, Dichotomique',
+      'Arbres Binaires de Recherche (ABR), Graphes : DFS et BFS, Récursivité'
+    ],
+    subdomains: ['DEV_ALGO'],
+    actionLink: '/courses',
+    actionLabel: 'Ouvrir les Leçons de Structures',
+    generatorLink: '/generator?subdomain=DEV_ALGO',
+    generatorLabel: 'Générer QCM IA Structures'
+  },
+  {
+    id: 'sys_net_bd',
+    category: 'INFO',
+    num: 3,
+    icon: Database,
+    title: 'Systèmes, Réseaux & Bases de Données',
+    subtitle: 'L\'infrastructure informatique',
+    weight: '40% du programme',
+    duration: '8 à 10 jours',
+    priority: 'Élevée',
+    color: { tag: 'bg-[#03594e]/10 text-[#03594e] dark:text-[#F8C62F]', border: 'border-[#03594e]', dot: 'bg-[#03594e]', ring: 'ring-[#03594e]/20 dark:ring-[#F8C62F]/20', badge: 'bg-[#03594e]' },
+    description: 'Assimiler le fonctionnement des systèmes d\'exploitation, le modèle OSI/TCP-IP, l\'adressage réseau et la modélisation + interrogation de bases de données SQL.',
+    topics: [
+      'Systèmes d\'exploitation : processus, threads, ordonnancement, mémoire virtuelle',
+      'Architecture de Von Neumann, pipeline, hiérarchie mémoire (RAM, Cache)',
+      'Réseaux : modèle OSI & TCP/IP, adressage IPv4, CIDR, sous-réseaux',
+      'Protocoles de routage (RIP, OSPF), bases de l\'IPv6',
+      'Modélisation MCD/UML, Langage SQL (Jointures, Agrégats, Sous-requêtes)'
+    ],
+    subdomains: ['SYS_OS', 'SYS_ARCHI', 'SYS_NET', 'DEV_SI_BD'],
+    actionLink: '/courses',
+    actionLabel: 'Étudier les Fiches Systèmes/SQL',
+    generatorLink: '/generator?subdomain=DEV_SI_BD',
+    generatorLabel: 'Générer un Test IA SQL/Réseaux'
+  },
+  {
+    id: 'did_fondements',
+    category: 'DIDACTIQUE',
+    num: 4,
+    icon: GraduationCap,
+    title: 'Fondements de la Didactique Info',
+    subtitle: 'Comment enseigner l\'informatique',
+    weight: '30% du programme',
+    duration: '6 à 8 jours',
+    priority: 'Moyenne',
+    color: { tag: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300', border: 'border-amber-500', dot: 'bg-amber-500', ring: 'ring-amber-500/20', badge: 'bg-amber-500' },
+    description: 'Étudier les concepts didactiques majeurs appliqués à l\'enseignement de l\'informatique et à l\'appropriation des savoirs par les élèves.',
+    topics: [
+      'Triangle didactique, contrat didactique et transposition didactique',
+      'Conceptions des apprenants, représentations et obstacles didactiques',
+      'Situations-problèmes et situations didactiques en informatique',
+      'Curriculum officiel marocain d\'informatique (programmes secondaire)',
+      'Démarches d\'investigation et apprentissage actif en classe'
+    ],
+    subdomains: ['DID_CONCEPTS', 'DID_APPROCHES', 'DID_CURRICULUM'],
+    actionLink: '/courses',
+    actionLabel: 'Réviser les Fiches de Didactique',
+    generatorLink: '/generator?subdomain=DID_CONCEPTS',
+    generatorLabel: 'Générer QCM IA Didactique'
+  },
+  {
+    id: 'did_planification',
+    category: 'DIDACTIQUE',
+    num: 5,
+    icon: Target,
+    title: 'Planification & Évaluation Didactique',
+    subtitle: 'Préparer et valider les séances',
+    weight: '30% du programme',
+    duration: '5 à 7 jours',
+    priority: 'Moyenne',
+    color: { tag: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300', border: 'border-amber-500', dot: 'bg-amber-500', ring: 'ring-amber-500/20', badge: 'bg-amber-500' },
+    description: 'Apprendre à concevoir une fiche de préparation pédagogique (janza) et à structurer des évaluations formatives et sommatives cohérentes.',
+    topics: [
+      'PPO (Pédagogie Par Objectifs) et APC (Approche Par Compétences)',
+      'Structure d\'une fiche de préparation pédagogique (Janza)',
+      'Gestion des phases : Mise en situation, Apprentissage, Évaluation',
+      'Types d\'évaluation : Diagnostique, Formative, Sommative',
+      'Ressources didactiques, TICE et outils (Scratch, Python en classe)'
+    ],
+    subdomains: ['DID_APPROCHES', 'DID_CURRICULUM'],
+    actionLink: '/courses',
+    actionLabel: 'Tester sur les Annales Didactique',
+    generatorLink: '/generator?subdomain=DID_CONCEPTS',
+    generatorLabel: 'S\'entraîner en Didactique'
+  },
+  {
+    id: 'edu_psycho',
+    category: 'SCIENCES_EDU',
+    num: 6,
+    icon: Brain,
+    title: 'Psychologie & Théories de l\'Apprentissage',
+    subtitle: 'Les mécanismes fondamentaux de l\'élève',
+    weight: '30% du programme',
+    duration: '6 à 8 jours',
+    priority: 'Moyenne',
+    color: { tag: 'bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300', border: 'border-violet-500', dot: 'bg-violet-500', ring: 'ring-violet-500/20', badge: 'bg-violet-500' },
+    description: 'Assimiler les grands courants théoriques de la psychologie de l\'éducation et de la sociologie qui guident les pratiques pédagogiques actuelles.',
+    topics: [
+      'Le Béhaviorisme : Stimulus-Réponse, conditionnement classique et opérant',
+      'Le Cognitivisme : traitement de l\'information, mémoire de travail, métacognition',
+      'Le Constructivisme de Piaget : assimilation, accommodation, stades de développement',
+      'Le Socio-constructivisme de Vygotski : Zone Proximale de Développement (ZPD)',
+      'Psychologie du développement de l\'adolescent, motivation et styles d\'apprentissage'
+    ],
+    subdomains: ['EDU_PSYCHO', 'EDU_SOCIO'],
+    actionLink: '/courses',
+    actionLabel: 'Fiches de Sciences de l\'Éducation',
+    generatorLink: '/generator?subdomain=SCIENCES_EDU_PSYCHO',
+    generatorLabel: 'Générer QCM IA Sciences Édu'
+  },
+  {
+    id: 'edu_system',
+    category: 'SCIENCES_EDU',
+    num: 7,
+    icon: Globe,
+    title: 'Système Éducatif & Réformes au Maroc',
+    subtitle: 'Le cadre légal et institutionnel',
+    weight: '30% du programme',
+    duration: '5 à 6 jours',
+    priority: 'Moyenne',
+    color: { tag: 'bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300', border: 'border-violet-500', dot: 'bg-violet-500', ring: 'ring-violet-500/20', badge: 'bg-violet-500' },
+    description: 'Connaître l\'organisation du système éducatif marocain, les chartes nationales, les réformes éducatives et la déontologie du métier d\'enseignant.',
+    topics: [
+      'Charte Nationale de l\'Éducation et de la Formation (CNEF 2000)',
+      'Loi-cadre 51.17 et Vision Stratégique 2015–2030',
+      'Feuille de route 2022–2026 pour une école de qualité',
+      'Sociologie : éducation inclusive, mixité, égalité des chances, décrochage scolaire',
+      'Déontologie du métier d\'enseignant : droits, devoirs et éthique professionnelle'
+    ],
+    subdomains: ['EDU_SOCIO', 'EDU_PSYCHO'],
+    actionLink: '/courses',
+    actionLabel: 'Annales de Sciences de l\'Éducation',
+    generatorLink: '/generator?subdomain=SCIENCES_EDU_PSYCHO',
+    generatorLabel: 'QCM Système Éducatif'
+  }
+];
+
+// ─── State Concours IT Nodes (unchanged) ─────────────────────────────────────
+const STATE_NODES = [
+  {
+    id: 'ds_ml',
+    category: 'DATA',
+    num: 1,
+    icon: Sparkles,
+    title: '1. Machine Learning Supervisé & Non Supervisé',
+    subtitle: 'Modélisation prédictive & Algorithmes classiques',
+    weight: 'Spécialité Data & IA',
+    duration: '8 à 10 jours',
+    priority: 'Haute',
+    color: { tag: 'bg-[#F8C62F]/20 text-[#946e00]', border: 'border-[#F8C62F]', dot: 'bg-[#F8C62F]', ring: 'ring-[#F8C62F]/20', badge: 'bg-[#F8C62F]' },
+    description: 'Maîtriser la régression linéaire/logistique, les SVM, Random Forest, XGBoost et K-Means.',
+    topics: [
+      'Formulation mathématique OLS, Loss Log-Loss, SVM Margin',
+      'Pénalités L1 (Lasso) vs L2 (Ridge) et sélection de variables',
+      'Arbres de décision, Impureté de Gini et Entropie de Shannon',
+      'K-Means, Inertie WCSS, Score de Silhouette et ACP/PCA',
+      'Pipelines Scikit-Learn et validation croisée StratifiedKFold'
+    ],
+    actionLink: '/courses',
+    actionLabel: 'Réviser les Fiches Machine Learning',
+    generatorLink: '/generator?subdomain=DATA_SCIENCE_IA',
+    generatorLabel: 'Générer un QCM IA ML'
+  },
+  {
+    id: 'ds_dl',
+    category: 'DATA',
+    num: 2,
+    icon: Cpu,
+    title: '2. Deep Learning, CNN & PyTorch',
+    subtitle: 'Réseaux de neurones profonds & Vision 2D/3D',
+    weight: 'Spécialité Data & IA',
+    duration: '10 à 12 jours',
+    priority: 'Haute',
+    color: { tag: 'bg-[#F8C62F]/20 text-[#946e00]', border: 'border-[#F8C62F]', dot: 'bg-[#F8C62F]', ring: 'ring-[#F8C62F]/20', badge: 'bg-[#F8C62F]' },
+    description: 'Assimiler le MLP, la rétropropagation du gradient, les convolutions Conv2D et PyTorch.',
+    topics: [
+      'Fonctions d\'activation (ReLU, Leaky ReLU, Softmax)',
+      'Formule de sortie Conv2D : O = (W - K + 2P)/S + 1',
+      'Optimiseurs SGD Momentum et Adam',
+      'Dropout et Batch Normalization pour l\'anti-surapprentissage',
+      'Entraînement complet PyTorch avec nn.Module et DataLoader'
+    ],
+    actionLink: '/courses',
+    actionLabel: 'Étudier les Leçons PyTorch & CNN',
+    generatorLink: '/generator?subdomain=DATA_SCIENCE_IA',
+    generatorLabel: 'Tester QCM Deep Learning'
+  },
+  {
+    id: 'ds_nlp',
+    category: 'DATA',
+    num: 3,
+    icon: Globe,
+    title: '3. NLP, Transformers (BERT/GPT) & MLOps',
+    subtitle: 'Traitement du langage & Déploiement IA',
+    weight: 'Spécialité Data & IA',
+    duration: '8 à 10 jours',
+    priority: 'Haute',
+    color: { tag: 'bg-[#F8C62F]/20 text-[#946e00]', border: 'border-[#F8C62F]', dot: 'bg-[#F8C62F]', ring: 'ring-[#F8C62F]/20', badge: 'bg-[#F8C62F]' },
+    description: 'Comprendre l\'Attention Scalée Multi-Têtes, les modèles CamemBERT/GPT et l\'architecture RAG.',
+    topics: [
+      'TF-IDF, Embeddings denses Word2Vec (Skip-gram, CBOW)',
+      'Équation de l\'Attention Scalée : Softmax(QK^T / sqrt(d_k)) V',
+      'Architecture RAG avec Base de Données Vectorielle',
+      'HuggingFace / Transformers en Python',
+      'MLOps : DVC, MLflow, Data Drift vs Concept Drift'
+    ],
+    actionLink: '/courses',
+    actionLabel: 'Consulter les Fiches Transformers & RAG',
+    generatorLink: '/generator?subdomain=DATA_SCIENCE_IA',
+    generatorLabel: 'Générer QCM IA NLP'
+  },
+  {
+    id: 'info_algo',
+    category: 'INFO',
+    num: 4,
+    icon: Code2,
+    title: '4. Complexité Algorithmique & Design Patterns',
+    subtitle: 'Socle du Génie Logiciel',
+    weight: 'Informatique Générale',
+    duration: '7 à 9 jours',
+    priority: 'Élevée',
+    color: { tag: 'bg-[#03594e]/10 text-[#03594e] dark:text-[#F8C62F]', border: 'border-[#03594e]', dot: 'bg-[#03594e]', ring: 'ring-[#03594e]/20', badge: 'bg-[#03594e]' },
+    description: 'Évaluer la complexité asymptotique et implémenter les Design Patterns GoF.',
+    topics: [
+      'Complexité spatiale et temporelle (O(1), O(N log N), O(N^2))',
+      'Patterns Créationnels (Singleton, Factory, Builder)',
+      'Patterns Structurels (Adapter, Decorator, Proxy)',
+      'Patterns Comportementaux (Observer, Strategy)',
+      'Principes de conception SOLID'
+    ],
+    actionLink: '/courses',
+    actionLabel: 'Voir la Fiche Complexité & Patterns',
+    generatorLink: '/generator?subdomain=INFO_GEN_GL',
+    generatorLabel: 'QCM Algorithmique & GL'
+  },
+  {
+    id: 'info_dba',
+    category: 'INFO',
+    num: 5,
+    icon: Database,
+    title: '5. Administration BDD & SQL Tuning',
+    subtitle: 'Gestion des transactions & Optimisation',
+    weight: 'Bases de Données',
+    duration: '6 à 8 jours',
+    priority: 'Élevée',
+    color: { tag: 'bg-[#03594e]/10 text-[#03594e] dark:text-[#F8C62F]', border: 'border-[#03594e]', dot: 'bg-[#03594e]', ring: 'ring-[#03594e]/20', badge: 'bg-[#03594e]' },
+    description: 'Maîtriser les propriétés ACID, les niveaux d\'isolation et le tuning de requêtes SQL.',
+    topics: [
+      'Propriétés ACID (Atomicité, Cohérence, Isolation, Durabilité)',
+      'Niveaux d\'isolation (Read Committed, Repeatable Read, Serializable)',
+      'Indexation B-Tree vs Hash Index',
+      'Analyse des plans d\'exécution avec EXPLAIN ANALYZE',
+      'Requêtes analytiques et fonctions de fenêtrage (OVER/RANK)'
+    ],
+    actionLink: '/courses',
+    actionLabel: 'Étudier les Fiches DBA & SQL',
+    generatorLink: '/generator?subdomain=DBA_ADMIN',
+    generatorLabel: 'S\'entraîner en SQL Tuning'
+  }
+];
+
+// ─── Category display config ─────────────────────────────────────────────────
+const CATEGORY_LABELS = {
+  INFO: 'Spécialité Info (40%)',
+  DIDACTIQUE: 'Didactique (30%)',
+  SCIENCES_EDU: 'Sciences Éduc (30%)',
+  DATA: 'Data & IA (40%)',
+};
 
 export default function Plan() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isStateConcours = user?.target_exam && !user.target_exam.toLowerCase().includes('crmef');
   const [selectedNode, setSelectedNode] = useState(null);
 
-  // Roadmap data based on: 40% Info, 30% Didactique, 30% Sciences de l'éducation
-  const roadmapNodes = [
-    {
-      id: 'info_base',
-      category: 'INFO',
-      title: '1. Algorithmique & Bases de Programmation',
-      subtitle: 'La base indispensable pour démarrer',
-      priority: 'Élevée',
-      weight: '40% du programme',
-      duration: '7 à 10 jours',
-      description: 'Maîtriser la syntaxe, les variables, les structures conditionnelles, les boucles, ainsi que les bases de la programmation en Langage C et Développement Web.',
-      topics: [
-        'Variables, types de données, opérateurs',
-        'Conditions (Si/Sinon) et Boucles (Pour, Tant Que)',
-        'Tableaux (1D, 2D) et Chaînes de caractères',
-        'Fonctions, procédures et passage de paramètres',
-        'Syntaxe de base du Langage C et HTML/CSS/JS'
-      ],
-      actionLink: '/courses',
-      actionLabel: 'Réviser les Fiches Associées',
-      generatorLink: '/generator?subdomain=DEV_ALGO',
-      generatorLabel: 'Générer un Test IA'
-    },
-    {
-      id: 'info_advanced',
-      category: 'INFO',
-      title: '2. Structures de Données & Complexité',
-      subtitle: 'Le cœur technique de la Spécialité',
-      priority: 'Élevée',
-      weight: '40% du programme',
-      duration: '10 à 12 jours',
-      description: 'Comprendre comment stocker, organiser et traiter efficacement les données en calculant la complexité des algorithmes.',
-      topics: [
-        'Complexité algorithmique (Notation Grand O)',
-        'Structures linéaires : Piles, Files, Listes chaînées',
-        'Algorithmes de Tri (Bulle, Insertion, Fusion, QuickSort)',
-        'Algorithmes de Recherche (Dichotomique)',
-        'Structures arborescentes (Arbres Binaires de Recherche)'
-      ],
-      actionLink: '/courses',
-      actionLabel: 'Ouvrir les leçons de Structures',
-      generatorLink: '/generator?subdomain=DEV_ALGO',
-      generatorLabel: 'Générer QCM IA Algo'
-    },
-    {
-      id: 'info_systems',
-      category: 'INFO',
-      title: '3. Systèmes, Réseaux & Bases de Données',
-      subtitle: 'L\'infrastructure informatique',
-      priority: 'Élevée',
-      weight: '40% du programme',
-      duration: '8 à 10 jours',
-      description: 'Assimiler le fonctionnement des systèmes d\'exploitation, le modèle de communication réseau et la modélisation des bases de données SQL.',
-      topics: [
-        'Systèmes d\'exploitation (Processus, Thread, Mémoire virtuelle)',
-        'Réseaux (Modèle OSI & TCP/IP, Adressage IP/Masques)',
-        'Bases de Données (Modélisation MCD, Modèle Relationnel)',
-        'Langage SQL (Requêtes SELECT, Jointures, Agrégats)',
-        'Didactique des bases de données'
-      ],
-      actionLink: '/courses',
-      actionLabel: 'Étudier les Fiches Systèmes/SQL',
-      generatorLink: '/generator?subdomain=DEV_SI_BD',
-      generatorLabel: 'Générer un Test IA SQL'
-    },
-    {
-      id: 'didactique_base',
-      category: 'DIDACTIQUE',
-      title: '4. Fondements de la Didactique Info',
-      subtitle: 'Comment enseigner l\'informatique',
-      priority: 'Moyenne',
-      weight: '30% du programme',
-      duration: '6 à 8 jours',
-      description: 'Étudier les concepts didactiques majeurs appliqués à l\'enseignement de l\'informatique et à l\'appropriation des savoirs par les élèves.',
-      topics: [
-        'Transposition didactique (Savoir savant → Savoir enseigné)',
-        'Contrat didactique et Triangle didactique',
-        'Approche par Compétences (APC) et Pédagogie de projet',
-        'Situations-Problèmes didactiques et résolution d\'obstacles',
-        'Ressources didactiques et outils de programmation (Scratch, Python)'
-      ],
-      actionLink: '/courses',
-      actionLabel: 'Réviser les Fiches de Didactique',
-      generatorLink: '/generator?subdomain=DIDACTIQUE_CONCEPTS',
-      generatorLabel: 'Générer QCM IA Didactique'
-    },
-    {
-      id: 'didactique_lesson',
-      category: 'DIDACTIQUE',
-      title: '5. Planification & Évaluation Didactique',
-      subtitle: 'Préparer et valider les séances',
-      priority: 'Moyenne',
-      weight: '30% du programme',
-      duration: '5 à 7 jours',
-      description: 'Apprendre à concevoir une fiche de préparation pédagogique (fiche de leçon) et à structurer des évaluations formatives et sommatives.',
-      topics: [
-        'Structure d\'une fiche de préparation pédagogique (Jenza)',
-        'Gestion des phases de cours (Mise en situation, Apprentissage, Évaluation)',
-        'Types d\'évaluation (Diagnostique, Formative, Sommative)',
-        'Grilles de correction et critères d\'évaluation',
-        'Didactique pratique et gestion de la classe d\'informatique'
-      ],
-      actionLink: '/annales?domain=DIDACTIQUE',
-      actionLabel: 'Tester sur les Annales Didactique',
-      generatorLink: '/generator?subdomain=DIDACTIQUE_CONCEPTS',
-      generatorLabel: 'S\'entraîner en Didactique'
-    },
-    {
-      id: 'sciences_psycho',
-      category: 'SCIENCES_EDU',
-      title: '6. Psychologie & Théories de l\'Apprentissage',
-      subtitle: 'Les mécanismes fondamentaux de l\'élève',
-      priority: 'Moyenne',
-      weight: '30% du programme',
-      duration: '6 à 8 jours',
-      description: 'Assimiler les grands courants théoriques de la psychologie de l\'éducation qui guident les méthodes d\'apprentissage actuelles.',
-      topics: [
-        'Le Béhaviorisme (Stimulus-Réponse, Conditionnement)',
-        'Le Cognitivisme (Traitement de l\'information, mémoire)',
-        'Le Constructivisme de Piaget (Assimilation, Accommodation, Stades)',
-        'Le Socio-constructivisme de Vygotski (Zone Proximale de Développement)',
-        'Théories de la motivation et styles d\'apprentissage'
-      ],
-      actionLink: '/courses',
-      actionLabel: 'Fiches de Sciences de l\'Éducation',
-      generatorLink: '/generator?subdomain=SCIENCES_EDU_PSYCHO',
-      generatorLabel: 'Générer QCM IA Sciences Édu'
-    },
-    {
-      id: 'sciences_system',
-      category: 'SCIENCES_EDU',
-      title: '7. Système Éducatif & Réformes au Maroc',
-      subtitle: 'Le cadre légal et institutionnel',
-      priority: 'Moyenne',
-      weight: '30% du programme',
-      duration: '5 à 6 jours',
-      description: 'Connaître l\'organisation du ministère, les chartes nationales de l\'éducation et les réformes éducatives majeures en cours au Maroc.',
-      topics: [
-        'Charte Nationale de l\'Éducation et de la Formation (CNEF)',
-        'Loi-cadre 51.17 et Vision Décennale (2015-2030)',
-        'Feuille de route 2022-2026 pour une école de qualité',
-        'Déontologie du métier d\'enseignant et droits/devoirs',
-        'Organisation pédagogique et cycles d\'enseignement au Maroc'
-      ],
-      actionLink: '/annales?domain=SCIENCES_EDU',
-      actionLabel: 'Annales de Sciences de l\'Éducation',
-      generatorLink: '/generator?subdomain=SCIENCES_EDU_PSYCHO',
-      generatorLabel: 'QCM Système Éducatif'
-    }
-  ];
-
-  const handleNodeClick = (node) => {
-    setSelectedNode(node);
-  };
-
-  const getCategoryColor = (cat) => {
-    switch (cat) {
-      case 'INFO':
-        return {
-          border: 'border-blue-500',
-          bg: 'bg-blue-500/10 dark:bg-blue-950/20',
-          text: 'text-blue-600 dark:text-blue-400',
-          indicator: 'bg-blue-500',
-          gradient: 'from-blue-500 to-indigo-600'
-        };
-      case 'DIDACTIQUE':
-        return {
-          border: 'border-purple-500',
-          bg: 'bg-purple-500/10 dark:bg-purple-950/20',
-          text: 'text-purple-600 dark:text-purple-400',
-          indicator: 'bg-purple-500',
-          gradient: 'from-purple-500 to-indigo-600'
-        };
-      case 'SCIENCES_EDU':
-        return {
-          border: 'border-amber-500',
-          bg: 'bg-amber-500/10 dark:bg-amber-950/20',
-          text: 'text-amber-600 dark:text-amber-400',
-          indicator: 'bg-amber-500',
-          gradient: 'from-amber-500 to-orange-600'
-        };
-      default:
-        return {
-          border: 'border-slate-500',
-          bg: 'bg-slate-500/10',
-          text: 'text-slate-600',
-          indicator: 'bg-slate-500',
-          gradient: 'from-slate-500 to-slate-600'
-        };
-    }
-  };
+  const activeNodes = isStateConcours ? STATE_NODES : CRMEF_NODES;
 
   return (
-    <div className="space-y-8 py-4 max-w-6xl mx-auto px-2">
-      {/* Introduction Banner */}
-      <div className="glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 dark:from-slate-900 dark:via-indigo-950/40 dark:to-purple-950/30 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="space-y-3 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-700 dark:text-blue-300 text-xs font-bold">
+    <div className="space-y-7 py-2 max-w-6xl mx-auto px-2 relative z-10">
+
+      {/* ─── Header ─────────────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#03594e]/10 text-[#03594e] dark:bg-[#F8C62F]/10 dark:text-[#F8C62F] text-xs font-bold">
             <Compass className="w-3.5 h-3.5" />
-            Votre plan de vol • Concours 2026
+            {isStateConcours ? "Plan de vol • Concours d'État IT & Data 2026" : "Votre plan de vol • Concours CRMEF 2026"}
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Plan de Répartition & Arbre de Révision
           </h1>
-          <p className="text-xs sm:text-sm text-slate-650 dark:text-slate-350 leading-relaxed font-medium">
-            Pour maximiser vos chances de réussite, suivez cet arbre d'apprentissage structuré et équilibré. Commencez par solidifier la spécialité informatique (40% du coefficient), puis enchaînez avec la didactique de l'informatique (30%) et les sciences de l'éducation (30%).
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Suivez cet arbre d'apprentissage structuré et équilibré pour maximiser vos révisions.
           </p>
         </div>
 
-        <div className="flex gap-4 items-center shrink-0 bg-white/70 dark:bg-slate-900/80 p-4.5 rounded-2xl border border-slate-200/50 dark:border-slate-800 shadow-sm backdrop-blur-md w-full md:w-auto">
-          <div className="space-y-2 w-full text-center md:text-left">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Répartition Recommandée</div>
-            <div className="flex gap-2 justify-center md:justify-start items-center">
-              <span className="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-[10px] font-black">40% Info</span>
-              <span className="px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-[10px] font-black">30% Didactique</span>
-              <span className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-[10px] font-black">30% Édu</span>
-            </div>
-          </div>
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          {isStateConcours ? (
+            <>
+              <span className="px-3 py-1 rounded-lg bg-[#F8C62F] text-[#1B1D21] text-xs font-black">40% Data & IA</span>
+              <span className="px-3 py-1 rounded-lg bg-[#03594e] text-white text-xs font-black">30% Info</span>
+              <span className="px-3 py-1 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-black">30% DBA</span>
+            </>
+          ) : (
+            <>
+              <span className="px-3 py-1 rounded-lg bg-[#03594e] text-white text-xs font-black">40% Info</span>
+              <span className="px-3 py-1 rounded-lg bg-amber-400 text-amber-900 text-xs font-black">30% Didactique</span>
+              <span className="px-3 py-1 rounded-lg bg-violet-500 text-white text-xs font-black">30% Édu</span>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Main Roadmap Area */}
+      {/* ─── Main Grid ──────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Visual Tree Roadmap */}
+
+        {/* Left: Visual Tree Roadmap */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-            <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-              <Compass className="w-5 h-5 text-blue-600" /> Les étapes de votre préparation
+          <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-3">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Compass className="w-4 h-4 text-[#03594e] dark:text-[#F8C62F]" /> Les étapes de votre préparation
             </h2>
-            <span className="text-xs font-bold text-slate-400">Cliquez sur un module pour voir les détails</span>
+            <span className="text-xs font-bold text-slate-400">Cliquez sur un module</span>
           </div>
 
-          <div className="relative pl-6 sm:pl-8 space-y-8 before:absolute before:top-2 before:bottom-2 before:left-[17px] sm:before:left-[21px] before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800">
-            {roadmapNodes.map((node, idx) => {
-              const colors = getCategoryColor(node.category);
+          <div className="relative pl-6 sm:pl-8 space-y-5 before:absolute before:top-4 before:bottom-4 before:left-[17px] sm:before:left-[21px] before:w-0.5 before:bg-gradient-to-b before:from-[#03594e] before:via-amber-400 before:to-violet-500 before:opacity-30">
+            {activeNodes.map((node, idx) => {
+              const NodeIcon = node.icon;
               const isSelected = selectedNode?.id === node.id;
+              const prevCat = idx > 0 ? activeNodes[idx - 1].category : null;
+              const showSeparator = prevCat && prevCat !== node.category;
 
               return (
-                <motion.div 
+                <motion.div
                   key={node.id}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -18 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.08 }}
+                  transition={{ delay: idx * 0.06 }}
                   className="relative group"
                 >
-                  {/* Node Connector Icon Bubble */}
-                  <div className={`absolute -left-[30px] sm:-left-[35px] top-1.5 w-7 h-7 sm:w-9 sm:h-9 rounded-full ${colors.bg} border-2 ${colors.border} flex items-center justify-center z-10 transition-transform group-hover:scale-110 shadow-sm cursor-pointer`}
-                    onClick={() => handleNodeClick(node)}
+                  {/* Category separator */}
+                  {showSeparator && (
+                    <div className="flex items-center gap-2 mb-4 -ml-6 sm:-ml-8">
+                      <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+                      <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${node.color.tag}`}>
+                        {CATEGORY_LABELS[node.category]}
+                      </span>
+                      <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+                    </div>
+                  )}
+
+                  {/* Timeline dot */}
+                  <div
+                    onClick={() => setSelectedNode(node)}
+                    className={`absolute -left-[30px] sm:-left-[35px] top-1/2 -translate-y-1/2 w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center z-10 transition-all group-hover:scale-110 shadow-md cursor-pointer border-2 border-white dark:border-slate-900 ${node.color.dot}`}
                   >
-                    {node.category === 'INFO' && <Code2 className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 ${colors.text}`} />}
-                    {node.category === 'DIDACTIQUE' && <GraduationCap className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 ${colors.text}`} />}
-                    {node.category === 'SCIENCES_EDU' && <Brain className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 ${colors.text}`} />}
+                    <NodeIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                   </div>
 
                   {/* Node Card */}
-                  <div 
-                    onClick={() => handleNodeClick(node)}
-                    className={`glass-card p-5 rounded-2xl border text-left cursor-pointer transition-all duration-300 relative overflow-hidden ${
-                      isSelected 
-                        ? 'ring-2 ring-blue-500 border-transparent shadow-lg bg-white dark:bg-slate-900' 
-                        : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 hover:shadow-md'
+                  <div
+                    onClick={() => setSelectedNode(node)}
+                    className={`bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border text-left cursor-pointer transition-all duration-200 relative overflow-hidden ${
+                      isSelected
+                        ? `border-2 ${node.color.border} ring-2 ${node.color.ring} shadow-lg`
+                        : 'border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm hover:shadow-md'
                     }`}
                   >
-                    {/* Corner accent block */}
-                    <div className={`absolute top-0 right-0 w-24 h-24 opacity-[0.03] rounded-full blur-xl pointer-events-none ${colors.indicator}`} />
-                    
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                      <div>
-                        <span className={`px-2 py-0.5 rounded text-[9px] font-black tracking-wider uppercase ${colors.bg} ${colors.text}`}>
-                          {node.category === 'INFO' ? 'Spécialité Info (40%)' : node.category === 'DIDACTIQUE' ? 'Didactique (30%)' : 'Sciences Éduc (30%)'}
+                    {/* Selected indicator */}
+                    {isSelected && (
+                      <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl ${node.color.dot}`} />
+                    )}
+
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        {/* Category tag */}
+                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-extrabold tracking-wider uppercase mb-1.5 ${node.color.tag}`}>
+                          {CATEGORY_LABELS[node.category]}
                         </span>
-                        <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-1.5 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white group-hover:text-[#03594e] dark:group-hover:text-[#F8C62F] transition-colors leading-snug">
                           {node.title}
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
                           {node.subtitle}
                         </p>
                       </div>
-                      
-                      <div className="shrink-0 flex items-center gap-2 self-start sm:self-center">
-                        <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
-                          ⏱️ {node.duration}
+
+                      <div className="shrink-0 flex flex-col items-end gap-1.5">
+                        <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md whitespace-nowrap flex items-center gap-1">
+                          <Clock className="w-2.5 h-2.5" /> {node.duration}
                         </span>
-                        <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                        <ChevronRight className={`w-4 h-4 transition-all ${isSelected ? `${node.color.dot.replace('bg-', 'text-')} translate-x-0.5` : 'text-slate-300 dark:text-slate-600 group-hover:text-slate-500 group-hover:translate-x-0.5'}`} />
                       </div>
                     </div>
                   </div>
@@ -304,82 +452,103 @@ export default function Plan() {
           </div>
         </div>
 
-        {/* Right Column: Node Details Panel */}
+        {/* Right: Detail Panel */}
         <div className="lg:col-span-5 sticky top-20">
           <AnimatePresence mode="wait">
             {selectedNode ? (
               <motion.div
                 key={selectedNode.id}
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-6 bg-white dark:bg-slate-900"
+                exit={{ opacity: 0, y: -8 }}
+                className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-lg overflow-hidden"
               >
-                {/* Header */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black ${getCategoryColor(selectedNode.category).bg} ${getCategoryColor(selectedNode.category).text}`}>
-                      {selectedNode.category} • Poids : {selectedNode.weight}
+                {/* Card header colored strip */}
+                <div className={`${selectedNode.color.dot} px-6 py-4`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                      <selectedNode.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-bold text-white/70 uppercase tracking-wider">
+                        {CATEGORY_LABELS[selectedNode.category]} • {selectedNode.weight}
+                      </p>
+                      <h3 className="text-sm font-extrabold text-white leading-snug truncate">
+                        {selectedNode.title}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5 sm:p-6 space-y-5">
+                  {/* Meta info */}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+                      <Clock className="w-3.5 h-3.5" /> {selectedNode.duration}
                     </span>
-                    <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
-                      Priority : <strong className="text-red-500">{selectedNode.priority}</strong>
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full">
+                      <Zap className="w-3.5 h-3.5" /> Priorité {selectedNode.priority}
                     </span>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white leading-snug">
-                    {selectedNode.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 italic">
-                    Durée conseillée : {selectedNode.duration}
-                  </p>
-                </div>
 
-                {/* Description */}
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-350 leading-relaxed font-medium">
-                  {selectedNode.description}
-                </div>
+                  {/* Description */}
+                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                    {selectedNode.description}
+                  </div>
 
-                {/* Topics list */}
-                <div className="space-y-3">
-                  <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Sujets majeurs à maîtriser</h4>
-                  <ul className="space-y-2">
-                    {selectedNode.topics.map((topic, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>{topic}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                  {/* Topics */}
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Sujets majeurs à maîtriser
+                    </h4>
+                    <ul className="space-y-2">
+                      {selectedNode.topics.map((topic, i) => (
+                        <li key={i} className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                          <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${selectedNode.color.dot.replace('bg-', 'text-')}`} />
+                          <span>{topic}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                {/* Quick actions links */}
-                <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-3">
-                  <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-3">Recommandations & Actions</h4>
-                  
-                  <div className="flex flex-col gap-2.5">
-                    <button 
+                  {/* Actions */}
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
+                    <button
                       onClick={() => navigate(selectedNode.actionLink)}
-                      className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-500/10 flex items-center justify-center gap-2 transition-all"
+                      className="w-full py-2.5 px-4 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-2 transition-all hover:shadow-md"
                     >
-                      <BookOpen className="w-4 h-4" /> {selectedNode.actionLabel}
+                      <BookOpen className="w-4 h-4 text-[#F8C62F]" /> {selectedNode.actionLabel}
                     </button>
-
                     <button
                       onClick={() => navigate(selectedNode.generatorLink)}
-                      className="w-full py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-md shadow-purple-500/10 flex items-center justify-center gap-2 transition-all"
+                      className="w-full py-2.5 px-4 rounded-xl bg-[#F8C62F] hover:bg-[#e0b228] text-[#1B1D21] font-extrabold text-xs shadow-sm flex items-center justify-center gap-2 transition-all hover:shadow-md"
                     >
-                      <Sparkles className="w-4 h-4" /> {selectedNode.generatorLabel}
+                      <Sparkles className="w-4 h-4 text-[#1B1D21]" /> {selectedNode.generatorLabel}
                     </button>
                   </div>
                 </div>
               </motion.div>
             ) : (
-              <div className="glass-card p-12 rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 text-center space-y-4">
-                <Compass className="w-12 h-12 text-slate-400 mx-auto opacity-55 animate-pulse" />
-                <h3 className="text-sm font-bold text-slate-700 dark:text-slate-350">Sélectionnez une étape de l'arbre</h3>
-                <p className="text-xs text-slate-500 max-w-xs mx-auto">
-                  Cliquez sur n'importe quel bloc à gauche pour afficher les sous-domaines, la durée d'étude estimée et lancer vos révisions ou vos QCM IA associés.
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="bg-white dark:bg-slate-900 p-10 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 text-center space-y-4 shadow-sm"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-[#03594e]/10 dark:bg-[#F8C62F]/10 flex items-center justify-center mx-auto">
+                  <Compass className="w-7 h-7 text-[#03594e] dark:text-[#F8C62F] animate-pulse" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                  Sélectionnez une étape de l'arbre
+                </h3>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto font-medium leading-relaxed">
+                  Cliquez sur n'importe quel module à gauche pour afficher les sous-thèmes à maîtriser et lancer vos révisions ou vos QCM IA associés.
                 </p>
-              </div>
+                <div className="flex flex-wrap justify-center gap-2 pt-2">
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#03594e]/10 text-[#03594e] dark:text-[#F8C62F]">40% Info</span>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">30% Didactique</span>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-100 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300">30% Édu</span>
+                </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>

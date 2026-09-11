@@ -10,7 +10,93 @@ from .serializers import UserSerializer, RegisterSerializer, LicenseKeySerialize
 from syllabus.models import Course, CourseProgress, Subdomain
 from exams.models import Question, UserAttempt, ExamSession, Bookmark
 
+import random
+from django.conf import settings as django_settings
+from django.core.mail import send_mail
+from .models import LicenseKey, EmailVerificationCode
+
 User = get_user_model()
+
+class SendVerificationCodeView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email', '').strip().lower()
+        if not email or '@' not in email:
+            return Response({"error": "Veuillez fournir une adresse e-mail valide."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if User.objects.filter(email__iexact=email).exists():
+            return Response({"error": "Cette adresse e-mail est déjà utilisée par un autre compte."}, status=status.HTTP_400_BAD_REQUEST)
+
+        code = f"{random.randint(100000, 999999)}"
+        EmailVerificationCode.objects.create(email=email, code=code)
+
+        subject = "Code de verification pour votre compte Info Reussit"
+        
+        plain_message = (
+            f"Bonjour,\n\n"
+            f"Votre code de verification pour Info Reussit est : {code}\n\n"
+            f"Ce code est valide pendant 15 minutes.\n"
+            f"Si vous n'avez pas demande ce code, vous pouvez ignorer ce message.\n\n"
+            f"Cordialement,\n"
+            f"L'equipe Info Reussit"
+        )
+
+        html_message = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; color: #1e293b; }}
+            .container {{ max-width: 520px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }}
+            .header {{ background-color: #4f46e5; padding: 24px; text-align: center; color: #ffffff; }}
+            .header h1 {{ margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }}
+            .content {{ padding: 32px 24px; text-align: center; }}
+            .code-box {{ background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 24px; display: inline-block; font-family: monospace; font-size: 28px; font-weight: 800; letter-spacing: 6px; color: #4f46e5; margin: 20px 0; }}
+            .text {{ font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 8px; }}
+            .footer {{ background-color: #f8fafc; padding: 16px 24px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #94a3b8; }}
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Info Reussit</h1>
+            </div>
+            <div class="content">
+              <p class="text" style="font-size: 16px; font-weight: 600; color: #0f172a;">Verification de votre adresse e-mail</p>
+              <p class="text">Voici votre code de confirmation pour finaliser votre inscription :</p>
+              <div class="code-box">{code}</div>
+              <p class="text" style="font-size: 12px; color: #64748b;">Ce code est valide pendant <strong>15 minutes</strong>.</p>
+            </div>
+            <div class="footer">
+              <p style="margin: 0;">Si vous n'etes pas a l'origine de cette demande, vous pouvez ignorer cet e-mail en toute securite.</p>
+              <p style="margin: 4px 0 0 0;">© 2026 Info Reussit — Plateforme Nationale de Preparation aux Concours</p>
+            </div>
+          </div>
+        </body>
+        </html>
+        """
+
+        try:
+            send_mail(
+                subject=subject,
+                message=plain_message,
+                html_message=html_message,
+                from_email=django_settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=django_settings.DEBUG,
+            )
+        except Exception as e:
+            if not django_settings.DEBUG:
+                return Response({"error": "Erreur d'envoi de l'email. Veuillez reessayer."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        response_data = {
+            "success": True,
+            "message": f"Code de verification envoye a {email}.",
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
 class RegisterView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
@@ -126,13 +212,38 @@ class AdminDashboardView(APIView):
         total_questions = Question.objects.count()
         total_courses = Course.objects.count()
 
+        total_global_attempts = UserAttempt.objects.count()
+        total_global_exams_completed = ExamSession.objects.filter(exam_submitted=True).count()
+        total_global_courses_completed = CourseProgress.objects.filter(is_completed=True).count()
+
+        # Breakdown by target exam
+        target_exam_stats = {}
+        for c in candidates:
+            exam_name = c.target_exam or 'Non spécifié'
+            target_exam_stats[exam_name] = target_exam_stats.get(exam_name, 0) + 1
+
+        target_exam_distribution = [
+            {"name": name, "count": count}
+            for name, count in sorted(target_exam_stats.items(), key=lambda x: -x[1])
+        ]
+
+        global_study_minutes = 0
         candidates_overview = []
+
         for c in candidates:
             c_completed_courses = CourseProgress.objects.filter(user=c, is_completed=True).count()
             c_attempts = UserAttempt.objects.filter(user=c)
             c_total_att = c_attempts.count()
             c_correct_att = c_attempts.filter(is_correct=True).count()
             c_rate = round((c_correct_att / c_total_att * 100), 1) if c_total_att > 0 else 0.0
+
+            c_exams_completed = ExamSession.objects.filter(user=c, exam_submitted=True).count()
+            c_exams_total = ExamSession.objects.filter(user=c).count()
+
+            # Estimate study time (20 min per completed course + 1.5 min per QCM attempt)
+            c_study_minutes = round((c_completed_courses * 20) + (c_total_att * 1.5), 1)
+            c_study_hours = round(c_study_minutes / 60, 1)
+            global_study_minutes += c_study_minutes
 
             candidates_overview.append({
                 "id": c.id,
@@ -142,15 +253,22 @@ class AdminDashboardView(APIView):
                 "target_exam": c.target_exam,
                 "completed_courses": c_completed_courses,
                 "total_attempts": c_total_att,
+                "correct_attempts": c_correct_att,
                 "success_rate": c_rate,
+                "exams_completed": c_exams_completed,
+                "exams_total": c_exams_total,
+                "study_hours": c_study_hours,
                 "allowed_generations": c.allowed_generations,
                 "account_type": c.account_type,
+                "is_active": c.is_active,
                 "is_staff": c.is_staff,
                 "is_superuser": c.is_superuser,
+                "last_login": c.last_login,
                 "created_at": c.created_at
             })
 
         all_keys = LicenseKeySerializer(LicenseKey.objects.all().order_by('-created_at'), many=True).data
+        total_global_hours = round(global_study_minutes / 60, 1)
 
         return Response({
             "metrics": {
@@ -159,8 +277,13 @@ class AdminDashboardView(APIView):
                 "used_keys": used_keys,
                 "unused_keys": unused_keys,
                 "total_questions": total_questions,
-                "total_courses": total_courses
+                "total_courses": total_courses,
+                "total_global_attempts": total_global_attempts,
+                "total_global_exams_completed": total_global_exams_completed,
+                "total_global_courses_completed": total_global_courses_completed,
+                "total_global_hours": total_global_hours
             },
+            "target_exam_distribution": target_exam_distribution,
             "candidates": candidates_overview,
             "license_keys": all_keys
         })
@@ -176,6 +299,8 @@ class UpdateAllowedGenerationsView(APIView):
                 user.allowed_generations = int(request.data.get('allowed_generations', 0))
             if 'account_type' in request.data:
                 user.account_type = request.data.get('account_type', 'Standard')
+            if 'is_active' in request.data:
+                user.is_active = bool(request.data.get('is_active'))
             if 'is_staff' in request.data:
                 is_staff_val = bool(request.data.get('is_staff'))
                 user.is_staff = is_staff_val
@@ -192,6 +317,7 @@ class UpdateAllowedGenerationsView(APIView):
                 "success": True, 
                 "allowed_generations": user.allowed_generations,
                 "account_type": user.account_type,
+                "is_active": user.is_active,
                 "is_staff": user.is_staff,
                 "is_superuser": user.is_superuser
             })

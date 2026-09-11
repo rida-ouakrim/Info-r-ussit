@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import API from '../services/api';
 import { 
-  ShieldCheck, Users, Key, BookOpen, HelpCircle, Plus, 
-  RefreshCw, CheckCircle2, AlertCircle, Copy, Lock, Eye, EyeOff, X 
+  ShieldCheck, Users, Key, BookOpen, Plus, 
+  RefreshCw, CheckCircle2, Copy, Lock, EyeOff, Eye, X,
+  Clock, Award, Search, UserCheck, UserX, BarChart2
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -13,6 +14,11 @@ const AdminDashboard = () => {
   const [generating, setGenerating] = useState(false);
   const [generatedKeys, setGeneratedKeys] = useState([]);
   const [toast, setToast] = useState(null);
+
+  // Search & Filter State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedExamFilter, setSelectedExamFilter] = useState('ALL');
+  const [sortBy, setSortBy] = useState('created_at');
 
   // Password Reset Modal State
   const [selectedUserForPassword, setSelectedUserForPassword] = useState(null);
@@ -102,21 +108,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleUpdateAccountType = async (userId, newType) => {
-    try {
-      await API.post('auth/admin/update-generations/', { user_id: userId, account_type: newType });
-      setData(prev => {
-        const updatedCandidates = prev.candidates.map(c => 
-          c.id === userId ? { ...c, account_type: newType } : c
-        );
-        return { ...prev, candidates: updatedCandidates };
-      });
-      showToast(`Statut mis à jour vers : ${newType === 'Premium' ? '⭐ Premium' : 'Standard'}`);
-    } catch (err) {
-      console.error("Failed to update account type:", err);
-    }
-  };
-
   const handleUpdateRole = async (userId, isStaff) => {
     try {
       await API.post('auth/admin/update-generations/', { user_id: userId, is_staff: isStaff });
@@ -129,6 +120,22 @@ const AdminDashboard = () => {
       showToast(`Rôle mis à jour vers : ${isStaff ? 'Administrateur 👑' : 'Candidat Standard'}`);
     } catch (err) {
       console.error("Failed to update role:", err);
+    }
+  };
+
+  const handleToggleActive = async (userId, currentActiveStatus) => {
+    const newStatus = !currentActiveStatus;
+    try {
+      await API.post('auth/admin/update-generations/', { user_id: userId, is_active: newStatus });
+      setData(prev => {
+        const updatedCandidates = prev.candidates.map(c => 
+          c.id === userId ? { ...c, is_active: newStatus } : c
+        );
+        return { ...prev, candidates: updatedCandidates };
+      });
+      showToast(`Compte ${newStatus ? 'réactivé ✅' : 'suspendu 🚫'}`);
+    } catch (err) {
+      console.error("Failed to toggle active status:", err);
     }
   };
 
@@ -158,9 +165,9 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex items-center gap-3 text-sky-600 dark:text-sky-400 font-semibold">
+        <div className="flex items-center gap-3 text-[#03594e] dark:text-[#F8C62F] font-semibold">
           <RefreshCw className="w-6 h-6 animate-spin" />
-          <span>Chargement du Panneau Administrateur...</span>
+          <span>Chargement du Tableau de Bord Administrateur...</span>
         </div>
       </div>
     );
@@ -168,226 +175,392 @@ const AdminDashboard = () => {
 
   if (!data) return null;
 
-  const { metrics, candidates } = data;
+  const { metrics, candidates, target_exam_distribution } = data;
+
+  const filteredCandidates = candidates.filter(c => {
+    const matchesSearch = 
+      c.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      c.full_name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesExam = selectedExamFilter === 'ALL' || c.target_exam === selectedExamFilter;
+
+    return matchesSearch && matchesExam;
+  }).sort((a, b) => {
+    if (sortBy === 'study_hours') return b.study_hours - a.study_hours;
+    if (sortBy === 'exams_completed') return b.exams_completed - a.exams_completed;
+    if (sortBy === 'success_rate') return b.success_rate - a.success_rate;
+    return new Date(b.created_at) - new Date(a.created_at);
+  });
 
   return (
-    <div className="space-y-8 py-4">
+    <div className="space-y-7 py-2 max-w-7xl mx-auto">
       
-      {/* Admin Header Banner */}
-      <div className="glass-card p-8 rounded-3xl bg-gradient-to-r from-purple-500/10 via-slate-100 to-indigo-500/10 dark:from-purple-950/60 dark:via-slate-900 dark:to-indigo-950/60 border border-purple-500/20 dark:border-purple-500/30 flex items-center justify-between">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-700 dark:text-purple-300 text-xs font-bold">
-            <ShieldCheck className="w-4 h-4" />
-            Espace d'Administration Général
+      {/* ─── Compact Header ────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#03594e]/10 text-[#03594e] dark:bg-[#F8C62F]/10 dark:text-[#F8C62F] text-xs font-bold">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Panneau Administrateur • Inforéussit
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Gestion des Utilisateurs & Clés</h1>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Supervisez les comptes inscrits, modifiez les rôles/mots de passe et gérez les clés d'activation.
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Supervision Globale & Contrôle
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Suivi en temps réel des heures révisées, examens passés et gestion des candidats.
           </p>
         </div>
+
+        <button
+          onClick={fetchAdminData}
+          className="px-4 py-2.5 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white text-xs font-extrabold shadow-sm transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+        >
+          <RefreshCw className="w-4 h-4 text-[#F8C62F]" /> Actualiser
+        </button>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="glass-card p-6 rounded-2xl space-y-2 border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80">
+      {/* Primary Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        {/* Total Users */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 rounded-2xl space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Utilisateurs Inscrits</span>
-            <Users className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-          </div>
-          <div className="text-3xl font-extrabold text-slate-900 dark:text-white">{metrics.total_candidates}</div>
-        </div>
-
-        <div className="glass-card p-6 rounded-2xl space-y-2 border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Clés Utilisées</span>
-            <Key className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-          </div>
-          <div className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{metrics.used_keys} <span className="text-sm font-normal text-slate-500 dark:text-slate-400">/ {metrics.total_keys}</span></div>
-        </div>
-
-        <div className="glass-card p-6 rounded-2xl space-y-2 border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Clés Libres</span>
-            <Key className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          </div>
-          <div className="text-3xl font-extrabold text-amber-600 dark:text-amber-300">{metrics.unused_keys}</div>
-        </div>
-
-        <div className="glass-card p-6 rounded-2xl space-y-2 border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase">Banque QCM DB</span>
-            <HelpCircle className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-          </div>
-          <div className="text-3xl font-extrabold text-slate-900 dark:text-white">{metrics.total_questions}</div>
-        </div>
-      </div>
-
-      {/* License Key Generator Form */}
-      <div className="glass-card p-6 rounded-2xl space-y-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <Plus className="w-5 h-5 text-sky-600 dark:text-sky-400" /> Générateur de Clés d'Accès Sécurisées
-        </h3>
-
-        <form onSubmit={handleGenerateKeys} className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Préfixe de la clé</label>
-            <input
-              type="text"
-              value={keyPrefix}
-              onChange={(e) => setKeyPrefix(e.target.value.toUpperCase())}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white font-mono text-sm uppercase focus:border-sky-500 focus:outline-none"
-              placeholder="ex: CRMEF"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Nombre de clés à générer</label>
-            <input
-              type="number"
-              min="1"
-              max="50"
-              value={keyCount}
-              onChange={(e) => setKeyCount(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:border-sky-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={generating}
-            className="py-2.5 px-6 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 text-white font-semibold text-sm shadow-md transition-all flex items-center justify-center gap-2"
-          >
-            {generating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-            Générer les Clés
-          </button>
-        </form>
-
-        {generatedKeys.length > 0 && (
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
-            <h4 className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase">Clés nouvellement générées (Cliquer pour copier) :</h4>
-            <div className="flex flex-wrap gap-2">
-              {generatedKeys.map((k) => (
-                <button
-                  key={k.id}
-                  onClick={() => copyToClipboard(k.key_code)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white dark:bg-slate-950 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-bold hover:bg-emerald-50 dark:hover:bg-slate-900 transition-all shadow-sm"
-                >
-                  {k.key_code} <Copy className="w-3 h-3" />
-                </button>
-              ))}
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Utilisateurs</span>
+            <div className="p-2.5 rounded-xl bg-[#e6f5f3] dark:bg-[#03594e]/20 text-[#03594e] dark:text-[#F8C62F]">
+              <Users className="w-5 h-5" />
             </div>
           </div>
-        )}
+          <div>
+            <div className="text-3xl font-extrabold text-slate-900 dark:text-white">{metrics.total_candidates}</div>
+            <p className="text-[11px] text-slate-400 mt-1">Candidats & administrateurs</p>
+          </div>
+        </div>
+
+        {/* Total Study Hours */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 rounded-2xl space-y-3 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Heures de Révision</span>
+            <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+              <Clock className="w-5 h-5 text-amber-500" />
+            </div>
+          </div>
+          <div>
+            <div className="text-3xl font-extrabold text-amber-600 dark:text-amber-400">{metrics.total_global_hours || 0} <span className="text-sm font-medium text-slate-400">h</span></div>
+            <p className="text-[11px] text-slate-400 mt-1">Temps total passé sur l'application</p>
+          </div>
+        </div>
+
+        {/* Total Exams Passed */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 rounded-2xl space-y-3 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Examens Rendu</span>
+            <div className="p-2.5 rounded-xl bg-[#e6f5f3] dark:bg-[#03594e]/20 text-[#03594e] dark:text-emerald-400">
+              <Award className="w-5 h-5" />
+            </div>
+          </div>
+          <div>
+            <div className="text-3xl font-extrabold text-[#03594e] dark:text-emerald-400">{metrics.total_global_exams_completed || 0}</div>
+            <p className="text-[11px] text-slate-400 mt-1">{metrics.total_global_attempts || 0} QCMs répondu au total</p>
+          </div>
+        </div>
+
+        {/* Total Courses Validated */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 rounded-2xl space-y-3 shadow-sm">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Cours Maîtrisés</span>
+            <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+              <BookOpen className="w-5 h-5 text-[#F8C62F]" />
+            </div>
+          </div>
+          <div>
+            <div className="text-3xl font-extrabold text-slate-900 dark:text-white">{metrics.total_global_courses_completed || 0}</div>
+            <p className="text-[11px] text-slate-400 mt-1">Sur {metrics.total_courses} fiches de cours</p>
+          </div>
+        </div>
+
       </div>
 
-      {/* Candidates & Users Table */}
-      <div className="glass-card p-6 rounded-2xl space-y-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white">Gestion des Comptes Utilisateurs ({candidates.length})</h3>
-          <span className="text-xs text-slate-500 dark:text-slate-400">Gérez les rôles, types de comptes, crédits IA et mots de passe</span>
-        </div>
+      {/* Distribution & Key Generator Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
+        {/* Target Exam Distribution */}
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-4 col-span-1 shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <BarChart2 className="w-4 h-4 text-[#03594e] dark:text-[#F8C62F]" /> Répartition par Concours
+            </h3>
+          </div>
+          
+          <div className="space-y-3">
+            {target_exam_distribution && target_exam_distribution.map((item, idx) => {
+              const percentage = Math.round((item.count / (metrics.total_candidates || 1)) * 100);
+              return (
+                <div key={idx} className="space-y-1">
+                  <div className="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="truncate max-w-[200px]">{item.name}</span>
+                    <span className="font-bold">{item.count} ({percentage}%)</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    <div 
+                      className="h-full rounded-full bg-[#03594e] dark:bg-[#F8C62F]" 
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* License Key Generator */}
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 space-y-4 col-span-1 lg:col-span-2 shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Key className="w-4 h-4 text-[#03594e] dark:text-[#F8C62F]" /> Générateur de Clés ({metrics.unused_keys} libres / {metrics.total_keys} créées)
+            </h3>
+          </div>
+
+          <form onSubmit={handleGenerateKeys} className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Préfixe de la clé</label>
+              <input
+                type="text"
+                value={keyPrefix}
+                onChange={(e) => setKeyPrefix(e.target.value.toUpperCase())}
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-mono text-xs uppercase focus:outline-none"
+                placeholder="ex: CRMEF"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Nombre de clés</label>
+              <input
+                type="number"
+                min="1"
+                max="50"
+                value={keyCount}
+                onChange={(e) => setKeyCount(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs focus:outline-none"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={generating}
+              className="py-2 px-4 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white font-extrabold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+            >
+              {generating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4 text-[#F8C62F]" />}
+              Générer
+            </button>
+          </form>
+
+          {generatedKeys.length > 0 && (
+            <div className="p-3 rounded-xl bg-[#e6f5f3] dark:bg-[#03594e]/20 border border-[#b3e6df] dark:border-slate-800 space-y-2">
+              <h4 className="text-[11px] font-extrabold text-[#03594e] dark:text-[#F8C62F] uppercase">Clés générées :</h4>
+              <div className="flex flex-wrap gap-2">
+                {generatedKeys.map((k) => (
+                  <button
+                    key={k.id}
+                    onClick={() => copyToClipboard(k.key_code)}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-950 border border-[#03594e]/30 text-[#03594e] dark:text-[#F8C62F] text-xs font-mono font-bold hover:bg-[#e6f5f3] transition-all cursor-pointer"
+                  >
+                    {k.key_code} <Copy className="w-3 h-3" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+      </div>
+
+      {/* Candidate Control Table */}
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl space-y-5 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        
+        {/* Table Toolbar */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+          <div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Gestion & Contrôle des Candidats ({filteredCandidates.length} / {candidates.length})
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Consultez les heures d'étude, examens passés et gérez les comptes</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Search Input */}
+            <div className="relative flex-1 sm:w-64">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Chercher nom, email, pseudo..."
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none"
+              />
+            </div>
+
+            {/* Exam Filter */}
+            <select
+              value={selectedExamFilter}
+              onChange={(e) => setSelectedExamFilter(e.target.value)}
+              className="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none cursor-pointer"
+            >
+              <option value="ALL">Tous les concours</option>
+              {target_exam_distribution && target_exam_distribution.map(d => (
+                <option key={d.name} value={d.name}>{d.name}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Users Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-700 dark:text-slate-300">
-            <thead className="text-xs uppercase bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+          <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+            <thead className="text-[11px] uppercase bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-800">
               <tr>
-                <th className="px-4 py-3">Utilisateur</th>
-                <th className="px-4 py-3">Rôle</th>
-                <th className="px-4 py-3">Statut Compte</th>
-                <th className="px-4 py-3">Crédits IA</th>
-                <th className="px-4 py-3">Progression</th>
-                <th className="px-4 py-3 text-center">Mot de Passe</th>
+                <th className="px-4 py-3">Utilisateur / Profil</th>
+                <th className="px-4 py-3">Concours Cible</th>
+                <th className="px-4 py-3">⏱️ Temps d'Étude</th>
+                <th className="px-4 py-3">📝 Examens & QCMs</th>
+                <th className="px-4 py-3">📚 Fiches Maîtrisées</th>
+                <th className="px-4 py-3">⚡ Crédits IA</th>
+                <th className="px-4 py-3">Rôle / Accès</th>
+                <th className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-              {candidates.map((c) => (
-                <tr key={c.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                  
-                  {/* User Info */}
-                  <td className="px-4 py-3.5">
-                    <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                      {c.full_name}
-                      {c.is_staff && (
-                        <span className="text-[10px] bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full font-bold">
-                          👑 ADMIN
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">@{c.username} • {c.email}</div>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {filteredCandidates.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-4 py-8 text-center text-slate-400 font-medium">
+                    Aucun utilisateur ne correspond à vos critères de recherche.
                   </td>
-
-                  {/* Role Selector */}
-                  <td className="px-4 py-3.5">
-                    <select
-                      value={c.is_staff ? 'admin' : 'candidat'}
-                      onChange={(e) => handleUpdateRole(c.id, e.target.value === 'admin')}
-                      className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-slate-100 focus:border-sky-500 focus:outline-none cursor-pointer"
-                    >
-                      <option value="candidat">Candidat</option>
-                      <option value="admin">👑 Administrateur</option>
-                    </select>
-                  </td>
-
-                  {/* Account Type Selector */}
-                  <td className="px-4 py-3.5">
-                    <select
-                      value={c.account_type || 'Standard'}
-                      onChange={(e) => handleUpdateAccountType(c.id, e.target.value)}
-                      className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-slate-100 focus:border-amber-500 focus:outline-none cursor-pointer"
-                    >
-                      <option value="Standard">Normale</option>
-                      <option value="Premium">⭐ Premium</option>
-                    </select>
-                  </td>
-
-                  {/* AI Generations Counter */}
-                  <td className="px-4 py-3.5">
-                    {c.account_type === 'Premium' || c.is_staff ? (
-                      <span className="text-xs text-amber-600 dark:text-amber-400 font-extrabold bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full inline-block">
-                        ∞ Illimité
-                      </span>
-                    ) : (
-                      <div className="flex items-center gap-1.5">
-                        <input 
-                          type="number" 
-                          min="0"
-                          value={c.allowed_generations || 0}
-                          onChange={(e) => handleUpdateGenerations(c.id, e.target.value)}
-                          className="w-16 px-2 py-1 rounded bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-xs text-center font-bold"
-                        />
-                        <span className="text-xs text-slate-500 dark:text-slate-400">crédits</span>
-                      </div>
-                    )}
-                  </td>
-
-                  {/* Progression */}
-                  <td className="px-4 py-3.5">
-                    <div className="text-xs text-slate-800 dark:text-slate-200 font-semibold">
-                      {c.completed_courses} / 39 cours
-                    </div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                      {c.total_attempts} QCM ({c.success_rate}%)
-                    </div>
-                  </td>
-
-                  {/* Change Password Action */}
-                  <td className="px-4 py-3.5 text-center">
-                    <button
-                      onClick={() => {
-                        setSelectedUserForPassword(c);
-                        setNewPassword('');
-                      }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 text-xs font-semibold transition-all shadow-sm"
-                    >
-                      <Lock className="w-3.5 h-3.5" />
-                      Changer MDP
-                    </button>
-                  </td>
-
                 </tr>
-              ))}
+              ) : (
+                filteredCandidates.map((c) => (
+                  <tr key={c.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors ${!c.is_active ? 'opacity-50 bg-red-500/5' : ''}`}>
+                    
+                    {/* User Identity */}
+                    <td className="px-4 py-3.5">
+                      <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        {c.full_name}
+                        {c.is_staff && (
+                          <span className="text-[10px] bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 px-2 py-0.5 rounded-full font-bold">
+                            👑 ADMIN
+                          </span>
+                        )}
+                        {!c.is_active && (
+                          <span className="text-[10px] bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 px-2 py-0.5 rounded-full font-bold">
+                            BANNIS
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">@{c.username} • {c.email}</div>
+                    </td>
+
+                    {/* Target Exam */}
+                    <td className="px-4 py-3.5 font-medium text-slate-800 dark:text-slate-200">
+                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 text-[11px] font-semibold inline-block max-w-[170px] truncate">
+                        {c.target_exam}
+                      </span>
+                    </td>
+
+                    {/* Time Spent Studying */}
+                    <td className="px-4 py-3.5">
+                      <div className="font-extrabold text-[#03594e] dark:text-[#F8C62F] flex items-center gap-1 text-sm">
+                        <Clock className="w-3.5 h-3.5" />
+                        {c.study_hours} h
+                      </div>
+                      <div className="text-[10px] text-slate-400">Temps estimé</div>
+                    </td>
+
+                    {/* Exam & QCM attempts */}
+                    <td className="px-4 py-3.5">
+                      <div className="font-semibold text-slate-900 dark:text-white">
+                        {c.exams_completed} examens terminés
+                      </div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                        {c.total_attempts} QCM ({c.success_rate}% de réussite)
+                      </div>
+                    </td>
+
+                    {/* Completed Courses */}
+                    <td className="px-4 py-3.5">
+                      <div className="font-extrabold text-[#03594e] dark:text-[#F8C62F]">
+                        {c.completed_courses} / {metrics.total_courses} fiches
+                      </div>
+                      <div className="w-24 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 mt-1 overflow-hidden">
+                        <div 
+                          className="h-full bg-[#03594e] dark:bg-[#F8C62F] rounded-full" 
+                          style={{ width: `${Math.min(100, Math.round((c.completed_courses / (metrics.total_courses || 1)) * 100))}%` }}
+                        />
+                      </div>
+                    </td>
+
+                    {/* AI Credits */}
+                    <td className="px-4 py-3.5">
+                      {c.account_type === 'Premium' || c.is_staff ? (
+                        <span className="text-[11px] text-amber-700 dark:text-amber-400 font-extrabold bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 px-2 py-0.5 rounded-full inline-block">
+                          ⭐ Illimité
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-1">
+                          <input 
+                            type="number" 
+                            min="0"
+                            value={c.allowed_generations || 0}
+                            onChange={(e) => handleUpdateGenerations(c.id, e.target.value)}
+                            className="w-14 px-2 py-1 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs text-center font-bold"
+                          />
+                          <span className="text-[10px] text-slate-400">crédits</span>
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Role */}
+                    <td className="px-4 py-3.5">
+                      <select
+                        value={c.is_staff ? 'admin' : 'candidat'}
+                        onChange={(e) => handleUpdateRole(c.id, e.target.value === 'admin')}
+                        className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] font-bold text-slate-900 dark:text-slate-100 focus:outline-none cursor-pointer"
+                      >
+                        <option value="candidat">Candidat</option>
+                        <option value="admin">👑 Admin</option>
+                      </select>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-4 py-3.5 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
+                        <button
+                          onClick={() => {
+                            setSelectedUserForPassword(c);
+                            setNewPassword('');
+                          }}
+                          title="Modifier le mot de passe"
+                          className="p-1.5 rounded-lg bg-[#e6f5f3] dark:bg-[#03594e]/20 text-[#03594e] dark:text-[#F8C62F] border border-[#b3e6df] dark:border-slate-800 text-xs font-semibold transition-all cursor-pointer"
+                        >
+                          <Lock className="w-3.5 h-3.5" />
+                        </button>
+
+                        <button
+                          onClick={() => handleToggleActive(c.id, c.is_active)}
+                          title={c.is_active ? "Suspendre le compte" : "Réactiver le compte"}
+                          className={`p-1.5 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+                            c.is_active 
+                              ? 'bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/30' 
+                              : 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/30'
+                          }`}
+                        >
+                          {c.is_active ? <UserX className="w-3.5 h-3.5" /> : <UserCheck className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </td>
+
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -396,17 +569,17 @@ const AdminDashboard = () => {
       {/* Modal: Change Password */}
       {selectedUserForPassword && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
+          <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
             
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-[#e6f5f3] dark:bg-[#03594e]/20 text-[#03594e] dark:text-[#F8C62F] flex items-center justify-center">
                   <Lock className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 dark:text-white">Modifier le Mot de Passe</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Compte : <span className="font-semibold text-sky-600 dark:text-sky-400">@{selectedUserForPassword.username}</span>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    Compte : <span className="font-bold text-[#03594e] dark:text-[#F8C62F]">@{selectedUserForPassword.username}</span>
                   </p>
                 </div>
               </div>
@@ -431,7 +604,7 @@ const AdminDashboard = () => {
                     required
                     minLength={6}
                     placeholder="Saisissez le nouveau mot de passe"
-                    className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:border-sky-500 focus:outline-none"
+                    className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none"
                   />
                   <button
                     type="button"
@@ -447,17 +620,17 @@ const AdminDashboard = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedUserForPassword(null)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
                   disabled={passwordLoading}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 text-white font-semibold text-xs shadow-md transition-all flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-[#03594e] text-white font-bold text-xs hover:bg-[#02473e] transition-colors flex items-center gap-1.5 shadow-sm"
                 >
-                  {passwordLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-                  Enregistrer le Mot de Passe
+                  {passwordLoading ? <RefreshCw className="w-4 h-4 animate-spin text-[#F8C62F]" /> : <CheckCircle2 className="w-4 h-4 text-[#F8C62F]" />}
+                  Enregistrer
                 </button>
               </div>
             </form>

@@ -8,7 +8,6 @@ __pycache__/
 *.so
 *.egg
 *.egg-info/
-dist/
 build/
 .eggs/
 *.log
@@ -21,12 +20,18 @@ venv/
 env/
 ENV/
 
-# Django - Bases de données locales
+# Django - Bases de données locales (JAMAIS committer la DB locale)
 *.sqlite3
+*.sqlite3.bak
 *.db
+db_backup_*.sqlite3
 concours.db
+
+# Media & static (générés côté serveur)
 media/
 staticfiles/
+
+# Settings locaux
 local_settings.py
 
 # Environment variables (SENSIBLE - ne jamais committer)
@@ -43,7 +48,7 @@ dist/
 .vite/
 *.local
 
-# Logs
+# Logs Node
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -69,18 +74,51 @@ desktop.ini
 # ===========================
 *.pdf
 /images/
-concours.db
 
 # ===========================
-# Scripts locaux / Scratch
+# Scripts locaux / Utilitaires (pas nécessaires en prod)
 # ===========================
-scripts/app.py
-scripts/db.py
-scripts/db_status.py
-scripts/parser.py
-scripts/seed_*.py
-cahier_des_charges_pfe.md
-!backend/db.sqlite3
-Video algorithme/
 /scratch/
+/scripts/
+backend/populate_*.py
+backend/backup_*.py
 
+# ===========================
+# Fichiers debug / temporaires
+# ===========================
+*_debug.txt
+*_tmp.txt
+course*_ar_*.txt
+course*_fr_*.txt
+ado*.txt
+
+# ===========================
+# Backup / Données volumineuses
+# ===========================
+data_backup_sqlite.json
+data_content_only.json
+
+# ===========================
+# Images orphelines à la racine (pas dans frontend/public)
+# ===========================
+/*.jpg
+/*.jpeg
+/*.png
+/*.gif
+/hero_*.png
+/logo.png
+
+# ===========================
+# Ancien dossier de design (template de référence, pas déployé)
+# ===========================
+new design/
+frontend/public/assets/
+
+# ===========================
+# Fichiers Docker (optionnel selon votre infra GCP)
+# ===========================
+# docker-compose.yml  ← décommenter si vous ne l'utilisez pas en prod
+
+# Ne pas ignorer le requirements.txt
+!requirements.txt
+!backend/.env.example

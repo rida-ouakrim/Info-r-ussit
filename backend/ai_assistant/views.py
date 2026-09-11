@@ -146,6 +146,43 @@ class QuestionChatAssistantView(APIView):
             return Response({"error": f"Erreur de l'Assistant IA : {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class CourseChatAssistantView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        user_message = request.data.get('message', '') or request.data.get('user_message', '')
+        course_id = request.data.get('course_id', None)
+        chat_history = request.data.get('chat_history', [])
+
+        if not user_message or not str(user_message).strip():
+            return Response({"error": "Message vide"}, status=status.HTTP_400_BAD_REQUEST)
+
+        from .ai_service import answer_course_chat_query
+
+        course_title = ""
+        if course_id:
+            try:
+                from syllabus.models import Course
+                c = Course.objects.get(id=course_id)
+                course_title = c.title
+            except Exception:
+                pass
+
+        try:
+            ai_reply = answer_course_chat_query(
+                user_message=str(user_message).strip(),
+                course_title=course_title,
+                chat_history=chat_history
+            )
+            return Response({
+                "response": ai_reply,
+                "message": ai_reply,
+                "reply": ai_reply
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": f"Erreur Assistant IA : {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class AcademicLanguagesAIView(APIView):
     """AI endpoint for Academic Languages Tutor (Admin Only)."""
     permission_classes = [permissions.IsAdminUser]

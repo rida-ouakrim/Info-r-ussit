@@ -20,7 +20,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'subdomain', 'subdomain_name', 'domain_code', 'title', 'video_url', 'is_completed')
+        fields = ('id', 'subdomain', 'subdomain_name', 'domain_code', 'title', 'title_ar', 'video_url', 'is_completed')
 
     def get_is_completed(self, obj):
         user = self.context.get('request').user if self.context.get('request') else None
@@ -32,11 +32,12 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     subdomain_name = serializers.CharField(source='subdomain.name', read_only=True)
     subdomain_code = serializers.CharField(source='subdomain.code', read_only=True)
     domain_name = serializers.CharField(source='subdomain.domain.name', read_only=True)
+    domain_code = serializers.CharField(source='subdomain.domain.code', read_only=True)
     is_completed = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ('id', 'subdomain', 'subdomain_code', 'subdomain_name', 'domain_name', 'title', 'content', 'content_ar', 'content_fr', 'examples', 'astuces', 'video_url', 'is_completed')
+        fields = ('id', 'subdomain', 'subdomain_code', 'subdomain_name', 'domain_code', 'domain_name', 'title', 'title_ar', 'content', 'content_ar', 'content_fr', 'examples', 'examples_ar', 'examples_fr', 'astuces', 'astuces_ar', 'astuces_fr', 'video_url', 'is_completed')
 
     def get_is_completed(self, obj):
         user = self.context.get('request').user if self.context.get('request') else None

@@ -6,3 +6,9 @@ gunicorn
 google-genai
 pydantic
 requests
+
+# PostgreSQL
+psycopg2-binary>=2.9
+
+# Environment variables
+python-decouple>=3.8

@@ -20,6 +20,7 @@ class Question(models.Model):
     correct_option = models.CharField(max_length=5)
     explanation = models.TextField(blank=True, null=True)
     astuce = models.TextField(blank=True, null=True)
+    reference_text = models.TextField(blank=True, null=True)
     domain = models.ForeignKey(Domain, on_delete=models.SET_NULL, null=True, blank=True)
     subdomain = models.ForeignKey(Subdomain, on_delete=models.SET_NULL, null=True, blank=True)
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True, blank=True, related_name='questions')

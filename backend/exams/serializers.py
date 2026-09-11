@@ -6,14 +6,25 @@ class QuestionSerializer(serializers.ModelSerializer):
     subdomain_name = serializers.CharField(source='subdomain.name', read_only=True, default='')
     domain_code = serializers.CharField(source='domain.code', read_only=True, default='')
     subdomain_code = serializers.CharField(source='subdomain.code', read_only=True, default='')
+    course_id = serializers.IntegerField(source='course.id', read_only=True, default=None)
+    course_title = serializers.CharField(source='course.title', read_only=True, default='')
+    course_content = serializers.CharField(source='course.content', read_only=True, default='')
+    course_content_ar = serializers.CharField(source='course.content_ar', read_only=True, default='')
+    course_content_fr = serializers.CharField(source='course.content_fr', read_only=True, default='')
+    course_examples = serializers.CharField(source='course.examples', read_only=True, default='')
+    course_astuces = serializers.CharField(source='course.astuces', read_only=True, default='')
+    course_video_url = serializers.CharField(source='course.video_url', read_only=True, default='')
     is_bookmarked = serializers.SerializerMethodField()
+
     class Meta:
         model = Question
         fields = (
             'id', 'source_type', 'exam_year', 'question_number', 'question_text',
             'option_a', 'option_b', 'option_c', 'option_d', 'option_e', 'correct_option',
-            'explanation', 'astuce', 'domain_code', 'domain_name',
-            'subdomain_code', 'subdomain_name', 'course', 'is_bookmarked'
+            'explanation', 'astuce', 'reference_text', 'domain_code', 'domain_name',
+            'subdomain_code', 'subdomain_name', 'course', 'course_id', 'course_title',
+            'course_content', 'course_content_ar', 'course_content_fr', 'course_examples',
+            'course_astuces', 'course_video_url', 'is_bookmarked'
         )
     def get_is_bookmarked(self, obj):
         user = self.context.get('request').user if self.context.get('request') else None

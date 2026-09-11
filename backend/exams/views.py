@@ -31,12 +31,10 @@ class QuestionListView(generics.ListAPIView):
         if subdomain:
             queryset = queryset.filter(subdomain__code=subdomain)
         if domain:
-            if domain == 'DIDACTIQUE':
-                queryset = queryset.filter(domain_id__in=['DIDACTIQUE', 'SCIENCES_EDU'])
-            elif domain == 'SPECIALITE':
+            if domain == 'SPECIALITE':
                 queryset = queryset.filter(domain_id__in=['DEV', 'SYS_RES', 'LOG'])
             else:
-                queryset = queryset.filter(domain__code=domain)
+                queryset = queryset.filter(domain_id=domain)
         if source_type:
             queryset = queryset.filter(source_type=source_type)
         if search:
