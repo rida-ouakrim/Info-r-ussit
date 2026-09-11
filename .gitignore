@@ -112,7 +112,6 @@ data_content_only.json
 # Ancien dossier de design (template de référence, pas déployé)
 # ===========================
 new design/
-frontend/public/assets/
 
 # ===========================
 # Fichiers Docker (optionnel selon votre infra GCP)
