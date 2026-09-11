@@ -382,7 +382,6 @@ const Register = () => {
                 <ChevronDown size={16} />
               </div>
             </div>
-            <p style={{ fontSize: 11, color: '#03594e', fontWeight: 600, margin: '4px 0 0' }}>🎓 Concours officiel actif : CRMEF Secondaire Informatique</p>
           </div>
 
           <div>
