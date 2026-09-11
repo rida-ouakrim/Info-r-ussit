@@ -279,83 +279,49 @@ const Register = () => {
         zIndex: 1,
       }}>
 
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ width: 44, height: 44, borderRadius: 14, background: '#e6f5f3', border: '1px solid #b3e6df', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
-              <svg style={{ width: 22, height: 22, color: '#03594e' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-            </div>
-            <h1 style={{ fontSize: 26, fontWeight: 900, color: '#0d1b1e', margin: '0 0 4px' }}>Créer un compte</h1>
-            <p style={{ fontSize: 13.5, color: '#64748b', margin: 0 }}>Inscription gratuite avec vérification par email</p>
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ width: 44, height: 44, borderRadius: 14, background: '#e6f5f3', border: '1px solid #b3e6df', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+            <svg style={{ width: 22, height: 22, color: '#03594e' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
           </div>
+          <h1 style={{ fontSize: 26, fontWeight: 900, color: '#0d1b1e', margin: '0 0 4px' }}>Créer un compte</h1>
+          <p style={{ fontSize: 13.5, color: '#64748b', margin: 0 }}>Inscription gratuite avec vérification par email</p>
+        </div>
 
-          {error && (
-            <div style={{ padding: '12px 16px', borderRadius: 14, background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: 13, display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 18 }}>
-              <span style={{ color: '#ef4444', flexShrink: 0, marginTop: 1 }}>⚠️</span>
-              <span>{error}</span>
-            </div>
-          )}
+        {error && (
+          <div style={{ padding: '12px 16px', borderRadius: 14, background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: 13, display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 18 }}>
+            <span style={{ color: '#ef4444', flexShrink: 0, marginTop: 1 }}>⚠️</span>
+            <span>{error}</span>
+          </div>
+        )}
 
-          {codeSent && (
-            <div style={{ padding: '14px 16px', borderRadius: 14, background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', fontSize: 12.5, marginBottom: 18 }}>
-              <p style={{ fontWeight: 800, fontSize: 13, margin: '0 0 4px' }}>
-                Code de vérification envoyé à {formData.email}
+        {codeSent && (
+          <div style={{ padding: '14px 16px', borderRadius: 14, background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', fontSize: 12.5, marginBottom: 18 }}>
+            <p style={{ fontWeight: 800, fontSize: 13, margin: '0 0 4px' }}>
+              Code de vérification envoyé à {formData.email}
+            </p>
+            {testCodeNotice ? (
+              <p style={{ margin: 0, opacity: 0.9 }}>
+                Mode test — Votre code : <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: 15, padding: '2px 6px', background: '#dcfce7', borderRadius: 6, color: '#14532d' }}>{testCodeNotice}</span>
               </p>
-              {testCodeNotice ? (
-                <p style={{ margin: 0, opacity: 0.9 }}>
-                  Mode test — Votre code : <span style={{ fontFamily: 'monospace', fontWeight: 900, fontSize: 15, padding: '2px 6px', background: '#dcfce7', borderRadius: 6, color: '#14532d' }}>{testCodeNotice}</span>
-                </p>
-              ) : (
-                <p style={{ margin: 0, opacity: 0.9 }}>
-                  Consultez votre boîte de réception (et les spams) pour récupérer le code à 6 chiffres.
-                </p>
-              )}
-            </div>
-          )}
+            ) : (
+              <p style={{ margin: 0, opacity: 0.9 }}>
+                Consultez votre boîte de réception (et les spams) pour récupérer le code à 6 chiffres.
+              </p>
+            )}
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-              <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Prénom</label>
-                <input
-                  type="text"
-                  name="first_name"
-                  value={formData.first_name}
-                  onChange={handleChange}
-                  required
-                  placeholder="Prénom"
-                  style={{
-                    width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, color: '#0d1b1e', outline: 'none', boxSizing: 'border-box'
-                  }}
-                  onFocus={e => { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; }}
-                  onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
-                />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Nom</label>
-                <input
-                  type="text"
-                  name="last_name"
-                  value={formData.last_name}
-                  onChange={handleChange}
-                  required
-                  placeholder="Nom"
-                  style={{
-                    width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, color: '#0d1b1e', outline: 'none', boxSizing: 'border-box'
-                  }}
-                  onFocus={e => { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; }}
-                  onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
-                />
-              </div>
-            </div>
-
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
             <div>
-              <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Nom d'utilisateur</label>
+              <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Prénom</label>
               <input
                 type="text"
-                name="username"
-                value={formData.username}
+                name="first_name"
+                value={formData.first_name}
                 onChange={handleChange}
                 required
-                placeholder="Ex: mohamed_dev"
+                placeholder="Prénom"
                 style={{
                   width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, color: '#0d1b1e', outline: 'none', boxSizing: 'border-box'
                 }}
@@ -363,50 +329,15 @@ const Register = () => {
                 onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
               />
             </div>
-
             <div>
-              <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Concours cible</label>
-              <div style={{ position: 'relative' }}>
-                <select
-                  name="target_exam"
-                  value={formData.target_exam}
-                  onChange={handleChange}
-                  style={{
-                    width: '100%', padding: '11px 36px 11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, fontWeight: 600, color: '#0d1b1e', outline: 'none', cursor: 'pointer', appearance: 'none', boxSizing: 'border-box'
-                  }}
-                  onFocus={e => { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; }}
-                  onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
-                >
-                  <optgroup label="Enseignement (CRMEF)">
-                    <option value="CRMEF Informatique">CRMEF Secondaire Informatique</option>
-                  </optgroup>
-                  <optgroup label="Concours de l'État (IT, Data & IA)">
-                    <option value="DATA_SCIENCE_IA">Data Scientist & Développeur IA</option>
-                    <option value="DATA_ENG">Data Engineer & Big Data</option>
-                    <option value="DATA_ANALYTICS">Data Analyst & Business Intelligence</option>
-                    <option value="DBA_ADMIN">Administrateur de Bases de Données (DBA)</option>
-                    <option value="INFO_GEN_GL">Informatique Générale & Génie Logiciel</option>
-                    <option value="SYS_CLOUD_DEV">Systèmes, Cloud & DevOps</option>
-                    <option value="CYBERSEC">Cybersécurité & Sécurité SI</option>
-                  </optgroup>
-                </select>
-                <div style={{ position: 'absolute', right: 12, top: 12, pointerEvents: 'none', color: '#64748b' }}>
-                  <ChevronDown size={16} />
-                </div>
-              </div>
-              <p style={{ fontSize: 11, color: '#94a3b8', margin: '4px 0 0' }}>Les cours seront filtrés automatiquement selon votre concours.</p>
-            </div>
-
-            <div>
-              <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Mot de passe</label>
+              <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Nom</label>
               <input
-                type="password"
-                name="password"
-                value={formData.password}
+                type="text"
+                name="last_name"
+                value={formData.last_name}
                 onChange={handleChange}
                 required
-                minLength={6}
-                placeholder="Minimum 6 caractères"
+                placeholder="Nom"
                 style={{
                   width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, color: '#0d1b1e', outline: 'none', boxSizing: 'border-box'
                 }}
@@ -414,141 +345,210 @@ const Register = () => {
                 onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
               />
             </div>
-
-            {/* EMAIL & VERIFICATION CODE */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div>
-                <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#475569', marginBottom: 6 }}>Adresse email</label>
-                <div style={{ display: 'flex', gap: 10 }}>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    disabled={codeSent}
-                    placeholder="votre.email@exemple.ma"
-                    style={{
-                      flex: 1, padding: '11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, color: '#0d1b1e', outline: 'none', boxSizing: 'border-box', opacity: codeSent ? 0.6 : 1
-                    }}
-                    onFocus={e => { if (!codeSent) { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; } }}
-                    onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
-                  />
-                  <button
-                    type="button"
-                    onClick={handleSendCode}
-                    disabled={sendingCode}
-                    style={{
-                      background: '#03594e', color: '#fff', fontSize: 12.5, fontWeight: 800, padding: '11px 16px', borderRadius: 12, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all .2s'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = '#02473e'}
-                    onMouseLeave={e => e.currentTarget.style.background = '#03594e'}
-                  >
-                    {sendingCode ? "Envoi..." : codeSent ? "Renvoyer" : "Envoyer le code"}
-                  </button>
-                </div>
-              </div>
-
-              {codeSent && (
-                <div>
-                  <label style={{ display: 'block', fontSize: 13, fontWeight: 800, color: '#03594e', marginBottom: 6 }}>
-                    Code de vérification à 6 chiffres
-                  </label>
-                  <input
-                    type="text"
-                    name="verification_code"
-                    maxLength={6}
-                    value={formData.verification_code}
-                    onChange={handleChange}
-                    required
-                    placeholder="000000"
-                    style={{
-                      width: '100%', padding: '12px', borderRadius: 12, border: '2px solid #F8C62F', background: '#fffbeb', fontSize: 18, fontWeight: 900, fontFamily: 'monospace', textAlign: 'center', letterSpacing: '0.4em', color: '#1B1D21', outline: 'none', boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* CAPTCHA VISUEL */}
-            <div style={{ padding: '14px 16px', borderRadius: 14, background: '#f8fafc', border: '1px solid #d4ede9', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <label style={{ fontSize: 12, fontWeight: 700, color: '#475569' }}>
-                  Vérification de sécurité
-                </label>
-                <button
-                  type="button"
-                  onClick={generateCaptcha}
-                  style={{ fontSize: 11, fontWeight: 600, color: '#03594e', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
-                >
-                  <RefreshCw size={12} /> Nouveau code
-                </button>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #cbd5e1', cursor: 'pointer', flexShrink: 0 }} onClick={generateCaptcha} title="Cliquer pour changer le code">
-                  <canvas
-                    ref={canvasRef}
-                    width={180}
-                    height={52}
-                    style={{ display: 'block' }}
-                  />
-                </div>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  <input
-                    type="text"
-                    value={userCaptcha}
-                    onChange={handleCaptchaChange}
-                    maxLength={5}
-                    placeholder="Recopiez"
-                    autoComplete="off"
-                    spellCheck="false"
-                    style={{
-                      width: '100%', padding: '9px 12px', borderRadius: 10, border: isCaptchaValid ? '2px solid #22c55e' : '1px solid #cbd5e1', background: isCaptchaValid ? '#f0fdf4' : '#fff', fontSize: 13, fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.2em', textAlign: 'center', textTransform: 'uppercase', outline: 'none', boxSizing: 'border-box'
-                    }}
-                  />
-                  {isCaptchaValid && (
-                    <p style={{ fontSize: 11, color: '#16a34a', fontWeight: 700, margin: 0 }}>
-                      ✓ Captcha validé
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading || !isCaptchaValid || !codeSent || formData.verification_code.length !== 6}
-              style={{
-                width: '100%',
-                padding: '14px 20px',
-                borderRadius: 14,
-                background: '#03594e',
-                color: '#ffffff',
-                fontWeight: 800,
-                fontSize: 15,
-                border: 'none',
-                cursor: 'pointer',
-                boxShadow: '0 8px 24px rgba(3,89,78,0.25)',
-                transition: 'all .2s',
-                marginTop: 6,
-                opacity: (loading || !isCaptchaValid || !codeSent || formData.verification_code.length !== 6) ? 0.5 : 1,
-              }}
-              onMouseEnter={e => { if (!loading && isCaptchaValid) e.currentTarget.style.background = '#02473e'; }}
-              onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#03594e'; }}
-            >
-              {loading ? "Création en cours..." : "Créer mon compte gratuitement"}
-            </button>
-          </form>
-
-          <div style={{ textAlign: 'center', fontSize: 13.5, color: '#64748b', marginTop: 20, paddingTop: 16, borderTop: '1px solid #e6f5f3' }}>
-            Vous avez déjà un compte ?{' '}
-            <Link to="/login" style={{ color: '#03594e', fontWeight: 800, textDecoration: 'none' }} onMouseEnter={e => e.target.style.textDecoration = 'underline'} onMouseLeave={e => e.target.style.textDecoration = 'none'}>
-              Se connecter
-            </Link>
           </div>
 
+          <div>
+            <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Nom d'utilisateur</label>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              placeholder="Ex: mohamed_dev"
+              style={{
+                width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, color: '#0d1b1e', outline: 'none', boxSizing: 'border-box'
+              }}
+              onFocus={e => { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; }}
+              onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Concours cible</label>
+            <div style={{ position: 'relative' }}>
+              <select
+                name="target_exam"
+                value={formData.target_exam}
+                onChange={handleChange}
+                style={{
+                  width: '100%', padding: '11px 36px 11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, fontWeight: 600, color: '#0d1b1e', outline: 'none', cursor: 'pointer', appearance: 'none', boxSizing: 'border-box'
+                }}
+                onFocus={e => { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; }}
+                onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
+              >
+                <optgroup label="Enseignement (CRMEF)">
+                  <option value="CRMEF Informatique">CRMEF Secondaire Informatique</option>
+                </optgroup>
+                <optgroup label="Concours de l'État (IT, Data & IA)">
+                  <option value="DATA_SCIENCE_IA">Data Scientist & Développeur IA</option>
+                  <option value="DATA_ENG">Data Engineer & Big Data</option>
+                  <option value="DATA_ANALYTICS">Data Analyst & Business Intelligence</option>
+                  <option value="DBA_ADMIN">Administrateur de Bases de Données (DBA)</option>
+                  <option value="INFO_GEN_GL">Informatique Générale & Génie Logiciel</option>
+                  <option value="SYS_CLOUD_DEV">Systèmes, Cloud & DevOps</option>
+                  <option value="CYBERSEC">Cybersécurité & Sécurité SI</option>
+                </optgroup>
+              </select>
+              <div style={{ position: 'absolute', right: 12, top: 12, pointerEvents: 'none', color: '#64748b' }}>
+                <ChevronDown size={16} />
+              </div>
+            </div>
+            <p style={{ fontSize: 11, color: '#94a3b8', margin: '4px 0 0' }}>Les cours seront filtrés automatiquement selon votre concours.</p>
+          </div>
+
+          <div>
+            <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>Mot de passe</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              minLength={6}
+              placeholder="Minimum 6 caractères"
+              style={{
+                width: '100%', padding: '11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, color: '#0d1b1e', outline: 'none', boxSizing: 'border-box'
+              }}
+              onFocus={e => { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; }}
+              onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
+            />
+          </div>
+
+          {/* EMAIL & VERIFICATION CODE */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#475569', marginBottom: 6 }}>Adresse email</label>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  disabled={codeSent}
+                  placeholder="votre.email@exemple.ma"
+                  style={{
+                    flex: 1, padding: '11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, color: '#0d1b1e', outline: 'none', boxSizing: 'border-box', opacity: codeSent ? 0.6 : 1
+                  }}
+                  onFocus={e => { if (!codeSent) { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; } }}
+                  onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
+                />
+                <button
+                  type="button"
+                  onClick={handleSendCode}
+                  disabled={sendingCode}
+                  style={{
+                    background: '#03594e', color: '#fff', fontSize: 12.5, fontWeight: 800, padding: '11px 16px', borderRadius: 12, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all .2s'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#02473e'}
+                  onMouseLeave={e => e.currentTarget.style.background = '#03594e'}
+                >
+                  {sendingCode ? "Envoi..." : codeSent ? "Renvoyer" : "Envoyer le code"}
+                </button>
+              </div>
+            </div>
+
+            {codeSent && (
+              <div>
+                <label style={{ display: 'block', fontSize: 13, fontWeight: 800, color: '#03594e', marginBottom: 6 }}>
+                  Code de vérification à 6 chiffres
+                </label>
+                <input
+                  type="text"
+                  name="verification_code"
+                  maxLength={6}
+                  value={formData.verification_code}
+                  onChange={handleChange}
+                  required
+                  placeholder="000000"
+                  style={{
+                    width: '100%', padding: '12px', borderRadius: 12, border: '2px solid #F8C62F', background: '#fffbeb', fontSize: 18, fontWeight: 900, fontFamily: 'monospace', textAlign: 'center', letterSpacing: '0.4em', color: '#1B1D21', outline: 'none', boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* CAPTCHA VISUEL */}
+          <div style={{ padding: '14px 16px', borderRadius: 14, background: '#f8fafc', border: '1px solid #d4ede9', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <label style={{ fontSize: 12, fontWeight: 700, color: '#475569' }}>
+                Vérification de sécurité
+              </label>
+              <button
+                type="button"
+                onClick={generateCaptcha}
+                style={{ fontSize: 11, fontWeight: 600, color: '#03594e', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+              >
+                <RefreshCw size={12} /> Nouveau code
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid #cbd5e1', cursor: 'pointer', flexShrink: 0 }} onClick={generateCaptcha} title="Cliquer pour changer le code">
+                <canvas
+                  ref={canvasRef}
+                  width={180}
+                  height={52}
+                  style={{ display: 'block' }}
+                />
+              </div>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <input
+                  type="text"
+                  value={userCaptcha}
+                  onChange={handleCaptchaChange}
+                  maxLength={5}
+                  placeholder="Recopiez"
+                  autoComplete="off"
+                  spellCheck="false"
+                  style={{
+                    width: '100%', padding: '9px 12px', borderRadius: 10, border: isCaptchaValid ? '2px solid #22c55e' : '1px solid #cbd5e1', background: isCaptchaValid ? '#f0fdf4' : '#fff', fontSize: 13, fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.2em', textAlign: 'center', textTransform: 'uppercase', outline: 'none', boxSizing: 'border-box'
+                  }}
+                />
+                {isCaptchaValid && (
+                  <p style={{ fontSize: 11, color: '#16a34a', fontWeight: 700, margin: 0 }}>
+                    ✓ Captcha validé
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading || !isCaptchaValid || !codeSent || formData.verification_code.length !== 6}
+            style={{
+              width: '100%',
+              padding: '14px 20px',
+              borderRadius: 14,
+              background: '#03594e',
+              color: '#ffffff',
+              fontWeight: 800,
+              fontSize: 15,
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 8px 24px rgba(3,89,78,0.25)',
+              transition: 'all .2s',
+              marginTop: 6,
+              opacity: (loading || !isCaptchaValid || !codeSent || formData.verification_code.length !== 6) ? 0.5 : 1,
+            }}
+            onMouseEnter={e => { if (!loading && isCaptchaValid) e.currentTarget.style.background = '#02473e'; }}
+            onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#03594e'; }}
+          >
+            {loading ? "Création en cours..." : "Créer mon compte gratuitement"}
+          </button>
+        </form>
+
+        <div style={{ textAlign: 'center', fontSize: 13.5, color: '#64748b', marginTop: 20, paddingTop: 16, borderTop: '1px solid #e6f5f3' }}>
+          Vous avez déjà un compte ?{' '}
+          <Link to="/login" style={{ color: '#03594e', fontWeight: 800, textDecoration: 'none' }} onMouseEnter={e => e.target.style.textDecoration = 'underline'} onMouseLeave={e => e.target.style.textDecoration = 'none'}>
+            Se connecter
+          </Link>
         </div>
+
+      </div>
     </div>
   );
 };
