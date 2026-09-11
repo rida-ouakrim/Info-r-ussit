@@ -31,10 +31,16 @@ export default function Navbar() {
     { label: 'Témoignages', href: '#temoignages' },
   ];
 
+  const getHref = (linkHref) => {
+    if (linkHref === '/') return '/';
+    if (location.pathname === '/') return linkHref;
+    return '/' + linkHref;
+  };
+
   const handleNavClick = (e, href) => {
+    e.preventDefault();
     if (href === '/') {
       if (location.pathname === '/') {
-        e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         navigate('/');
@@ -43,7 +49,6 @@ export default function Navbar() {
     }
 
     if (href.startsWith('#')) {
-      e.preventDefault();
       const targetId = href.substring(1);
       if (location.pathname === '/') {
         const el = document.getElementById(targetId);
@@ -126,7 +131,7 @@ export default function Navbar() {
               {navLinks.map((link) => (
                 <a
                   key={link.label}
-                  href={location.pathname === '/' ? link.href : '/' + link.href}
+                  href={getHref(link.href)}
                   onClick={(e) => handleNavClick(e, link.href)}
                   className="px-4 py-2 text-sm font-bold text-slate-600 hover:text-[#03594e] transition-colors rounded-lg hover:bg-[#e6f5f3]"
                 >
@@ -193,7 +198,7 @@ export default function Navbar() {
               {navLinks.map((link) => (
                 <a
                   key={link.label}
-                  href={location.pathname === '/' ? link.href : '/' + link.href}
+                  href={getHref(link.href)}
                   onClick={(e) => { setMobileOpen(false); handleNavClick(e, link.href); }}
                   className="block px-4 py-3 text-sm font-bold text-slate-700 hover:text-[#03594e] hover:bg-[#e6f5f3] rounded-lg transition-colors"
                 >
