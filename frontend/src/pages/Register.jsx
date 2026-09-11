@@ -371,30 +371,18 @@ const Register = () => {
                 name="target_exam"
                 value={formData.target_exam}
                 onChange={handleChange}
+                disabled
                 style={{
-                  width: '100%', padding: '11px 36px 11px 14px', borderRadius: 12, border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5, fontWeight: 600, color: '#0d1b1e', outline: 'none', cursor: 'pointer', appearance: 'none', boxSizing: 'border-box'
+                  width: '100%', padding: '11px 36px 11px 14px', borderRadius: 12, border: '1px solid #b3e6df', background: '#e6f5f3', fontSize: 13.5, fontWeight: 800, color: '#03594e', outline: 'none', appearance: 'none', boxSizing: 'border-box', cursor: 'default'
                 }}
-                onFocus={e => { e.target.style.borderColor = '#03594e'; e.target.style.background = '#fff'; }}
-                onBlur={e => { e.target.style.borderColor = '#d4ede9'; e.target.style.background = '#f8fafc'; }}
               >
-                <optgroup label="Enseignement (CRMEF)">
-                  <option value="CRMEF Informatique">CRMEF Secondaire Informatique</option>
-                </optgroup>
-                <optgroup label="Concours de l'État (IT, Data & IA)">
-                  <option value="DATA_SCIENCE_IA">Data Scientist & Développeur IA</option>
-                  <option value="DATA_ENG">Data Engineer & Big Data</option>
-                  <option value="DATA_ANALYTICS">Data Analyst & Business Intelligence</option>
-                  <option value="DBA_ADMIN">Administrateur de Bases de Données (DBA)</option>
-                  <option value="INFO_GEN_GL">Informatique Générale & Génie Logiciel</option>
-                  <option value="SYS_CLOUD_DEV">Systèmes, Cloud & DevOps</option>
-                  <option value="CYBERSEC">Cybersécurité & Sécurité SI</option>
-                </optgroup>
+                <option value="CRMEF Informatique">CRMEF Secondaire Informatique</option>
               </select>
-              <div style={{ position: 'absolute', right: 12, top: 12, pointerEvents: 'none', color: '#64748b' }}>
+              <div style={{ position: 'absolute', right: 12, top: 12, pointerEvents: 'none', color: '#03594e' }}>
                 <ChevronDown size={16} />
               </div>
             </div>
-            <p style={{ fontSize: 11, color: '#94a3b8', margin: '4px 0 0' }}>Les cours seront filtrés automatiquement selon votre concours.</p>
+            <p style={{ fontSize: 11, color: '#03594e', fontWeight: 600, margin: '4px 0 0' }}>🎓 Concours officiel actif : CRMEF Secondaire Informatique</p>
           </div>
 
           <div>
