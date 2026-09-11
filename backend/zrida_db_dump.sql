@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict sebfu7pQ39YBygb6DCgnydAFN6uyR5g3a5v6Nzclw8ZIYsDZcdCCcS9dHAfbPMe
+\restrict emAGmOJNjLtiu5WJX3K8mvQbxmSgLbEaKnvCXNhNrczBkdyX0NCHaQZCO3Mtg1e
 
 -- Dumped from database version 16.15
 -- Dumped by pg_dump version 18.3
@@ -817,6 +817,7 @@ COPY public.authentication_user (id, password, last_login, is_superuser, usernam
 2	pbkdf2_sha256$1200000$e6tTb3wQpQvwZXXhn1Z7UM$QwN1tuaUOHseQEQjNjRl2jPhBa9XSHXdYepFLJQhVHk=	\N	f	rida	rida	ouakrim	ridaouakrim0@gmail.com	f	t	2026-08-18 15:17:40.863611+00	DATA_SCIENCE_IA	t	2026-08-18 15:17:40.864196+00	5	Standard
 3	pbkdf2_sha256$1200000$Jw5iabusmuQeiy7xmGeti9$OLBMLVdW0n1GS+I/JaeDE76aab/6RLOo1QBp/N0rvns=	\N	f	rida2	rida2	ouakrim	ridaouakrim@gmail.com	f	f	2026-08-19 08:03:41.254633+00	CRMEF Informatique	t	2026-08-19 08:03:41.254981+00	5	Standard
 4	pbkdf2_sha256$1200000$oTdLV2YQgklBina6s8bwVW$Ym8DyJQ/MHP5lAZ4stoEvdlqTSu8qCEOVjeScMrqUoc=	\N	f	mohamed	mohamed	ouakrim	rida.ouakrim@um5r.ac.ma	f	t	2026-08-28 10:45:52.86549+00	CRMEF Informatique	t	2026-08-28 10:45:52.866187+00	49	Standard
+5	pbkdf2_sha256$1200000$hq7gagE8bT2NGSZMN9g0OZ$+7QQXEhiHXGRV9T2wU+dQBmgW9Qw2ljH3MHpwgKT40w=	\N	t	ridaouakrim0@gmail.com			ridaouakrim0@gmail.com	t	t	2026-09-11 14:44:16.097822+00	CRMEF Informatique	t	2026-09-11 14:44:16.098082+00	5	Standard
 \.
 
 
@@ -2782,7 +2783,7 @@ SELECT pg_catalog.setval('public.authentication_user_groups_id_seq', 1, false);
 -- Name: authentication_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.authentication_user_id_seq', 4, true);
+SELECT pg_catalog.setval('public.authentication_user_id_seq', 5, true);
 
 
 --
@@ -3528,5 +3529,5 @@ ALTER TABLE ONLY public.syllabus_subdomain
 -- PostgreSQL database dump complete
 --
 
-\unrestrict sebfu7pQ39YBygb6DCgnydAFN6uyR5g3a5v6Nzclw8ZIYsDZcdCCcS9dHAfbPMe
+\unrestrict emAGmOJNjLtiu5WJX3K8mvQbxmSgLbEaKnvCXNhNrczBkdyX0NCHaQZCO3Mtg1e
 

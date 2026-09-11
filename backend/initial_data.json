@@ -1,5 +1,120 @@
 [
 {
+  "model": "authentication.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$yx7CTHDtxgD3VzQq60EdTh$jdWZGb9NPeP+IgNVhX+f8xmrIaqXCIrkIRUYKuFSHYg=",
+    "last_login": "2026-08-18T10:27:18.611Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@concours-info.ma",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-08-18T10:03:44.926Z",
+    "target_exam": "Administrateur Plateforme",
+    "is_license_active": true,
+    "allowed_generations": 5,
+    "account_type": "Standard",
+    "created_at": "2026-08-18T10:03:45.532Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authentication.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$e6tTb3wQpQvwZXXhn1Z7UM$QwN1tuaUOHseQEQjNjRl2jPhBa9XSHXdYepFLJQhVHk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "rida",
+    "first_name": "rida",
+    "last_name": "ouakrim",
+    "email": "ridaouakrim0@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-08-18T15:17:40.863Z",
+    "target_exam": "DATA_SCIENCE_IA",
+    "is_license_active": true,
+    "allowed_generations": 5,
+    "account_type": "Standard",
+    "created_at": "2026-08-18T15:17:40.864Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authentication.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$Jw5iabusmuQeiy7xmGeti9$OLBMLVdW0n1GS+I/JaeDE76aab/6RLOo1QBp/N0rvns=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "rida2",
+    "first_name": "rida2",
+    "last_name": "ouakrim",
+    "email": "ridaouakrim@gmail.com",
+    "is_staff": false,
+    "is_active": false,
+    "date_joined": "2026-08-19T08:03:41.254Z",
+    "target_exam": "CRMEF Informatique",
+    "is_license_active": true,
+    "allowed_generations": 5,
+    "account_type": "Standard",
+    "created_at": "2026-08-19T08:03:41.254Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authentication.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$oTdLV2YQgklBina6s8bwVW$Ym8DyJQ/MHP5lAZ4stoEvdlqTSu8qCEOVjeScMrqUoc=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "mohamed",
+    "first_name": "mohamed",
+    "last_name": "ouakrim",
+    "email": "rida.ouakrim@um5r.ac.ma",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-08-28T10:45:52.865Z",
+    "target_exam": "CRMEF Informatique",
+    "is_license_active": true,
+    "allowed_generations": 49,
+    "account_type": "Standard",
+    "created_at": "2026-08-28T10:45:52.866Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "authentication.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$hq7gagE8bT2NGSZMN9g0OZ$+7QQXEhiHXGRV9T2wU+dQBmgW9Qw2ljH3MHpwgKT40w=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "ridaouakrim0@gmail.com",
+    "first_name": "",
+    "last_name": "",
+    "email": "ridaouakrim0@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-09-11T14:44:16.097Z",
+    "target_exam": "CRMEF Informatique",
+    "is_license_active": true,
+    "allowed_generations": 5,
+    "account_type": "Standard",
+    "created_at": "2026-09-11T14:44:16.098Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
   "model": "syllabus.domain",
   "pk": "CONCOURS_ETAT",
   "fields": {
