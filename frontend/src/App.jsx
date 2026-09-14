@@ -22,6 +22,8 @@ import LanguagesAcademy from './pages/LanguagesAcademy';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 
+import ErrorBoundary from './components/ErrorBoundary';
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return null;
@@ -93,18 +95,20 @@ function AppContent() {
         <Header onMenuClick={() => setMobileOpen(true)} />
 
         <main className="flex-1 px-4 sm:px-6 py-6 max-w-7xl w-full mx-auto">
-          <Routes>
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
-            <Route path="/annales" element={<ProtectedRoute><Exams /></ProtectedRoute>} />
-            <Route path="/generator" element={<ProtectedRoute><AIGenerator /></ProtectedRoute>} />
-            <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
-            <Route path="/errors" element={<ProtectedRoute><ErrorNotebook /></ProtectedRoute>} />
-            <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-            <Route path="/plan" element={<ProtectedRoute><Plan /></ProtectedRoute>} />
-            <Route path="/languages-academy" element={<AdminRoute><LanguagesAcademy /></AdminRoute>} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
+          <ErrorBoundary key={location.pathname}>
+            <Routes>
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+              <Route path="/annales" element={<ProtectedRoute><Exams /></ProtectedRoute>} />
+              <Route path="/generator" element={<ProtectedRoute><AIGenerator /></ProtectedRoute>} />
+              <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
+              <Route path="/errors" element={<ProtectedRoute><ErrorNotebook /></ProtectedRoute>} />
+              <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+              <Route path="/plan" element={<ProtectedRoute><Plan /></ProtectedRoute>} />
+              <Route path="/languages-academy" element={<AdminRoute><LanguagesAcademy /></AdminRoute>} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </ErrorBoundary>
         </main>
 
         <Footer />

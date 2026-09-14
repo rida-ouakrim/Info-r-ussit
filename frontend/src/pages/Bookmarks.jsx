@@ -24,9 +24,10 @@ const Bookmarks = () => {
   const fetchBookmarks = async () => {
     try {
       const res = await API.get('bookmarks/');
-      setBookmarks(res.data);
+      setBookmarks(Array.isArray(res.data) ? res.data : (res.data?.results || []));
     } catch (err) {
       console.error(err);
+      setBookmarks([]);
     } finally {
       setLoading(false);
     }
@@ -83,6 +84,7 @@ const Bookmarks = () => {
         <div className="space-y-6">
           {bookmarks.map((bm) => {
             const q = bm.question_details;
+            if (!q) return null;
             const answer = userAnswers[q.id];
 
             return (

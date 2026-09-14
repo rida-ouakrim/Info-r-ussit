@@ -74,10 +74,10 @@ const Exams = () => {
   const modalContentRef = useRef(null);
 
   const HIGHLIGHT_COLORS = [
-    { id: 'yellow', label: 'Jaune',  bg: '#fef08a', text: '#78350f' },
-    { id: 'green',  label: 'Vert',   bg: '#bbf7d0', text: '#14532d' },
-    { id: 'blue',   label: 'Bleu',   bg: '#bae6fd', text: '#0c4a6e' },
-    { id: 'pink',   label: 'Rose',   bg: '#fbcfe8', text: '#831843' },
+    { id: 'yellow', label: 'Jaune', bg: '#fef08a', text: '#78350f' },
+    { id: 'green', label: 'Vert', bg: '#bbf7d0', text: '#14532d' },
+    { id: 'blue', label: 'Bleu', bg: '#bae6fd', text: '#0c4a6e' },
+    { id: 'pink', label: 'Rose', bg: '#fbcfe8', text: '#831843' },
     { id: 'orange', label: 'Orange', bg: '#fed7aa', text: '#7c2d12' },
   ];
 
@@ -91,7 +91,7 @@ const Exams = () => {
   const saveHighlights = useCallback((key, list) => {
     setHighlightsMap(prev => {
       const updated = { ...prev, [key]: list };
-      try { localStorage.setItem(`course_highlights_${userKey}`, JSON.stringify(updated)); } catch (e) {}
+      try { localStorage.setItem(`course_highlights_${userKey}`, JSON.stringify(updated)); } catch (e) { }
       return updated;
     });
   }, [userKey]);
@@ -530,8 +530,8 @@ const Exams = () => {
               <button
                 onClick={() => setActiveTab('new')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${activeTab === 'new'
-                    ? 'bg-[#03594e] text-white shadow-md'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#03594e] text-white shadow-md'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
               >
                 <Play className="w-3.5 h-3.5 text-[#F8C62F]" /> Démarrer un Examen
@@ -540,8 +540,8 @@ const Exams = () => {
               <button
                 onClick={() => { setActiveTab('saved'); fetchHistory(); }}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${activeTab === 'saved'
-                    ? 'bg-[#03594e] text-white shadow-md'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#03594e] text-white shadow-md'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
               >
                 <History className="w-3.5 h-3.5 text-[#F8C62F]" /> Mes Tests ({history.length})
@@ -685,8 +685,8 @@ const Exams = () => {
                       type="button"
                       onClick={() => setMode('Entraînement')}
                       className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${mode === 'Entraînement'
-                          ? 'bg-[#03594e] text-white shadow-md'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        ? 'bg-[#03594e] text-white shadow-md'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                         }`}
                     >
                       💡 Entraînement
@@ -695,8 +695,8 @@ const Exams = () => {
                       type="button"
                       onClick={() => setMode('Examen')}
                       className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${mode === 'Examen'
-                          ? 'bg-[#03594e] text-white shadow-md'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        ? 'bg-[#03594e] text-white shadow-md'
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                         }`}
                     >
                       ⏱️ Examen Blanc
@@ -743,8 +743,8 @@ const Exams = () => {
                           key={ep.id}
                           onClick={() => setSelectedDomainFilter(ep.id)}
                           className={`group relative p-5 sm:p-6 rounded-2xl border-2 text-left cursor-pointer transition-all duration-300 flex flex-col justify-between space-y-4 min-h-[145px] ${isSelected
-                              ? 'border-[#03594e] bg-[#03594e]/5 dark:bg-[#03594e]/15 shadow-lg ring-2 ring-[#03594e]/20 scale-[1.01]'
-                              : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:border-[#03594e]/50 dark:hover:border-slate-700 hover:shadow-md'
+                            ? 'border-[#03594e] bg-[#03594e]/5 dark:bg-[#03594e]/15 shadow-lg ring-2 ring-[#03594e]/20 scale-[1.01]'
+                            : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:border-[#03594e]/50 dark:hover:border-slate-700 hover:shadow-md'
                             }`}
                         >
                           <div className="flex items-center justify-between">
@@ -790,8 +790,8 @@ const Exams = () => {
                             type="button"
                             onClick={() => setSelectedYear(y)}
                             className={`w-full py-3 px-2 rounded-2xl text-xs font-extrabold transition-all border flex flex-col items-center justify-center gap-0.5 cursor-pointer ${isSelected
-                                ? 'bg-[#03594e] border-[#03594e] text-[#ffffff] shadow-md scale-[1.02]'
-                                : 'bg-white dark:bg-slate-950 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
+                              ? 'bg-[#03594e] border-[#03594e] text-[#ffffff] shadow-md scale-[1.02]'
+                              : 'bg-white dark:bg-slate-950 border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700'
                               }`}
                           >
                             <span className={isSelected ? 'text-[#F8C62F]' : 'text-slate-400 text-[10px]'}>Session</span>
@@ -805,8 +805,8 @@ const Exams = () => {
                                 type="button"
                                 onClick={() => setSelectedLangFilter('ar')}
                                 className={`flex-1 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer ${selectedLangFilter !== 'fr'
-                                    ? 'bg-[#03594e] text-white shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                  ? 'bg-[#03594e] text-white shadow-sm'
+                                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
                                   }`}
                               >
                                 عربية
@@ -815,8 +815,8 @@ const Exams = () => {
                                 type="button"
                                 onClick={() => setSelectedLangFilter('fr')}
                                 className={`flex-1 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer ${selectedLangFilter === 'fr'
-                                    ? 'bg-[#03594e] text-white shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
+                                  ? 'bg-[#03594e] text-white shadow-sm'
+                                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white'
                                   }`}
                               >
                                 Français
@@ -1466,8 +1466,8 @@ const Exams = () => {
                   type="button"
                   onClick={() => setShowArabicKeyboard(!showArabicKeyboard)}
                   className={`px-3 py-3 rounded-xl border flex items-center gap-1.5 font-extrabold text-xs cursor-pointer transition-all shrink-0 ${showArabicKeyboard
-                      ? 'bg-[#F8C62F] text-[#1B1D21] border-[#F8C62F] shadow-md scale-105'
-                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-[#03594e]'
+                    ? 'bg-[#F8C62F] text-[#1B1D21] border-[#F8C62F] shadow-md scale-105'
+                    : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-[#03594e]'
                     }`}
                   title="Ouvrir la لوحة المفاتيح العربية"
                 >
@@ -1555,8 +1555,8 @@ const Exams = () => {
                 type="button"
                 onClick={() => setCourseModalTab('content')}
                 className={`px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${courseModalTab === 'content'
-                    ? 'bg-[#03594e] text-white shadow-sm'
-                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                  ? 'bg-[#03594e] text-white shadow-sm'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                   }`}
               >
                 {courseModalLang === 'ar' ? "📖 بطاقة الدرس والمراجعة" : "📖 Fiche de Révision"}
@@ -1567,8 +1567,8 @@ const Exams = () => {
                   type="button"
                   onClick={() => setCourseModalTab('examples')}
                   className={`px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${courseModalTab === 'examples'
-                      ? 'bg-[#03594e] text-white shadow-sm'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#03594e] text-white shadow-sm'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                     }`}
                 >
                   {courseModalLang === 'ar' ? "🧪 تطبيقات وأمثلة" : "🧪 Pratique & Exemples"}
@@ -1580,8 +1580,8 @@ const Exams = () => {
                   type="button"
                   onClick={() => setCourseModalTab('astuces')}
                   className={`px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${courseModalTab === 'astuces'
-                      ? 'bg-[#03594e] text-white shadow-sm'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#03594e] text-white shadow-sm'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                     }`}
                 >
                   {courseModalLang === 'ar' ? "⚡ قواعد ذهبية للمباراة" : "⚡ Astuces Concours"}
@@ -1593,8 +1593,8 @@ const Exams = () => {
                   type="button"
                   onClick={() => setCourseModalTab('video')}
                   className={`px-3.5 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${courseModalTab === 'video'
-                      ? 'bg-[#03594e] text-white shadow-sm'
-                      : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#03594e] text-white shadow-sm'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                     }`}
                 >
                   {courseModalLang === 'ar' ? "🎥 فيديو" : "🎥 Vidéo"}

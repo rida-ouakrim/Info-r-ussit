@@ -3,8 +3,8 @@ import API from '../services/api';
 import MarkdownViewer from '../components/MarkdownViewer';
 import ReferenceTextModal, { hasReferenceText } from '../components/ReferenceTextModal';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { 
-  Sparkles, RefreshCw, Play, CheckCircle2, Star, 
+import {
+  Sparkles, RefreshCw, Play, CheckCircle2, Star,
   ChevronLeft, ChevronRight, Trophy, BookOpen, XCircle,
   History, Trash2, Clock, Eye, Pause, Save, FileText
 } from 'lucide-react';
@@ -29,7 +29,7 @@ const AIGenerator = () => {
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
-  
+
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [historyList, setHistoryList] = useState([]);
   const [allowedGenerations, setAllowedGenerations] = useState(null);
@@ -164,7 +164,7 @@ const AIGenerator = () => {
         difficulty: difficulty,
         lang: selectedDomainCode === 'SCIENCES_EDU' ? qcmLanguage : 'fr'
       });
-      
+
       const qList = res.data.questions || res.data;
       const ids = qList.map(q => q.id);
       setAiQuestions(qList);
@@ -210,7 +210,7 @@ const AIGenerator = () => {
       setUserAnswers(session.quiz_attempts_json?.attempts || {});
       setScore(session.quiz_score || 0);
       setShowResults(Boolean(session.exam_submitted));
-      
+
       // Extract subdomain code from mode (e.g. AI_DEV_ALGO -> DEV_ALGO)
       const subCode = (session.quiz_mode || '').replace('AI_', '');
       if (subCode) {
@@ -313,22 +313,20 @@ const AIGenerator = () => {
         <div className="flex items-center gap-3 border-b border-[#e8f5f3] pb-2">
           <button
             onClick={() => setActiveTab('generate')}
-            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all ${
-              activeTab === 'generate'
+            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all ${activeTab === 'generate'
                 ? 'bg-[#03594e] text-white shadow-lg'
                 : 'bg-white text-slate-600 hover:text-slate-900 border border-[#d4ede9]'
-            }`}
+              }`}
           >
             <Sparkles className="w-4 h-4 text-[#F8C62F]" /> 🚀 Générer un QCM
           </button>
 
           <button
             onClick={() => { setActiveTab('history'); fetchHistory(); }}
-            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all ${
-              activeTab === 'history'
+            className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-extrabold transition-all ${activeTab === 'history'
                 ? 'bg-[#03594e] text-white shadow-lg'
                 : 'bg-white text-slate-600 hover:text-slate-900 border border-[#d4ede9]'
-            }`}
+              }`}
           >
             <History className="w-4 h-4 text-[#F8C62F]" /> 💾 Mes QCM IA Enregistrés ({historyList.length})
           </button>
@@ -401,22 +399,20 @@ const AIGenerator = () => {
                   <button
                     type="button"
                     onClick={() => setQcmLanguage('fr')}
-                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                      qcmLanguage === 'fr' 
-                        ? 'bg-[#03594e] border-[#03594e] text-white shadow-md' 
+                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 cursor-pointer ${qcmLanguage === 'fr'
+                        ? 'bg-[#03594e] border-[#03594e] text-white shadow-md'
                         : 'bg-white border-[#d4ede9] text-slate-600 hover:text-slate-900'
-                    }`}
+                      }`}
                   >
                     🇫🇷 Français
                   </button>
                   <button
                     type="button"
                     onClick={() => setQcmLanguage('ar')}
-                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                      qcmLanguage === 'ar' 
-                        ? 'bg-[#03594e] border-[#03594e] text-white shadow-md' 
+                    className={`p-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 cursor-pointer ${qcmLanguage === 'ar'
+                        ? 'bg-[#03594e] border-[#03594e] text-white shadow-md'
                         : 'bg-white border-[#d4ede9] text-slate-600 hover:text-slate-900'
-                    }`}
+                      }`}
                   >
                     🇲🇦 عربي
                   </button>
@@ -488,8 +484,8 @@ const AIGenerator = () => {
                   const dateStr = session.updated_at ? new Date(session.updated_at).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : 'Récemment';
 
                   return (
-                    <div 
-                      key={session.id} 
+                    <div
+                      key={session.id}
                       className="p-6 rounded-3xl space-y-4 bg-white border border-[#d4ede9] hover:border-[#03594e]/40 transition-all flex flex-col justify-between"
                       style={{ boxShadow: '0 4px 20px rgba(3,89,78,0.04)' }}
                     >
@@ -498,11 +494,10 @@ const AIGenerator = () => {
                           <span className="px-3 py-1 rounded-full text-xs font-extrabold" style={{ background: '#F8C62F', color: '#1B1D21' }}>
                             Générateur IA
                           </span>
-                          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                            isSubmitted 
-                              ? 'bg-emerald-500/15 text-emerald-700 border border-emerald-500/30' 
+                          <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${isSubmitted
+                              ? 'bg-emerald-500/15 text-emerald-700 border border-emerald-500/30'
                               : 'bg-amber-500/15 text-amber-700 border border-amber-500/30'
-                          }`}>
+                            }`}>
                             {isSubmitted ? '🟢 Terminé' : `🟡 En cours (Q${session.current_index + 1})`}
                           </span>
                         </div>
@@ -548,50 +543,50 @@ const AIGenerator = () => {
             )}
           </div>
         )}
-      {deleteConfirmId && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-          <div 
-            className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
-            onClick={() => setDeleteConfirmId(null)}
-          />
-          <div className="relative glass-card w-full max-w-sm p-6 rounded-3xl border border-red-500/20 bg-slate-900/90 dark:bg-slate-950/95 text-center space-y-6 shadow-2xl">
-            <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center mx-auto">
-              <Trash2 className="w-6 h-6 animate-pulse" />
-            </div>
-            
-            <div className="space-y-2">
-              <h3 className="text-lg font-bold text-white">Confirmation de suppression</h3>
-              <p className="text-xs text-slate-400 leading-relaxed font-medium">
-                Voulez-vous vraiment supprimer ce QCM IA de votre historique ?
-              </p>
-            </div>
+        {deleteConfirmId && (
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+              onClick={() => setDeleteConfirmId(null)}
+            />
+            <div className="relative glass-card w-full max-w-sm p-6 rounded-3xl border border-red-500/20 bg-slate-900/90 dark:bg-slate-950/95 text-center space-y-6 shadow-2xl">
+              <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center mx-auto">
+                <Trash2 className="w-6 h-6 animate-pulse" />
+              </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all"
-              >
-                Annuler
-              </button>
-              <button
-                onClick={() => {
-                  confirmDeleteSession(deleteConfirmId);
-                  setDeleteConfirmId(null);
-                }}
-                className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold shadow-lg shadow-red-600/20 transition-all"
-              >
-                Supprimer
-              </button>
+              <div className="space-y-2">
+                <h3 className="text-lg font-bold text-white">Confirmation de suppression</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Voulez-vous vraiment supprimer ce QCM IA de votre historique ?
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="flex-1 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-all"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={() => {
+                    confirmDeleteSession(deleteConfirmId);
+                    setDeleteConfirmId(null);
+                  }}
+                  className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold shadow-lg shadow-red-600/20 transition-all"
+                >
+                  Supprimer
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {toast && (
-        <div className="fixed bottom-6 right-6 z-[9999] px-6 py-4 rounded-2xl bg-slate-900/95 dark:bg-slate-950/95 border border-emerald-500/30 text-emerald-400 text-sm font-semibold shadow-2xl flex items-center gap-2 animate-bounce">
-          <CheckCircle2 className="w-5 h-5" />
-          <span>{toast}</span>
-        </div>
-      )}
+        )}
+        {toast && (
+          <div className="fixed bottom-6 right-6 z-[9999] px-6 py-4 rounded-2xl bg-slate-900/95 dark:bg-slate-950/95 border border-emerald-500/30 text-emerald-400 text-sm font-semibold shadow-2xl flex items-center gap-2 animate-bounce">
+            <CheckCircle2 className="w-5 h-5" />
+            <span>{toast}</span>
+          </div>
+        )}
       </div>
     );
   }
@@ -676,13 +671,12 @@ const AIGenerator = () => {
                       const isCorrectAnswer = q.correct_option?.trim() === optKey || answer?.correct_option === optKey;
 
                       return (
-                        <div key={optKey} className={`p-2.5 rounded-lg border ${
-                          isCorrectAnswer 
+                        <div key={optKey} className={`p-2.5 rounded-lg border ${isCorrectAnswer
                             ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-bold'
                             : isChosen
-                            ? 'bg-red-500/10 border-red-500/30 text-red-800 dark:text-red-300 font-bold'
-                            : 'bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
-                        }`}>
+                              ? 'bg-red-500/10 border-red-500/30 text-red-800 dark:text-red-300 font-bold'
+                              : 'bg-slate-50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                          }`}>
                           <strong className="mr-1">{optKey})</strong> {optText}
                         </div>
                       );
@@ -790,13 +784,11 @@ const AIGenerator = () => {
                   key={optKey}
                   onClick={() => handleOptionSelect(currentQ.id, optKey)}
                   disabled={Boolean(currentAnswer)}
-                  className={`p-3 sm:p-4 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all cursor-pointer ${
-                    isFullWidth ? 'sm:col-span-2' : ''
-                  } ${
-                    isChosen
+                  className={`p-3 sm:p-4 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all cursor-pointer ${isFullWidth ? 'sm:col-span-2' : ''
+                    } ${isChosen
                       ? (isCorrect ? 'bg-emerald-500/20 border-emerald-500 text-emerald-800 font-bold' : 'bg-red-500/20 border-red-500 text-red-800 font-bold')
                       : 'bg-white hover:bg-slate-50 border-[#d4ede9] text-slate-700'
-                  }`}
+                    }`}
                 >
                   <strong className="text-[#03594e] mr-1.5">{optKey})</strong> {optText}
                 </button>
@@ -833,7 +825,7 @@ const AIGenerator = () => {
         >
           <ChevronLeft className="w-4 h-4" /> Précédent
         </button>
-        
+
         {currentIndex < aiQuestions.length - 1 ? (
           <button
             onClick={() => setCurrentIndex(prev => prev + 1)}
@@ -852,7 +844,7 @@ const AIGenerator = () => {
       </div>
       {deleteConfirmId && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
             onClick={() => setDeleteConfirmId(null)}
           />
@@ -860,7 +852,7 @@ const AIGenerator = () => {
             <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center mx-auto">
               <Trash2 className="w-6 h-6 animate-pulse" />
             </div>
-            
+
             <div className="space-y-2">
               <h3 className="text-lg font-bold text-white">Confirmation de suppression</h3>
               <p className="text-xs text-slate-400 leading-relaxed font-medium">

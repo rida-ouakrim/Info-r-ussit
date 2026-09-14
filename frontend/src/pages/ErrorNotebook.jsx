@@ -19,10 +19,11 @@ const ErrorNotebook = () => {
   const fetchErrors = async (keepActiveSubdomain = false) => {
     try {
       const res = await API.get('errors/');
-      setErrors(res.data);
+      const dataList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+      setErrors(dataList);
       
-      if (res.data.length > 0) {
-        const keys = [...new Set(res.data.map(q => q.subdomain_name || 'Autre'))];
+      if (dataList.length > 0) {
+        const keys = [...new Set(dataList.map(q => q.subdomain_name || 'Autre'))];
         if (!keepActiveSubdomain || !keys.includes(activeSubdomain)) {
           setActiveSubdomain(keys[0]);
         }
@@ -31,6 +32,7 @@ const ErrorNotebook = () => {
       }
     } catch (err) {
       console.error(err);
+      setErrors([]);
     } finally {
       setLoading(false);
     }
