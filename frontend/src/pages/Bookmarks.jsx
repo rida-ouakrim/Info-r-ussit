@@ -18,20 +18,25 @@ const Bookmarks = () => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+    const fetchBookmarks = async () => {
+      try {
+        const res = await API.get('bookmarks/');
+        if (isMounted) {
+          setBookmarks(Array.isArray(res.data) ? res.data : (res.data?.results || []));
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error(err);
+          setBookmarks([]);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
     fetchBookmarks();
+    return () => { isMounted = false; };
   }, []);
-
-  const fetchBookmarks = async () => {
-    try {
-      const res = await API.get('bookmarks/');
-      setBookmarks(Array.isArray(res.data) ? res.data : (res.data?.results || []));
-    } catch (err) {
-      console.error(err);
-      setBookmarks([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const removeBookmark = async (questionId) => {
     try {

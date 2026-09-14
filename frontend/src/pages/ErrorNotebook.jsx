@@ -13,30 +13,32 @@ const ErrorNotebook = () => {
   const [selectedRefQuestion, setSelectedRefQuestion] = useState(null);
 
   useEffect(() => {
-    fetchErrors();
-  }, []);
-
-  const fetchErrors = async (keepActiveSubdomain = false) => {
-    try {
-      const res = await API.get('errors/');
-      const dataList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
-      setErrors(dataList);
-      
-      if (dataList.length > 0) {
-        const keys = [...new Set(dataList.map(q => q.subdomain_name || 'Autre'))];
-        if (!keepActiveSubdomain || !keys.includes(activeSubdomain)) {
-          setActiveSubdomain(keys[0]);
+    let isMounted = true;
+    const loadErrors = async () => {
+      try {
+        const res = await API.get('errors/');
+        const dataList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        if (isMounted) {
+          setErrors(dataList);
+          if (dataList.length > 0) {
+            const keys = [...new Set(dataList.map(q => q.subdomain_name || 'Autre'))];
+            setActiveSubdomain(keys[0]);
+          } else {
+            setActiveSubdomain('');
+          }
         }
-      } else {
-        setActiveSubdomain('');
+      } catch (err) {
+        if (isMounted) {
+          console.error(err);
+          setErrors([]);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
       }
-    } catch (err) {
-      console.error(err);
-      setErrors([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+    loadErrors();
+    return () => { isMounted = false; };
+  }, []);
 
   const handleOptionSelect = async (questionId, option) => {
     try {

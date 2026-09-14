@@ -46,6 +46,11 @@ function AppContent() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  React.useEffect(() => {
+    setMobileOpen(false);
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const isPublic = PUBLIC_PATHS.includes(location.pathname);
 
   /* ── Layout Public (Home / Login / Register / Legal) ── */

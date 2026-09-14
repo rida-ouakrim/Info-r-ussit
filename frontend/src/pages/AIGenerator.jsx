@@ -43,10 +43,56 @@ const AIGenerator = () => {
   };
 
   useEffect(() => {
-    fetchDomains();
-    fetchHistory();
-    checkQueryParam();
-    fetchUserProfile();
+    let isMounted = true;
+    const init = async () => {
+      try {
+        const [userRes, domRes, histRes] = await Promise.allSettled([
+          API.get('auth/me/'),
+          API.get('domains/'),
+          API.get('exams/history/')
+        ]);
+
+        if (!isMounted) return;
+
+        if (userRes.status === 'fulfilled') {
+          const u = userRes.value.data;
+          const usernameStr = (u?.username || '').toLowerCase();
+          const isUnlimited = u?.is_staff || usernameStr === 'rida' || u?.account_type === 'Premium';
+          setAllowedGenerations(isUnlimited ? 99999 : (u?.allowed_generations ?? 0));
+          if (!isUnlimited && (u?.allowed_generations ?? 0) <= 0) {
+            setLimitError({
+              error: "Limite de génération QCM IA atteinte. Pour obtenir plus de générations, veuillez contacter l'administrateur Rida Ouakrim."
+            });
+          }
+        }
+
+        if (domRes.status === 'fulfilled') {
+          const domList = Array.isArray(domRes.value.data) ? domRes.value.data : (domRes.value.data?.results || []);
+          setDomains(domList);
+          if (domList.length > 0) {
+            setSelectedDomainCode(domList[0].code);
+            const subList = Array.isArray(domList[0].subdomains) ? domList[0].subdomains : [];
+            setSubdomains(subList);
+            if (subList.length > 0) {
+              setSelectedSubdomainCode(subList[0].code);
+            }
+          }
+        }
+
+        if (histRes.status === 'fulfilled') {
+          const rawList = Array.isArray(histRes.value.data) ? histRes.value.data : (histRes.value.data?.results || []);
+          setHistoryList(rawList.filter(s => s.exam_year === 9999));
+        }
+
+        checkQueryParam();
+      } catch (err) {
+        if (isMounted) console.error("AIGenerator init error:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    init();
+    return () => { isMounted = false; };
   }, []);
 
   const fetchUserProfile = async () => {

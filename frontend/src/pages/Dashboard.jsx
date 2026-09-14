@@ -16,20 +16,20 @@ const Dashboard = () => {
   const [showDiagnostic, setShowDiagnostic] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    const fetchDashboard = async () => {
+      try {
+        const res = await API.get('auth/dashboard/candidate/');
+        if (isMounted) setData(res.data);
+      } catch (err) {
+        if (isMounted) console.error("Dashboard error:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
     fetchDashboard();
+    return () => { isMounted = false; };
   }, []);
-
-  const fetchDashboard = async () => {
-    setLoading(true);
-    try {
-      const res = await API.get('auth/dashboard/candidate/');
-      setData(res.data);
-    } catch (err) {
-      console.error("Dashboard error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return <LoadingSpinner message="Chargement de votre Tableau de Bord..." />;

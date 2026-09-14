@@ -211,8 +211,28 @@ const Exams = () => {
   };
 
   useEffect(() => {
-    fetchHistory();
-    checkSavedSession(selectedYear);
+    let isMounted = true;
+    const initExams = async () => {
+      try {
+        const [histRes, sessRes] = await Promise.allSettled([
+          API.get('exams/history/'),
+          API.get(`exams/session/${selectedYear}/`)
+        ]);
+        if (!isMounted) return;
+        if (histRes.status === 'fulfilled') {
+          setHistory(histRes.value.data || []);
+        }
+        if (sessRes.status === 'fulfilled' && sessRes.value.data && !sessRes.value.data.exam_submitted) {
+          setSavedSession(sessRes.value.data);
+        } else if (isMounted) {
+          setSavedSession(null);
+        }
+      } catch (err) {
+        if (isMounted) console.error(err);
+      }
+    };
+    initExams();
+    return () => { isMounted = false; };
   }, [selectedYear]);
 
   const fetchHistory = async () => {
