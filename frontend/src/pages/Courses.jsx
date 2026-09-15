@@ -437,7 +437,18 @@ const Courses = () => {
 
     try {
       const savedHl = localStorage.getItem(`course_highlights_${userKey}`);
-      setHighlights(savedHl ? JSON.parse(savedHl) : {});
+      if (savedHl) {
+        const parsed = JSON.parse(savedHl);
+        const cleanedMap = {};
+        for (const [k, list] of Object.entries(parsed)) {
+          if (Array.isArray(list)) {
+            cleanedMap[k] = list.filter(h => h && typeof h.text === 'string' && h.text.trim().length >= 2 && h.text.trim().length <= 150);
+          }
+        }
+        setHighlights(cleanedMap);
+      } else {
+        setHighlights({});
+      }
     } catch (e) { setHighlights({}); }
 
     try {
@@ -773,13 +784,10 @@ const Courses = () => {
 
   const removeHighlightForText = useCallback(() => {
     if (!highlightToolbar || !currentHighlightKey) return;
-    const { lineIdx, text } = highlightToolbar;
+    const { text } = highlightToolbar;
     const normT = normalizeForMatch(text);
 
     const filtered = currentHighlights.filter(h => {
-      if (lineIdx != null && h.lineIdx != null && h.lineIdx === lineIdx) {
-        return false;
-      }
       const normH = normalizeForMatch(h.text);
       if (normH && normT && (normH === normT || normH.includes(normT) || normT.includes(normH))) {
         return false;
@@ -800,9 +808,6 @@ const Courses = () => {
     const normT = normalizeForMatch(text);
 
     const filtered = currentHighlights.filter(h => {
-      if (lineIdx != null && h.lineIdx != null && h.lineIdx === lineIdx) {
-        return false;
-      }
       const normH = normalizeForMatch(h.text);
       if (normH && normT && (normH === normT || normH.includes(normT) || normT.includes(normH))) {
         return false;

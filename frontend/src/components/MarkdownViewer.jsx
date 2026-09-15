@@ -374,6 +374,61 @@ const createFlexibleRegex = (str) => {
   return new RegExp(`(${wordPatterns.join('\\s+')})`, 'gi');
 };
 
+const applySingleHighlightToSegments = (segments, highlight) => {
+  if (!highlight || !highlight.text || highlight.text.trim().length < 2) return segments;
+
+  const normH = normalizeForMatch(highlight.text);
+  if (!normH) return segments;
+
+  const flexRegex = createFlexibleRegex(highlight.text);
+  if (!flexRegex) return segments;
+
+  const color = HIGHLIGHT_COLORS_MAP[highlight.colorId] || HIGHLIGHT_COLORS_MAP.yellow;
+  const newSegments = [];
+
+  for (const seg of segments) {
+    if (typeof seg !== 'string') {
+      newSegments.push(seg);
+      continue;
+    }
+
+    flexRegex.lastIndex = 0;
+    const matches = [...seg.matchAll(flexRegex)];
+    if (matches.length === 0) {
+      newSegments.push(seg);
+      continue;
+    }
+
+    let lastIdx = 0;
+    matches.forEach((match, idx) => {
+      const matchStr = match[0];
+      const matchStart = match.index;
+
+      if (matchStart > lastIdx) {
+        newSegments.push(seg.slice(lastIdx, matchStart));
+      }
+
+      newSegments.push(
+        <mark
+          key={`hl-${highlight.id || Math.random()}-${idx}`}
+          className="rounded px-1 py-0.5 font-medium transition-all shadow-xs"
+          style={{ backgroundColor: color.bg, color: color.text }}
+        >
+          {matchStr}
+        </mark>
+      );
+
+      lastIdx = matchStart + matchStr.length;
+    });
+
+    if (lastIdx < seg.length) {
+      newSegments.push(seg.slice(lastIdx));
+    }
+  }
+
+  return newSegments;
+};
+
 const renderTextWithHighlights = (text, lineHighlights = []) => {
   if (!text || typeof text !== 'string' || !lineHighlights || !Array.isArray(lineHighlights) || lineHighlights.length === 0) {
     return text;
@@ -383,135 +438,14 @@ const renderTextWithHighlights = (text, lineHighlights = []) => {
     const validHighlights = lineHighlights.filter(h => h && typeof h.text === 'string' && h.text.trim().length >= 2);
     if (validHighlights.length === 0) return text;
 
-    const normText = normalizeForMatch(text);
-    if (!normText) return text;
-
     const sorted = [...validHighlights].sort((a, b) => (b.text || '').length - (a.text || '').length);
 
+    let segments = [text];
     for (const h of sorted) {
-      const normH = normalizeForMatch(h.text);
-      if (!normH) continue;
-      const color = HIGHLIGHT_COLORS_MAP[h.colorId] || HIGHLIGHT_COLORS_MAP.yellow;
-
-      // CASE 1: Node text is completely inside highlight text (e.g. bold element text inside selected phrase)
-      if (normH.includes(normText) && normText.length >= 2) {
-        return (
-          <mark
-            key={`hl-full-${h.id || Math.random()}`}
-            className="rounded px-1 py-0.5 font-medium transition-all shadow-xs"
-            style={{ backgroundColor: color.bg, color: color.text }}
-          >
-            {text}
-          </mark>
-        );
-      }
-
-      // CASE 2: Highlight text is inside node text (or exact match)
-      const flexRegex = createFlexibleRegex(h.text);
-      if (flexRegex && flexRegex.test(text)) {
-        flexRegex.lastIndex = 0;
-        const parts = text.split(flexRegex);
-        if (parts && parts.length > 1) {
-          return parts.map((part, idx) => {
-            if (!part) return null;
-            const normPart = normalizeForMatch(part);
-            if (normPart && (normH.includes(normPart) || normPart.includes(normH))) {
-              return (
-                <mark
-                  key={`hl-part-${idx}-${h.id || idx}`}
-                  className="rounded px-1 py-0.5 font-medium transition-all shadow-xs"
-                  style={{ backgroundColor: color.bg, color: color.text }}
-                >
-                  {part}
-                </mark>
-              );
-            }
-            return part;
-          });
-        }
-      }
-
-      // CASE 3: Overlap at end of node text (suffix of node text matches prefix of highlight text)
-      const hWords = normH.split(' ').filter(Boolean);
-      const tWords = normText.split(' ').filter(Boolean);
-
-      let maxOverlapWords = 0;
-      for (let len = Math.min(tWords.length, hWords.length); len >= 1; len--) {
-        const tSuffix = tWords.slice(-len).join(' ');
-        const hPrefix = hWords.slice(0, len).join(' ');
-        if (tSuffix === hPrefix) {
-          maxOverlapWords = len;
-          break;
-        }
-      }
-
-      if (maxOverlapWords > 0) {
-        const overlapPhrase = tWords.slice(-maxOverlapWords).join(' ');
-        const flexOverlapRegex = createFlexibleRegex(overlapPhrase);
-        if (flexOverlapRegex && flexOverlapRegex.test(text)) {
-          flexOverlapRegex.lastIndex = 0;
-          const parts = text.split(flexOverlapRegex);
-          if (parts && parts.length > 1) {
-            return parts.map((part, idx) => {
-              if (!part) return null;
-              const normPart = normalizeForMatch(part);
-              if (normPart === overlapPhrase) {
-                return (
-                  <mark
-                    key={`hl-suffix-${idx}-${h.id || idx}`}
-                    className="rounded px-1 py-0.5 font-medium transition-all shadow-xs"
-                    style={{ backgroundColor: color.bg, color: color.text }}
-                  >
-                    {part}
-                  </mark>
-                );
-              }
-              return part;
-            });
-          }
-        }
-      }
-
-      // CASE 4: Overlap at start of node text (prefix of node text matches suffix of highlight text)
-      let maxStartOverlapWords = 0;
-      for (let len = Math.min(tWords.length, hWords.length); len >= 1; len--) {
-        const tPrefix = tWords.slice(0, len).join(' ');
-        const hSuffix = hWords.slice(-len).join(' ');
-        if (tPrefix === hSuffix) {
-          maxStartOverlapWords = len;
-          break;
-        }
-      }
-
-      if (maxStartOverlapWords > 0) {
-        const overlapPhrase = tWords.slice(0, maxStartOverlapWords).join(' ');
-        const flexOverlapRegex = createFlexibleRegex(overlapPhrase);
-        if (flexOverlapRegex && flexOverlapRegex.test(text)) {
-          flexOverlapRegex.lastIndex = 0;
-          const parts = text.split(flexOverlapRegex);
-          if (parts && parts.length > 1) {
-            return parts.map((part, idx) => {
-              if (!part) return null;
-              const normPart = normalizeForMatch(part);
-              if (normPart === overlapPhrase) {
-                return (
-                  <mark
-                    key={`hl-prefix-${idx}-${h.id || idx}`}
-                    className="rounded px-1 py-0.5 font-medium transition-all shadow-xs"
-                    style={{ backgroundColor: color.bg, color: color.text }}
-                  >
-                    {part}
-                  </mark>
-                );
-              }
-              return part;
-            });
-          }
-        }
-      }
+      segments = applySingleHighlightToSegments(segments, h);
     }
 
-    return text;
+    return segments.length === 1 ? segments[0] : segments;
   } catch (e) {
     console.warn("Highlight rendering warning:", e);
     return text;
