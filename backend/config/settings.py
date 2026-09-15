@@ -61,33 +61,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # ─── Base de données ────────────────────────────────────────────────────────
-# Par défaut : PostgreSQL via variables d'environnement (.env)
-# Fallback SQLite uniquement si DB_ENGINE n'est pas défini (compatibilité)
-_db_engine = config('DB_ENGINE', default='django.db.backends.postgresql')
-
-if _db_engine == 'django.db.backends.postgresql':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_NAME', default='zrida_db'),
-            'USER': config('DB_USER', default='postgres'),
-            'PASSWORD': config('DB_PASSWORD', default='postgres'),
-            'HOST': config('DB_HOST', default='localhost'),
-            'PORT': config('DB_PORT', default='5432'),
-            # Timeout de connexion (utile pour GCP Cloud SQL)
-            'OPTIONS': {
-                'connect_timeout': 10,
-            },
-        }
+# PostgreSQL Exclusif (Production & Développement)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME', default='zrida_db'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default='postgres'),
+        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'PORT': config('DB_PORT', default='5432'),
+        'OPTIONS': {
+            'connect_timeout': 10,
+        },
     }
-else:
-    # Fallback SQLite (développement rapide sans PostgreSQL)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+}
 
 AUTH_USER_MODEL = 'authentication.User'
 
