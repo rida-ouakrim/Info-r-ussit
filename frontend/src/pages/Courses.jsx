@@ -649,8 +649,11 @@ const Courses = () => {
 
   const handleCourseSelect = async (course) => {
     setSelectedCourse(course);
-    setCourseLang(prepLang); // Use candidate's selected preparation language
-    setQcmLangFilter(prepLang); // Set QCM language filter to match prepLang
+    const isSciencesEdu = course.domain_code === 'SCIENCES_EDU' || 
+                          course.subdomain_code?.startsWith('EDU_');
+    const defaultLang = isSciencesEdu ? prepLang : 'fr';
+    setCourseLang(defaultLang);
+    setQcmLangFilter(defaultLang);
     setIsVideoLoading(false); // Reset loading state for new course
     if (course.video_url) {
       setActiveTab('video');
@@ -2496,7 +2499,6 @@ const Courses = () => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-
             <button
               type="button"
               onClick={() => toggleCourseCompleted(selectedCourse.id, selectedCourse.is_completed)}
