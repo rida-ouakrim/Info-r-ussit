@@ -81,7 +81,7 @@ desktop.ini
 /scratch/
 /scripts/
 backend/populate_*.py
-backend/backup_*.py
+!backend/backup_postgres.py
 
 # ===========================
 # Fichiers debug / temporaires
