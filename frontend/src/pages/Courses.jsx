@@ -808,9 +808,11 @@ const Courses = () => {
     const normT = normalizeForMatch(text);
 
     const filtered = currentHighlights.filter(h => {
-      const normH = normalizeForMatch(h.text);
-      if (normH && normT && (normH === normT || normH.includes(normT) || normT.includes(normH))) {
-        return false;
+      if (h.lineIdx === lineIdx) {
+        const normH = normalizeForMatch(h.text);
+        if (normH && normT && (normH === normT || normH.includes(normT) || normT.includes(normH))) {
+          return false;
+        }
       }
       return true;
     });
@@ -877,25 +879,19 @@ const Courses = () => {
     URL.revokeObjectURL(url);
   };
 
-  // Detect if this course is part of Didactique (100% French only)
-  const isDidactiqueCourse = useMemo(() => {
-    const dCode = activeCourseData?.domain_code || selectedCourse?.subdomain?.domain?.code;
-    const sCode = activeCourseData?.subdomain_code || selectedSubdomainCode;
-    return dCode === 'DIDACTIQUE' || (sCode && sCode.startsWith('DID_'));
-  }, [activeCourseData, selectedCourse, selectedSubdomainCode]);
-
-  // Detect if this is a bilingual course (Sciences de l'éducation only)
+  // Detect if this is a bilingual course (ONLY Sciences de l'éducation requires Arabic/bilingual toggle)
   const isBilingualCourse = useMemo(() => {
-    if (isDidactiqueCourse) return false;
-    return Boolean(activeCourseData?.content_ar || activeCourseData?.content_fr || activeCourseData?.examples_ar || activeCourseData?.astuces_ar);
-  }, [activeCourseData, isDidactiqueCourse]);
+    const dCode = activeCourseData?.domain_code || selectedCourse?.subdomain?.domain?.code || selectedDomainCode;
+    const sCode = activeCourseData?.subdomain_code || selectedSubdomainCode;
+    return dCode === 'SCIENCES_EDU' || (sCode && sCode.startsWith('EDU_'));
+  }, [activeCourseData, selectedCourse, selectedDomainCode, selectedSubdomainCode]);
 
-  // Force courseLang to 'fr' whenever a Didactique course is selected
+  // Force courseLang to 'fr' for all Specialty & Didactique courses
   useEffect(() => {
-    if (isDidactiqueCourse) {
+    if (!isBilingualCourse) {
       setCourseLang('fr');
     }
-  }, [isDidactiqueCourse, selectedCourse]);
+  }, [isBilingualCourse, selectedCourse]);
 
   // Get the content to display based on selected language
   const getDisplayContent = useCallback((field) => {

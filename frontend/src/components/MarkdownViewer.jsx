@@ -363,15 +363,30 @@ const normalizeForMatch = (str) => {
 };
 
 const createFlexibleRegex = (str) => {
+  if (!str) return null;
   const cleaned = normalizeForMatch(str);
   if (!cleaned) return null;
-  const words = cleaned.split(' ').filter(Boolean).map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+  const words = cleaned.split(' ').filter(Boolean);
   if (words.length === 0) return null;
 
   const wordPatterns = words.map(w => {
-    return w.split('').map(ch => ch + '[\u064B-\u065F\u0640]*').join('');
+    const chars = w.split('').map(ch => {
+      const escapedCh = ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (/[\u0600-\u06FF]/.test(ch)) {
+        return escapedCh + '[\u064B-\u065F\u0640]*';
+      }
+      return escapedCh;
+    });
+    return chars.join('');
   });
-  return new RegExp(`(${wordPatterns.join('\\s+')})`, 'gi');
+
+  try {
+    return new RegExp(`(${wordPatterns.join('\\s+')})`, 'gi');
+  } catch (e) {
+    console.warn("createFlexibleRegex compilation error:", e);
+    return null;
+  }
 };
 
 const applySingleHighlightToSegments = (segments, highlight) => {

@@ -180,7 +180,126 @@ const Exams = () => {
     saveHighlights(currentHighlightKey, filtered);
     setHighlightToolbar(null);
     window.getSelection()?.removeAllRanges();
-  }, [highlightToolbar, currentHighlightKey, currentHighlights, saveHighlights]);
+  }, [highlightToolbar, currentHighlightKey, currentHighlights, saveHighlights]);  const resolveQuestionCourse = (question) => {
+    if (!question) return { title: '', content: '' };
+
+    const qText = (question.question_text || '').toLowerCase();
+    const expText = (question.explanation || '').toLowerCase();
+    const fullText = `${qText} ${expText}`;
+
+    // 1. Fichiers texte et séquentiels (Ouvrir, Fermer, Fin_Fichier, LireFichier)
+    if (fullText.includes('fichier') || fullText.includes('fin_fichier') || fullText.includes('finfichier') || fullText.includes('lirefichier') || fullText.includes('ouvrir(') || fullText.includes('fermer(')) {
+      return {
+        title: "10. Structures de données statiques et dynamiques (Piles, Files, Listes, Enregistrements & Fichiers)",
+        content: "## Les Fichiers Texte & Fichiers Séquentiels\n\nUn **fichier** permet d'assurer la **persistance** des données en mémoire secondaire (disque).\n\n### Syntaxe et Fonctions usuelles en Pseudocode :\n```alg\nVARIABLES :\n  f : Fichier Texte\n  ligne : Chaîne\n\nDÉBUT\n  Ouvrir(f, \"r\") // Mode lecture (\"r\" = read, \"w\" = write, \"a\" = append)\n  Tant que NON Fin_Fichier(f) Faire\n    Lire(f, ligne)\n  FIN TantQue\n  Fermer(f)\nFIN\n```\n\n### Points clés pour les concours :\n1. **`Ouvrir(f, mode)` :** Initialise l'accès au fichier. Le pointeur de fichier est placé au début.\n2. **`Fin_Fichier(f)` (ou `EOF`) :** Fonction booléenne qui retourne `Vrai` si la fin du fichier est atteinte.\n3. **Sécurité :** La boucle `TantQue NON Fin_Fichier(f)` garantit qu'aucune lecture n'est tentée après la fin du fichier, évitant ainsi une erreur d'accès mémoire."
+      };
+    }
+
+    // 2. Enregistrements (Structures / Records)
+    if (fullText.includes('enregistrement') || fullText.includes('finenregistrement') || fullText.includes('struct ') || fullText.includes('champs') || fullText.includes('enregistrement ')) {
+      return {
+        title: "10. Structures de données statiques et dynamiques (Piles, Files, Listes, Enregistrements & Fichiers)",
+        content: "## Les Enregistrements (Structures / Records)\n\nUn **enregistrement** (ou `struct`) est une structure de données hétérogène qui regroupe plusieurs variables appelées **champs**, pouvant être de types différents.\n\n### Syntaxe en Pseudocode :\n```alg\nENREGISTREMENT Etudiant\n  nom: Chaîne\n  age: Entier\n  notes: Tableau[1..4] de Réel\nFINENREGISTREMENT\n\nVar e: Etudiant\n```\n\n### Accès aux champs :\nL'accès à un champ d'un enregistrement se fait avec l'opérateur point `.` :\n`e.nom <- 'Karim'`\n`e.notes[1] <- 15.5`\n\n- **Mémoire :** Les champs sont stockés de manière contiguë en mémoire.\n- **Tableau d'enregistrements :** Un tableau peut contenir des éléments de type enregistrement (ex: `Tableau[1..100] de Etudiant`)."
+      };
+    }
+
+    // 3. Piles, Files et Listes Chaînées
+    if (fullText.includes('pile') || fullText.includes('piles') || fullText.includes('file ') || fullText.includes('files') || fullText.includes('liste chaînée') || fullText.includes('listes chaînées') || fullText.includes('empiler') || fullText.includes('dépiler') || fullText.includes('pointeur')) {
+      return {
+        title: "10. Structures de données statiques et dynamiques (Piles, Files, Listes, Enregistrements & Fichiers)",
+        content: "## Piles, Files et Listes Chaînées\n\n### 1. Pile (LIFO - Last In First Out)\n- Le dernier élément inséré est le premier retiré.\n- Opérations : `Empiler` (Push), `Dépiler` (Pop), `Sommet`.\n\n### 2. File (FIFO - First In First Out)\n- Le premier élément inséré est le premier retiré.\n- Opérations : `Enfiler` (Enqueue), `Défiler` (Dequeue).\n\n### 3. Liste Chaînée (Maillons & Pointeurs)\n- Chaque maillon contient une **valeur** et un **pointeur suivant** vers le maillon suivant."
+      };
+    }
+
+    // 4. Arbres Binaires et ABR
+    if (fullText.includes('arbre') || fullText.includes('arbres') || fullText.includes('abr') || fullText.includes('racine') || fullText.includes('feuille') || fullText.includes('parcours infixe') || fullText.includes('parcours préfixe')) {
+      return {
+        title: "13. Arbres binaires et Arbres binaires de recherche (ABR)",
+        content: "## Arbres Binaires et ABR\n\n- **Arbre Binaire :** Chaque nœud possède au plus 2 fils (gauche et droit).\n- **Arbre Binaire de Recherche (ABR) :** Pour tout nœud $N$, toutes les clés du sous-arbre gauche sont $< N.clé$, et toutes les clés du sous-arbre droit sont $> N.clé$.\n- **Parcours :** \n  - **Infixe (GRD) :** Visite le sous-arbre gauche, la racine, puis le droit. Produit la liste triée pour un ABR !\n  - **Préfixe (RGD) :** Racine, Gauche, Droit.\n  - **Postfixe (GDR) :** Gauche, Droit, Racine."
+      };
+    }
+
+    // 5. Graphes
+    if (fullText.includes('graphe') || fullText.includes('sommet') || fullText.includes('arête') || fullText.includes('dfs') || fullText.includes('bfs') || fullText.includes('dijkstra')) {
+      return {
+        title: "14. Graphes : Représentation et parcours (DFS, BFS)",
+        content: "## Graphes & Parcours\n\n- **Représentations :** Matrice d'adjacence $M[i][j]$ ou Liste d'adjacence.\n- **Parcours en profondeur (DFS) :** Utilise une **pile** ou la récursivité.\n- **Parcours en largeur (BFS) :** Utilise une **file**.\n- **Algorithme de Dijkstra :** Calcule les plus courts chemins depuis un sommet source dans un graphe à poids positifs."
+      };
+    }
+
+    // 6. Récursivité
+    if (fullText.includes('récursif') || fullText.includes('récursive') || fullText.includes('récursivité') || fullText.includes('cas de base') || fullText.includes('hanoï')) {
+      return {
+        title: "12. Récursivité et approche Diviser pour régner",
+        content: "## Récursivité\n\nUn algorithme récursif est une fonction qui s'appelle elle-même.\n\n### Les 2 règles d'or :\n1. **Le cas de base (Condition d'arrêt) :** Arrête les appels récursifs pour éviter une pile d'exécution infinie (Stack Overflow).\n2. **L'étape récursive :** Réduit le problème vers le cas de base."
+      };
+    }
+
+    // 7. Algorithmes de Tri et Recherche
+    if (fullText.includes('tri bulle') || fullText.includes('tri sélect') || fullText.includes('tri insert') || fullText.includes('tri rapide') || fullText.includes('tri fusion') || fullText.includes('quicksort') || fullText.includes('dichotomiq') || fullText.includes('recherche séquentielle')) {
+      return {
+        title: "11. Algorithmes de Tri et Recherche (Tri Bulle, Sélection, Insertion, Rapide, Fusion)",
+        content: "## Algorithmes de Tri et Recherche\n\n### 1. Recherche Dichotomique (Binary Search)\n- **Condition obligatoire :** Le tableau doit être **strictement trié**.\n- **Complexité :** $O(\\log N)$.\n\n### 2. Tri à Bulles (Bubble Sort)\n- **Complexité :** $O(N^2)$.\n\n### 3. Tri Rapide (QuickSort) & Tri Fusion (MergeSort)\n- **Complexité moyenne :** $O(N \\log N)$."
+      };
+    }
+
+    // 8. Complexité des algorithmes (Notations O)
+    if (fullText.includes('complexité') || fullText.includes('o(n)') || fullText.includes('o(log n)') || fullText.includes('o(n^2)') || fullText.includes('o(1)') || fullText.includes('pire des cas')) {
+      return {
+        title: "09. Complexité des algorithmes (Notations O)",
+        content: "## Complexité Algorithmique (Big-O)\n\n- **$O(1)$ :** Temps constant (accès direct par indice dans un tableau).\n- **$O(\\log N)$ :** Logarithmique (Recherche dichotomique, ABR équilibré).\n- **$O(N)$ :** Linéaire (Recherche séquentielle, parcours de tableau).\n- **$O(N \\log N)$ :** Quasi-linéaire (Tri Fusion, Tri Rapide moyen).\n- **$O(N^2)$ :** Quadratique (Tri à bulles, tri par sélection, boucles imbriquées)."
+      };
+    }
+
+    // 9. Chaînes de Caractères
+    if (fullText.includes('chaîne') || fullText.includes('chaine') || fullText.includes('substring') || fullText.includes('concaténer') || fullText.includes('caractère')) {
+      return {
+        title: "07. Chaînes de Caractères et Manipulations",
+        content: "## Chaînes de Caractères\n\nUne **chaîne de caractères** est un tableau de caractères terminé par un caractère de fin (ex: `\\0` en C).\n\n### Fonctions classiques :\n- `Longueur(ch)` / `len(ch)` : Renvoie le nombre de caractères.\n- `SousChaine(ch, pos, lg)` : Extrait une partie de la chaîne."
+      };
+    }
+
+    // 10. Tableaux à 1D et 2D
+    if (fullText.includes('tableau') || fullText.includes('matrice') || fullText.includes('vecteur')) {
+      return {
+        title: "06. Les Tableaux à 1D et 2D (Vecteurs et Matrices)",
+        content: "## Les Tableaux et Matrices (1D & 2D)\n\nUn **tableau** est une structure de données homogène regroupant des éléments de même type accessible par leur **indice** (index).\n\n### Synthèse :\n- **Tableau 1D (Vecteur) :** `Var T: Tableau[1..N] de Entier`\n- **Tableau 2D (Matrice) :** `Var M: Tableau[1..L, 1..C] de Réel`\n- Accès direct en $O(1)$ à n'importe quel élément par son indice `T[i]`."
+      };
+    }
+
+    // 11. Procédures et Fonctions
+    if (fullText.includes('fonction') || fullText.includes('procédure') || fullText.includes('procedure') || fullText.includes('retourner')) {
+      return {
+        title: "08. Procédures et Fonctions (Sous-programmes & Modularité)",
+        content: "## Fonctions et Procédures\n\n- **Fonction :** Renvoyer une valeur unique avec `Retourner`.\n- **Procédure :** Ne renvoie pas de valeur directe.\n- **Passage par valeur :** Transmet une copie (la variable initiale reste intacte).\n- **Passage par référence (var) :** Transmet l'adresse mémoire (les modifications impactent la variable initiale)."
+      };
+    }
+
+    // 12. Structures Itératives et Boucles
+    if (fullText.includes('tantque') || fullText.includes('tant que') || fullText.includes('pour i') || fullText.includes('répéter') || fullText.includes('repeter') || fullText.includes('boucle')) {
+      return {
+        title: "05. Structures Itératives et Boucles (TantQue, Pour, Répéter)",
+        content: "## Les Structures Répétitives (Boucles)\n\n### 1. Boucle Pour (Nombre d'itérations connu à l'avance)\n`Pour i de 1 à N faire ... FinPour`\n\n### 2. Boucle Tant Que (Condition évaluée avant d'exécuter)\n`TantQue condition faire ... FinTantQue`\n\n### 3. Boucle Répéter...Jusqu'à (Condition évaluée après au moins 1 exécution)\n`Répéter ... Jusqu'à condition`"
+      };
+    }
+
+    // 13. Structures Conditionnelles
+    if (fullText.includes('si ') || fullText.includes('sinon') || fullText.includes('finsi') || fullText.includes('selon ')) {
+      return {
+        title: "04. Structures Conditionnelles (Si...Alors...Sinon, Selon)",
+        content: "## Structures Conditionnelles\n\n- **Si ... Alors ... Sinon ... FinSi**\n- **Selon (Choix multiple)**"
+      };
+    }
+
+    // Default fallback: preserve DB course_title if provided and not generic
+    const rawTitle = question.course_title || question.subdomain_name || "01. Introduction à l'Algorithmique et Notions de Base";
+    const rawContent = question.course_content || question.explanation || "Contenu du cours associé à ce sous-domaine.";
+
+    return {
+      title: rawTitle,
+      content: rawContent
+    };
+  };
 
   const applyHighlight = useCallback((colorId) => {
     if (!highlightToolbar || !currentHighlightKey) return;
@@ -190,9 +309,11 @@ const Exams = () => {
     const normT = normalizeForMatch(text);
 
     const filtered = currentHighlights.filter(h => {
-      const normH = normalizeForMatch(h.text);
-      if (normH && normT && (normH === normT || normH.includes(normT) || normT.includes(normH))) {
-        return false;
+      if (h.lineIdx === lineIdx) {
+        const normH = normalizeForMatch(h.text);
+        if (normH && normT && (normH === normT || normH.includes(normT) || normT.includes(normH))) {
+          return false;
+        }
       }
       return true;
     });
@@ -1102,7 +1223,8 @@ const Exams = () => {
         {/* Mode Entraînement: Banner pour consulter le cours associé */}
         {(() => {
           const isArabicQ = /[\u0600-\u06FF]/.test(currentQ.question_text || '');
-          return mode === 'Entraînement' && (currentQ.course_title || currentQ.subdomain_name) && (
+          const assocCourse = resolveQuestionCourse(currentQ);
+          return mode === 'Entraînement' && (
             <div
               dir={isArabicQ ? 'rtl' : 'ltr'}
               className="p-3.5 rounded-2xl bg-[#03594e]/10 border border-[#03594e]/20 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs"
@@ -1116,7 +1238,7 @@ const Exams = () => {
                     {isArabicQ ? "💡 المفاهيم والدرس المرتبط بهذا السؤال :" : "💡 Notions & Cours associé à cette question :"}
                   </span>
                   <span className="font-extrabold text-xs text-slate-900 dark:text-white">
-                    {currentQ.course_title || currentQ.subdomain_name}
+                    {assocCourse.title || currentQ.course_title || currentQ.subdomain_name}
                   </span>
                 </div>
               </div>
@@ -1124,8 +1246,9 @@ const Exams = () => {
               <button
                 type="button"
                 onClick={() => {
+                  const isEdu = currentQ?.domain_code === 'SCIENCES_EDU' || currentQ?.subdomain_code?.startsWith('EDU_');
                   setCourseModalTab('content');
-                  setCourseModalLang(isArabicQ ? 'ar' : 'fr');
+                  setCourseModalLang(isEdu && isArabicQ ? 'ar' : 'fr');
                   setCourseModalOpen(true);
                 }}
                 className="w-full sm:w-auto px-4 py-2 rounded-xl bg-[#03594e] hover:bg-[#02453d] text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-105 shrink-0"
@@ -1543,25 +1666,27 @@ const Exams = () => {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {/* Language Switcher Pill */}
-                <div className="flex items-center gap-1 bg-black/20 p-1 rounded-xl border border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => setCourseModalLang('fr')}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${courseModalLang === 'fr' ? 'bg-[#F8C62F] text-[#1B1D21] shadow-xs' : 'text-white/80 hover:text-white'
-                      }`}
-                  >
-                    🇫🇷 FR
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCourseModalLang('ar')}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${courseModalLang === 'ar' ? 'bg-[#F8C62F] text-[#1B1D21] shadow-xs' : 'text-white/80 hover:text-white'
-                      }`}
-                  >
-                    🇲🇦 AR
-                  </button>
-                </div>
+                {/* Language Switcher Pill: ONLY for Sciences de l'Éducation */}
+                {Boolean(currentQ?.domain_code === 'SCIENCES_EDU' || currentQ?.subdomain_code?.startsWith('EDU_')) && (
+                  <div className="flex items-center gap-1 bg-black/20 p-1 rounded-xl border border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setCourseModalLang('fr')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${courseModalLang === 'fr' ? 'bg-[#F8C62F] text-[#1B1D21] shadow-xs' : 'text-white/80 hover:text-white'
+                        }`}
+                    >
+                      🇫🇷 FR
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCourseModalLang('ar')}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-extrabold transition-all cursor-pointer ${courseModalLang === 'ar' ? 'bg-[#F8C62F] text-[#1B1D21] shadow-xs' : 'text-white/80 hover:text-white'
+                        }`}
+                    >
+                      🇲🇦 AR
+                    </button>
+                  </div>
+                )}
 
                 <button
                   type="button"
@@ -1629,21 +1754,23 @@ const Exams = () => {
 
             {/* Modal Body Content */}
             <div ref={modalContentRef} className="flex-1 p-5 sm:p-6 overflow-y-auto space-y-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
-              {courseModalTab === 'content' && (
-                <div
-                  dir={courseModalLang === 'ar' ? 'rtl' : 'ltr'}
-                  className={`prose dark:prose-invert max-w-none ${courseModalLang === 'ar' ? 'text-right font-arabic' : 'text-left'}`}
-                >
-                  <MarkdownViewer
-                    content={
-                      courseModalLang === 'ar'
-                        ? (currentQ.course_content_ar || currentQ.course_content || currentQ.explanation || "محتوى الدرس...")
-                        : (currentQ.course_content_fr || currentQ.course_content || currentQ.explanation || "Contenu du cours...")
-                    }
-                    highlights={currentHighlights}
-                  />
-                </div>
-              )}
+              {courseModalTab === 'content' && (() => {
+                const assocCourse = resolveQuestionCourse(currentQ);
+                const displayContent = courseModalLang === 'ar'
+                  ? (currentQ.course_content_ar || assocCourse.content_ar || assocCourse.content)
+                  : (currentQ.course_content_fr || currentQ.course_content || assocCourse.content);
+                return (
+                  <div
+                    dir={courseModalLang === 'ar' ? 'rtl' : 'ltr'}
+                    className={`prose dark:prose-invert max-w-none ${courseModalLang === 'ar' ? 'text-right font-arabic' : 'text-left'}`}
+                  >
+                    <MarkdownViewer
+                      content={displayContent}
+                      highlights={currentHighlights}
+                    />
+                  </div>
+                );
+              })()}
 
               {courseModalTab === 'examples' && (
                 <div
