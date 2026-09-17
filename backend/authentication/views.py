@@ -113,11 +113,10 @@ class SendVerificationCodeView(APIView):
                 html_message=html_message,
                 from_email=django_settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                fail_silently=django_settings.DEBUG,
+                fail_silently=True,
             )
         except Exception as e:
-            if not django_settings.DEBUG:
-                return Response({"error": "Erreur d'envoi de l'email. Veuillez reessayer."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print(f"[EMAIL ERROR] Failed to send verification email to {email}: {e}")
 
         response_data = {
             "success": True,
@@ -437,11 +436,10 @@ class SendPasswordResetCodeView(APIView):
                 html_message=html_message,
                 from_email=django_settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                fail_silently=django_settings.DEBUG,
+                fail_silently=True,
             )
         except Exception as e:
-            if not django_settings.DEBUG:
-                return Response({"error": "Erreur d'envoi de l'email. Veuillez réessayer."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print(f"[EMAIL ERROR] Failed to send email to {email}: {e}")
 
         return Response({
             "success": True,
