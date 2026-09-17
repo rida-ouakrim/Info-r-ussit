@@ -46,7 +46,7 @@ q39_dev = {
         "astuce": "⚡ Modifier les DONNÉES = UPDATE. Modifier la STRUCTURE de la table = ALTER TABLE.",
         "reference_text": None,
         "domain": "DEV",
-        "subdomain": "DEV_BDD",
+        "subdomain": "DEV_SI_BD",
         "course": 17,
         "created_at": "2026-09-17T11:00:00.000Z"
     }
