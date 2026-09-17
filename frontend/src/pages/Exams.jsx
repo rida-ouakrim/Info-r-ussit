@@ -1660,7 +1660,7 @@ const Exams = () => {
                     {currentQ.domain_name} • {currentQ.subdomain_name}
                   </span>
                   <h3 className="text-sm sm:text-base font-black text-white leading-tight truncate">
-                    {currentQ.course_title || currentQ.subdomain_name}
+                    {resolveQuestionCourse(currentQ).title || currentQ.course_title || currentQ.subdomain_name}
                   </h3>
                 </div>
               </div>
@@ -1756,13 +1756,13 @@ const Exams = () => {
             <div ref={modalContentRef} className="flex-1 p-5 sm:p-6 overflow-y-auto space-y-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
               {courseModalTab === 'content' && (() => {
                 const assocCourse = resolveQuestionCourse(currentQ);
-                const displayContent = courseModalLang === 'ar'
-                  ? (currentQ.course_content_ar || assocCourse.content_ar || assocCourse.content)
-                  : (currentQ.course_content_fr || currentQ.course_content || assocCourse.content);
+                const displayContent = (assocCourse && assocCourse.content)
+                  ? assocCourse.content
+                  : (currentQ.course_content_fr || currentQ.course_content || currentQ.explanation || "Contenu du cours...");
                 return (
                   <div
-                    dir={courseModalLang === 'ar' ? 'rtl' : 'ltr'}
-                    className={`prose dark:prose-invert max-w-none ${courseModalLang === 'ar' ? 'text-right font-arabic' : 'text-left'}`}
+                    dir="ltr"
+                    className="prose dark:prose-invert max-w-none text-left"
                   >
                     <MarkdownViewer
                       content={displayContent}
