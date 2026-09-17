@@ -48,7 +48,7 @@ const Login = () => {
     setResetSuccess(null);
     setResetLoading(true);
     try {
-      const res = await API.post('auth/password-reset/send-code/', { email: resetEmail });
+      const res = await API.post('/auth/password-reset/send-code/', { email: resetEmail });
       setResetSuccess(res.data.message || "Code de réinitialisation envoyé par e-mail.");
       setResetStep(2);
     } catch (err) {
@@ -64,7 +64,7 @@ const Login = () => {
     setResetSuccess(null);
     setResetLoading(true);
     try {
-      const res = await API.post('auth/password-reset/confirm/', {
+      const res = await API.post('/auth/password-reset/confirm/', {
         email: resetEmail,
         code: resetCode,
         new_password: newPassword
