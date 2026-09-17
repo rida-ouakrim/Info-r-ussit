@@ -886,6 +886,13 @@ const Courses = () => {
     return dCode === 'SCIENCES_EDU' || (sCode && sCode.startsWith('EDU_'));
   }, [activeCourseData, selectedCourse, selectedDomainCode, selectedSubdomainCode]);
 
+  // Detect if this is a Didactique course
+  const isDidactiqueCourse = useMemo(() => {
+    const dCode = activeCourseData?.domain_code || selectedCourse?.subdomain?.domain?.code || selectedDomainCode;
+    const sCode = activeCourseData?.subdomain_code || selectedSubdomainCode;
+    return dCode === 'DIDACTIQUE' || (sCode && sCode.startsWith('DID_'));
+  }, [activeCourseData, selectedCourse, selectedDomainCode, selectedSubdomainCode]);
+
   // Force courseLang to 'fr' for all Specialty & Didactique courses
   useEffect(() => {
     if (!isBilingualCourse) {
