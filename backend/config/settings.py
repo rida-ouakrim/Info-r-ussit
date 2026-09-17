@@ -124,4 +124,4 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
 EMAIL_HOST_USER = _email_user
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Info Reussit <ridaouakrim0@gmail.com>')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Info Réussit <contact@inforeussite.online>')
