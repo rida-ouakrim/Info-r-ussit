@@ -183,11 +183,29 @@ const Exams = () => {
   }, [highlightToolbar, currentHighlightKey, currentHighlights, saveHighlights]);  const resolveQuestionCourse = (question) => {
     if (!question) return { title: '', content: '' };
 
+    // 1. TOP PRIORITY: If question has an explicit course linked in DB, use it directly!
+    if (question.course_title && question.course_title.trim() !== '') {
+      return {
+        title: question.course_title,
+        content: question.course_content || question.explanation || "Contenu du cours associé à ce sous-domaine."
+      };
+    }
+
     const qText = (question.question_text || '').toLowerCase();
     const expText = (question.explanation || '').toLowerCase();
-    const fullText = `${qText} ${expText}`;
+    const rawText = `${qText} ${expText}`;
+    // Normalize accents so "tri à bulles" becomes "tri a bulles"
+    const fullText = rawText.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-    // 1. Fichiers texte et séquentiels (Ouvrir, Fermer, Fin_Fichier, LireFichier)
+    // 1. Algorithmes de Tri et Recherche (Tri à bulles, Tri par sélection, Dichotomie, etc.)
+    if (fullText.includes('tri') || fullText.includes('bulles') || fullText.includes('bulle') || fullText.includes('quicksort') || fullText.includes('mergesort') || fullText.includes('dichotomiq') || fullText.includes('dichotomie') || fullText.includes('recherche sequentielle')) {
+      return {
+        title: "11. Algorithmes de Tri et Recherche (Tri Bulle, Sélection, Insertion, Rapide, Fusion)",
+        content: "## Algorithmes de Tri et Recherche\n\n### 1. Recherche Dichotomique (Binary Search)\n- **Condition obligatoire :** Le tableau doit être **strictement trié**.\n- **Complexité :** $O(\\log N)$.\n\n### 2. Tri à Bulles (Bubble Sort)\n- **Complexité :** $O(N^2)$.\n\n### 3. Tri Rapide (QuickSort) & Tri Fusion (MergeSort)\n- **Complexité moyenne :** $O(N \\log N)$."
+      };
+    }
+
+    // 2. Fichiers texte et séquentiels (Ouvrir, Fermer, Fin_Fichier, LireFichier)
     if (fullText.includes('fichier') || fullText.includes('fin_fichier') || fullText.includes('finfichier') || fullText.includes('lirefichier') || fullText.includes('ouvrir(') || fullText.includes('fermer(')) {
       return {
         title: "10. Structures de données statiques et dynamiques (Piles, Files, Listes, Enregistrements & Fichiers)",
@@ -195,7 +213,7 @@ const Exams = () => {
       };
     }
 
-    // 2. Enregistrements (Structures / Records)
+    // 3. Enregistrements (Structures / Records)
     if (fullText.includes('enregistrement') || fullText.includes('finenregistrement') || fullText.includes('struct ') || fullText.includes('champs') || fullText.includes('enregistrement ')) {
       return {
         title: "10. Structures de données statiques et dynamiques (Piles, Files, Listes, Enregistrements & Fichiers)",
@@ -203,48 +221,40 @@ const Exams = () => {
       };
     }
 
-    // 3. Piles, Files et Listes Chaînées
-    if (fullText.includes('pile') || fullText.includes('piles') || fullText.includes('file ') || fullText.includes('files') || fullText.includes('liste chaînée') || fullText.includes('listes chaînées') || fullText.includes('empiler') || fullText.includes('dépiler') || fullText.includes('pointeur')) {
+    // 4. Piles, Files et Listes Chaînées
+    if (fullText.includes('pile') || fullText.includes('piles') || fullText.includes('file ') || fullText.includes('files') || fullText.includes('liste chainee') || fullText.includes('listes chainees') || fullText.includes('empiler') || fullText.includes('depiler') || fullText.includes('pointeur')) {
       return {
         title: "10. Structures de données statiques et dynamiques (Piles, Files, Listes, Enregistrements & Fichiers)",
         content: "## Piles, Files et Listes Chaînées\n\n### 1. Pile (LIFO - Last In First Out)\n- Le dernier élément inséré est le premier retiré.\n- Opérations : `Empiler` (Push), `Dépiler` (Pop), `Sommet`.\n\n### 2. File (FIFO - First In First Out)\n- Le premier élément inséré est le premier retiré.\n- Opérations : `Enfiler` (Enqueue), `Défiler` (Dequeue).\n\n### 3. Liste Chaînée (Maillons & Pointeurs)\n- Chaque maillon contient une **valeur** et un **pointeur suivant** vers le maillon suivant."
       };
     }
 
-    // 4. Arbres Binaires et ABR
-    if (fullText.includes('arbre') || fullText.includes('arbres') || fullText.includes('abr') || fullText.includes('racine') || fullText.includes('feuille') || fullText.includes('parcours infixe') || fullText.includes('parcours préfixe')) {
+    // 5. Arbres Binaires et ABR
+    if (fullText.includes('arbre') || fullText.includes('arbres') || fullText.includes('abr') || fullText.includes('racine') || fullText.includes('feuille') || fullText.includes('parcours infixe') || fullText.includes('parcours prefixe')) {
       return {
         title: "13. Arbres binaires et Arbres binaires de recherche (ABR)",
         content: "## Arbres Binaires et ABR\n\n- **Arbre Binaire :** Chaque nœud possède au plus 2 fils (gauche et droit).\n- **Arbre Binaire de Recherche (ABR) :** Pour tout nœud $N$, toutes les clés du sous-arbre gauche sont $< N.clé$, et toutes les clés du sous-arbre droit sont $> N.clé$.\n- **Parcours :** \n  - **Infixe (GRD) :** Visite le sous-arbre gauche, la racine, puis le droit. Produit la liste triée pour un ABR !\n  - **Préfixe (RGD) :** Racine, Gauche, Droit.\n  - **Postfixe (GDR) :** Gauche, Droit, Racine."
       };
     }
 
-    // 5. Graphes
-    if (fullText.includes('graphe') || fullText.includes('sommet') || fullText.includes('arête') || fullText.includes('dfs') || fullText.includes('bfs') || fullText.includes('dijkstra')) {
+    // 6. Graphes
+    if (fullText.includes('graphe') || fullText.includes('sommet') || fullText.includes('arete') || fullText.includes('dfs') || fullText.includes('bfs') || fullText.includes('dijkstra')) {
       return {
         title: "14. Graphes : Représentation et parcours (DFS, BFS)",
         content: "## Graphes & Parcours\n\n- **Représentations :** Matrice d'adjacence $M[i][j]$ ou Liste d'adjacence.\n- **Parcours en profondeur (DFS) :** Utilise une **pile** ou la récursivité.\n- **Parcours en largeur (BFS) :** Utilise une **file**.\n- **Algorithme de Dijkstra :** Calcule les plus courts chemins depuis un sommet source dans un graphe à poids positifs."
       };
     }
 
-    // 6. Récursivité
-    if (fullText.includes('récursif') || fullText.includes('récursive') || fullText.includes('récursivité') || fullText.includes('cas de base') || fullText.includes('hanoï')) {
+    // 7. Récursivité
+    if (fullText.includes('recursif') || fullText.includes('recursive') || fullText.includes('recursivite') || fullText.includes('cas de base') || fullText.includes('hanoi')) {
       return {
         title: "12. Récursivité et approche Diviser pour régner",
         content: "## Récursivité\n\nUn algorithme récursif est une fonction qui s'appelle elle-même.\n\n### Les 2 règles d'or :\n1. **Le cas de base (Condition d'arrêt) :** Arrête les appels récursifs pour éviter une pile d'exécution infinie (Stack Overflow).\n2. **L'étape récursive :** Réduit le problème vers le cas de base."
       };
     }
 
-    // 7. Algorithmes de Tri et Recherche
-    if (fullText.includes('tri bulle') || fullText.includes('tri sélect') || fullText.includes('tri insert') || fullText.includes('tri rapide') || fullText.includes('tri fusion') || fullText.includes('quicksort') || fullText.includes('dichotomiq') || fullText.includes('recherche séquentielle')) {
-      return {
-        title: "11. Algorithmes de Tri et Recherche (Tri Bulle, Sélection, Insertion, Rapide, Fusion)",
-        content: "## Algorithmes de Tri et Recherche\n\n### 1. Recherche Dichotomique (Binary Search)\n- **Condition obligatoire :** Le tableau doit être **strictement trié**.\n- **Complexité :** $O(\\log N)$.\n\n### 2. Tri à Bulles (Bubble Sort)\n- **Complexité :** $O(N^2)$.\n\n### 3. Tri Rapide (QuickSort) & Tri Fusion (MergeSort)\n- **Complexité moyenne :** $O(N \\log N)$."
-      };
-    }
-
     // 8. Complexité des algorithmes (Notations O)
-    if (fullText.includes('complexité') || fullText.includes('o(n)') || fullText.includes('o(log n)') || fullText.includes('o(n^2)') || fullText.includes('o(1)') || fullText.includes('pire des cas')) {
+    if (fullText.includes('complexite') || fullText.includes('o(n)') || fullText.includes('o(log n)') || fullText.includes('o(n^2)') || fullText.includes('o(1)') || fullText.includes('pire des cas')) {
       return {
         title: "09. Complexité des algorithmes (Notations O)",
         content: "## Complexité Algorithmique (Big-O)\n\n- **$O(1)$ :** Temps constant (accès direct par indice dans un tableau).\n- **$O(\\log N)$ :** Logarithmique (Recherche dichotomique, ABR équilibré).\n- **$O(N)$ :** Linéaire (Recherche séquentielle, parcours de tableau).\n- **$O(N \\log N)$ :** Quasi-linéaire (Tri Fusion, Tri Rapide moyen).\n- **$O(N^2)$ :** Quadratique (Tri à bulles, tri par sélection, boucles imbriquées)."
@@ -252,14 +262,14 @@ const Exams = () => {
     }
 
     // 9. Chaînes de Caractères
-    if (fullText.includes('chaîne') || fullText.includes('chaine') || fullText.includes('substring') || fullText.includes('concaténer') || fullText.includes('caractère')) {
+    if (fullText.includes('chaine') || fullText.includes('substring') || fullText.includes('concatener') || fullText.includes('caractere')) {
       return {
         title: "07. Chaînes de Caractères et Manipulations",
         content: "## Chaînes de Caractères\n\nUne **chaîne de caractères** est un tableau de caractères terminé par un caractère de fin (ex: `\\0` en C).\n\n### Fonctions classiques :\n- `Longueur(ch)` / `len(ch)` : Renvoie le nombre de caractères.\n- `SousChaine(ch, pos, lg)` : Extrait une partie de la chaîne."
       };
     }
 
-    // 10. Tableaux à 1D et 2D
+    // 10. Tableaux à 1D et 2D (Vecteurs et Matrices)
     if (fullText.includes('tableau') || fullText.includes('matrice') || fullText.includes('vecteur')) {
       return {
         title: "06. Les Tableaux à 1D et 2D (Vecteurs et Matrices)",
@@ -268,7 +278,7 @@ const Exams = () => {
     }
 
     // 11. Procédures et Fonctions
-    if (fullText.includes('fonction') || fullText.includes('procédure') || fullText.includes('procedure') || fullText.includes('retourner')) {
+    if (fullText.includes('fonction') || fullText.includes('procedure') || fullText.includes('retourner')) {
       return {
         title: "08. Procédures et Fonctions (Sous-programmes & Modularité)",
         content: "## Fonctions et Procédures\n\n- **Fonction :** Renvoyer une valeur unique avec `Retourner`.\n- **Procédure :** Ne renvoie pas de valeur directe.\n- **Passage par valeur :** Transmet une copie (la variable initiale reste intacte).\n- **Passage par référence (var) :** Transmet l'adresse mémoire (les modifications impactent la variable initiale)."
@@ -276,7 +286,7 @@ const Exams = () => {
     }
 
     // 12. Structures Itératives et Boucles
-    if (fullText.includes('tantque') || fullText.includes('tant que') || fullText.includes('pour i') || fullText.includes('répéter') || fullText.includes('repeter') || fullText.includes('boucle')) {
+    if (fullText.includes('tantque') || fullText.includes('tant que') || fullText.includes('pour i') || fullText.includes('repeter') || fullText.includes('boucle')) {
       return {
         title: "05. Structures Itératives et Boucles (TantQue, Pour, Répéter)",
         content: "## Les Structures Répétitives (Boucles)\n\n### 1. Boucle Pour (Nombre d'itérations connu à l'avance)\n`Pour i de 1 à N faire ... FinPour`\n\n### 2. Boucle Tant Que (Condition évaluée avant d'exécuter)\n`TantQue condition faire ... FinTantQue`\n\n### 3. Boucle Répéter...Jusqu'à (Condition évaluée après au moins 1 exécution)\n`Répéter ... Jusqu'à condition`"
