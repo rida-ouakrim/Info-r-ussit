@@ -385,26 +385,26 @@ const Courses = () => {
   }, [aiMessages, aiLoading]);
 
   const getFilteredDomains = () => {
-    const list = Array.isArray(domains) ? domains : [];
+    const list = (Array.isArray(domains) ? domains : []).filter(Boolean);
 
     // For Admins (staff / superuser): filter by adminTrackFilter switcher
     if (user?.is_staff || user?.is_superuser) {
       if (adminTrackFilter === 'crmef') {
-        return list.filter(d => d.code !== 'CONCOURS_ETAT');
+        return list.filter(d => d?.code !== 'CONCOURS_ETAT');
       }
       if (adminTrackFilter === 'concours_etat') {
-        return list.filter(d => d.code === 'CONCOURS_ETAT');
+        return list.filter(d => d?.code === 'CONCOURS_ETAT');
       }
       return list;
     }
 
     // For Candidates: filter by user.target_exam
     const target = (user?.target_exam || '').toLowerCase();
-    if (target.includes('crmef') || target.includes('enseignement')) {
-      return list.filter(d => d.code !== 'CONCOURS_ETAT');
+    if (target.includes('concours_etat') || target === 'concours_etat') {
+      return list.filter(d => d?.code === 'CONCOURS_ETAT');
     }
-    if (target.includes('concours') || target.includes('etat') || target.includes('data') || target.includes('dba') || target.includes('sys') || target.includes('cyber') || target.includes('info')) {
-      return list.filter(d => d.code === 'CONCOURS_ETAT');
+    if (target.includes('crmef') || target.includes('enseignement')) {
+      return list.filter(d => d?.code !== 'CONCOURS_ETAT');
     }
 
     return list;
@@ -1532,7 +1532,7 @@ const Courses = () => {
             const config = getSubdomainConfig(sub.code);
             const Icon = config.icon;
 
-            const subCourses = allCourses.filter(c => c.subdomain === sub.code);
+            const subCourses = allCourses.filter(c => c.subdomain === sub.id || c.subdomain_code === sub.code || c.subdomain === sub.code);
             const total = subCourses.length;
             const completed = subCourses.filter(c => c.is_completed).length;
             const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;

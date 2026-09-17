@@ -1230,11 +1230,11 @@ const Exams = () => {
           </button>
         </div>
 
-        {/* Mode Entraînement: Banner pour consulter le cours associé */}
+        {/* Mode Entraînement: Banner pour consulter le cours associé (Masqué à la demande de l'utilisateur) */}
         {(() => {
           const isArabicQ = /[\u0600-\u06FF]/.test(currentQ.question_text || '');
           const assocCourse = resolveQuestionCourse(currentQ);
-          return mode === 'Entraînement' && (
+          return false && mode === 'Entraînement' && (
             <div
               dir={isArabicQ ? 'rtl' : 'ltr'}
               className="p-3.5 rounded-2xl bg-[#03594e]/10 border border-[#03594e]/20 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs"
