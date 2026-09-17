@@ -444,7 +444,12 @@ const AdminDashboard = () => {
                     {/* User Identity */}
                     <td className="px-4 py-3.5">
                       <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                        {c.full_name}
+                        {c.is_online ? (
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" title="En ligne (actif)" />
+                        ) : (
+                          <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 shrink-0" title="Hors ligne" />
+                        )}
+                        <span>{c.full_name}</span>
                         {c.is_staff && (
                           <span className="text-[10px] bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 px-2 py-0.5 rounded-full font-bold">
                             👑 ADMIN
@@ -470,9 +475,18 @@ const AdminDashboard = () => {
                     <td className="px-4 py-3.5">
                       <div className="font-extrabold text-[#03594e] dark:text-[#F8C62F] flex items-center gap-1 text-sm">
                         <Clock className="w-3.5 h-3.5" />
-                        {c.study_hours} h
+                        {c.study_formatted || (c.study_hours ? `${c.study_hours} h` : '< 1 min')}
                       </div>
-                      <div className="text-[10px] text-slate-400">Temps estimé</div>
+                      <div className="text-[10px] text-slate-400 flex items-center gap-1">
+                        {c.is_online ? (
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping inline-block" />
+                            En ligne
+                          </span>
+                        ) : (
+                          <span>Temps réel actif</span>
+                        )}
+                      </div>
                     </td>
 
                     {/* Exam & QCM attempts */}

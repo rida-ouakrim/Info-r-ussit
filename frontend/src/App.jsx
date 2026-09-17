@@ -23,6 +23,7 @@ import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import ErrorBoundary from './components/ErrorBoundary';
+import StudyTimeTracker from './components/StudyTimeTracker';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -126,6 +127,7 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
+        <StudyTimeTracker />
         <Router>
           <AppContent />
         </Router>

@@ -6,6 +6,8 @@ class User(AbstractUser):
     is_license_active = models.BooleanField(default=True)
     allowed_generations = models.IntegerField(default=5)
     account_type = models.CharField(max_length=20, default='Standard') # 'Standard' (Normale) ou 'Premium' (Illimité)
+    total_study_seconds = models.IntegerField(default=0) # Temps réel d'étude accumulé en secondes
+    last_active_at = models.DateTimeField(null=True, blank=True) # Horodatage de dernière activité pour statut En ligne
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

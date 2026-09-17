@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import RegisterView, MeView, LicenseKeyListView, CandidateDashboardView, AdminDashboardView, UpdateAllowedGenerationsView, SendVerificationCodeView
+from .views import RegisterView, MeView, LicenseKeyListView, CandidateDashboardView, AdminDashboardView, UpdateAllowedGenerationsView, SendVerificationCodeView, TrackStudyTimeView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='auth_register'),
@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', TokenObtainPairView.as_view(), name='auth_login'),
     path('refresh/', TokenRefreshView.as_view(), name='auth_refresh'),
     path('me/', MeView.as_view(), name='auth_me'),
+    path('track-time/', TrackStudyTimeView.as_view(), name='track_study_time'),
     path('dashboard/candidate/', CandidateDashboardView.as_view(), name='candidate_dashboard'),
     path('dashboard/admin/', AdminDashboardView.as_view(), name='admin_dashboard'),
     path('admin/keys/', LicenseKeyListView.as_view(), name='auth_license_keys'),

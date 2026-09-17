@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Q, Sum
+from django.utils import timezone
 from .models import LicenseKey
 from .serializers import UserSerializer, RegisterSerializer, LicenseKeySerializer
 
@@ -16,6 +17,33 @@ from django.core.mail import send_mail
 from .models import LicenseKey, EmailVerificationCode
 
 User = get_user_model()
+
+def format_study_time(total_seconds):
+    if not total_seconds or total_seconds < 60:
+        return "< 1 min"
+    minutes = (total_seconds // 60) % 60
+    hours = total_seconds // 3600
+    if hours > 0:
+        return f"{hours} h {minutes} min" if minutes > 0 else f"{hours} h"
+    return f"{minutes} min"
+
+class TrackStudyTimeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        added_seconds = int(request.data.get('seconds', 30))
+        if 0 < added_seconds <= 300:
+            user.total_study_seconds = (user.total_study_seconds or 0) + added_seconds
+        
+        user.last_active_at = timezone.now()
+        user.save(update_fields=['total_study_seconds', 'last_active_at'])
+
+        return Response({
+            "success": True,
+            "total_study_seconds": user.total_study_seconds,
+            "study_formatted": format_study_time(user.total_study_seconds)
+        })
 
 class SendVerificationCodeView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -227,7 +255,8 @@ class AdminDashboardView(APIView):
             for name, count in sorted(target_exam_stats.items(), key=lambda x: -x[1])
         ]
 
-        global_study_minutes = 0
+        total_global_seconds = 0
+        now = timezone.now()
         candidates_overview = []
 
         for c in candidates:
@@ -240,10 +269,20 @@ class AdminDashboardView(APIView):
             c_exams_completed = ExamSession.objects.filter(user=c, exam_submitted=True).count()
             c_exams_total = ExamSession.objects.filter(user=c).count()
 
-            # Estimate study time (20 min per completed course + 1.5 min per QCM attempt)
-            c_study_minutes = round((c_completed_courses * 20) + (c_total_att * 1.5), 1)
-            c_study_hours = round(c_study_minutes / 60, 1)
-            global_study_minutes += c_study_minutes
+            c_seconds = getattr(c, 'total_study_seconds', 0) or 0
+            if c_seconds == 0:
+                est_minutes = (c_completed_courses * 20) + (c_total_att * 1.5)
+                c_seconds = int(est_minutes * 60)
+
+            total_global_seconds += c_seconds
+
+            c_study_hours = round(c_seconds / 3600, 1)
+            c_study_formatted = format_study_time(c_seconds)
+
+            c_last_active = getattr(c, 'last_active_at', None)
+            is_online = False
+            if c_last_active and (now - c_last_active).total_seconds() < 300:
+                is_online = True
 
             candidates_overview.append({
                 "id": c.id,
@@ -258,6 +297,10 @@ class AdminDashboardView(APIView):
                 "exams_completed": c_exams_completed,
                 "exams_total": c_exams_total,
                 "study_hours": c_study_hours,
+                "study_seconds": c_seconds,
+                "study_formatted": c_study_formatted,
+                "is_online": is_online,
+                "last_active_at": c_last_active,
                 "allowed_generations": c.allowed_generations,
                 "account_type": c.account_type,
                 "is_active": c.is_active,
@@ -268,7 +311,7 @@ class AdminDashboardView(APIView):
             })
 
         all_keys = LicenseKeySerializer(LicenseKey.objects.all().order_by('-created_at'), many=True).data
-        total_global_hours = round(global_study_minutes / 60, 1)
+        total_global_hours = round(total_global_seconds / 3600, 1)
 
         return Response({
             "metrics": {
