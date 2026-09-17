@@ -377,7 +377,7 @@ class SendPasswordResetCodeView(APIView):
 
         user = User.objects.filter(email__iexact=email).first()
         if not user:
-            return Response({"error": "Aucun compte n'est associé à cette adresse e-mail."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Aucun compte n'est associé à cette adresse e-mail."}, status=status.HTTP_400_BAD_REQUEST)
 
         code = f"{random.randint(100000, 999999)}"
         EmailVerificationCode.objects.create(email=email, code=code)
