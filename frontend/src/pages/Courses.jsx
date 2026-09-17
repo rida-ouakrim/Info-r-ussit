@@ -1615,26 +1615,15 @@ const Courses = () => {
 
     const allList = Array.isArray(courses) ? courses : [];
 
-    // Sort fiches in strict pedagogical order: OSI / Architecture first -> Adressage second -> Routage third
-    const fichesList = allList
-      .filter(c => !c.video_url)
-      .sort((a, b) => {
-        const titleA = (a.title || '').toLowerCase();
-        const titleB = (b.title || '').toLowerCase();
+    // Sort all courses in numerical order (01, 02, 03... 14)
+    const sortedAllList = allList.slice().sort((a, b) => {
+      const titleA = a.title || '';
+      const titleB = b.title || '';
+      return titleA.localeCompare(titleB, undefined, { numeric: true, sensitivity: 'base' });
+    });
 
-        const getPriority = (t) => {
-          if (t.includes('osi') || t.includes('couche') || t.includes('architecture')) return 1;
-          if (t.includes('adressage') || t.includes('ipv4') || t.includes('cidr')) return 2;
-          if (t.includes('routage') || t.includes('rip') || t.includes('ospf') || t.includes('ipv6')) return 3;
-          return 4;
-        };
-
-        return getPriority(titleA) - getPriority(titleB);
-      });
-
-    const videosList = allList
-      .filter(c => Boolean(c.video_url))
-      .sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+    const fichesList = sortedAllList;
+    const videosList = sortedAllList.filter(c => Boolean(c.video_url));
 
     const renderCard = (c) => {
       const isC = c.title?.toLowerCase().includes('langage c') || false;
@@ -1751,7 +1740,7 @@ const Courses = () => {
           </div>
 
           {/* Filter Tabs (Clean Segmented Control) */}
-          {videosList.length > 0 && fichesList.length > 0 && (
+          {videosList.length > 0 && (
             <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shrink-0 self-start sm:self-auto">
               <button
                 type="button"
@@ -1761,17 +1750,7 @@ const Courses = () => {
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
               >
-                Tout ({allList.length})
-              </button>
-              <button
-                type="button"
-                onClick={() => setCourseTypeFilter('fiches')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all flex items-center gap-1.5 cursor-pointer ${courseTypeFilter === 'fiches'
-                  ? 'bg-[#03594e] text-white shadow-md'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-              >
-                <BookOpen className="w-3.5 h-3.5 text-[#F8C62F]" /> Fiches ({fichesList.length})
+                Tout ({sortedAllList.length})
               </button>
               <button
                 type="button"
@@ -1787,8 +1766,8 @@ const Courses = () => {
           )}
         </div>
 
-        {/* Section 1: Fiches de révision théoriques */}
-        {(courseTypeFilter === 'all' || courseTypeFilter === 'fiches') && fichesList.length > 0 && (
+        {/* Unified List of Courses in Numerical Order (01 to 14) */}
+        {(courseTypeFilter === 'all' || courseTypeFilter === 'fiches') && sortedAllList.length > 0 && (
           <div className="space-y-4 pt-2">
             <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '2px solid #e8f5f3' }}>
               <div className="p-2.5 rounded-xl" style={{ background: 'rgba(3,89,78,0.08)', border: '1px solid rgba(3,89,78,0.15)' }}>
@@ -1796,22 +1775,22 @@ const Courses = () => {
               </div>
               <div>
                 <h3 className="text-sm font-extrabold" style={{ color: '#1a2e2a' }}>
-                  Fiches de Révision Théoriques
-                  <span className="ml-2 px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(248,198,47,0.15)', color: '#946e00', border: '1px solid rgba(248,198,47,0.3)' }}>{fichesList.length}</span>
+                  Programme Complet des Cours ({sortedAllList.length} Chapitres)
+                  <span className="ml-2 px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(248,198,47,0.15)', color: '#946e00', border: '1px solid rgba(248,198,47,0.3)' }}>{sortedAllList.length} leçons</span>
                 </h3>
-                <p className="text-[11px]" style={{ color: '#6b8c87' }}>Synthèses de cours, concepts clés et définitions académiques</p>
+                <p className="text-[11px]" style={{ color: '#6b8c87' }}>Synthèses académiques, algorithmes, pseudo-code et vidéos de révision</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {fichesList.map(renderCard)}
+              {sortedAllList.map(renderCard)}
             </div>
           </div>
         )}
 
-        {/* Section 2: Cours Vidéos en Darija */}
-        {(courseTypeFilter === 'all' || courseTypeFilter === 'videos') && videosList.length > 0 && (
-          <div className="space-y-4 pt-4">
+        {/* Filtered Videos View */}
+        {courseTypeFilter === 'videos' && videosList.length > 0 && (
+          <div className="space-y-4 pt-2">
             <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '2px solid #fde8e8' }}>
               <div className="p-2.5 rounded-xl" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.15)' }}>
                 <Video className="w-4 h-4" style={{ color: '#dc2626' }} />
@@ -1821,7 +1800,7 @@ const Courses = () => {
                   Cours Vidéos de Révision (Darija)
                   <span className="ml-2 px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(239,68,68,0.1)', color: '#dc2626', border: '1px solid rgba(239,68,68,0.2)' }}>{videosList.length}</span>
                 </h3>
-                <p className="text-[11px]" style={{ color: '#6b8c87' }}>Vidéos explicatives pas-à-pas intégrées avec fiches associées</p>
+                <p className="text-[11px]" style={{ color: '#6b8c87' }}>Vidéos explicatives pas-à-pas intégrées</p>
               </div>
             </div>
 
