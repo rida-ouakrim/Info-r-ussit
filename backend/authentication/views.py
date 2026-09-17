@@ -366,3 +366,131 @@ class UpdateAllowedGenerationsView(APIView):
             })
         except User.DoesNotExist:
             return Response({"error": "Utilisateur introuvable"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class SendPasswordResetCodeView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email', '').strip().lower()
+        if not email or '@' not in email:
+            return Response({"error": "Veuillez fournir une adresse e-mail valide."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            return Response({"error": "Aucun compte n'est associé à cette adresse e-mail."}, status=status.HTTP_404_NOT_FOUND)
+
+        code = f"{random.randint(100000, 999999)}"
+        EmailVerificationCode.objects.create(email=email, code=code)
+
+        subject = "Réinitialisation de votre mot de passe - Info Réussite"
+        
+        plain_message = (
+            f"Bonjour {user.username},\n\n"
+            f"Votre code de réinitialisation de mot de passe est : {code}\n\n"
+            f"Ce code est valide pendant 15 minutes.\n"
+            f"Si vous n'avez pas demandé cette réinitialisation, vous pouvez ignorer ce message.\n\n"
+            f"Cordialement,\n"
+            f"L'équipe Info Réussite"
+        )
+
+        html_message = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; color: #1e293b; }}
+            .container {{ max-width: 520px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }}
+            .header {{ background-color: #03594e; padding: 24px; text-align: center; color: #ffffff; }}
+            .header h1 {{ margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }}
+            .content {{ padding: 32px 24px; text-align: center; }}
+            .code-box {{ background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px 24px; display: inline-block; font-family: monospace; font-size: 28px; font-weight: 800; letter-spacing: 6px; color: #03594e; margin: 20px 0; }}
+            .text {{ font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 8px; }}
+            .footer {{ background-color: #f8fafc; padding: 16px 24px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #94a3b8; }}
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Info Réussite</h1>
+            </div>
+            <div class="content">
+              <p class="text" style="font-size: 16px; font-weight: 600; color: #0f172a;">Réinitialisation de votre mot de passe</p>
+              <p class="text">Bonjour <strong>{user.username}</strong>, voici votre code de confirmation pour définir un nouveau mot de passe :</p>
+              <div class="code-box">{code}</div>
+              <p class="text" style="font-size: 12px; color: #64748b;">Ce code est valide pendant <strong>15 minutes</strong>.</p>
+            </div>
+            <div class="footer">
+              <p style="margin: 0;">Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail en toute sécurité.</p>
+              <p style="margin: 4px 0 0 0;">© 2026 Info Réussite — Plateforme Nationale de Préparation aux Concours</p>
+            </div>
+          </div>
+        </body>
+        </html>
+        """
+
+        try:
+            send_mail(
+                subject=subject,
+                message=plain_message,
+                html_message=html_message,
+                from_email=django_settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[email],
+                fail_silently=django_settings.DEBUG,
+            )
+        except Exception as e:
+            if not django_settings.DEBUG:
+                return Response({"error": "Erreur d'envoi de l'email. Veuillez réessayer."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response({
+            "success": True,
+            "message": f"Code de réinitialisation envoyé à {email}."
+        }, status=status.HTTP_200_OK)
+
+
+class ResetPasswordWithCodeView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email', '').strip().lower()
+        code = request.data.get('code', '').strip()
+        new_password = request.data.get('new_password', '').strip()
+
+        if not email or not code or not new_password:
+            return Response({"error": "Veuillez remplir tous les champs (email, code, nouveau mot de passe)."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(new_password) < 6:
+            return Response({"error": "Le mot de passe doit contenir au moins 6 caractères."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check code
+        code_obj = EmailVerificationCode.objects.filter(
+            email__iexact=email,
+            code=code,
+            is_used=False
+        ).order_by('-created_at').first()
+
+        if not code_obj:
+            return Response({"error": "Code de vérification invalide ou expiré."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check expiration (15 minutes)
+        if (timezone.now() - code_obj.created_at).total_seconds() > 900:
+            return Response({"error": "Le code de vérification a expiré. Veuillez en demander un nouveau."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            return Response({"error": "Utilisateur introuvable."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Update password
+        user.set_password(new_password)
+        user.save()
+
+        # Mark code as used
+        code_obj.is_used = True
+        code_obj.save()
+
+        return Response({
+            "success": True,
+            "message": "Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter."
+        }, status=status.HTTP_200_OK)
+
