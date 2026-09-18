@@ -575,6 +575,25 @@ const checkLineIsArabic = (lineText, overallArabic, forceLtr = false, forceRtl =
 // Zoomable Image Component with custom keyframe animations and modal view
 const ZoomableImage = ({ src, alt, isAr }) => {
   const [isZoomed, setIsZoomed] = useState(false);
+  const [imgSrc, setImgSrc] = useState(src);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setImgSrc(src);
+    setHasError(false);
+  }, [src]);
+
+  const handleImgError = () => {
+    if (imgSrc && imgSrc.startsWith('/images/')) {
+      const filename = imgSrc.replace('/images/', '');
+      const githubUrl = `https://raw.githubusercontent.com/rida-ouakrim/Info-r-ussit/main/frontend/public/images/${filename}`;
+      if (imgSrc !== githubUrl) {
+        setImgSrc(githubUrl);
+        return;
+      }
+    }
+    setHasError(true);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -592,6 +611,14 @@ const ZoomableImage = ({ src, alt, isAr }) => {
   const hoverLabel = isArabic ? "انقر لتكبير الصورة" : "Cliquer pour agrandir";
   const closeLabel = isArabic ? "إغلاق (Esc)" : "Fermer (Esc)";
 
+  if (hasError) {
+    return (
+      <div className="my-4 p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
+        🖼️ <span>{alt || 'Schéma d\'illustration'}</span>
+      </div>
+    );
+  }
+
   return (
     <>
       <style>{`
@@ -607,8 +634,9 @@ const ZoomableImage = ({ src, alt, isAr }) => {
 
       <div className="relative group inline-block max-w-full my-4 mx-auto cursor-zoom-in text-center" onClick={() => setIsZoomed(true)}>
         <img
-          src={src}
+          src={imgSrc}
           alt={alt}
+          onError={handleImgError}
           className="max-w-full rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md block max-h-[360px] object-contain group-hover:scale-[1.015] active:scale-[0.98] transition-all duration-300 mx-auto"
         />
         {/* Subtle hover badge indicating click to enlarge */}
@@ -987,10 +1015,21 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
 
   const flushBlockquote = (keyIndex) => {
     if (currentBlockquoteLines.length > 0) {
-      const contentText = currentBlockquoteLines.join('\n');
+      let linesToRender = [...currentBlockquoteLines];
+      let alertType = null;
+
+      const firstLineTrimmed = linesToRender[0].trim();
+      const alertMatch = firstLineTrimmed.match(/^\[!(TIP|IMPORTANT|WARNING|NOTE|CAUTION)\]/i);
+
+      if (alertMatch) {
+        alertType = alertMatch[1].toUpperCase();
+        linesToRender = linesToRender.slice(1);
+      }
+
+      const contentText = linesToRender.join('\n');
       const isQuoteAr = checkLineIsArabic(contentText, isOverallArabic, forceLtr, forceRtl);
 
-      const paragraphs = currentBlockquoteLines.map((line, pIdx) => {
+      const paragraphs = linesToRender.map((line, pIdx) => {
         const trimmedLine = line.trim();
         if (!trimmedLine) return <div key={pIdx} className="h-2"></div>;
         return (
@@ -1000,18 +1039,75 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
         );
       });
 
-      elements.push(
-        <div
-          key={`quote-${keyIndex}`}
-          dir={isQuoteAr ? 'rtl' : 'ltr'}
-          className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-l-4 border-amber-500 dark:border-amber-400 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3 shadow-sm ${isQuoteAr ? 'text-right font-arabic' : 'text-left'}`}
-        >
-          <Lightbulb className="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
-          <div className="leading-relaxed font-medium flex-1">
-            {paragraphs}
+      if (alertType === 'TIP') {
+        elements.push(
+          <div
+            key={`quote-${keyIndex}`}
+            dir={isQuoteAr ? 'rtl' : 'ltr'}
+            className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/5 border-l-4 border-emerald-500 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3.5 shadow-sm ${isQuoteAr ? 'text-right font-arabic' : 'text-left'}`}
+          >
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center shrink-0 mt-0.5">
+              <Lightbulb className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div className="leading-relaxed font-medium flex-1">
+              <div className="font-extrabold text-xs uppercase tracking-wider text-emerald-700 dark:text-emerald-300 mb-1">
+                {isQuoteAr ? "💡 نصيحة للمباراة" : "💡 ASTUCE CONCOURS"}
+              </div>
+              {paragraphs}
+            </div>
           </div>
-        </div>
-      );
+        );
+      } else if (alertType === 'IMPORTANT') {
+        elements.push(
+          <div
+            key={`quote-${keyIndex}`}
+            dir={isQuoteAr ? 'rtl' : 'ltr'}
+            className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-purple-500/5 border-l-4 border-purple-500 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3.5 shadow-sm ${isQuoteAr ? 'text-right font-arabic' : 'text-left'}`}
+          >
+            <div className="w-8 h-8 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center shrink-0 mt-0.5">
+              <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+            </div>
+            <div className="leading-relaxed font-medium flex-1">
+              <div className="font-extrabold text-xs uppercase tracking-wider text-purple-700 dark:text-purple-300 mb-1">
+                {isQuoteAr ? "⚡ هام جداً" : "⚡ IMPORTANT"}
+              </div>
+              {paragraphs}
+            </div>
+          </div>
+        );
+      } else if (alertType === 'WARNING' || alertType === 'CAUTION') {
+        elements.push(
+          <div
+            key={`quote-${keyIndex}`}
+            dir={isQuoteAr ? 'rtl' : 'ltr'}
+            className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/5 border-l-4 border-amber-500 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3.5 shadow-sm ${isQuoteAr ? 'text-right font-arabic' : 'text-left'}`}
+          >
+            <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center shrink-0 mt-0.5">
+              <Lightbulb className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div className="leading-relaxed font-medium flex-1">
+              <div className="font-extrabold text-xs uppercase tracking-wider text-amber-700 dark:text-amber-300 mb-1">
+                {isQuoteAr ? "⚠️ تنبيه" : "⚠️ ATTENTION"}
+              </div>
+              {paragraphs}
+            </div>
+          </div>
+        );
+      } else {
+        elements.push(
+          <div
+            key={`quote-${keyIndex}`}
+            dir={isQuoteAr ? 'rtl' : 'ltr'}
+            className={`my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-purple-500/10 border-l-4 border-amber-500 dark:border-amber-400 text-slate-800 dark:text-slate-100 text-sm sm:text-base flex items-start gap-3 shadow-sm ${isQuoteAr ? 'text-right font-arabic' : 'text-left'}`}
+          >
+            <Lightbulb className="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
+            <div className="leading-relaxed font-medium flex-1">
+              {paragraphs}
+            </div>
+          </div>
+        );
+      }
+
       currentBlockquoteLines = [];
     }
   };

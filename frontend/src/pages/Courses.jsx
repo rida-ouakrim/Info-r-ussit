@@ -297,8 +297,13 @@ const getLocalizedSubdomainDesc = (sub, lang) => {
 
 const getLocalizedCourseTitle = (c, lang) => {
   if (!c) return '';
-  if (c.domain_code === 'DIDACTIQUE' || c.subdomain_code?.startsWith('DID_')) {
-    return c.title;
+  const domainCode = c.domain_code || '';
+  const subCode = c.subdomain_code || '';
+  // Technical IT courses (DEV, SYS_RES, LOG, CONCOURS_ETAT IT) always display in French
+  if (domainCode !== 'SCIENCES_EDU' && !subCode.startsWith('EDU_')) {
+    if (domainCode === 'DIDACTIQUE' || subCode.startsWith('DID_') || domainCode === 'DEV' || domainCode === 'SYS_RES' || domainCode === 'LOG' || domainCode === 'CONCOURS_ETAT') {
+      return c.title;
+    }
   }
   if (lang === 'ar') {
     if (c.title_ar) return c.title_ar;
