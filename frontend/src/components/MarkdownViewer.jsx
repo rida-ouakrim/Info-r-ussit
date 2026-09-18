@@ -39,39 +39,10 @@ const MatrixBlock = ({ name, rows }) => {
   );
 };
 
-// Tree Diagram Line Renderer with Exact Character-Proportional Width Alignment
+// Tree Diagram Line Renderer with Exact Character-Proportional Monospace Alignment
 const renderTreeLine = (line) => {
   if (!line) return '';
-  try {
-    const parts = line.split(/([A-Z0-9]{1,3}|\/|\\)/g);
-    return parts.map((part, idx) => {
-      if (/^[A-Z0-9]{1,3}$/.test(part)) {
-        return (
-          <span
-            key={idx}
-            className="inline-flex items-center justify-center rounded px-1 py-0.5 bg-sky-500/20 text-sky-300 border border-sky-500/40 font-black text-xs font-mono shadow-2xs align-middle"
-            style={{ minWidth: `${Math.max(part.length * 10, 18)}px`, height: '22px' }}
-          >
-            {part}
-          </span>
-        );
-      }
-      if (part === '/' || part === '\\') {
-        return (
-          <span key={idx} className="inline-block font-black text-indigo-400 text-sm font-mono text-center align-middle" style={{ width: '12px' }}>
-            {part}
-          </span>
-        );
-      }
-      return (
-        <span key={idx} className="font-mono text-slate-300 align-middle">
-          {part}
-        </span>
-      );
-    });
-  } catch (e) {
-    return <span className="text-slate-200 font-mono">{line}</span>;
-  }
+  return <span className="font-mono text-emerald-400 font-semibold tracking-wide whitespace-pre">{line}</span>;
 };
 
 // Tokenizer & Syntax Highlighter for Algorithms, Pseudocode & Programming Languages
