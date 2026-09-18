@@ -15505,9 +15505,9 @@
       "explanation": "Le module d'algorithmique et programmation au Tronc Commun introduit les concepts fondamentaux de la programmation. Parmi ceux-ci, les structures sélectives (comme les conditions 'si...alors...sinon') sont essentielles pour permettre au programme de prendre des décisions et sont généralement abordées très tôt dans l'apprentissage. Les structures répétitives sont également traitées, mais les sélectives sont souvent la première forme de contrôle de flux non séquentiel introduite.",
       "astuce": "Algo/Prog TC = Les bases ! Commence par les choix (sélectives) avant les boucles (répétitives) et les concepts avancés.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
-      "course": 37,
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_CURRICULUM",
+      "course": 22,
       "created_at": "2026-08-18T10:03:40.825Z"
     }
   },
@@ -16103,9 +16103,9 @@
       "explanation": "Dans le langage C, l'instruction 'switch' exécute le code correspondant à la valeur de l'expression. Sans l'instruction 'break' à la fin de chaque bloc 'case', l'exécution \"tombe\" (fall-through) dans les 'case' suivants, exécutant leur code séquentiellement jusqu'à rencontrer un 'break' ou la fin du 'switch'. C'est pourquoi, pour 'mois = 1', le programme affiche toutes les saisons et le message par défaut.",
       "astuce": "Pensez au 'break' comme un panneau 'STOP' dans un 'switch'. Sans lui, le programme ne s'arrête pas et continue sa route à travers les 'case' suivants.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_PROG_WEB",
-      "course": 30,
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_CONCEPTS",
+      "course": 21,
       "created_at": "2026-08-18T10:03:40.986Z"
     }
   },
