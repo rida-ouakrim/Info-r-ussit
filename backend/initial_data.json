@@ -3011,14 +3011,14 @@
       "option_b": "RIGHT JOIN",
       "option_c": "LEFT JOIN",
       "option_d": "FULL JOIN",
-      "option_e": null,
+      "option_e": "Aucune de ces réponses n'est juste",
       "correct_option": "C",
       "explanation": "Un `LEFT JOIN` (ou `LEFT OUTER JOIN`) retourne toutes les lignes de la table de gauche (ici, les étudiants) et les lignes correspondantes de la table de droite (ici, les modules validés). Si aucune correspondance n'est trouvée dans la table de droite, les colonnes de la table de droite contiendront des valeurs `NULL`. Cela garantit que tous les étudiants sont inclus, même ceux qui n'ont pas validé de module.",
       "astuce": "Pour inclure toutes les lignes d'une table 'principale' et les données correspondantes d'une autre table (même s'il n'y a pas de correspondance), utilisez un `LEFT JOIN` en plaçant la table 'principale' à gauche de la clause `JOIN`.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:37.262Z"
     }
   },
@@ -3172,14 +3172,14 @@
       "option_b": "Structured Query Language",
       "option_c": "Sequential Query Logic",
       "option_d": "System Quality Level",
-      "option_e": null,
+      "option_e": "Aucune de ces réponses n'est juste",
       "correct_option": "B",
       "explanation": "SQL est l'acronyme de 'Structured Query Language', un langage standardisé utilisé pour gérer et manipuler des bases de données relationnelles.",
       "astuce": "SQL = Structured Query Language. Mémorisez l'acronyme complet, c'est une base fondamentale des bases de données.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:37.306Z"
     }
   },
@@ -3195,14 +3195,14 @@
       "option_b": "DELETE",
       "option_c": "INSERT",
       "option_d": "UPDATE",
-      "option_e": null,
+      "option_e": "Aucune de ces réponses n'est juste",
       "correct_option": "C",
       "explanation": "La commande SQL 'INSERT INTO' est utilisée pour ajouter de nouvelles lignes (enregistrements) dans une table de base de données.",
       "astuce": "Pensez aux opérations CRUD : Create (INSERT), Read (SELECT), Update (UPDATE), Delete (DELETE). 'INSERT' est pour 'Créer' de nouvelles données.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:37.312Z"
     }
   },
@@ -3218,14 +3218,14 @@
       "option_b": "UPDATE",
       "option_c": "MODIFY",
       "option_d": "CHANGE",
-      "option_e": null,
+      "option_e": "Aucune de ces réponses n'est juste",
       "correct_option": "A",
       "explanation": "La commande SQL 'ALTER TABLE' est utilisée pour modifier la structure d'une table existante, par exemple pour ajouter, supprimer ou modifier des colonnes, ou pour ajouter des contraintes.",
       "astuce": "ALTER = Altérer la structure. 'ALTER TABLE' est la commande clé pour toutes les modifications de schéma de table.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:37.318Z"
     }
   },
@@ -3241,14 +3241,14 @@
       "option_b": "DELETE TABLE",
       "option_c": "REMOVE TABLE",
       "option_d": "TRUNCATE TABLE",
-      "option_e": null,
+      "option_e": "Aucune de ces réponses n'est juste",
       "correct_option": "A",
       "explanation": "La commande DROP TABLE est utilisée pour supprimer définitivement une table de la base de données, y compris sa structure et toutes ses données. DELETE TABLE n'est pas une commande SQL valide. TRUNCATE TABLE supprime toutes les lignes d'une table mais conserve sa structure.",
       "astuce": "Pensez à 'DROP' comme 'laisser tomber' ou 'jeter' la table entière. DELETE supprime des lignes, TRUNCATE vide la table, mais DROP la fait disparaître complètement.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:37.324Z"
     }
   },
@@ -37677,10 +37677,20 @@
       "explanation": "En SQL (DML - Data Manipulation Language), la commande UPDATE permet de modifier les données enregistrées dans les lignes d'une table (ex: UPDATE table SET colonne = valeur WHERE condition). À ne pas confondre avec ALTER TABLE ... MODIFY qui modifie la structure d'une colonne (DDL).",
       "astuce": "⚡ Modifier les DONNÉES = UPDATE. Modifier la STRUCTURE de la table = ALTER TABLE.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-09-17T11:00:00.000Z"
+    }
+  },
+  {
+    "model": "syllabus.course",
+    "pk": 2,
+    "fields": {
+      "subdomain": "DEV_SI_BD",
+      "title": "02. Bases de Données Relationnelles et Langage SQL (DDL, DML, DQL, Jointures)",
+      "description": "Systèmes de Gestion de Bases de Données (SGBDR), Modèle Relationnel, Langage SQL (SELECT, INSERT, UPDATE, DELETE, ALTER, DROP, Jointures, Aggrégations).",
+      "created_at": "2026-09-18T10:00:00Z"
     }
   }
 ]
