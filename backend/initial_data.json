@@ -37689,8 +37689,17 @@
     "fields": {
       "subdomain": "DEV_SI_BD",
       "title": "02. Bases de Données Relationnelles et Langage SQL (DDL, DML, DQL, Jointures)",
-      "description": "Systèmes de Gestion de Bases de Données (SGBDR), Modèle Relationnel, Langage SQL (SELECT, INSERT, UPDATE, DELETE, ALTER, DROP, Jointures, Aggrégations).",
-      "created_at": "2026-09-18T10:00:00Z"
+      "title_ar": "02. القواعد البيانات العلاائقية ولغة SQL",
+      "content": "Le langage SQL (Structured Query Language) est le langage standardisé utilisé pour interroger et manipuler les bases de données relationnelles. Il comprend le DDL (Data Definition Language : CREATE, ALTER, DROP), le DML (Data Manipulation Language : INSERT, UPDATE, DELETE) et le DQL (Data Query Language : SELECT, JOIN).",
+      "content_ar": null,
+      "content_fr": null,
+      "examples": null,
+      "examples_ar": null,
+      "examples_fr": null,
+      "astuces": null,
+      "astuces_ar": null,
+      "astuces_fr": null,
+      "video_url": null
     }
   }
 ]
