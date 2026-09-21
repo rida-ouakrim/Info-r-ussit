@@ -21,6 +21,8 @@ class PageQuestionsSchema(BaseModel):
     questions: List[GeneratedQuestionSchema] = Field(description="List of MCQ questions")
 
 VALID_GEMINI_MODELS = [
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-flash",
     "gemini-2.0-flash",
     "gemini-1.5-flash",
     "gemini-1.5-pro",
@@ -33,6 +35,15 @@ def _execute_gemini_text_request(prompt, temperature=0.4, response_mime_type=Non
     2. google.genai Client with GEMINI_API_KEY
     3. Vertex AI Client
     """
+    if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        env_creds = config('GOOGLE_APPLICATION_CREDENTIALS', default="").strip().strip('"').strip("'")
+        if env_creds and os.path.exists(env_creds):
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = env_creds
+        else:
+            default_creds_path = r"C:\Users\RIDA OUAKRIM\Desktop\rida\vertex_credentials.json"
+            if os.path.exists(default_creds_path):
+                os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = default_creds_path
+
     api_key = config('GEMINI_API_KEY', default=os.environ.get("GEMINI_API_KEY", "")).strip().strip('"').strip("'")
     last_error = None
 
@@ -87,7 +98,7 @@ def _execute_gemini_text_request(prompt, temperature=0.4, response_mime_type=Non
 
     # Method 3: Vertex AI Client
     project_id = config('GCP_PROJECT_ID', default=os.environ.get("GCP_PROJECT_ID", "chrome-backbone-496013-p4"))
-    for loc in ["us-east4", "europe-west1", "us-central1"]:
+    for loc in ["us-central1", "europe-west1", "us-east4"]:
         try:
             client = genai.Client(
                 vertexai=True,
