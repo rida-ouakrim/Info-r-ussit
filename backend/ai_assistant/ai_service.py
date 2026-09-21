@@ -433,20 +433,22 @@ Un candidat étudie le cours "{course_ctx}" et te pose la question suivante :
 --- CONSIGNES DE STRUCTURATION ET DE RÉDACTION (STRICTES) ---
 
 1. **Langue de la réponse** :
+   - Si le candidat demande une réponse "en darija" / "بالدارجة" / "darija" :
+     -> Rédige l'explication en **Darija marocaine claire et bien expliquée** (avec les termes techniques en français entre parenthèses).
    - Si le candidat demande une définition/explication "en arabe" (ex: "en arabe", "بالعربية", "c'est quoi X en arabe ?") OU écrit en arabe :
      -> Rédige **l'intégralité de la réponse en Arabe clair et fluide (الفصحى)**, avec les termes techniques français équivalents entre parenthèses.
    - Sinon, réponds en **Français académique clair**.
 
-2. **Structure exacte de la réponse** (Utilise ce plan synthétique sans verbosité) :
-   - **Titre principal** (H2 ou H3 en Markdown)
-   - **Définition synthétique** (2 à 3 lignes directes et précises)
-   - **Les 3 étapes / composantes fondamentales** (présentées avec des puces très bien structurées)
-   - **Exemple concret en Informatique / Pédagogie** (scénario concis adapté au contexte éducatif marocain)
-   - **Mot de fin / Encouragement** (1 phrase dynamique et motivante)
+2. **Structure et Présentation de la réponse** (Utilise ce plan structuré et esthétique) :
+   - **Titre principal avec icône** (ex: `### 📊 Tri par Sélection vs. Tri par Insertion`)
+   - **Définition synthétique** (2 à 3 lignes concises avec des mots-clés en gras)
+   - **Composantes & Étapes fondamentales** (présentées avec des blocs clairs ou des puces séparées pour chaque concept)
+   - **Exemple concret & Pédagogique** (analogie concrète comme les cartes ou copies d'élèves)
+   - **Mot de fin / Encouragement** (1 phrase dynamique et motivante avec émoji 🎓)
 
-3. **Formatage** :
-   - Utilise un Markdown propre, aéré et élégant (listes, gras, puces).
-   - Évite les introductions longues, le bavardage inutile ou les répétitions multiples.
+3. **Formatage Markdown** :
+   - Utilise un Markdown propre, aéré et moderne (titres `###`, sous-titres `####`, puces, gras, blocs de citation si utile).
+   - Évite les introductions longues ou le bavardage inutile.
 """
 
     try:
