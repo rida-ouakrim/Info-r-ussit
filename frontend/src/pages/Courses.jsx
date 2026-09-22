@@ -1897,8 +1897,17 @@ const Courses = () => {
               </div>
 
               <div className="flex items-center gap-2.5 flex-wrap">
-                <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-800">
-                  Mohamed Chiny & Académie Info
+                <span className="px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-800 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                  {(() => {
+                    if (isCLanguage) return "EL BAHJA academy";
+                    if (activeCourseData?.channel) return activeCourseData.channel;
+                    if (activeCourseData?.content) {
+                      const match = activeCourseData.content.match(/\*\*Chaîne YouTube\s*:\*\*\s*([^\n]+)/i);
+                      if (match && match[1]) return match[1].trim();
+                    }
+                    return "EL BAHJA academy";
+                  })()}
                 </span>
                 <button
                   type="button"
