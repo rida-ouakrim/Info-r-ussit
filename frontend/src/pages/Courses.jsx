@@ -1241,7 +1241,7 @@ const Courses = () => {
               globalIdx: lesGlobalIdx,
               num: les.num,
               title: les.title,
-              duration: '10 min',
+              duration: les.duration || '10 min',
               type: 'Vidéo',
               isActive,
               isDone
