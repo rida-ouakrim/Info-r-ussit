@@ -338,6 +338,11 @@ class UpdateAllowedGenerationsView(APIView):
         user_id = request.data.get('user_id')
         try:
             user = User.objects.get(id=user_id)
+            if request.data.get('delete_user') is True:
+                username = user.username
+                user.delete()
+                return Response({"success": True, "deleted": True, "message": f"Utilisateur {username} supprimé."})
+
             if 'allowed_generations' in request.data:
                 user.allowed_generations = int(request.data.get('allowed_generations', 0))
             if 'account_type' in request.data:

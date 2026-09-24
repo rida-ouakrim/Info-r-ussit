@@ -4,7 +4,7 @@ import {
   ShieldCheck, Users, Key, BookOpen, Plus, 
   RefreshCw, CheckCircle2, Copy, Lock, EyeOff, Eye, X,
   Clock, Award, Search, UserCheck, UserX, BarChart2,
-  Archive, ArchiveRestore, FolderArchive
+  Archive, ArchiveRestore, FolderArchive, Trash2, AlertTriangle
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -27,6 +27,10 @@ const AdminDashboard = () => {
   const [newPassword, setNewPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
+
+  // Delete User State
+  const [userToDelete, setUserToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const showToast = (message) => {
     setToast(message);
@@ -177,6 +181,28 @@ const AdminDashboard = () => {
       showToast("Erreur lors de la modification du mot de passe.");
     } finally {
       setPasswordLoading(false);
+    }
+  };
+
+  const handleDeleteUserSubmit = async () => {
+    if (!userToDelete) return;
+    setDeleteLoading(true);
+    try {
+      await API.post('auth/admin/update-generations/', {
+        user_id: userToDelete.id,
+        delete_user: true
+      });
+      setData(prev => {
+        const updatedCandidates = prev.candidates.filter(c => c.id !== userToDelete.id);
+        return { ...prev, candidates: updatedCandidates };
+      });
+      showToast(`Compte @${userToDelete.username} supprimé définitivement !`);
+      setUserToDelete(null);
+    } catch (err) {
+      console.error("Delete user error:", err);
+      showToast("Erreur lors de la suppression du compte.");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -632,6 +658,14 @@ const AdminDashboard = () => {
                         >
                           {c.is_archived ? <ArchiveRestore className="w-3.5 h-3.5" /> : <Archive className="w-3.5 h-3.5" />}
                         </button>
+
+                        <button
+                          onClick={() => setUserToDelete(c)}
+                          title="Supprimer définitivement le compte"
+                          className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-950/70 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/40 text-xs font-semibold transition-all cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -711,6 +745,59 @@ const AdminDashboard = () => {
               </div>
             </form>
 
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Delete User Confirmation */}
+      {userToDelete && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Confirmer la Suppression</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    Compte : <span className="font-bold text-red-600 dark:text-red-400">@{userToDelete.username}</span>
+                  </p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setUserToDelete(null)}
+                className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+              <p>Êtes-vous sûr de vouloir supprimer définitivement le compte de <strong>{userToDelete.full_name}</strong> ({userToDelete.email}) ?</p>
+              <p className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-red-700 dark:text-red-400 text-[11px] font-semibold">
+                ⚠️ Attention : Cette action est irréversible. L'utilisateur et l'ensemble de ses données seront définitivement effacés de la base de données.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setUserToDelete(null)}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteUserSubmit}
+                disabled={deleteLoading}
+                className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs hover:bg-red-700 transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
+              >
+                {deleteLoading ? <RefreshCw className="w-4 h-4 animate-spin text-white" /> : <Trash2 className="w-4 h-4 text-white" />}
+                Supprimer Définitivement
+              </button>
+            </div>
           </div>
         </div>
       )}
