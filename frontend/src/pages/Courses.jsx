@@ -2620,7 +2620,7 @@ const Courses = () => {
                             {mod.lessons.map((les) => (
                               <button key={les.num} type="button" onClick={() => { setSelectedCLessonIdx(les.globalIdx); }} className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium text-left transition-all ${les.isActive ? 'bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300 font-bold shadow-2xs' : 'hover:bg-slate-100 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300'}`}>
                                 <div className="flex items-center gap-2.5 min-w-0">{les.isDone ? <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> : les.isActive ? <PlayCircle className="w-4 h-4 text-sky-500 animate-pulse shrink-0" /> : <Circle className="w-4 h-4 text-slate-400 dark:text-slate-600 shrink-0" />}<span className="whitespace-normal break-words"><strong className="text-slate-400 mr-1.5">#{les.num}</strong>{les.title}</span></div>
-                                <div className="flex items-center gap-1.5 shrink-0 ml-2"><span className="text-[10px] text-slate-400 font-semibold">{les.duration}</span><span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold text-slate-500">{les.type}</span></div>
+                                <div className="flex items-center gap-1.5 shrink-0 ml-2"><span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold text-slate-500">{les.type}</span></div>
                               </button>
                             ))}
                           </div>
