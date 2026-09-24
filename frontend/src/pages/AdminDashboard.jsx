@@ -3,7 +3,8 @@ import API from '../services/api';
 import { 
   ShieldCheck, Users, Key, BookOpen, Plus, 
   RefreshCw, CheckCircle2, Copy, Lock, EyeOff, Eye, X,
-  Clock, Award, Search, UserCheck, UserX, BarChart2
+  Clock, Award, Search, UserCheck, UserX, BarChart2,
+  Archive, ArchiveRestore, FolderArchive
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -18,6 +19,7 @@ const AdminDashboard = () => {
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedExamFilter, setSelectedExamFilter] = useState('ALL');
+  const [showArchived, setShowArchived] = useState(false);
   const [sortBy, setSortBy] = useState('created_at');
 
   // Password Reset Modal State
@@ -139,6 +141,22 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleToggleArchive = async (userId, currentArchivedStatus) => {
+    const newStatus = !currentArchivedStatus;
+    try {
+      await API.post('auth/admin/update-generations/', { user_id: userId, is_archived: newStatus });
+      setData(prev => {
+        const updatedCandidates = prev.candidates.map(c => 
+          c.id === userId ? { ...c, is_archived: newStatus } : c
+        );
+        return { ...prev, candidates: updatedCandidates };
+      });
+      showToast(`Compte ${newStatus ? 'archivé 📁 (masqué de la liste)' : 'désarchivé 📥'}`);
+    } catch (err) {
+      console.error("Failed to toggle archive status:", err);
+    }
+  };
+
   const handleResetPasswordSubmit = async (e) => {
     e.preventDefault();
     if (!selectedUserForPassword || !newPassword || newPassword.length < 6) {
@@ -176,6 +194,7 @@ const AdminDashboard = () => {
   if (!data) return null;
 
   const { metrics, candidates, target_exam_distribution } = data;
+  const archivedCount = candidates ? candidates.filter(c => c.is_archived).length : 0;
 
   const filteredCandidates = candidates.filter(c => {
     const matchesSearch = 
@@ -184,6 +203,13 @@ const AdminDashboard = () => {
       c.full_name.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesExam = selectedExamFilter === 'ALL' || c.target_exam === selectedExamFilter;
+
+    // Handle archiving filter: show archived only when showArchived is true
+    if (showArchived) {
+      if (!c.is_archived) return false;
+    } else {
+      if (c.is_archived) return false;
+    }
 
     return matchesSearch && matchesExam;
   }).sort((a, b) => {
@@ -383,12 +409,30 @@ const AdminDashboard = () => {
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              Gestion & Contrôle des Candidats ({filteredCandidates.length} / {candidates.length})
+              {showArchived ? "Comptes Archivés" : "Gestion & Contrôle des Candidats"} ({filteredCandidates.length} / {candidates.length})
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Consultez les heures d'étude, examens passés et gérez les comptes</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              {showArchived 
+                ? "Liste des comptes archivés masqués du tableau principal" 
+                : "Consultez les heures d'étude, examens passés et gérez les comptes"}
+            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            {/* Toggle Show Archived */}
+            <button
+              type="button"
+              onClick={() => setShowArchived(!showArchived)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                showArchived
+                  ? 'bg-amber-500 text-white shadow-sm hover:bg-amber-600'
+                  : 'bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-200 dark:hover:bg-slate-800'
+              }`}
+            >
+              {showArchived ? <ArchiveRestore className="w-3.5 h-3.5" /> : <Archive className="w-3.5 h-3.5" />}
+              <span>{showArchived ? "Voir Actifs & Bannis" : `Archives (${archivedCount})`}</span>
+            </button>
+
             {/* Search Input */}
             <div className="relative flex-1 sm:w-64">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -434,16 +478,18 @@ const AdminDashboard = () => {
               {filteredCandidates.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-4 py-8 text-center text-slate-400 font-medium">
-                    Aucun utilisateur ne correspond à vos critères de recherche.
+                    {showArchived 
+                      ? "Aucun compte archivé." 
+                      : "Aucun utilisateur ne correspond à vos critères de recherche."}
                   </td>
                 </tr>
               ) : (
                 filteredCandidates.map((c) => (
-                  <tr key={c.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors ${!c.is_active ? 'opacity-50 bg-red-500/5' : ''}`}>
+                  <tr key={c.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors ${!c.is_active ? 'opacity-60 bg-red-500/5' : ''} ${c.is_archived ? 'bg-amber-500/5' : ''}`}>
                     
                     {/* User Identity */}
                     <td className="px-4 py-3.5">
-                      <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5 flex-wrap">
                         {c.is_online ? (
                           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" title="En ligne (actif)" />
                         ) : (
@@ -458,6 +504,11 @@ const AdminDashboard = () => {
                         {!c.is_active && (
                           <span className="text-[10px] bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 px-2 py-0.5 rounded-full font-bold">
                             BANNIS
+                          </span>
+                        )}
+                        {c.is_archived && (
+                          <span className="text-[10px] bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                            <Archive className="w-2.5 h-2.5" /> ARCHIVÉ
                           </span>
                         )}
                       </div>
@@ -569,9 +620,20 @@ const AdminDashboard = () => {
                         >
                           {c.is_active ? <UserX className="w-3.5 h-3.5" /> : <UserCheck className="w-3.5 h-3.5" />}
                         </button>
+
+                        <button
+                          onClick={() => handleToggleArchive(c.id, c.is_archived)}
+                          title={c.is_archived ? "Désarchiver le compte" : "Archiver le compte (masquer)"}
+                          className={`p-1.5 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+                            c.is_archived 
+                              ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/40 hover:bg-amber-100' 
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          {c.is_archived ? <ArchiveRestore className="w-3.5 h-3.5" /> : <Archive className="w-3.5 h-3.5" />}
+                        </button>
                       </div>
                     </td>
-
                   </tr>
                 ))
               )}

@@ -8,6 +8,7 @@ class User(AbstractUser):
     account_type = models.CharField(max_length=20, default='Standard') # 'Standard' (Normale) ou 'Premium' (Illimité)
     total_study_seconds = models.IntegerField(default=0) # Temps réel d'étude accumulé en secondes
     last_active_at = models.DateTimeField(null=True, blank=True) # Horodatage de dernière activité pour statut En ligne
+    is_archived = models.BooleanField(default=False) # Compte archivé (masqué dans la liste)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

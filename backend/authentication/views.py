@@ -303,6 +303,7 @@ class AdminDashboardView(APIView):
                 "allowed_generations": c.allowed_generations,
                 "account_type": c.account_type,
                 "is_active": c.is_active,
+                "is_archived": getattr(c, 'is_archived', False),
                 "is_staff": c.is_staff,
                 "is_superuser": c.is_superuser,
                 "last_login": c.last_login,
@@ -343,6 +344,8 @@ class UpdateAllowedGenerationsView(APIView):
                 user.account_type = request.data.get('account_type', 'Standard')
             if 'is_active' in request.data:
                 user.is_active = bool(request.data.get('is_active'))
+            if 'is_archived' in request.data:
+                user.is_archived = bool(request.data.get('is_archived'))
             if 'is_staff' in request.data:
                 is_staff_val = bool(request.data.get('is_staff'))
                 user.is_staff = is_staff_val
@@ -360,6 +363,7 @@ class UpdateAllowedGenerationsView(APIView):
                 "allowed_generations": user.allowed_generations,
                 "account_type": user.account_type,
                 "is_active": user.is_active,
+                "is_archived": user.is_archived,
                 "is_staff": user.is_staff,
                 "is_superuser": user.is_superuser
             })
