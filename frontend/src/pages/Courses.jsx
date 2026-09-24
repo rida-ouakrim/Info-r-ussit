@@ -1045,12 +1045,21 @@ const Courses = () => {
   };
 
   const targetedQuestions = useMemo(() => {
-    let questions = isCLanguage
-      ? filterQuestionsForCourse(subQuestions, activeCourseData)
-      : subQuestions.filter(q => q.course === selectedCourse?.id);
+    let questions = [];
+    if (isCLanguage && currentCLesson) {
+      if (currentCLesson.quiz && Array.isArray(currentCLesson.quiz) && currentCLesson.quiz.length > 0) {
+        questions = currentCLesson.quiz;
+      } else {
+        questions = filterQuestionsForCourse(subQuestions, activeCourseData);
+      }
+    } else {
+      questions = subQuestions.filter(q => q.course === selectedCourse?.id);
+    }
 
-    // Only show real past exam questions (not AI-generated ones)
-    questions = questions.filter(q => !q.source_type || q.source_type === 'past_exam');
+    // Only show real past exam questions (not AI-generated ones for default courses)
+    if (!isCLanguage || !currentCLesson?.quiz?.length) {
+      questions = questions.filter(q => !q.source_type || q.source_type === 'past_exam');
+    }
 
     // Apply language filter for bilingual courses
     if (isBilingualCourse) {
