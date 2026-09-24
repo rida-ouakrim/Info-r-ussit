@@ -17,6 +17,8 @@ const AIGenerator = () => {
 
   const [numQuestions, setNumQuestions] = useState(5);
   const [difficulty, setDifficulty] = useState('Moyen');
+  const [selectedTechnology, setSelectedTechnology] = useState('AUTOMATIC');
+  const [customTopic, setCustomTopic] = useState('');
   const [qcmLanguage, setQcmLanguage] = useState('fr'); // 'fr' or 'ar' for Sciences de l'education
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -208,6 +210,8 @@ const AIGenerator = () => {
         subdomain_code: selectedSubdomainCode,
         num_questions: numQuestions,
         difficulty: difficulty,
+        technology: selectedTechnology,
+        topic: customTopic,
         lang: selectedDomainCode === 'SCIENCES_EDU' ? qcmLanguage : 'fr'
       });
 
@@ -406,6 +410,44 @@ const AIGenerator = () => {
                     <option key={sd.code} value={sd.code}>{sd.name}</option>
                   ))}
                 </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  💻 Technologie / Langage spécifique
+                </label>
+                <select
+                  value={selectedTechnology}
+                  onChange={(e) => setSelectedTechnology(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-[#d4ede9] text-slate-900 text-sm focus:border-[#03594e] focus:outline-none"
+                >
+                  <option value="AUTOMATIC">⚡ Automatique (selon le sous-domaine)</option>
+                  <option value="Langage C">🔹 Langage C (Pointeurs, Memory, Syntax)</option>
+                  <option value="Python">🐍 Python 3 (Structures, POO, Modules)</option>
+                  <option value="Java">☕ Java (POO, Interfaces, Collections)</option>
+                  <option value="C++">⚡ C++ (Pointeurs, Classes, STL)</option>
+                  <option value="JavaScript">🌐 JavaScript (ES6+, Web, Async)</option>
+                  <option value="SQL">🗄️ SQL & Bases de données (Queries, JOIN)</option>
+                  <option value="PHP">🐘 PHP (Web Development, POO)</option>
+                  <option value="Linux & Bash">🐧 Linux, Shell & Scripting Bash</option>
+                  <option value="HTML & CSS">🎨 HTML5 / CSS3 & Web Design</option>
+                  <option value="UML">📐 Modélisation UML (Diagrammes)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  🎯 Notion / Thème spécifique (Optionnel)
+                </label>
+                <input
+                  type="text"
+                  value={customTopic}
+                  onChange={(e) => setCustomTopic(e.target.value)}
+                  placeholder="ex: Pointeurs & Allocation, Requêtes JOIN..."
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-[#d4ede9] text-slate-900 text-sm focus:border-[#03594e] focus:outline-none"
+                />
               </div>
             </div>
 

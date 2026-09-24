@@ -65,6 +65,9 @@ class GenerateQCMView(APIView):
                     locked_user.save()
             return Response({"error": "Sous-domaine invalide"}, status=status.HTTP_400_BAD_REQUEST)
 
+        technology = request.data.get('technology', 'AUTOMATIC')
+        topic = request.data.get('topic', '')
+
         try:
             raw_questions = generate_custom_qcm(
                 subdomain_name=subdomain.name,
@@ -73,7 +76,9 @@ class GenerateQCMView(APIView):
                 subdomain_description=subdomain.description or '',
                 num_q=num_q,
                 difficulty=difficulty,
-                lang=lang
+                lang=lang,
+                technology=technology,
+                topic=topic
             )
 
             created_questions = []

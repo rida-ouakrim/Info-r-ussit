@@ -130,7 +130,7 @@ def _execute_gemini_text_request(prompt, temperature=0.4, response_mime_type=Non
     raise Exception(f"Services IA non disponibles : {last_error}")
 
 
-def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_description="", num_q=5, difficulty="Moyen", lang="fr"):
+def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_description="", num_q=5, difficulty="Moyen", lang="fr", technology="", topic=""):
     lang_name = "arabe (العربية)" if lang == "ar" else "français"
 
     difficulty_instructions = {
@@ -152,6 +152,9 @@ def generate_custom_qcm(subdomain_name, subdomain_code, domain_name, subdomain_d
 
     diff_guide = difficulty_instructions.get(difficulty, difficulty_instructions["Moyen"])
 
+    tech_focus = f"\nTechnologie / Langage ciblé : {technology}" if technology and technology != "AUTOMATIC" else ""
+    topic_focus = f"\nThème / Notion spécifique : {topic}" if topic and topic.strip() else ""
+
     prompt = f"""
 Tu es un membre expérimenté du jury national du concours CRMEF (Centre Régional des Métiers de l'Éducation et de la Formation) au Maroc, spécialisé en Informatique et Didactique des Sciences.
 Ton rôle est de créer des QCM de HAUTE QUALITÉ.
@@ -159,12 +162,13 @@ Ton rôle est de créer des QCM de HAUTE QUALITÉ.
 === CONTEXTE ===
 Sous-domaine : "{subdomain_name}" ({subdomain_code})
 Domaine : "{domain_name}"
-Description officielle : {subdomain_description}
+Description officielle : {subdomain_description}{tech_focus}{topic_focus}
 Nombre de questions : {num_q}
 Difficulté : {difficulty}
 Langue de rédaction : {lang_name}
 
-=== CONSIGNES DE NIVEAU ===
+=== CONSIGNES DE RÉDACTION ===
+- Si une technologie (ex: Langage C, Python, Java, SQL...) ou une notion spécifique est définie, concentre le QCM spécifiquement sur des exemples de code, la syntaxe, et les pièges classiques du concours concernant cette technologie.
 {diff_guide}
 
 === FORMAT DE SORTIE ===
