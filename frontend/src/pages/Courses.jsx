@@ -432,8 +432,9 @@ const Courses = () => {
   const videoRef = useRef(null);
   const [videoProgress, setVideoProgress] = useState({});
   const [videoTimestamps, setVideoTimestamps] = useState({});
+  const [completedCLessons, setCompletedCLessons] = useState([]);
 
-  // Reload notes, highlights, video progress & timestamps when user logs in / switches
+  // Reload notes, highlights, video progress, timestamps & C lesson completions when user logs in / switches
   useEffect(() => {
     try {
       const savedNotes = localStorage.getItem(`user_course_notes_${userKey}`);
@@ -465,7 +466,25 @@ const Courses = () => {
       const savedVt = localStorage.getItem(`user_video_timestamps_${userKey}`);
       setVideoTimestamps(savedVt ? JSON.parse(savedVt) : {});
     } catch (e) { setVideoTimestamps({}); }
+
+    try {
+      const savedCl = localStorage.getItem(`user_completed_c_lessons_${userKey}`);
+      setCompletedCLessons(savedCl ? JSON.parse(savedCl) : []);
+    } catch (e) { setCompletedCLessons([]); }
   }, [userKey]);
+
+  const toggleCLessonCompleted = (lessonNum) => {
+    setCompletedCLessons(prev => {
+      const prevList = Array.isArray(prev) ? prev : [];
+      const updated = prevList.includes(lessonNum)
+        ? prevList.filter(n => n !== lessonNum)
+        : [...prevList, lessonNum];
+      try {
+        localStorage.setItem(`user_completed_c_lessons_${userKey}`, JSON.stringify(updated));
+      } catch (e) { }
+      return updated;
+    });
+  };
 
   const handleSaveVideoProgress = (courseId, percentage) => {
     if (!courseId) return;
@@ -1231,7 +1250,7 @@ const Courses = () => {
 
       return chapters.map(chap => {
         const lessons = cLessons.slice(chap.start, chap.end);
-        const completedCount = lessons.filter(l => l.num <= selectedCLessonIdx).length;
+        const completedCount = lessons.filter(l => (Array.isArray(completedCLessons) && completedCLessons.includes(l.num))).length;
         const total = lessons.length;
         const pct = Math.round((completedCount / total) * 100);
 
@@ -1244,7 +1263,7 @@ const Courses = () => {
           lessons: lessons.map(les => {
             const lesGlobalIdx = les.num - 1;
             const isActive = lesGlobalIdx === selectedCLessonIdx;
-            const isDone = lesGlobalIdx < selectedCLessonIdx;
+            const isDone = Array.isArray(completedCLessons) && completedCLessons.includes(les.num);
 
             return {
               globalIdx: lesGlobalIdx,
@@ -1646,8 +1665,9 @@ const Courses = () => {
       let pct = 0;
 
       if (isC) {
-        pct = Math.round(((selectedCLessonIdx + 1) / 50) * 100);
-        progressText = `${selectedCLessonIdx + 1} / 50 leçons lues`;
+        const doneCount = Array.isArray(completedCLessons) ? completedCLessons.length : 0;
+        pct = Math.round((doneCount / 50) * 100);
+        progressText = doneCount === 50 ? "Toutes les 50 leçons validées ✓" : `${doneCount} / 50 leçons validées`;
       } else if (c.video_url && videoProgress[c.id] != null) {
         pct = videoProgress[c.id];
         progressText = pct === 100 ? "Visionnage complété ✓" : `Visionné à ${pct}%`;
@@ -2509,19 +2529,33 @@ const Courses = () => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={() => toggleCourseCompleted(selectedCourse.id, selectedCourse.is_completed)}
-              className={`px-4 py-2.5 rounded-xl font-extrabold text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer ${selectedCourse.is_completed
-                ? 'bg-[#03594e]/10 text-[#03594e] border border-[#03594e]/30'
-                : 'bg-[#03594e] hover:bg-[#02473e] text-white'
-                }`}
-            >
-              <CheckCircle2 className={`w-4 h-4 ${selectedCourse.is_completed ? 'text-[#03594e]' : 'text-[#F8C62F]'}`} />
-              {selectedCourse.is_completed
-                ? (courseLang === 'ar' ? 'تمت دراسة الدرس ✓' : 'Leçon Validée ✓')
-                : (courseLang === 'ar' ? 'إتمام الدرس' : 'Valider la leçon')}
-            </button>
+            {(() => {
+              const isCurrentDone = isCLanguage
+                ? (Array.isArray(completedCLessons) && completedCLessons.includes(currentCLesson?.num))
+                : selectedCourse.is_completed;
+
+              return (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (isCLanguage && currentCLesson) {
+                      toggleCLessonCompleted(currentCLesson.num);
+                    } else {
+                      toggleCourseCompleted(selectedCourse.id, selectedCourse.is_completed);
+                    }
+                  }}
+                  className={`px-4 py-2.5 rounded-xl font-extrabold text-xs shadow-md transition-all flex items-center gap-2 cursor-pointer ${isCurrentDone
+                    ? 'bg-[#03594e]/10 text-[#03594e] border border-[#03594e]/30'
+                    : 'bg-[#03594e] hover:bg-[#02473e] text-white'
+                    }`}
+                >
+                  <CheckCircle2 className={`w-4 h-4 ${isCurrentDone ? 'text-[#03594e]' : 'text-[#F8C62F]'}`} />
+                  {isCurrentDone
+                    ? (courseLang === 'ar' ? 'تمت دراسة الدرس ✓' : 'Leçon Validée ✓')
+                    : (courseLang === 'ar' ? 'إتمام الدرس' : 'Valider la leçon')}
+                </button>
+              );
+            })()}
 
             {isCLanguage && (
               <>
