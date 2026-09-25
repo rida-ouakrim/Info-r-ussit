@@ -380,13 +380,17 @@ class SendPasswordResetCodeView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        email = request.data.get('email', '').strip().lower()
-        if not email or '@' not in email:
-            return Response({"error": "Veuillez fournir une adresse e-mail valide."}, status=status.HTTP_400_BAD_REQUEST)
+        input_val = request.data.get('email', '').strip().lower()
+        if not input_val:
+            return Response({"error": "Veuillez fournir une adresse e-mail ou un nom d'utilisateur."}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = User.objects.filter(email__iexact=email).first()
+        user = User.objects.filter(Q(email__iexact=input_val) | Q(username__iexact=input_val)).first()
         if not user:
-            return Response({"error": "Aucun compte n'est associé à cette adresse e-mail."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Aucun compte n'est associé à cet e-mail ou nom d'utilisateur."}, status=status.HTTP_400_BAD_REQUEST)
+
+        email = user.email
+        if not email or '@' not in email:
+            return Response({"error": "L'adresse e-mail associée à ce compte est invalide."}, status=status.HTTP_400_BAD_REQUEST)
 
         code = f"{random.randint(100000, 999999)}"
         EmailVerificationCode.objects.create(email=email, code=code)
@@ -445,10 +449,11 @@ class SendPasswordResetCodeView(APIView):
                 html_message=html_message,
                 from_email=django_settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                fail_silently=True,
+                fail_silently=False,
             )
         except Exception as e:
             print(f"[EMAIL ERROR] Failed to send email to {email}: {e}")
+            return Response({"error": f"Erreur d'envoi d'e-mail ({str(e)}). Veuillez vérifier le serveur SMTP."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({
             "success": True,

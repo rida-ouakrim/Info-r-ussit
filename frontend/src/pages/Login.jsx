@@ -158,7 +158,7 @@ const Login = () => {
             {/* Username */}
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 700, color: '#1B1D21', marginBottom: 8 }}>
-                Nom d'utilisateur
+                Nom d'utilisateur ou E-mail
               </label>
               <div style={{ position: 'relative' }}>
                 <input
@@ -167,7 +167,7 @@ const Login = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  placeholder="Votre nom d'utilisateur"
+                  placeholder="Votre nom d'utilisateur ou e-mail"
                   style={{
                     width: '100%', padding: '12px 16px 12px 42px', borderRadius: 14,
                     border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 14,
@@ -334,15 +334,15 @@ const Login = () => {
               <form onSubmit={handleSendResetCode} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                 <div>
                   <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: '#1B1D21', marginBottom: 6 }}>
-                    Adresse E-mail
+                    Adresse E-mail ou Nom d'utilisateur
                   </label>
                   <div style={{ position: 'relative' }}>
                     <input
-                      type="email"
+                      type="text"
                       required
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
-                      placeholder="votre.email@exemple.com"
+                      placeholder="votre.email@exemple.com ou nom d'utilisateur"
                       style={{
                         width: '100%', padding: '11px 14px 11px 40px', borderRadius: 12,
                         border: '1px solid #d4ede9', background: '#f8fafc', fontSize: 13.5,
