@@ -471,6 +471,13 @@ const Courses = () => {
       const savedCl = localStorage.getItem(`user_completed_c_lessons_${userKey}`);
       setCompletedCLessons(savedCl ? JSON.parse(savedCl) : []);
     } catch (e) { setCompletedCLessons([]); }
+
+    try {
+      const savedQa = localStorage.getItem(`c_quiz_answers_${userKey}`);
+      if (savedQa) {
+        setUserAnswers(prev => ({ ...JSON.parse(savedQa), ...prev }));
+      }
+    } catch (e) { }
   }, [userKey]);
 
   const toggleCLessonCompleted = (lessonNum) => {
@@ -1163,11 +1170,48 @@ const Courses = () => {
   }, [activeTab, activeCourseData, userKey, selectedCourse]);
 
   const handleOptionSelect = async (questionId, option) => {
+    // Check if question exists in targetedQuestions with a local correct_option (e.g. C lessons embedded quiz)
+    const localQ = (targetedQuestions || []).find(q => q.id === questionId);
+    if (localQ && localQ.correct_option) {
+      const isCorrect = String(localQ.correct_option).trim().toUpperCase() === String(option).trim().toUpperCase();
+      const ansObj = {
+        chosen_option: option,
+        correct_option: localQ.correct_option,
+        is_correct: isCorrect,
+        explanation: localQ.explanation || ''
+      };
+      setUserAnswers(prev => {
+        const updated = { ...prev, [questionId]: ansObj };
+        try {
+          localStorage.setItem(`c_quiz_answers_${userKey}`, JSON.stringify(updated));
+        } catch (e) { }
+        return updated;
+      });
+      return;
+    }
+
     try {
       const res = await API.post(`questions/${questionId}/attempt/`, { chosen_option: option });
       setUserAnswers(prev => ({ ...prev, [questionId]: res.data }));
     } catch (err) {
       console.error(err);
+      if (localQ) {
+        const correctOpt = localQ.correct_option || 'A';
+        const isCorrect = String(correctOpt).trim().toUpperCase() === String(option).trim().toUpperCase();
+        const ansObj = {
+          chosen_option: option,
+          correct_option: correctOpt,
+          is_correct: isCorrect,
+          explanation: localQ.explanation || ''
+        };
+        setUserAnswers(prev => {
+          const updated = { ...prev, [questionId]: ansObj };
+          try {
+            localStorage.setItem(`c_quiz_answers_${userKey}`, JSON.stringify(updated));
+          } catch (e) { }
+          return updated;
+        });
+      }
     }
   };
 
