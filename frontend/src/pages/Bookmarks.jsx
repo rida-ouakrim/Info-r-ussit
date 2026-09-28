@@ -3,14 +3,32 @@ import API from '../services/api';
 import MarkdownViewer from '../components/MarkdownViewer';
 import ReferenceTextModal, { hasReferenceText } from '../components/ReferenceTextModal';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { Star, Trash2, CheckCircle2, FileText } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Star, Trash2, CheckCircle2, FileText, NotebookPen } from 'lucide-react';
 
 const Bookmarks = () => {
+  const { user } = useAuth();
+  const userKey = user?.id ? `u_${user.id}` : (user?.email ? `u_${user.email.replace(/[^a-zA-Z0-9]/g, '_')}` : 'u_guest');
+
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userAnswers, setUserAnswers] = useState({});
   const [toast, setToast] = useState(null);
   const [selectedRefQuestion, setSelectedRefQuestion] = useState(null);
+  const [questionNotes, setQuestionNotes] = useState({});
+
+  useEffect(() => {
+    try {
+      const savedNotes = localStorage.getItem(`user_question_notes_${userKey}`);
+      if (savedNotes) {
+        setQuestionNotes(JSON.parse(savedNotes));
+      } else {
+        setQuestionNotes({});
+      }
+    } catch (e) {
+      setQuestionNotes({});
+    }
+  }, [userKey]);
 
   const showToast = (message) => {
     setToast(message);
@@ -130,6 +148,23 @@ const Bookmarks = () => {
                   <div className="font-bold text-[#03594e] dark:text-[#F8C62F] mb-2">{q.question_number} :</div>
                   <MarkdownViewer content={q.question_text} />
                 </div>
+
+                {/* SAVED PERSONAL NOTE DISPLAY */}
+                {questionNotes[q.id]?.text?.trim() && (
+                  <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-2.5 shadow-xs">
+                    <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">
+                      <NotebookPen className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-extrabold text-[11px] text-amber-800 dark:text-amber-300 uppercase tracking-wide block mb-0.5">
+                        📝 Ma note personnelle enregistrée :
+                      </span>
+                      <p className="text-slate-800 dark:text-slate-200 font-medium whitespace-pre-wrap leading-relaxed">
+                        {questionNotes[q.id].text}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {(() => {

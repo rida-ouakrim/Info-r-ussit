@@ -9,7 +9,7 @@ import {
   Pause, Star, CheckCircle2, AlertCircle, RefreshCw, Trophy,
   Save, History, Trash2, Clock, Check, Eye, Bot, Sparkles, Send, X, MessageSquare,
   GraduationCap, Building2, BookOpen, Book, Code2, Brain, Languages, Keyboard,
-  Highlighter, Eraser
+  Highlighter, Eraser, NotebookPen
 } from 'lucide-react';
 
 const Exams = () => {
@@ -67,8 +67,71 @@ const Exams = () => {
   const [examSubmitted, setExamSubmitted] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState(null);
 
-  // Highlights state & selection handlers inside lesson modal
+  // User identification key for strictly isolated highlights, notes & progress
   const userKey = user?.id ? `u_${user.id}` : (user?.email ? `u_${user.email.replace(/[^a-zA-Z0-9]/g, '_')}` : 'u_guest');
+
+  // Question Personal Notes State (Mode Entraînement / Exam Question Notes)
+  const [questionNotes, setQuestionNotes] = useState({});
+  const [activeNoteOpen, setActiveNoteOpen] = useState(false);
+  const [activeNoteText, setActiveNoteText] = useState('');
+
+  useEffect(() => {
+    try {
+      const savedNotes = localStorage.getItem(`user_question_notes_${userKey}`);
+      if (savedNotes) {
+        setQuestionNotes(JSON.parse(savedNotes));
+      } else {
+        setQuestionNotes({});
+      }
+    } catch (e) {
+      setQuestionNotes({});
+    }
+  }, [userKey]);
+
+  const currentQ = questions[currentIndex] || null;
+
+  // Sync activeNoteText whenever currentQ changes
+  useEffect(() => {
+    if (currentQ && currentQ.id) {
+      const existing = questionNotes[currentQ.id];
+      setActiveNoteText(existing?.text || '');
+    } else {
+      setActiveNoteText('');
+    }
+  }, [currentQ?.id, questionNotes]);
+
+  const saveQuestionNote = (questionId, text) => {
+    if (!questionId) return;
+    const trimmed = (text || '').trim();
+    setQuestionNotes(prev => {
+      let updated;
+      if (!trimmed) {
+        updated = { ...prev };
+        delete updated[questionId];
+      } else {
+        updated = {
+          ...prev,
+          [questionId]: {
+            text: trimmed,
+            updatedAt: new Date().toISOString()
+          }
+        };
+      }
+      try {
+        localStorage.setItem(`user_question_notes_${userKey}`, JSON.stringify(updated));
+      } catch (e) { }
+      return updated;
+    });
+    showToast(trimmed ? "Note personnelle enregistrée avec succès !" : "Note supprimée.");
+  };
+
+  const deleteQuestionNote = (questionId) => {
+    saveQuestionNote(questionId, '');
+    setActiveNoteText('');
+    setActiveNoteOpen(false);
+  };
+
+  // Highlights state & selection handlers inside lesson modal
   const [highlightsMap, setHighlightsMap] = useState({});
   const [highlightToolbar, setHighlightToolbar] = useState(null); // { x, y, text, lineIdx }
   const modalContentRef = useRef(null);
@@ -106,8 +169,6 @@ const Exams = () => {
       return updated;
     });
   }, [userKey]);
-
-  const currentQ = questions[currentIndex] || null;
 
   const currentHighlightKey = useMemo(() => {
     if (!currentQ) return '';
@@ -1220,15 +1281,137 @@ const Exams = () => {
             </span>
           </div>
 
-          <button
-            onClick={() => toggleBookmark(currentQ.id)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-bold transition-all ${currentQ.is_bookmarked ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          <div className="flex items-center gap-2">
+            {/* PERSONAL NOTE BUTTON */}
+            <button
+              type="button"
+              onClick={() => {
+                setActiveNoteText(questionNotes[currentQ.id]?.text || '');
+                setActiveNoteOpen(prev => !prev);
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold transition-all cursor-pointer ${
+                questionNotes[currentQ.id]?.text?.trim()
+                  ? 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40 shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700'
               }`}
-          >
-            <Star className="w-3.5 h-3.5" />
-            {currentQ.is_bookmarked ? '★ Favoris' : '⭐ Favoris'}
-          </button>
+              title="Ajouter ou consulter votre note personnelle sur cette question"
+            >
+              <NotebookPen className={`w-3.5 h-3.5 ${questionNotes[currentQ.id]?.text?.trim() ? 'text-amber-600 dark:text-amber-400' : ''}`} />
+              <span>
+                {questionNotes[currentQ.id]?.text?.trim() ? '📝 Ma Note' : '📝 Note'}
+              </span>
+            </button>
+
+            {/* FAVORIS BUTTON */}
+            <button
+              onClick={() => toggleBookmark(currentQ.id)}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[10px] sm:text-xs font-bold transition-all ${currentQ.is_bookmarked ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700'
+                }`}
+            >
+              <Star className="w-3.5 h-3.5" />
+              {currentQ.is_bookmarked ? '★ Favoris' : '⭐ Favoris'}
+            </button>
+          </div>
         </div>
+
+        {/* EXPANDABLE QUESTION NOTE EDITOR */}
+        {activeNoteOpen && (
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-yellow-500/10 to-amber-500/5 border border-amber-500/30 shadow-md space-y-3 animate-fade-in my-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-extrabold text-amber-900 dark:text-amber-300">
+                <NotebookPen className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                <span>Note personnelle sur la question {currentQ.question_number || `Q${currentIndex + 1}`} :</span>
+                {questionNotes[currentQ.id]?.updatedAt && (
+                  <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">
+                    (Enregistrée le {new Date(questionNotes[currentQ.id].updatedAt).toLocaleDateString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })})
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setActiveNoteOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <textarea
+              value={activeNoteText}
+              onChange={(e) => setActiveNoteText(e.target.value)}
+              placeholder="Écrivez vos remarques, nouvelles informations découvertes ou astuces de révision sur cette question..."
+              rows={3}
+              className="w-full p-3 rounded-xl bg-white dark:bg-slate-950 border border-amber-500/30 text-slate-900 dark:text-white text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-y shadow-xs"
+            />
+
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => saveQuestionNote(currentQ.id, activeNoteText)}
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer transition-all hover:scale-105"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Enregistrer la note</span>
+                </button>
+
+                {activeNoteText && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(activeNoteText);
+                      showToast("Note copiée dans le presse-papier !");
+                    }}
+                    className="px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer"
+                  >
+                    Copier
+                  </button>
+                )}
+              </div>
+
+              {questionNotes[currentQ.id]?.text && (
+                <button
+                  type="button"
+                  onClick={() => deleteQuestionNote(currentQ.id)}
+                  className="px-3 py-2 rounded-xl bg-red-500/15 hover:bg-red-500/25 text-red-600 dark:text-red-400 font-bold text-xs transition-all cursor-pointer flex items-center gap-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Supprimer</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* SAVED NOTE PREVIEW BANNER (IF SAVED AND NOT OPENED) */}
+        {!activeNoteOpen && questionNotes[currentQ.id]?.text?.trim() && (
+          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-2.5 shadow-xs my-2">
+            <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5">
+              <NotebookPen className="w-4 h-4" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <span className="font-extrabold text-[11px] text-amber-800 dark:text-amber-300 uppercase tracking-wide">
+                  📝 Votre note personnelle enregistrée :
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveNoteText(questionNotes[currentQ.id]?.text || '');
+                    setActiveNoteOpen(true);
+                  }}
+                  className="text-[11px] font-bold text-amber-700 dark:text-amber-300 underline hover:text-amber-900 cursor-pointer shrink-0"
+                >
+                  Modifier la note
+                </button>
+              </div>
+              <p className="text-slate-800 dark:text-slate-200 font-medium whitespace-pre-wrap leading-relaxed">
+                {questionNotes[currentQ.id].text}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Mode Entraînement: Banner pour consulter le cours associé (Masqué à la demande de l'utilisateur) */}
         {(() => {
