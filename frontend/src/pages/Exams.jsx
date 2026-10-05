@@ -1525,7 +1525,7 @@ const Exams = () => {
                 {currentAttempt.is_correct ? '✔️ Correct ! Bonne réponse.' : `❌ Incorrect. Bonne réponse : ${currentAttempt.details?.correct_option || currentQ.correct_option}`}
               </div>
               <div dir="auto" className="leading-relaxed bidi-plaintext">
-                {currentAttempt.details?.explanation || currentQ.explanation}
+                <MarkdownViewer content={currentAttempt.details?.explanation || currentQ.explanation || ''} />
               </div>
             </div>
 
@@ -1535,7 +1535,7 @@ const Exams = () => {
                   <span>⚡</span> <span>Astuce Concours :</span>
                 </div>
                 <div dir="auto" className="leading-relaxed bidi-plaintext">
-                  {currentQ.astuce}
+                  <MarkdownViewer content={currentQ.astuce || ''} />
                 </div>
               </div>
             )}

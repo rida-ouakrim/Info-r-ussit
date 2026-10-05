@@ -248,6 +248,18 @@ const ensureFencedCodeBlocks = (text) => {
     .replace(/`lg/g, '```alg')
     .replace(/`\x07/g, '```');
 
+  // Handle literal escaped newlines if any
+  if (cleaned.includes('\\n')) {
+    cleaned = cleaned.replace(/\\n/g, '\n');
+  }
+
+  // Format inline code blocks: ```lang code``` -> ```lang\ncode\n```
+  cleaned = cleaned.replace(/```([a-zA-Z0-9_-]+)\s+([^\n`]+?)\s*```/g, '```$1\n$2\n```');
+
+  // Separate inline bullets onto distinct lines: "text. - **Item**" -> "text.\n\n- **Item**"
+  cleaned = cleaned.replace(/([^\n])\s*-\s*\*\*/g, '$1\n\n- **');
+  cleaned = cleaned.replace(/([^\n])\s*-\s*Si\s+/g, '$1\n\n- Si ');
+
   // Auto-detect unfenced tree diagrams (lines containing / and \)
   if (!cleaned.includes('```') && (cleaned.includes('/ \\') || cleaned.includes('/  \\'))) {
     const lines = cleaned.split('\n');

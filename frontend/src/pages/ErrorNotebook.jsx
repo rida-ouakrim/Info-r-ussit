@@ -204,13 +204,17 @@ const ErrorNotebook = () => {
                         <div className="font-bold" dir="ltr">
                           {answer.is_correct ? '✔️ Correct ! Cette question sera retirée de votre carnet.' : `❌ Encore incorrect. Bonne réponse : ${answer.correct_option}`}
                         </div>
-                        <div dir="auto" className="leading-relaxed bidi-plaintext">{answer.explanation}</div>
+                        <div dir="auto" className="leading-relaxed bidi-plaintext">
+                          <MarkdownViewer content={answer.explanation || ''} />
+                        </div>
                         {q.astuce && (
                           <div dir="auto" className="mt-2 text-[#03594e] dark:text-[#F8C62F] font-medium bidi-plaintext space-y-1">
                             <div className="font-extrabold flex items-center gap-1.5" dir="ltr">
                               <span>⚡</span> <span>Astuce :</span>
                             </div>
-                            <div dir="auto" className="leading-relaxed bidi-plaintext">{q.astuce}</div>
+                            <div dir="auto" className="leading-relaxed bidi-plaintext">
+                              <MarkdownViewer content={q.astuce || ''} />
+                            </div>
                           </div>
                         )}
                       </div>

@@ -2497,7 +2497,7 @@ const Courses = () => {
                               </div>
                               {answer.explanation && (
                                 <div dir="auto" className="text-xs leading-relaxed font-normal bidi-plaintext text-slate-700 dark:text-slate-300">
-                                  {answer.explanation}
+                                  <MarkdownViewer content={answer.explanation} />
                                 </div>
                               )}
                               {q.astuce && (
@@ -2512,7 +2512,9 @@ const Courses = () => {
                                     <div className="font-bold text-[#03594e] dark:text-[#F8C62F] text-[11px] mb-0.5" dir={isAr ? 'rtl' : 'ltr'}>
                                       {isAr ? 'نصيحة المباراة' : 'Astuce Concours'}
                                     </div>
-                                    <div className="leading-relaxed text-slate-700 dark:text-slate-300 bidi-plaintext" dir="auto">{q.astuce}</div>
+                                    <div className="leading-relaxed text-slate-700 dark:text-slate-300 bidi-plaintext" dir="auto">
+                                      <MarkdownViewer content={q.astuce} />
+                                    </div>
                                   </div>
                                 </div>
                               )}
