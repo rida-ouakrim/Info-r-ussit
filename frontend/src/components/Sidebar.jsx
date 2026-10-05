@@ -133,19 +133,27 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
         {/* User Card */}
         {user && (
           <div className={`flex items-center gap-2 px-2 py-2 rounded-xl bg-slate-50 dark:bg-[#1B1D21]/60 border border-slate-200 dark:border-slate-700/50 ${collapsed ? 'justify-center' : ''}`}>
-            <div className="w-7 h-7 rounded-full bg-[#F8C62F] text-[#1B1D21] text-xs font-black flex items-center justify-center shrink-0">
-              {(user?.username || user?.first_name || user?.email || 'U').charAt(0).toUpperCase()}
-            </div>
-            {!collapsed && (
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">{user?.first_name || user?.username || user?.email || 'Utilisateur'}</div>
-                <div className="text-[10px] text-slate-400 truncate">{user?.target_exam || 'Candidat'}</div>
+            <Link 
+              to="/dashboard" 
+              onClick={onCloseMobile}
+              className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-85 transition-opacity"
+              title="Voir mon tableau de bord"
+            >
+              <div className="w-7 h-7 rounded-full bg-[#F8C62F] text-[#1B1D21] text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
+                {(user?.username || user?.first_name || user?.email || 'U').charAt(0).toUpperCase()}
               </div>
-            )}
+              {!collapsed && (
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">{user?.first_name || user?.username || user?.email || 'Utilisateur'}</div>
+                  <div className="text-[10px] text-slate-400 truncate">{user?.target_exam || 'Candidat'}</div>
+                </div>
+              )}
+            </Link>
             <button
               onClick={handleLogout}
               title="Déconnexion"
               className="p-1.5 rounded-md text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shrink-0"
+              type="button"
             >
               <LogOut className="w-3.5 h-3.5" />
             </button>

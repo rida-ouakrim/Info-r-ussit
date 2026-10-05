@@ -34,7 +34,15 @@ class TrackStudyTimeView(APIView):
         user = request.user
         added_seconds = int(request.data.get('seconds', 30))
         if 0 < added_seconds <= 300:
-            user.total_study_seconds = (user.total_study_seconds or 0) + added_seconds
+            completed_courses = CourseProgress.objects.filter(user=user, is_completed=True).count()
+            total_attempts = UserAttempt.objects.filter(user=user).count()
+            est_seconds = int(((completed_courses * 20) + (total_attempts * 1.5)) * 60)
+
+            current_seconds = user.total_study_seconds or 0
+            if current_seconds < est_seconds:
+                current_seconds = est_seconds
+
+            user.total_study_seconds = current_seconds + added_seconds
         
         user.last_active_at = timezone.now()
         user.save(update_fields=['total_study_seconds', 'last_active_at'])
@@ -269,9 +277,10 @@ class AdminDashboardView(APIView):
             c_exams_total = ExamSession.objects.filter(user=c).count()
 
             c_seconds = getattr(c, 'total_study_seconds', 0) or 0
-            if c_seconds == 0:
-                est_minutes = (c_completed_courses * 20) + (c_total_att * 1.5)
-                c_seconds = int(est_minutes * 60)
+            est_minutes = (c_completed_courses * 20) + (c_total_att * 1.5)
+            est_seconds = int(est_minutes * 60)
+            if c_seconds < est_seconds:
+                c_seconds = est_seconds
 
             total_global_seconds += c_seconds
 
