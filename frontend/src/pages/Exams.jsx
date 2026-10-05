@@ -1323,7 +1323,14 @@ const Exams = () => {
                 <span>Note personnelle sur la question {currentQ.question_number || `Q${currentIndex + 1}`} :</span>
                 {questionNotes[currentQ.id]?.updatedAt && (
                   <span className="text-[10px] font-normal text-slate-500 dark:text-slate-400">
-                    (Enregistrée le {new Date(questionNotes[currentQ.id].updatedAt).toLocaleDateString('fr-FR', { dateStyle: 'short', timeStyle: 'short' })})
+                    {(() => {
+                      try {
+                        const d = new Date(questionNotes[currentQ.id].updatedAt);
+                        return isNaN(d.getTime()) ? '' : `(Enregistrée le ${d.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })})`;
+                      } catch {
+                        return '';
+                      }
+                    })()}
                   </span>
                 )}
               </div>
