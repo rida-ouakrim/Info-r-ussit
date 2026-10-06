@@ -5,6 +5,7 @@ import MarkdownViewer from '../components/MarkdownViewer';
 import ReferenceTextModal, { hasReferenceText } from '../components/ReferenceTextModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { cLessons } from '../data/cLessons';
+import { sqlLessons } from '../data/sqlLessons';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen, CheckCircle2, Circle, Search,
@@ -433,8 +434,10 @@ const Courses = () => {
   const [videoProgress, setVideoProgress] = useState({});
   const [videoTimestamps, setVideoTimestamps] = useState({});
   const [completedCLessons, setCompletedCLessons] = useState([]);
+  const [selectedSqlLessonIdx, setSelectedSqlLessonIdx] = useState(0);
+  const [completedSqlLessons, setCompletedSqlLessons] = useState([]);
 
-  // Reload notes, highlights, video progress, timestamps & C lesson completions when user logs in / switches
+  // Reload notes, highlights, video progress, timestamps & C/SQL lesson completions when user logs in / switches
   useEffect(() => {
     try {
       const savedNotes = localStorage.getItem(`user_course_notes_${userKey}`);
@@ -473,6 +476,11 @@ const Courses = () => {
     } catch (e) { setCompletedCLessons([]); }
 
     try {
+      const savedSql = localStorage.getItem(`user_completed_sql_lessons_${userKey}`);
+      setCompletedSqlLessons(savedSql ? JSON.parse(savedSql) : []);
+    } catch (e) { setCompletedSqlLessons([]); }
+
+    try {
       const savedQa = localStorage.getItem(`c_quiz_answers_${userKey}`);
       if (savedQa) {
         setUserAnswers(prev => ({ ...JSON.parse(savedQa), ...prev }));
@@ -488,6 +496,19 @@ const Courses = () => {
         : [...prevList, lessonNum];
       try {
         localStorage.setItem(`user_completed_c_lessons_${userKey}`, JSON.stringify(updated));
+      } catch (e) { }
+      return updated;
+    });
+  };
+
+  const toggleSqlLessonCompleted = (lessonNum) => {
+    setCompletedSqlLessons(prev => {
+      const prevList = Array.isArray(prev) ? prev : [];
+      const updated = prevList.includes(lessonNum)
+        ? prevList.filter(n => n !== lessonNum)
+        : [...prevList, lessonNum];
+      try {
+        localStorage.setItem(`user_completed_sql_lessons_${userKey}`, JSON.stringify(updated));
       } catch (e) { }
       return updated;
     });
@@ -697,7 +718,11 @@ const Courses = () => {
     setCourseLang(defaultLang);
     setQcmLangFilter(defaultLang);
     setIsVideoLoading(false); // Reset loading state for new course
-    if (course.video_url) {
+    const isProg = course.video_url || 
+                   course.title?.toLowerCase().includes('langage c') || 
+                   course.title?.toLowerCase().includes('langage sql') || 
+                   course.title?.toLowerCase().includes('bases de données relationnelles');
+    if (isProg) {
       setActiveTab('video');
     } else {
       setActiveTab('content');
@@ -724,9 +749,18 @@ const Courses = () => {
     return selectedCourse?.title?.toLowerCase().includes('langage c') || false;
   }, [selectedCourse]);
 
+  const isSqlLanguage = useMemo(() => {
+    const t = selectedCourse?.title?.toLowerCase() || '';
+    return (t.includes('langage sql') || t.includes('bases de données relationnelles')) || false;
+  }, [selectedCourse]);
+
   const currentCLesson = useMemo(() => {
     return cLessons[selectedCLessonIdx] || cLessons[0];
   }, [selectedCLessonIdx]);
+
+  const currentSqlLesson = useMemo(() => {
+    return sqlLessons[selectedSqlLessonIdx] || sqlLessons[0];
+  }, [selectedSqlLessonIdx]);
 
   const activeCourseData = useMemo(() => {
     if (!selectedCourse) return null;
@@ -740,24 +774,36 @@ const Courses = () => {
         video_url: currentCLesson.video_url
       };
     }
+    if (isSqlLanguage && currentSqlLesson) {
+      return {
+        ...selectedCourse,
+        title: `Leçon ${currentSqlLesson.num < 10 ? '0' + currentSqlLesson.num : currentSqlLesson.num} : ${currentSqlLesson.title}`,
+        content: currentSqlLesson.content,
+        examples: currentSqlLesson.examples,
+        astuces: currentSqlLesson.astuces,
+        video_url: currentSqlLesson.video_url
+      };
+    }
     return selectedCourse;
-  }, [selectedCourse, isCLanguage, currentCLesson]);
-
-
+  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson]);
 
   const currentNoteKey = useMemo(() => {
     if (!selectedCourse) return '';
     if (isCLanguage && currentCLesson) {
       return `${userKey}_note_c_lesson_${currentCLesson.num}`;
     }
+    if (isSqlLanguage && currentSqlLesson) {
+      return `${userKey}_note_sql_lesson_${currentSqlLesson.num}`;
+    }
     return `${userKey}_note_course_${selectedCourse.id}`;
-  }, [selectedCourse, isCLanguage, currentCLesson, userKey]);
+  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson, userKey]);
 
   const currentHighlightKey = useMemo(() => {
     if (!selectedCourse) return '';
     if (isCLanguage && currentCLesson) return `${userKey}_hl_c_${currentCLesson.num}`;
+    if (isSqlLanguage && currentSqlLesson) return `${userKey}_hl_sql_${currentSqlLesson.num}`;
     return `${userKey}_hl_course_${selectedCourse.id}`;
-  }, [selectedCourse, isCLanguage, currentCLesson, userKey]);
+  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson, userKey]);
 
   const currentHighlights = useMemo(() => {
     return highlights[currentHighlightKey] || [];
@@ -960,7 +1006,7 @@ const Courses = () => {
     try {
       const res = await API.get(`courses/${id}/`);
       setSelectedCourse(res.data);
-      if (!res.data?.video_url && activeTab === 'video' && !isCLanguage) {
+      if (!res.data?.video_url && activeTab === 'video' && !isCLanguage && !isSqlLanguage) {
         setActiveTab('content');
       }
     } catch (err) {
@@ -1078,12 +1124,18 @@ const Courses = () => {
       } else {
         questions = filterQuestionsForCourse(subQuestions, activeCourseData);
       }
+    } else if (isSqlLanguage && currentSqlLesson) {
+      if (currentSqlLesson.quiz && Array.isArray(currentSqlLesson.quiz) && currentSqlLesson.quiz.length > 0) {
+        questions = currentSqlLesson.quiz;
+      } else {
+        questions = subQuestions.filter(q => q.course === selectedCourse?.id);
+      }
     } else {
       questions = subQuestions.filter(q => q.course === selectedCourse?.id);
     }
 
     // Only show real past exam questions (not AI-generated ones for default courses)
-    if (!isCLanguage || !currentCLesson?.quiz?.length) {
+    if ((!isCLanguage && !isSqlLanguage) || (!currentCLesson?.quiz?.length && !currentSqlLesson?.quiz?.length)) {
       questions = questions.filter(q => !q.source_type || q.source_type === 'past_exam');
     }
 
@@ -1105,7 +1157,7 @@ const Courses = () => {
     });
 
     return questions;
-  }, [subQuestions, activeCourseData, isCLanguage, selectedCourse, isBilingualCourse, qcmLangFilter, courseLang]);
+  }, [subQuestions, activeCourseData, isCLanguage, isSqlLanguage, currentCLesson, currentSqlLesson, selectedCourse, isBilingualCourse, qcmLangFilter, courseLang]);
 
   // Helper: get a clean display label for a question (no internal developer codes)
   const getQuestionLabel = (q, idx) => {
@@ -1246,24 +1298,28 @@ const Courses = () => {
   const handleNextLesson = useCallback(() => {
     if (isCLanguage) {
       setSelectedCLessonIdx(prev => Math.min(cLessons.length - 1, prev + 1));
+    } else if (isSqlLanguage) {
+      setSelectedSqlLessonIdx(prev => Math.min(sqlLessons.length - 1, prev + 1));
     } else {
       const idx = courses.findIndex(c => c.id === selectedCourse?.id);
       if (idx !== -1 && idx < courses.length - 1) {
         fetchCourseDetail(courses[idx + 1].id);
       }
     }
-  }, [isCLanguage, courses, selectedCourse]);
+  }, [isCLanguage, isSqlLanguage, courses, selectedCourse]);
 
   const handlePrevLesson = useCallback(() => {
     if (isCLanguage) {
       setSelectedCLessonIdx(prev => Math.max(0, prev - 1));
+    } else if (isSqlLanguage) {
+      setSelectedSqlLessonIdx(prev => Math.max(0, prev - 1));
     } else {
       const idx = courses.findIndex(c => c.id === selectedCourse?.id);
       if (idx > 0) {
         fetchCourseDetail(courses[idx - 1].id);
       }
     }
-  }, [isCLanguage, courses, selectedCourse]);
+  }, [isCLanguage, isSqlLanguage, courses, selectedCourse]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -1323,6 +1379,47 @@ const Courses = () => {
       });
     }
 
+    if (isSqlLanguage) {
+      // Group 27 SQL lessons into 5 chapters
+      const chapters = [
+        { id: 'sql_mod_1', title: 'Module 1 : Démarrage & Configuration MySQL', start: 0, end: 4 },
+        { id: 'sql_mod_2', title: 'Module 2 : Définition des Tables & Contraintes (DDL)', start: 4, end: 9 },
+        { id: 'sql_mod_3', title: 'Module 3 : Manipulation des Données (DML)', start: 9, end: 12 },
+        { id: 'sql_mod_4', title: 'Module 4 : Interrogation & Filtrage de Base (DQL)', start: 12, end: 19 },
+        { id: 'sql_mod_5', title: 'Module 5 : Tri, Fonctions, Agrégats & Jointures', start: 19, end: 27 }
+      ];
+
+      return chapters.map(chap => {
+        const lessons = sqlLessons.slice(chap.start, chap.end);
+        const completedCount = lessons.filter(l => (Array.isArray(completedSqlLessons) && completedSqlLessons.includes(l.num))).length;
+        const total = lessons.length;
+        const pct = Math.round((completedCount / total) * 100);
+
+        return {
+          id: chap.id,
+          title: chap.title,
+          lessonsCount: total,
+          completedCount,
+          percentage: pct,
+          lessons: lessons.map(les => {
+            const lesGlobalIdx = les.num - 1;
+            const isActive = lesGlobalIdx === selectedSqlLessonIdx;
+            const isDone = Array.isArray(completedSqlLessons) && completedSqlLessons.includes(les.num);
+
+            return {
+              globalIdx: lesGlobalIdx,
+              num: les.num,
+              title: les.title,
+              duration: les.duration || '10 min',
+              type: 'Vidéo',
+              isActive,
+              isDone
+            };
+          })
+        };
+      });
+    }
+
     // Default grouping for other courses
     const allCoursesList = Array.isArray(courses) ? courses : [];
     return [
@@ -1343,7 +1440,7 @@ const Courses = () => {
         }))
       }
     ];
-  }, [isCLanguage, selectedCLessonIdx, courses, selectedCourse, selectedSubdomainCode]);
+  }, [isCLanguage, isSqlLanguage, selectedCLessonIdx, selectedSqlLessonIdx, completedCLessons, completedSqlLessons, courses, selectedCourse, selectedSubdomainCode]);
 
   const currentDomainObj = useMemo(() => {
     return (Array.isArray(domains) ? domains : []).find(d => d.code === selectedDomainCode) || null;
@@ -1704,6 +1801,8 @@ const Courses = () => {
 
     const renderCard = (c) => {
       const isC = c.title?.toLowerCase().includes('langage c') || false;
+      const isSql = c.title?.toLowerCase().includes('langage sql') || c.title?.toLowerCase().includes('bases de données relationnelles') || false;
+      const isProgressive = isC || isSql;
       const isDone = c.is_completed;
       let progressText = "";
       let pct = 0;
@@ -1712,6 +1811,10 @@ const Courses = () => {
         const doneCount = Array.isArray(completedCLessons) ? completedCLessons.length : 0;
         pct = Math.round((doneCount / 50) * 100);
         progressText = doneCount === 50 ? "Toutes les 50 leçons validées ✓" : `${doneCount} / 50 leçons validées`;
+      } else if (isSql) {
+        const doneCount = Array.isArray(completedSqlLessons) ? completedSqlLessons.length : 0;
+        pct = Math.round((doneCount / 27) * 100);
+        progressText = doneCount === 27 ? "Toutes les 27 leçons validées ✓" : `${doneCount} / 27 leçons validées`;
       } else if (c.video_url && videoProgress[c.id] != null) {
         pct = videoProgress[c.id];
         progressText = pct === 100 ? "Visionnage complété ✓" : `Visionné à ${pct}%`;
@@ -1720,13 +1823,15 @@ const Courses = () => {
         progressText = isDone ? "Révision complétée ✓" : "Non commencée";
       }
 
-      const TypeIcon = isC ? Layers : c.video_url ? Video : BookOpen;
+      const TypeIcon = isProgressive ? Layers : c.video_url ? Video : BookOpen;
       const badgeStyle = isC
         ? { background: 'rgba(124,58,237,0.1)', color: '#6d28d9', border: '1px solid rgba(124,58,237,0.2)' }
-        : c.video_url
-          ? { background: 'rgba(239,68,68,0.1)', color: '#dc2626', border: '1px solid rgba(239,68,68,0.2)' }
-          : { background: 'rgba(3,89,78,0.08)', color: '#03594e', border: '1px solid rgba(3,89,78,0.2)' };
-      const badgeLabel = isC ? 'FORMATION PROGRESSIVE' : c.video_url ? 'VIDÉO & FICHE' : 'FICHE DE RÉVISION';
+        : isSql
+          ? { background: 'rgba(14,165,233,0.1)', color: '#0284c7', border: '1px solid rgba(14,165,233,0.2)' }
+          : c.video_url
+            ? { background: 'rgba(239,68,68,0.1)', color: '#dc2626', border: '1px solid rgba(239,68,68,0.2)' }
+            : { background: 'rgba(3,89,78,0.08)', color: '#03594e', border: '1px solid rgba(3,89,78,0.2)' };
+      const badgeLabel = isProgressive ? 'FORMATION PROGRESSIVE' : c.video_url ? 'VIDÉO & FICHE' : 'FICHE DE RÉVISION';
 
       return (
         <button
@@ -1737,7 +1842,7 @@ const Courses = () => {
           style={{ boxShadow: '0 4px 20px rgba(3,89,78,0.07)', border: isDone ? '1px solid rgba(3,89,78,0.3)' : '1px solid #d4ede9', background: '#ffffff' }}
         >
           {/* Top colored strip */}
-          <div style={{ height: 4, background: isDone ? '#03594e' : isC ? '#7c3aed' : c.video_url ? '#dc2626' : 'linear-gradient(90deg,#03594e,#F8C62F)' }} className="w-full shrink-0" />
+          <div style={{ height: 4, background: isDone ? '#03594e' : isC ? '#7c3aed' : isSql ? '#0284c7' : c.video_url ? '#dc2626' : 'linear-gradient(90deg,#03594e,#F8C62F)' }} className="w-full shrink-0" />
 
           {/* Hover overlay */}
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(3,89,78,0.02) 0%, rgba(248,198,47,0.03) 100%)' }} />
@@ -1771,7 +1876,7 @@ const Courses = () => {
               </div>
               <div className="flex items-center justify-end pt-0.5">
                 <span className="text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all" style={{ color: '#03594e' }}>
-                  {isC ? 'Ouvrir les leçons' : c.video_url ? 'Regarder & réviser' : 'Ouvrir la fiche'} <ChevronRight className="w-3.5 h-3.5" />
+                  {isProgressive ? 'Ouvrir les leçons' : c.video_url ? 'Regarder & réviser' : 'Ouvrir la fiche'} <ChevronRight className="w-3.5 h-3.5" />
                 </span>
               </div>
             </div>
@@ -1974,6 +2079,7 @@ const Courses = () => {
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
                   {(() => {
                     if (isCLanguage) return "EL BAHJA academy";
+                    if (isSqlLanguage) return "SQL DARIJA Academy";
                     if (activeCourseData?.channel) return activeCourseData.channel;
                     if (activeCourseData?.content) {
                       const match = activeCourseData.content.match(/\*\*Chaîne YouTube\s*:\*\*\s*([^\n]+)/i);
@@ -2556,7 +2662,7 @@ const Courses = () => {
             <ChevronRight className={`w-3.5 h-3.5 shrink-0 opacity-40 ${courseLang === 'ar' ? 'rotate-180' : ''}`} />
             <span onClick={() => setCurrentStep('courses_list')} className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors shrink-0">{getLocalizedSubdomainName(subdomainObj, courseLang) || 'Sous-domaine'}</span>
             <ChevronRight className={`w-3.5 h-3.5 shrink-0 opacity-40 ${courseLang === 'ar' ? 'rotate-180' : ''}`} />
-            <span className="text-sky-600 dark:text-sky-400 font-bold truncate max-w-[200px] shrink-0">{isCLanguage && activeCourseData ? activeCourseData.title : getLocalizedCourseTitle(selectedCourse, courseLang)}</span>
+            <span className="text-sky-600 dark:text-sky-400 font-bold truncate max-w-[200px] shrink-0">{(isCLanguage || isSqlLanguage) && activeCourseData ? activeCourseData.title : getLocalizedCourseTitle(selectedCourse, courseLang)}</span>
           </nav>
 
           <button type="button" onClick={() => setCurrentStep('courses_list')} className="btn-ghost flex items-center gap-1.5 text-xs py-1.5 px-3.5">
@@ -2567,10 +2673,10 @@ const Courses = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800" dir={courseLang === 'ar' ? 'rtl' : 'ltr'}>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              {isCLanguage ? `Leçon ${currentCLesson.num} / 50` : getLocalizedSubdomainName(subdomainObj, courseLang)}
+              {isCLanguage ? `Leçon ${currentCLesson.num} / 50` : isSqlLanguage ? `Leçon ${currentSqlLesson.num} / 27` : getLocalizedSubdomainName(subdomainObj, courseLang)}
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
-              {isCLanguage && activeCourseData ? activeCourseData.title : getLocalizedCourseTitle(selectedCourse, courseLang)}
+              {(isCLanguage || isSqlLanguage) && activeCourseData ? activeCourseData.title : getLocalizedCourseTitle(selectedCourse, courseLang)}
             </h1>
           </div>
 
@@ -2578,6 +2684,8 @@ const Courses = () => {
             {(() => {
               const isCurrentDone = isCLanguage
                 ? (Array.isArray(completedCLessons) && completedCLessons.includes(currentCLesson?.num))
+                : isSqlLanguage
+                ? (Array.isArray(completedSqlLessons) && completedSqlLessons.includes(currentSqlLesson?.num))
                 : selectedCourse.is_completed;
 
               return (
@@ -2586,6 +2694,8 @@ const Courses = () => {
                   onClick={() => {
                     if (isCLanguage && currentCLesson) {
                       toggleCLessonCompleted(currentCLesson.num);
+                    } else if (isSqlLanguage && currentSqlLesson) {
+                      toggleSqlLessonCompleted(currentSqlLesson.num);
                     } else {
                       toggleCourseCompleted(selectedCourse.id, selectedCourse.is_completed);
                     }
@@ -2603,7 +2713,7 @@ const Courses = () => {
               );
             })()}
 
-            {isCLanguage && (
+            {(isCLanguage || isSqlLanguage) && (
               <>
                 <button
                   type="button"
@@ -2626,14 +2736,14 @@ const Courses = () => {
           </div>
         </div>
 
-        {isCLanguage ? (
+        {isCLanguage || isSqlLanguage ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-4 space-y-4">
               <div className="glass-card p-5 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-xl space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2"><Layers className="w-4 h-4 text-sky-500" /> Sommaire du Parcours</h3>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">50 Leçons</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">{isCLanguage ? '50 Leçons' : '27 Leçons'}</span>
                   </div>
                   <div className="relative">
                     <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Rechercher une leçon ou notion..." className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-sky-500 focus:outline-none" />
@@ -2664,7 +2774,10 @@ const Courses = () => {
                         {isOpen && (
                           <div className="p-2 space-y-1 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900">
                             {mod.lessons.map((les) => (
-                              <button key={les.num} type="button" onClick={() => { setSelectedCLessonIdx(les.globalIdx); }} className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium text-left transition-all ${les.isActive ? 'bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300 font-bold shadow-2xs' : 'hover:bg-slate-100 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300'}`}>
+                              <button key={les.num} type="button" onClick={() => {
+                                if (isCLanguage) setSelectedCLessonIdx(les.globalIdx);
+                                else if (isSqlLanguage) setSelectedSqlLessonIdx(les.globalIdx);
+                              }} className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium text-left transition-all ${les.isActive ? 'bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300 font-bold shadow-2xs' : 'hover:bg-slate-100 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300'}`}>
                                 <div className="flex items-center gap-2.5 min-w-0">{les.isDone ? <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> : les.isActive ? <PlayCircle className="w-4 h-4 text-sky-500 animate-pulse shrink-0" /> : <Circle className="w-4 h-4 text-slate-400 dark:text-slate-600 shrink-0" />}<span className="whitespace-normal break-words"><strong className="text-slate-400 mr-1.5">#{les.num}</strong>{les.title}</span></div>
                                 <div className="flex items-center gap-1.5 shrink-0 ml-2"><span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold text-slate-500">{les.type}</span></div>
                               </button>
