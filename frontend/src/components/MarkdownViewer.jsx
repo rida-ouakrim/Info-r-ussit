@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Copy, Check, Terminal, Lightbulb } from 'lucide-react';
+import { Copy, Check, Terminal, Lightbulb, Sparkles } from 'lucide-react';
 
 // Matrix Block Renderer for 2D Matrices like M = (2 4 5 / 3 1 7 / 6 8 4)
 const MatrixBlock = ({ name, rows }) => {
