@@ -257,8 +257,9 @@ const ensureFencedCodeBlocks = (text) => {
   cleaned = cleaned.replace(/```([a-zA-Z0-9_-]+)\s+([^\n`]+?)\s*```/g, '```$1\n$2\n```');
 
   // Separate inline bullets onto distinct lines: "text. - **Item**" -> "text.\n\n- **Item**"
-  cleaned = cleaned.replace(/([^\n])\s*-\s*\*\*/g, '$1\n\n- **');
-  cleaned = cleaned.replace(/([^\n])\s*-\s*Si\s+/g, '$1\n\n- Si ');
+  // Note: do NOT match blockquote prefix '>' or leading whitespace
+  cleaned = cleaned.replace(/([^\n>\s])\s*-\s*\*\*/g, '$1\n\n- **');
+  cleaned = cleaned.replace(/([^\n>\s])\s*-\s*Si\s+/g, '$1\n\n- Si ');
 
   // Auto-detect unfenced tree diagrams (lines containing / and \)
   if (!cleaned.includes('```') && (cleaned.includes('/ \\') || cleaned.includes('/  \\'))) {
@@ -1015,6 +1016,19 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
       const paragraphs = linesToRender.map((line, pIdx) => {
         const trimmedLine = line.trim();
         if (!trimmedLine) return <div key={pIdx} className="h-2"></div>;
+
+        if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('* ')) {
+          const bulletContent = trimmedLine.substring(2).trim();
+          return (
+            <div key={pIdx} className="flex items-start gap-2.5 my-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80 mt-2 shrink-0"></span>
+              <div className="flex-1 leading-relaxed">
+                {renderTextWithMatrices(bulletContent, getLineHighlights(keyIndex, bulletContent))}
+              </div>
+            </div>
+          );
+        }
+
         return (
           <div key={pIdx} className="my-1.5">
             {renderTextWithMatrices(trimmedLine, getLineHighlights(keyIndex, trimmedLine))}
