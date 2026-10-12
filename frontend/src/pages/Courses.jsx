@@ -354,7 +354,6 @@ const Courses = () => {
   const [isNoteChatbotOpen, setIsNoteChatbotOpen] = useState(false);
   const [isVideoAiOpen, setIsVideoAiOpen] = useState(false);
   const [isVideoLoading, setIsVideoLoading] = useState(false);
-  const [useDriveDirectEmbed, setUseDriveDirectEmbed] = useState(false);
   const [aiMessages, setAiMessages] = useState([
     { sender: 'bot', text: 'Bonjour ! Je suis votre Assistant IA. Posez-moi vos questions à tout moment pendant le visionnage de la vidéo !' }
   ]);
@@ -598,9 +597,9 @@ const Courses = () => {
 
   const getEmbedUrl = (url) => {
     if (!url) return '';
-    // Google Drive → direct stream URL (used with <video> tag, not iframe)
+    // Google Drive → direct fast preview stream (Google CDN)
     const driveId = getDriveFileId(url);
-    if (driveId) return getDriveDirectUrl(driveId);
+    if (driveId) return `https://drive.google.com/file/d/${driveId}/preview`;
 
     const vMatch = url.match(/(?:v=|\/embed\/|\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     const videoId = vMatch ? vMatch[1] : null;
@@ -616,12 +615,11 @@ const Courses = () => {
 
   const getVideoEmbedUrlWithTimestamp = (url, courseId) => {
     if (!url) return '';
-    const savedSec = videoTimestamps[courseId] || 0;
-
-    // Google Drive → direct stream (timestamp handled via HTML5 video ref, not URL)
+    // Google Drive → direct fast preview
     const driveId = getDriveFileId(url);
-    if (driveId) return getDriveDirectUrl(driveId);
+    if (driveId) return `https://drive.google.com/file/d/${driveId}/preview`;
 
+    const savedSec = videoTimestamps[courseId] || 0;
     const embedUrl = getEmbedUrl(url);
     if (savedSec > 0 && embedUrl) {
       const sep = embedUrl.includes('?') ? '&' : '?';
@@ -2090,25 +2088,6 @@ const Courses = () => {
                   })()}
                 </span>
 
-                {getDriveFileId(activeCourseData?.video_url) && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsVideoLoading(false);
-                      setUseDriveDirectEmbed(!useDriveDirectEmbed);
-                    }}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border shadow-xs ${
-                      useDriveDirectEmbed
-                        ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700'
-                    }`}
-                    title={useDriveDirectEmbed ? "Revenir au lecteur HTML5" : "Activer le lecteur fluide Google Drive (chargement instantané)"}
-                  >
-                    <Zap className={`w-3.5 h-3.5 ${useDriveDirectEmbed ? 'text-amber-500 fill-amber-500' : 'text-slate-500'}`} />
-                    <span>{useDriveDirectEmbed ? "Mode Fluide Activé" : "Chargement lent ? Mode Fluide"}</span>
-                  </button>
-                )}
-
                 <button
                   type="button"
                   onClick={() => setIsNoteChatbotOpen(!isNoteChatbotOpen)}
@@ -2128,10 +2107,8 @@ const Courses = () => {
               <div className="space-y-4">
                 {/* Full-width 100% HD Video Player */}
                 <div className="relative w-full aspect-video rounded-3xl overflow-hidden bg-slate-950 shadow-2xl border border-slate-800">
-                  {/* Native HTML5 video: MP4, Google Drive (proxy), or direct file */}
-                  {!useDriveDirectEmbed && (activeCourseData.video_url.endsWith('.mp4') ||
-                   activeCourseData.video_url.includes('/media/') ||
-                   getDriveFileId(activeCourseData.video_url)) ? (
+                  {/* Native HTML5 video: direct local MP4 files only */}
+                  {(activeCourseData.video_url.endsWith('.mp4') || activeCourseData.video_url.includes('/media/')) && !getDriveFileId(activeCourseData.video_url) ? (
                     <>
                       {/* Loading overlay */}
                       {isVideoLoading && (
@@ -2146,16 +2123,6 @@ const Courses = () => {
                           <div className="text-center px-4 max-w-sm">
                             <p className="text-white text-sm font-bold">Chargement de la vidéo...</p>
                             <p className="text-slate-400 text-xs mt-1">Connexion au serveur en cours</p>
-                            {getDriveFileId(activeCourseData.video_url) && (
-                              <button
-                                type="button"
-                                onClick={() => { setIsVideoLoading(false); setUseDriveDirectEmbed(true); }}
-                                className="mt-3 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition-all shadow-md inline-flex items-center gap-1.5 cursor-pointer"
-                              >
-                                <Zap className="w-3.5 h-3.5 fill-current" />
-                                <span>Lancer en Mode Fluide (Google Drive)</span>
-                              </button>
-                            )}
                           </div>
                         </div>
                       )}
@@ -2165,9 +2132,7 @@ const Courses = () => {
                         playsInline
                         preload="metadata"
                         className="w-full h-full object-contain bg-black"
-                        src={getDriveFileId(activeCourseData.video_url)
-                          ? getDriveDirectUrl(getDriveFileId(activeCourseData.video_url))
-                          : activeCourseData.video_url}
+                        src={activeCourseData.video_url}
                         onLoadStart={() => setIsVideoLoading(true)}
                         onLoadedMetadata={(e) => {
                           setIsVideoLoading(false);
@@ -2190,14 +2155,10 @@ const Courses = () => {
                       />
                     </>
                   ) : (
-                    /* YouTube or Google Drive Direct Embed */
+                    /* Google Drive (Fast Direct Preview CDN) or YouTube embed */
                     <iframe
-                      key={`video_player_${activeCourseData.id}_${useDriveDirectEmbed ? 'drive' : 'yt'}`}
-                      src={
-                        useDriveDirectEmbed && getDriveFileId(activeCourseData.video_url)
-                          ? `https://drive.google.com/file/d/${getDriveFileId(activeCourseData.video_url)}/preview`
-                          : getVideoEmbedUrlWithTimestamp(activeCourseData.video_url, activeCourseData.id)
-                      }
+                      key={`video_player_${activeCourseData.id}`}
+                      src={getVideoEmbedUrlWithTimestamp(activeCourseData.video_url, activeCourseData.id)}
                       title={activeCourseData.title}
                       className="w-full h-full border-0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
