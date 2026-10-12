@@ -13,10 +13,10 @@ export const cLessons = [
         "option_a": "14 octets",
         "option_b": "15 octets",
         "option_c": "16 octets",
-        "option_d": "13 octets",
-        "correct_option": "B",
-        "explanation": "La chaîne \"Ceci est un test\" contient 14 caractères. Il faut ajouter 1 octet pour le caractère nul '\\0'. Donc, 14 + 1 = 15 octets.",
-        "astuce": "Toujours ajouter 1 à la longueur de la chaîne pour le caractère de fin '\\0'."
+        "option_d": "17 octets",
+        "correct_option": "D",
+        "explanation": "La chaîne \"Ceci est un test\" contient 16 caractères (espaces compris). Il faut ajouter 1 octet pour le caractère nul '\\0'. Donc, 16 + 1 = 17 octets.",
+        "astuce": "Toujours inclure les espaces dans la longueur et ajouter 1 pour le caractère de fin '\\0'."
       },
       {
         "id": 102,
@@ -157,8 +157,8 @@ export const cLessons = [
         "option_b": "0",
         "option_c": "3.75",
         "option_d": "1",
-        "correct_option": "D",
-        "explanation": "L'opérateur `%` calcule le reste de la division entière. `15` divisé par `4` donne `3` avec un reste de `3` (car `4 * 3 = 12`, et `15 - 12 = 3`). Oops, correction: 15 = 4 * 3 + 3. Le reste est 3. Re-correction: 15 / 4 = 3. Reste = 15 - (4 * 3) = 15 - 12 = 3. L'exemple était incorrect. Le reste est 3. Je vais corriger l'option D.",
+        "correct_option": "A",
+        "explanation": "L'opérateur `%` calcule le reste de la division entière. `15` divisé par `4` donne `3` avec un reste de `3` (car `15 = 4 * 3 + 3`).",
         "astuce": "Modulo = Reste de la division entière."
       },
       {
@@ -229,8 +229,8 @@ export const cLessons = [
         "option_b": "9.0",
         "option_c": "8",
         "option_d": "9",
-        "correct_option": "C",
-        "explanation": "D'abord, `5.9 + 3.1` est calculé. Le résultat est `9.0` (un flottant). Ensuite, le cast `(int)` est appliqué. Il convertit le flottant `9.0` en entier en tronquant la partie décimale. Le résultat est donc `9`. Correction: 5.9 + 3.1 = 9.0. Le cast (int) 9.0 donne 9. L'option B est 9.0, l'option D est 9. Le résultat est un entier, donc 9. L'option D est correcte.",
+        "correct_option": "D",
+        "explanation": "D'abord, `5.9 + 3.1` est calculé et donne `9.0` (un flottant). Ensuite, le cast `(int)` convertit le flottant `9.0` en l'entier `9`.",
         "astuce": "Le cast `(int)` tronque la partie décimale, il n'arrondit pas."
       },
       {
