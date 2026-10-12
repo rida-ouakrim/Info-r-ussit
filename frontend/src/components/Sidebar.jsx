@@ -132,32 +132,51 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
 
         {/* User Card */}
         {user && (
-          <div className={`flex items-center gap-2 px-2 py-2 rounded-xl bg-slate-50 dark:bg-[#1B1D21]/60 border border-slate-200 dark:border-slate-700/50 ${collapsed ? 'justify-center' : ''}`}>
-            <Link 
-              to="/dashboard" 
-              onClick={onCloseMobile}
-              className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-85 transition-opacity"
-              title="Voir mon tableau de bord"
-            >
-              <div className="w-7 h-7 rounded-full bg-[#F8C62F] text-[#1B1D21] text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
+          collapsed ? (
+            <div className="flex flex-col items-center gap-2 py-1">
+              <Link
+                to="/dashboard"
+                onClick={onCloseMobile}
+                className="w-8 h-8 rounded-full bg-[#F8C62F] text-[#1B1D21] text-xs font-black flex items-center justify-center hover:opacity-85 transition-opacity shadow-sm shrink-0"
+                title={`${user?.first_name || user?.username || 'Utilisateur'} - Mon profil`}
+              >
                 {(user?.username || user?.first_name || user?.email || 'U').charAt(0).toUpperCase()}
-              </div>
-              {!collapsed && (
+              </Link>
+              <button
+                onClick={handleLogout}
+                title="Déconnexion"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shrink-0 cursor-pointer"
+                type="button"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 px-2.5 py-2 rounded-xl bg-slate-50 dark:bg-[#1B1D21]/60 border border-slate-200 dark:border-slate-700/50">
+              <Link 
+                to="/dashboard" 
+                onClick={onCloseMobile}
+                className="flex items-center gap-2 flex-1 min-w-0 hover:opacity-85 transition-opacity"
+                title="Voir mon tableau de bord"
+              >
+                <div className="w-7 h-7 rounded-full bg-[#F8C62F] text-[#1B1D21] text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
+                  {(user?.username || user?.first_name || user?.email || 'U').charAt(0).toUpperCase()}
+                </div>
                 <div className="flex-1 min-w-0 text-left">
                   <div className="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">{user?.first_name || user?.username || user?.email || 'Utilisateur'}</div>
                   <div className="text-[10px] text-slate-400 truncate">{user?.target_exam || 'Candidat'}</div>
                 </div>
-              )}
-            </Link>
-            <button
-              onClick={handleLogout}
-              title="Déconnexion"
-              className="p-1.5 rounded-md text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shrink-0"
-              type="button"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
-          </div>
+              </Link>
+              <button
+                onClick={handleLogout}
+                title="Déconnexion"
+                className="p-1.5 rounded-md text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors shrink-0 cursor-pointer"
+                type="button"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )
         )}
 
         {!user && !collapsed && (
