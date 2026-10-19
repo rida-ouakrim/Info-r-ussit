@@ -185,7 +185,7 @@ const Exams = () => {
   const handleTextSelection = useCallback(() => {
     if (!courseModalOpen) { setHighlightToolbar(null); return; }
     const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) { setHighlightToolbar(null); return; }
+    if (!selection || selection.rangeCount === 0) return;
     const rawText = selection.toString();
     const text = rawText.replace(/\s+/g, ' ').trim();
     if (!text || text.length < 2) { setHighlightToolbar(null); return; }
@@ -203,15 +203,34 @@ const Exams = () => {
 
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
-    setHighlightToolbar({ x: rect.left + rect.width / 2, y: rect.top - 8, text, lineIdx });
+
+    const isMobile = window.innerWidth < 640 || ('ontouchstart' in window && window.innerWidth < 768);
+    if (isMobile) {
+      setHighlightToolbar({ x: window.innerWidth / 2, y: 0, text, lineIdx, isMobile: true });
+    } else {
+      const clampedX = Math.max(170, Math.min(window.innerWidth - 170, rect.left + rect.width / 2));
+      const clampedY = rect.top < 70 ? rect.bottom + 45 : rect.top - 8;
+      setHighlightToolbar({ x: clampedX, y: clampedY, text, lineIdx, isMobile: false });
+    }
   }, [courseModalOpen]);
 
   useEffect(() => {
+    let timeoutId = null;
+    const onSelectionChange = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        handleTextSelection();
+      }, 150);
+    };
+
     document.addEventListener('mouseup', handleTextSelection);
-    document.addEventListener('touchend', handleTextSelection);
+    document.addEventListener('touchend', onSelectionChange);
+    document.addEventListener('selectionchange', onSelectionChange);
     return () => {
+      if (timeoutId) clearTimeout(timeoutId);
       document.removeEventListener('mouseup', handleTextSelection);
-      document.removeEventListener('touchend', handleTextSelection);
+      document.removeEventListener('touchend', onSelectionChange);
+      document.removeEventListener('selectionchange', onSelectionChange);
     };
   }, [handleTextSelection]);
 
@@ -2027,54 +2046,105 @@ const Exams = () => {
         </div>
       )}
 
-      {/* Floating Highlight Toolbar (Modal Step) */}
+      {/* Floating Highlight Toolbar (Modal Step: bottom-docked on mobile, floating on desktop) */}
       {highlightToolbar && courseModalOpen && (
-        <div
-          className="fixed z-[10000] transform -translate-x-1/2 -translate-y-full pointer-events-auto select-none"
-          style={{ left: highlightToolbar.x, top: highlightToolbar.y }}
-          onMouseDown={(e) => e.preventDefault()}
-        >
-          <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-900/95 dark:bg-slate-950 border border-slate-700 shadow-2xl backdrop-blur-md">
-            <span className="text-[10px] text-slate-400 font-bold px-1.5 shrink-0 flex items-center gap-1">
-              <Highlighter className="w-3 h-3 text-amber-400" /> Surligner
-            </span>
-            {HIGHLIGHT_COLORS.map(color => (
+        highlightToolbar.isMobile ? (
+          <div
+            className="fixed z-[10000] bottom-6 left-1/2 -translate-x-1/2 pointer-events-auto select-none max-w-[calc(100vw-16px)] animate-in fade-in slide-in-from-bottom-3 duration-200"
+            onMouseDown={(e) => e.preventDefault()}
+            onTouchStart={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-1.5 p-2 rounded-2xl bg-slate-900/95 dark:bg-slate-950 border border-slate-700 shadow-2xl backdrop-blur-md">
+              <span className="text-[10px] text-slate-400 font-bold px-1 shrink-0 flex items-center gap-1">
+                <Highlighter className="w-3.5 h-3.5 text-amber-400" />
+              </span>
+              {HIGHLIGHT_COLORS.map(color => (
+                <button
+                  key={color.id}
+                  type="button"
+                  title={`Surligner en ${color.label}`}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); applyHighlight(color.id); }}
+                  onClick={() => applyHighlight(color.id)}
+                  className="w-7 h-7 rounded-full border-2 border-white/20 active:scale-95 transition-transform shadow-sm cursor-pointer"
+                  style={{ backgroundColor: color.bg }}
+                />
+              ))}
+              {/* Eraser button */}
+              <div className="w-px h-5 bg-slate-700 mx-0.5" />
               <button
-                key={color.id}
                 type="button"
-                title={`Surligner en ${color.label}`}
+                title="Sans couleur (Effacer)"
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => applyHighlight(color.id)}
-                className="w-6 h-6 rounded-full border-2 border-white/20 hover:scale-125 transition-transform shadow-sm cursor-pointer"
-                style={{ backgroundColor: color.bg }}
-              />
-            ))}
-            {/* Eraser button: Sans couleur */}
-            <div className="w-px h-4 bg-slate-700 mx-0.5" />
-            <button
-              type="button"
-              title="Sans couleur (Effacer le surlignage)"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => removeHighlightForText()}
-              className="px-2 py-1 rounded-xl bg-slate-800 hover:bg-red-500/80 text-slate-200 hover:text-white text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-slate-700"
-            >
-              <Eraser className="w-3 h-3 text-amber-400" />
-              <span>Sans couleur</span>
-            </button>
-            <button
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => setHighlightToolbar(null)}
-              className="ml-0.5 text-slate-500 hover:text-white transition-colors p-1"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); removeHighlightForText(); }}
+                onClick={() => removeHighlightForText()}
+                className="px-2 py-1.5 rounded-xl bg-slate-800 active:bg-red-500 text-slate-200 text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-slate-700"
+              >
+                <Eraser className="w-3.5 h-3.5 text-amber-400" />
+                <span>Effacer</span>
+              </button>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); setHighlightToolbar(null); }}
+                onClick={() => setHighlightToolbar(null)}
+                className="ml-0.5 text-slate-400 hover:text-white p-1"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-          {/* Arrow pointing down */}
-          <div className="flex justify-center">
-            <div className="w-2 h-2 bg-slate-900/95 border-r border-b border-slate-700 rotate-45 -mt-1" />
+        ) : (
+          <div
+            className="fixed z-[10000] transform -translate-x-1/2 -translate-y-full pointer-events-auto select-none"
+            style={{ left: highlightToolbar.x, top: highlightToolbar.y }}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-slate-900/95 dark:bg-slate-950 border border-slate-700 shadow-2xl backdrop-blur-md">
+              <span className="text-[10px] text-slate-400 font-bold px-1.5 shrink-0 flex items-center gap-1">
+                <Highlighter className="w-3 h-3 text-amber-400" /> Surligner
+              </span>
+              {HIGHLIGHT_COLORS.map(color => (
+                <button
+                  key={color.id}
+                  type="button"
+                  title={`Surligner en ${color.label}`}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => applyHighlight(color.id)}
+                  className="w-6 h-6 rounded-full border-2 border-white/20 hover:scale-125 transition-transform shadow-sm cursor-pointer"
+                  style={{ backgroundColor: color.bg }}
+                />
+              ))}
+              {/* Eraser button: Sans couleur */}
+              <div className="w-px h-4 bg-slate-700 mx-0.5" />
+              <button
+                type="button"
+                title="Sans couleur (Effacer le surlignage)"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => removeHighlightForText()}
+                className="px-2 py-1 rounded-xl bg-slate-800 hover:bg-red-500/80 text-slate-200 hover:text-white text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer border border-slate-700"
+              >
+                <Eraser className="w-3 h-3 text-amber-400" />
+                <span>Sans couleur</span>
+              </button>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setHighlightToolbar(null)}
+                className="ml-0.5 text-slate-500 hover:text-white transition-colors p-1"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            {/* Arrow pointing down */}
+            <div className="flex justify-center">
+              <div className="w-2 h-2 bg-slate-900/95 border-r border-b border-slate-700 rotate-45 -mt-1" />
+            </div>
           </div>
-        </div>
+        )
       )}
 
       <ReferenceTextModal
