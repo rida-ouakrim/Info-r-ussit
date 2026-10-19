@@ -425,6 +425,7 @@ const Courses = () => {
   const [notes, setNotes] = useState({});
   const [noteSaveStatus, setNoteSaveStatus] = useState('');
   const [copiedNote, setCopiedNote] = useState(false);
+  const noteSyncTimeoutRef = useRef(null);
 
   // ── Highlight, Video Progress & Timestamps state (PER USER ISOLATED) ─────
   const [highlights, setHighlights] = useState({});
@@ -439,9 +440,17 @@ const Courses = () => {
 
   // Reload notes, highlights, video progress, timestamps & C/SQL lesson completions when user logs in / switches
   useEffect(() => {
+    // 1. Instant local cache load
+    let localHl = {};
+    let localNotes = {};
     try {
       const savedNotes = localStorage.getItem(`user_course_notes_${userKey}`);
-      setNotes(savedNotes ? JSON.parse(savedNotes) : {});
+      if (savedNotes) {
+        localNotes = JSON.parse(savedNotes);
+        setNotes(localNotes);
+      } else {
+        setNotes({});
+      }
     } catch (e) { setNotes({}); }
 
     try {
@@ -454,11 +463,61 @@ const Courses = () => {
             cleanedMap[k] = list.filter(h => h && typeof h.text === 'string' && h.text.trim().length >= 2 && h.text.trim().length <= 150);
           }
         }
+        localHl = cleanedMap;
         setHighlights(cleanedMap);
       } else {
         setHighlights({});
       }
     } catch (e) { setHighlights({}); }
+
+    // 2. Cloud Sync: Fetch highlights & notes from user's account in backend database
+    if (user?.id) {
+      API.get('courses/user-annotations/')
+        .then(res => {
+          const serverHl = res.data?.highlights || {};
+          const serverNotes = res.data?.notes || {};
+
+          // Merge server data with local cache (server data + any unsaved local highlights)
+          const mergedHl = { ...serverHl };
+          let needHlSync = false;
+          for (const [k, list] of Object.entries(localHl)) {
+            if (Array.isArray(list) && list.length > 0) {
+              if (!mergedHl[k] || mergedHl[k].length === 0) {
+                mergedHl[k] = list;
+                needHlSync = true;
+              }
+            }
+          }
+
+          const mergedNotes = { ...serverNotes };
+          let needNotesSync = false;
+          for (const [k, txt] of Object.entries(localNotes)) {
+            if (txt && !mergedNotes[k]) {
+              mergedNotes[k] = txt;
+              needNotesSync = true;
+            }
+          }
+
+          setHighlights(mergedHl);
+          setNotes(mergedNotes);
+
+          try {
+            localStorage.setItem(`course_highlights_${userKey}`, JSON.stringify(mergedHl));
+            localStorage.setItem(`user_course_notes_${userKey}`, JSON.stringify(mergedNotes));
+          } catch (e) { }
+
+          // If local device had highlights not yet saved in cloud, upload them to cloud
+          if (needHlSync || needNotesSync) {
+            API.post('courses/user-annotations/', {
+              highlights: mergedHl,
+              notes: mergedNotes
+            }).catch(() => { });
+          }
+        })
+        .catch(() => {
+          // Fallback seamlessly to local storage
+        });
+    }
 
     try {
       const savedVp = localStorage.getItem(`user_video_progress_${userKey}`);
@@ -486,7 +545,7 @@ const Courses = () => {
         setUserAnswers(prev => ({ ...JSON.parse(savedQa), ...prev }));
       }
     } catch (e) { }
-  }, [userKey]);
+  }, [userKey, user?.id]);
 
   const toggleCLessonCompleted = (lessonNum) => {
     setCompletedCLessons(prev => {
@@ -814,7 +873,12 @@ const Courses = () => {
       try { localStorage.setItem(`course_highlights_${userKey}`, JSON.stringify(updated)); } catch (e) { }
       return updated;
     });
-  }, [userKey]);
+    if (user?.id) {
+      API.post('courses/user-annotations/', {
+        highlights: { [key]: list }
+      }).catch(err => console.warn('Cloud sync highlight failed:', err));
+    }
+  }, [userKey, user?.id]);
 
   const handleTextSelection = useCallback(() => {
     const selection = window.getSelection();
@@ -938,10 +1002,22 @@ const Courses = () => {
     setNoteSaveStatus('Sauvegarde...');
     try {
       localStorage.setItem(`user_course_notes_${userKey}`, JSON.stringify(updated));
-      setTimeout(() => setNoteSaveStatus('Sauvegardé ✓'), 400);
     } catch (e) {
       console.error('Save note error:', e);
     }
+
+    if (noteSyncTimeoutRef.current) clearTimeout(noteSyncTimeoutRef.current);
+    noteSyncTimeoutRef.current = setTimeout(() => {
+      if (user?.id) {
+        API.post('courses/user-annotations/', {
+          notes: { [currentNoteKey]: text }
+        })
+          .then(() => setNoteSaveStatus('Synchronisé cloud ✓'))
+          .catch(() => setNoteSaveStatus('Sauvegardé local ✓'));
+      } else {
+        setNoteSaveStatus('Sauvegardé local ✓');
+      }
+    }, 600);
   };
 
   const handleClearNote = () => {
@@ -953,6 +1029,11 @@ const Courses = () => {
       try {
         localStorage.setItem(`user_course_notes_${userKey}`, JSON.stringify(updated));
       } catch (e) { }
+      if (user?.id) {
+        API.post('courses/user-annotations/', {
+          notes: { [currentNoteKey]: '' }
+        }).catch(() => { });
+      }
     }
   };
 

@@ -47,3 +47,13 @@ class CourseProgress(models.Model):
 
     class Meta:
         unique_together = ('user', 'course')
+
+
+class UserCourseAnnotation(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='course_annotations')
+    highlights = models.JSONField(default=dict, blank=True)
+    notes = models.JSONField(default=dict, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Course annotations for user {self.user_id}"

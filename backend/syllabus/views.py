@@ -1,7 +1,7 @@
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Domain, Subdomain, Course, CourseProgress
+from .models import Domain, Subdomain, Course, CourseProgress, UserCourseAnnotation
 from .serializers import DomainSerializer, SubdomainSerializer, CourseSerializer, CourseDetailSerializer
 
 class DomainListView(generics.ListAPIView):
@@ -57,4 +57,46 @@ class CourseStatsView(APIView):
             "total": total,
             "completed": completed,
             "percentage": percentage
+        })
+
+
+class UserCourseAnnotationView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        annotation, _ = UserCourseAnnotation.objects.get_or_create(user=request.user)
+        return Response({
+            "highlights": annotation.highlights or {},
+            "notes": annotation.notes or {},
+            "updated_at": annotation.updated_at
+        })
+
+    def post(self, request):
+        annotation, _ = UserCourseAnnotation.objects.get_or_create(user=request.user)
+        new_highlights = request.data.get('highlights')
+        new_notes = request.data.get('notes')
+        replace_all = request.data.get('replace_all', False)
+
+        if replace_all:
+            if isinstance(new_highlights, dict):
+                annotation.highlights = new_highlights
+            if isinstance(new_notes, dict):
+                annotation.notes = new_notes
+        else:
+            if isinstance(new_highlights, dict):
+                hl = dict(annotation.highlights or {})
+                hl.update(new_highlights)
+                annotation.highlights = hl
+
+            if isinstance(new_notes, dict):
+                nt = dict(annotation.notes or {})
+                nt.update(new_notes)
+                annotation.notes = nt
+
+        annotation.save()
+        return Response({
+            "status": "success",
+            "highlights": annotation.highlights,
+            "notes": annotation.notes,
+            "updated_at": annotation.updated_at
         })
