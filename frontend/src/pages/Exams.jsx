@@ -2050,7 +2050,7 @@ const Exams = () => {
       {highlightToolbar && courseModalOpen && (
         highlightToolbar.isMobile ? (
           <div
-            className="fixed z-[10000] bottom-6 left-1/2 -translate-x-1/2 pointer-events-auto select-none max-w-[calc(100vw-16px)] animate-in fade-in slide-in-from-bottom-3 duration-200"
+            className="fixed z-[99999] bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 pointer-events-auto select-none max-w-[calc(100vw-16px)] animate-in fade-in slide-in-from-bottom-3 duration-200"
             onMouseDown={(e) => e.preventDefault()}
             onTouchStart={(e) => e.stopPropagation()}
           >
