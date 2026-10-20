@@ -809,6 +809,7 @@ const convertLatexToUnicode = (mathContent) => {
   result = result.replace(/\^{n}/g, 'ⁿ').replace(/\^n/g, 'ⁿ');
 
   // Clean leftover backslashes and braces
+  result = result.replace(/\\(\$)/g, '$');
   result = result.replace(/\\([a-zA-Z]+)/g, '$1');
   result = result.replace(/[{}]/g, '');
 
@@ -819,8 +820,8 @@ const convertLatexToUnicode = (mathContent) => {
 const parseInlineFormatting = (text, lineHighlights = []) => {
   if (!text) return '';
 
-  // Improved regex: use [\s\S] instead of . to handle newlines, markdown images, and HTML img tags
-  const inlineRegex = /(\*\*\*[\s\S]*?\*\*\*|\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\$\$[\s\S]*?\$\$|\$[^$]+\$|\[ICON_ACCESS_QUERY\]|⚡|!\[[^\]]*\]\([^)]*\)|<img\s+[^>]*\/?>)/gi;
+  // Improved regex: code backticks `...` MUST come before *italic* to prevent asterisks in code (e.g. `=2*B$4`) from breaking markdown
+  const inlineRegex = /(\*\*\*[\s\S]*?\*\*\*|\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\[ICON_ACCESS_QUERY\]|⚡|!\[[^\]]*\]\([^)]*\)|<img\s+[^>]*\/?>)/gi;
   const parts = text.split(inlineRegex);
 
   if (parts.length <= 1) {
