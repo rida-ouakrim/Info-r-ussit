@@ -6640,7 +6640,7 @@
       "source_type": "past_exam",
       "exam_year": 2024,
       "question_number": "Q33",
-      "question_text": "Pour A =8 et B= 4, quelle est la valeur de D après l'exécution du pseudo code suivant : D← Faux Si B mod A = 0 Alors D← Non D",
+      "question_text": "Pour A = 8 et B = 4, quelle est la valeur de D après l'exécution du pseudo code suivant :\n\n`\u0007lg\nD ← Faux\nSi B mod A = 0 Alors D ← Non D\n`",
       "option_a": "Vrai",
       "option_b": "Faux",
       "option_c": "Non D",
