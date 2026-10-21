@@ -26,37 +26,41 @@ def format_2024_q35(apps, schema_editor):
     
     explanation_text = (
         "**Explication détaillée pas à pas :**\n\n"
+        "Pour déterminer la valeur affichée par l'algorithme pour $X = 3$, suivons l'exécution étape par étape :\n\n"
         "1. **Rôle de l'algorithme :**\n"
-        "   Cet algorithme réalise la conversion d'un nombre décimal $X$ en sa représentation binaire (affichée sous forme d'un nombre entier) par divisions successives par 2 :\n"
-        "   - `R ← X mod 2` extrait le bit de poids faible (0 ou 1).\n"
-        "   - `S ← S + R*P` insère ce bit à la bonne position décimale ($P$).\n"
-        "   - `P ← P*10` avance le rang décimal (unités, dizaines, centaines...).\n"
+        "   Cet algorithme réalise la conversion d'un nombre décimal $X$ en sa représentation binaire (affichée sous forme d'un entier décimal) par la méthode des divisions successives par 2 :\n"
+        "   - `R ← X mod 2` extrait le reste (le bit binaire $0$ ou $1$).\n"
+        "   - `S ← S + R*P` insère ce bit à la position décimale courante ($P$).\n"
+        "   - `P ← P*10` décale la puissance de 10 pour le rang suivant (unités, dizaines, centaines...).\n"
         "   - `X ← X div 2` prend le quotient entier pour l'itération suivante.\n\n"
         "2. **Trace d'exécution pour $X = 3$ :**\n"
-        "   - **Initialisation :** $P = 1$, $S = 0$, $X = 3$.\n"
-        "   - **Itération 1 :**\n"
-        "     - $R = 3 \\text{ mod } 2 = 1$\n"
-        "     - $S = 0 + 1 \\times 1 = 1$\n"
-        "     - $P = 1 \\times 10 = 10$\n"
-        "     - $X = 3 \\text{ div } 2 = 1$\n"
-        "     - Condition $X = 0$ fausse $\\rightarrow$ on continue la boucle.\n"
-        "   - **Itération 2 :**\n"
-        "     - $R = 1 \\text{ mod } 2 = 1$\n"
-        "     - $S = 1 + 1 \\times 10 = 11$\n"
-        "     - $P = 10 \\times 10 = 100$\n"
-        "     - $X = 1 \\text{ div } 2 = 0$\n"
-        "     - Condition $X = 0$ vraie $\\rightarrow$ **fin de la boucle !**\n"
-        "   - **Affichage :** `Écrire S` affiche **11** (car $3_{10} = 11_2$).\n\n"
-        "3. **Remarque sur le corrigé officiel du concours :**\n"
-        "   - La valeur générée par l'algorithme est **11**.\n"
-        "   - Une coquille typographique s'est glissée sur l'épreuve officielle dans l'option **C** qui a été imprimée **111** au lieu de **11**.\n"
-        "   - Le corrigé officiel retient la réponse **C** (le choix visé par le concepteur du sujet)."
+        "   - **Initialisation :**\n"
+        "     $P \\leftarrow 1$\n"
+        "     $S \\leftarrow 0$\n"
+        "     $X = 3$\n\n"
+        "   - **Boucle 1 :**\n"
+        "     - $R \\leftarrow 3 \\bmod 2 = 1$\n"
+        "     - $S \\leftarrow 0 + 1 \\times 1 = 1$\n"
+        "     - $P \\leftarrow 1 \\times 10 = 10$\n"
+        "     - $X \\leftarrow 3 \\text{ div } 2 = 1$\n"
+        "     - Condition de fin ($X = 0$) : **Fausse** ($X = 1$), on continue.\n\n"
+        "   - **Boucle 2 :**\n"
+        "     - $R \\leftarrow 1 \\bmod 2 = 1$\n"
+        "     - $S \\leftarrow 1 + 1 \\times 10 = 11$\n"
+        "     - $P \\leftarrow 10 \\times 10 = 100$\n"
+        "     - $X \\leftarrow 1 \\text{ div } 2 = 0$\n"
+        "     - Condition de fin ($X = 0$) : **Vraie** ($X = 0$) $\\rightarrow$ fin de la boucle !\n\n"
+        "3. **Sortie & Conclusion :**\n"
+        "   - L'algorithme affiche la valeur de $S$, qui vaut **11** ($3_{10} = 11_2$).\n"
+        "   - Puisque **11** ne figure pas parmi les choix **A** (312), **B** (123), **C** (111) ou **D** (110), la bonne réponse est la **E** (**Aucune de ces réponses n'est juste**).\n\n"
+        "> 💡 **Remarque :** Le choix C (111) correspondrait à la valeur binaire de $X = 7$ ($7_{10} = 111_2$)."
     )
     
     astuce_text = (
         "🧠 **Astuce concours CRMEF :**\n\n"
-        "Cet algorithme est la conversion classique décimal vers binaire par divisions successives. Pour aller vite le jour du concours :\n"
-        "$3_{10} = 2^1 + 2^0 = 11_2$. L'algorithme affiche donc le nombre binaire 11 (retenu en **C** malgré la coquille d'impression 111 de l'épreuve)."
+        "Cet algorithme est la conversion classique d'un nombre entier positif en son équivalent binaire par divisions successives.\n"
+        "Pour $X = 3$, l'écriture binaire est $3_{10} = 2^1 + 2^0 = 11_2$.\n"
+        "L'algorithme affiche donc **11**. Comme 11 n'est proposé dans aucun des choix (l'option C propose 111, soit 7 en binaire), la bonne réponse est sans ambiguïté **E**."
     )
     
     # Update DEV question 2024 Q35 (pk 239)
@@ -65,7 +69,8 @@ def format_2024_q35(apps, schema_editor):
     ).update(
         question_text=q_text,
         option_c='111',
-        correct_option='C',
+        option_e="Aucune de ces réponses n'est juste",
+        correct_option='E',
         explanation=explanation_text,
         astuce=astuce_text
     )
