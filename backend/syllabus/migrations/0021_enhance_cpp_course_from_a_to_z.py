@@ -8,7 +8,7 @@ def update_cpp_course_a_to_z(apps, schema_editor):
     
     dev_prog_web = Subdomain.objects.filter(code='DEV_PROG_WEB').first()
     
-    cpp_title = "Langage C++ et Programmation Orientée Objet : De A à Z (Bases, Classes, Héritage et Pratique)"
+    cpp_title = "Programmation Orientée Objet en C++ : De A à Z (Bases, Classes, Héritage et Pratique)"
     
     cpp_content = (
         "# Langage C++ et Programmation Orientée Objet : De A à Z\n\n"

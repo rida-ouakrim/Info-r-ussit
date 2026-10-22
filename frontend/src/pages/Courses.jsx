@@ -777,7 +777,7 @@ const Courses = () => {
     setQcmLangFilter(defaultLang);
     setIsVideoLoading(false); // Reset loading state for new course
     const isProg = course.video_url || 
-                   course.title?.toLowerCase().includes('langage c') || 
+                   (course.title?.toLowerCase().includes('langage c') && !course.title?.toLowerCase().includes('c++')) || 
                    course.title?.toLowerCase().includes('langage sql') || 
                    course.title?.toLowerCase().includes('bases de données relationnelles');
     if (isProg) {
@@ -804,7 +804,8 @@ const Courses = () => {
   };
 
   const isCLanguage = useMemo(() => {
-    return selectedCourse?.title?.toLowerCase().includes('langage c') || false;
+    const t = selectedCourse?.title?.toLowerCase() || '';
+    return (t.includes('langage c') && !t.includes('c++')) || false;
   }, [selectedCourse]);
 
   const isSqlLanguage = useMemo(() => {
@@ -1902,7 +1903,7 @@ const Courses = () => {
     const videosList = sortedAllList.filter(c => Boolean(c.video_url));
 
     const renderCard = (c) => {
-      const isC = c.title?.toLowerCase().includes('langage c') || false;
+      const isC = (c.title?.toLowerCase().includes('langage c') && !c.title?.toLowerCase().includes('c++')) || false;
       const isSql = c.title?.toLowerCase().includes('langage sql') || c.title?.toLowerCase().includes('bases de données relationnelles') || false;
       const isProgressive = isC || isSql;
       const isDone = c.is_completed;
