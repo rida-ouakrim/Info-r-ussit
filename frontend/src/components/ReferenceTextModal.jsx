@@ -73,6 +73,20 @@ export const isQuestionFrench = (question) => {
 
 export const hasReferenceText = (question) => {
   if (!question) return false;
+
+  // Never show Education/Didactique text modal on technical Informatique (DEV, RESEAUX, etc.) questions
+  const domainCode = question.domain?.code || (typeof question.domain === 'string' ? question.domain : '') || '';
+  const subdomainCode = question.subdomain?.code || (typeof question.subdomain === 'string' ? question.subdomain : '') || '';
+  if (
+    domainCode.startsWith('DEV') || 
+    domainCode.startsWith('RES') || 
+    domainCode.startsWith('INFO') || 
+    subdomainCode.startsWith('DEV_') || 
+    subdomainCode.startsWith('RES_')
+  ) {
+    return false;
+  }
+
   if (question.reference_text && question.reference_text.trim().length > 0) return true;
   
   const year = Number(question.exam_year);
