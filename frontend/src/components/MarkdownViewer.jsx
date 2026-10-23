@@ -290,26 +290,63 @@ const ensureFencedCodeBlocks = (text) => {
     cleaned = formatted.join('\n');
   }
 
-  // Auto-close unclosed ``` code blocks
-  if (cleaned.includes('```') && (cleaned.split('```').length - 1) % 2 !== 0) {
-    cleaned += '\n```';
+  // Auto-detect unfenced C / C++ / Java code snippets if not already fenced
+  if (!cleaned.includes('```')) {
+    // 1. #include <...>
+    if (cleaned.includes('#include')) {
+      const matchInc = cleaned.match(/([\s\S]*?)(#include\s*<[\s\S]+)$/i);
+      if (matchInc) {
+        const intro = matchInc[1].trim();
+        const rest = matchInc[2].trim();
+        const trailingMatch = rest.match(/\s+((?:Ce programme|L'exécution|Le programme)?\s*(?:affiche|donne|produit)\s*[:?])$/i);
+        let trailing = '';
+        let code = rest;
+        if (trailingMatch) {
+          trailing = trailingMatch[1].trim();
+          code = rest.substring(0, trailingMatch.index).trim();
+        }
+        const lang = (code.includes('iostream') || code.includes('cout') || code.includes('cin')) ? 'cpp' : 'c';
+        cleaned = `${intro ? intro + '\n\n' : ''}\`\`\`${lang}\n${code}\n\`\`\`${trailing ? '\n\n' + trailing : ''}`;
+      }
+    }
+    // 2. Questions asking for code execution output: "Qu'affiche la portion de code C suivante : int I = 10; ..."
+    else if (/^(.*?(?:code\s+[cC]|programme\s+[cC]|suivante?|ci-dessous)\s*[:?])\s*([\s\S]+)$/i.test(cleaned)) {
+      const matchCode = cleaned.match(/^(.*?(?:code\s+[cC]|programme\s+[cC]|suivante?|ci-dessous)\s*[:?])\s*([\s\S]+)$/i);
+      if (matchCode) {
+        const intro = matchCode[1].trim();
+        const codePart = matchCode[2].trim();
+        if ([';', 'printf', 'System.out', 'while', 'for', 'switch', 'int '].some(tok => codePart.includes(tok))) {
+          const lang = codePart.includes('System.out') ? 'java' : ((codePart.includes('cout') || codePart.includes('cin')) ? 'cpp' : 'c');
+          cleaned = `${intro}\n\n\`\`\`${lang}\n${codePart}\n\`\`\``;
+        }
+      }
+    }
+    // 3. Java class definition: "Soit la classe suivante : class B { ... } Qu'affiche ..."
+    else if (/^(.*?(?:classe|code java|code c\+\+)\s*[:?]?\s*)(class\s+[A-Za-z0-9_]+\s*\{[\s\S]+?\})\s*([\s\S]*)$/i.test(cleaned)) {
+      const matchClass = cleaned.match(/^(.*?(?:classe|code java|code c\+\+)\s*[:?]?\s*)(class\s+[A-Za-z0-9_]+\s*\{[\s\S]+?\})\s*([\s\S]*)$/i);
+      if (matchClass) {
+        const intro = matchClass[1].trim();
+        const codePart = matchClass[2].trim();
+        const trailing = matchClass[3].trim();
+        const lang = codePart.includes('cout') ? 'cpp' : 'java';
+        cleaned = `${intro ? intro + '\n\n' : ''}\`\`\`${lang}\n${codePart}\n\`\`\`${trailing ? '\n\n' + trailing : ''}`;
+      }
+    }
   }
 
-  if (cleaned.includes('```')) return cleaned;
-
   // Auto-detect unfenced algorithm structures
-  if ((cleaned.includes('Algorithme') || cleaned.includes('Variables:')) && (cleaned.includes('Début') || cleaned.includes('Debut'))) {
+  if (!cleaned.includes('```') && ((/algorithme/i.test(cleaned) || /variables/i.test(cleaned)) && (/d[ée]but/i.test(cleaned)))) {
     const lines = cleaned.split('\n');
     let formatted = [];
     let inAlgBlock = false;
 
     lines.forEach(line => {
       const trimmed = line.trim();
-      if ((trimmed.startsWith('Algorithme') || trimmed.startsWith('Algorithm') || trimmed.startsWith('Variables:')) && !inAlgBlock) {
+      if ((/^algorithme/i.test(trimmed) || /^variables/i.test(trimmed)) && !inAlgBlock) {
         inAlgBlock = true;
         formatted.push('```alg');
         formatted.push(line);
-      } else if (inAlgBlock && (trimmed === 'Fin' || trimmed === 'Fin;' || trimmed === 'End')) {
+      } else if (inAlgBlock && (/^fin\b/i.test(trimmed) || /^end\b/i.test(trimmed))) {
         formatted.push(line);
         formatted.push('```');
         inAlgBlock = false;
@@ -322,7 +359,12 @@ const ensureFencedCodeBlocks = (text) => {
       formatted.push('```');
     }
 
-    return formatted.join('\n');
+    cleaned = formatted.join('\n');
+  }
+
+  // Auto-close unclosed ``` code blocks
+  if (cleaned.includes('```') && (cleaned.split('```').length - 1) % 2 !== 0) {
+    cleaned += '\n```';
   }
 
   return cleaned;
