@@ -74,34 +74,63 @@ export const isQuestionFrench = (question) => {
 export const hasReferenceText = (question) => {
   if (!question) return false;
 
-  // Never show Education/Didactique text modal on technical Informatique (DEV, RESEAUX, etc.) questions
-  const domainCode = question.domain?.code || (typeof question.domain === 'string' ? question.domain : '') || '';
-  const subdomainCode = question.subdomain?.code || (typeof question.subdomain === 'string' ? question.subdomain : '') || '';
-  if (
+  // Extract domain/subdomain codes and names from all possible serializer shapes
+  const domainCode = (question.domain_code || question.domain?.code || (typeof question.domain === 'string' ? question.domain : '') || '').toUpperCase();
+  const subdomainCode = (question.subdomain_code || question.subdomain?.code || (typeof question.subdomain === 'string' ? question.subdomain : '') || '').toUpperCase();
+  const domainName = (question.domain_name || question.domain?.name || '').toUpperCase();
+
+  // Strictly block any technical / Computer Science question (DEV, SYS, RES, INFO, ALGO, etc.)
+  const isTechnical = 
     domainCode.startsWith('DEV') || 
+    domainCode.startsWith('SYS') || 
     domainCode.startsWith('RES') || 
     domainCode.startsWith('INFO') || 
+    domainCode.startsWith('ALGO') || 
+    domainCode.startsWith('MATH') || 
     subdomainCode.startsWith('DEV_') || 
-    subdomainCode.startsWith('RES_')
-  ) {
+    subdomainCode.startsWith('SYS_') || 
+    subdomainCode.startsWith('RES_') || 
+    domainName.includes('DÉVELOPPEMENT') || 
+    domainName.includes('DEVELOPPEMENT') || 
+    domainName.includes('SYSTÈMES') || 
+    domainName.includes('SYSTEMES') || 
+    domainName.includes('RÉSEAUX') || 
+    domainName.includes('RESEAUX') || 
+    domainName.includes('INFORMATIQUE');
+
+  if (isTechnical) {
     return false;
   }
 
-  if (question.reference_text && question.reference_text.trim().length > 0) return true;
-  
-  const year = Number(question.exam_year);
-  const txt = question.question_text || '';
-  const num = (question.question_number || '').trim();
+  // The Philippe Meirieu document strictly belongs to Sciences de l'Éducation / Didactique
+  const isEducationOrDidactique = 
+    domainCode.includes('EDU') || 
+    domainCode.includes('DID') || 
+    domainName.includes('ÉDUCATION') || 
+    domainName.includes('EDUCATION') || 
+    domainName.includes('DIDACTIQUE');
 
-  if (year === 2023) {
-    if (txt.includes('النص') || txt.toLowerCase().includes('texte') || ['Q61', 'Q62', 'Q63', 'Q64', 'Q65'].includes(num)) {
-      return true;
-    }
+  // If DB has explicit reference text on an education question
+  if (isEducationOrDidactique && question.reference_text && question.reference_text.trim().length > 0) {
+    return true;
   }
+  
+  // Hardcoded fallback checks ONLY for Sciences de l'Éducation
+  if (isEducationOrDidactique) {
+    const year = Number(question.exam_year);
+    const txt = question.question_text || '';
+    const num = (question.question_number || '').trim();
 
-  if (year === 2024) {
-    if (txt.includes('النص') || txt.toLowerCase().includes('texte') || ['Q61', 'Q62', 'Q63', 'Q64', 'Q65', 'Q67', 'Q69', 'Q70', 'Q72', 'Q73'].includes(num)) {
-      return true;
+    if (year === 2023) {
+      if (txt.includes('النص') || txt.toLowerCase().includes('texte') || ['Q61', 'Q62', 'Q63', 'Q64', 'Q65'].includes(num)) {
+        return true;
+      }
+    }
+
+    if (year === 2024) {
+      if (txt.includes('النص') || txt.toLowerCase().includes('texte') || ['Q61', 'Q62', 'Q63', 'Q64', 'Q65', 'Q67', 'Q69', 'Q70', 'Q72', 'Q73'].includes(num)) {
+        return true;
+      }
     }
   }
 

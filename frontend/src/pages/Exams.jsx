@@ -122,6 +122,7 @@ const Exams = () => {
       } catch (e) { }
       return updated;
     });
+    setActiveNoteOpen(false);
     showToast(trimmed ? "Note personnelle enregistrée avec succès !" : "Note supprimée.");
   };
 
