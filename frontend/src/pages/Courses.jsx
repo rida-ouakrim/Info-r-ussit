@@ -6,6 +6,7 @@ import ReferenceTextModal, { hasReferenceText } from '../components/ReferenceTex
 import LoadingSpinner from '../components/LoadingSpinner';
 import { cLessons } from '../data/cLessons';
 import { sqlLessons } from '../data/sqlLessons';
+import { javaLessons } from '../data/javaLessons';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen, CheckCircle2, Circle, Search,
@@ -437,6 +438,8 @@ const Courses = () => {
   const [completedCLessons, setCompletedCLessons] = useState([]);
   const [selectedSqlLessonIdx, setSelectedSqlLessonIdx] = useState(0);
   const [completedSqlLessons, setCompletedSqlLessons] = useState([]);
+  const [selectedJavaLessonIdx, setSelectedJavaLessonIdx] = useState(0);
+  const [completedJavaLessons, setCompletedJavaLessons] = useState([]);
 
   // Reload notes, highlights, video progress, timestamps & C/SQL lesson completions when user logs in / switches
   useEffect(() => {
@@ -540,6 +543,11 @@ const Courses = () => {
     } catch (e) { setCompletedSqlLessons([]); }
 
     try {
+      const savedJava = localStorage.getItem(`user_completed_java_lessons_${userKey}`);
+      setCompletedJavaLessons(savedJava ? JSON.parse(savedJava) : []);
+    } catch (e) { setCompletedJavaLessons([]); }
+
+    try {
       const savedQa = localStorage.getItem(`c_quiz_answers_${userKey}`);
       if (savedQa) {
         setUserAnswers(prev => ({ ...JSON.parse(savedQa), ...prev }));
@@ -568,6 +576,19 @@ const Courses = () => {
         : [...prevList, lessonNum];
       try {
         localStorage.setItem(`user_completed_sql_lessons_${userKey}`, JSON.stringify(updated));
+      } catch (e) { }
+      return updated;
+    });
+  };
+
+  const toggleJavaLessonCompleted = (lessonNum) => {
+    setCompletedJavaLessons(prev => {
+      const prevList = Array.isArray(prev) ? prev : [];
+      const updated = prevList.includes(lessonNum)
+        ? prevList.filter(n => n !== lessonNum)
+        : [...prevList, lessonNum];
+      try {
+        localStorage.setItem(`user_completed_java_lessons_${userKey}`, JSON.stringify(updated));
       } catch (e) { }
       return updated;
     });
@@ -813,6 +834,11 @@ const Courses = () => {
     return (t.includes('langage sql') || t.includes('bases de données relationnelles')) || false;
   }, [selectedCourse]);
 
+  const isJavaLanguage = useMemo(() => {
+    const t = selectedCourse?.title?.toLowerCase() || '';
+    return (t.includes('java') && !t.includes('javascript')) || false;
+  }, [selectedCourse]);
+
   const currentCLesson = useMemo(() => {
     return cLessons[selectedCLessonIdx] || cLessons[0];
   }, [selectedCLessonIdx]);
@@ -820,6 +846,10 @@ const Courses = () => {
   const currentSqlLesson = useMemo(() => {
     return sqlLessons[selectedSqlLessonIdx] || sqlLessons[0];
   }, [selectedSqlLessonIdx]);
+
+  const currentJavaLesson = useMemo(() => {
+    return javaLessons[selectedJavaLessonIdx] || javaLessons[0];
+  }, [selectedJavaLessonIdx]);
 
   const activeCourseData = useMemo(() => {
     if (!selectedCourse) return null;
@@ -843,8 +873,18 @@ const Courses = () => {
         video_url: currentSqlLesson.video_url
       };
     }
+    if (isJavaLanguage && currentJavaLesson) {
+      return {
+        ...selectedCourse,
+        title: `Leçon ${currentJavaLesson.num < 10 ? '0' + currentJavaLesson.num : currentJavaLesson.num} : ${currentJavaLesson.title}`,
+        content: currentJavaLesson.content,
+        examples: currentJavaLesson.examples,
+        astuces: currentJavaLesson.astuces,
+        video_url: currentJavaLesson.video_url
+      };
+    }
     return selectedCourse;
-  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson]);
+  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson, isJavaLanguage, currentJavaLesson]);
 
   const currentNoteKey = useMemo(() => {
     if (!selectedCourse) return '';
@@ -854,15 +894,19 @@ const Courses = () => {
     if (isSqlLanguage && currentSqlLesson) {
       return `${userKey}_note_sql_lesson_${currentSqlLesson.num}`;
     }
+    if (isJavaLanguage && currentJavaLesson) {
+      return `${userKey}_note_java_lesson_${currentJavaLesson.num}`;
+    }
     return `${userKey}_note_course_${selectedCourse.id}`;
-  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson, userKey]);
+  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson, isJavaLanguage, currentJavaLesson, userKey]);
 
   const currentHighlightKey = useMemo(() => {
     if (!selectedCourse) return '';
     if (isCLanguage && currentCLesson) return `${userKey}_hl_c_${currentCLesson.num}`;
     if (isSqlLanguage && currentSqlLesson) return `${userKey}_hl_sql_${currentSqlLesson.num}`;
+    if (isJavaLanguage && currentJavaLesson) return `${userKey}_hl_java_${currentJavaLesson.num}`;
     return `${userKey}_hl_course_${selectedCourse.id}`;
-  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson, userKey]);
+  }, [selectedCourse, isCLanguage, currentCLesson, isSqlLanguage, currentSqlLesson, isJavaLanguage, currentJavaLesson, userKey]);
 
   const currentHighlights = useMemo(() => {
     return highlights[currentHighlightKey] || [];
@@ -1233,12 +1277,18 @@ const Courses = () => {
       } else {
         questions = subQuestions.filter(q => q.course === selectedCourse?.id);
       }
+    } else if (isJavaLanguage && currentJavaLesson) {
+      if (currentJavaLesson.quiz && Array.isArray(currentJavaLesson.quiz) && currentJavaLesson.quiz.length > 0) {
+        questions = currentJavaLesson.quiz;
+      } else {
+        questions = subQuestions.filter(q => q.course === selectedCourse?.id);
+      }
     } else {
       questions = subQuestions.filter(q => q.course === selectedCourse?.id);
     }
 
     // Only show real past exam questions (not AI-generated ones for default courses)
-    if ((!isCLanguage && !isSqlLanguage) || (!currentCLesson?.quiz?.length && !currentSqlLesson?.quiz?.length)) {
+    if ((!isCLanguage && !isSqlLanguage && !isJavaLanguage) || (!currentCLesson?.quiz?.length && !currentSqlLesson?.quiz?.length && !currentJavaLesson?.quiz?.length)) {
       questions = questions.filter(q => !q.source_type || q.source_type === 'past_exam');
     }
 
@@ -1403,26 +1453,30 @@ const Courses = () => {
       setSelectedCLessonIdx(prev => Math.min(cLessons.length - 1, prev + 1));
     } else if (isSqlLanguage) {
       setSelectedSqlLessonIdx(prev => Math.min(sqlLessons.length - 1, prev + 1));
+    } else if (isJavaLanguage) {
+      setSelectedJavaLessonIdx(prev => Math.min(javaLessons.length - 1, prev + 1));
     } else {
       const idx = courses.findIndex(c => c.id === selectedCourse?.id);
       if (idx !== -1 && idx < courses.length - 1) {
         fetchCourseDetail(courses[idx + 1].id);
       }
     }
-  }, [isCLanguage, isSqlLanguage, courses, selectedCourse]);
+  }, [isCLanguage, isSqlLanguage, isJavaLanguage, courses, selectedCourse]);
 
   const handlePrevLesson = useCallback(() => {
     if (isCLanguage) {
       setSelectedCLessonIdx(prev => Math.max(0, prev - 1));
     } else if (isSqlLanguage) {
       setSelectedSqlLessonIdx(prev => Math.max(0, prev - 1));
+    } else if (isJavaLanguage) {
+      setSelectedJavaLessonIdx(prev => Math.max(0, prev - 1));
     } else {
       const idx = courses.findIndex(c => c.id === selectedCourse?.id);
       if (idx > 0) {
         fetchCourseDetail(courses[idx - 1].id);
       }
     }
-  }, [isCLanguage, isSqlLanguage, courses, selectedCourse]);
+  }, [isCLanguage, isSqlLanguage, isJavaLanguage, courses, selectedCourse]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -1523,6 +1577,43 @@ const Courses = () => {
       });
     }
 
+    if (isJavaLanguage) {
+      // Modules of Java course
+      const chapters = [
+        { id: 'java_mod_1', title: 'Module 1 : Introduction à Java & Écosystème', start: 0, end: javaLessons.length }
+      ];
+
+      return chapters.map(chap => {
+        const lessons = javaLessons.slice(chap.start, chap.end);
+        const completedCount = lessons.filter(l => (Array.isArray(completedJavaLessons) && completedJavaLessons.includes(l.num))).length;
+        const total = lessons.length;
+        const pct = Math.round((completedCount / total) * 100);
+
+        return {
+          id: chap.id,
+          title: chap.title,
+          lessonsCount: total,
+          completedCount,
+          percentage: pct,
+          lessons: lessons.map(les => {
+            const lesGlobalIdx = les.num - 1;
+            const isActive = lesGlobalIdx === selectedJavaLessonIdx;
+            const isDone = Array.isArray(completedJavaLessons) && completedJavaLessons.includes(les.num);
+
+            return {
+              globalIdx: lesGlobalIdx,
+              num: les.num,
+              title: les.title,
+              duration: les.duration || '25 min',
+              type: 'Cours',
+              isActive,
+              isDone
+            };
+          })
+        };
+      });
+    }
+
     // Default grouping for other courses
     const allCoursesList = Array.isArray(courses) ? courses : [];
     return [
@@ -1543,7 +1634,7 @@ const Courses = () => {
         }))
       }
     ];
-  }, [isCLanguage, isSqlLanguage, selectedCLessonIdx, selectedSqlLessonIdx, completedCLessons, completedSqlLessons, courses, selectedCourse, selectedSubdomainCode]);
+  }, [isCLanguage, isSqlLanguage, isJavaLanguage, selectedCLessonIdx, selectedSqlLessonIdx, selectedJavaLessonIdx, completedCLessons, completedSqlLessons, completedJavaLessons, courses, selectedCourse, selectedSubdomainCode]);
 
   const currentDomainObj = useMemo(() => {
     return (Array.isArray(domains) ? domains : []).find(d => d.code === selectedDomainCode) || null;
@@ -1905,7 +1996,8 @@ const Courses = () => {
     const renderCard = (c) => {
       const isC = (c.title?.toLowerCase().includes('langage c') && !c.title?.toLowerCase().includes('c++')) || false;
       const isSql = c.title?.toLowerCase().includes('langage sql') || c.title?.toLowerCase().includes('bases de données relationnelles') || false;
-      const isProgressive = isC || isSql;
+      const isJava = (c.title?.toLowerCase().includes('java') && !c.title?.toLowerCase().includes('javascript')) || false;
+      const isProgressive = isC || isSql || isJava;
       const isDone = c.is_completed;
       let progressText = "";
       let pct = 0;
@@ -1918,6 +2010,10 @@ const Courses = () => {
         const doneCount = Array.isArray(completedSqlLessons) ? completedSqlLessons.length : 0;
         pct = Math.round((doneCount / 27) * 100);
         progressText = doneCount === 27 ? "Toutes les 27 leçons validées ✓" : `${doneCount} / 27 leçons validées`;
+      } else if (isJava) {
+        const doneCount = Array.isArray(completedJavaLessons) ? completedJavaLessons.length : 0;
+        pct = Math.round((doneCount / javaLessons.length) * 100);
+        progressText = doneCount === javaLessons.length ? `Toutes les ${javaLessons.length} leçons validées ✓` : `${doneCount} / ${javaLessons.length} leçons validées`;
       } else if (c.video_url && videoProgress[c.id] != null) {
         pct = videoProgress[c.id];
         progressText = pct === 100 ? "Visionnage complété ✓" : `Visionné à ${pct}%`;
@@ -2813,7 +2909,7 @@ const Courses = () => {
             <ChevronRight className={`w-3.5 h-3.5 shrink-0 opacity-40 ${courseLang === 'ar' ? 'rotate-180' : ''}`} />
             <span onClick={() => setCurrentStep('courses_list')} className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors shrink-0">{getLocalizedSubdomainName(subdomainObj, courseLang) || 'Sous-domaine'}</span>
             <ChevronRight className={`w-3.5 h-3.5 shrink-0 opacity-40 ${courseLang === 'ar' ? 'rotate-180' : ''}`} />
-            <span className="text-sky-600 dark:text-sky-400 font-bold truncate max-w-[200px] shrink-0">{(isCLanguage || isSqlLanguage) && activeCourseData ? activeCourseData.title : getLocalizedCourseTitle(selectedCourse, courseLang)}</span>
+            <span className="text-sky-600 dark:text-sky-400 font-bold truncate max-w-[200px] shrink-0">{(isCLanguage || isSqlLanguage || isJavaLanguage) && activeCourseData ? activeCourseData.title : getLocalizedCourseTitle(selectedCourse, courseLang)}</span>
           </nav>
 
           <button type="button" onClick={() => setCurrentStep('courses_list')} className="btn-ghost flex items-center gap-1.5 text-xs py-1.5 px-3.5">
@@ -2824,10 +2920,10 @@ const Courses = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800" dir={courseLang === 'ar' ? 'rtl' : 'ltr'}>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              {isCLanguage ? `Leçon ${currentCLesson.num} / 50` : isSqlLanguage ? `Leçon ${currentSqlLesson.num} / 27` : getLocalizedSubdomainName(subdomainObj, courseLang)}
+              {isCLanguage ? `Leçon ${currentCLesson.num} / 50` : isSqlLanguage ? `Leçon ${currentSqlLesson.num} / 27` : isJavaLanguage ? `Leçon ${currentJavaLesson.num} / ${javaLessons.length}` : getLocalizedSubdomainName(subdomainObj, courseLang)}
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-tight">
-              {(isCLanguage || isSqlLanguage) && activeCourseData ? activeCourseData.title : getLocalizedCourseTitle(selectedCourse, courseLang)}
+              {(isCLanguage || isSqlLanguage || isJavaLanguage) && activeCourseData ? activeCourseData.title : getLocalizedCourseTitle(selectedCourse, courseLang)}
             </h1>
           </div>
 
@@ -2837,6 +2933,8 @@ const Courses = () => {
                 ? (Array.isArray(completedCLessons) && completedCLessons.includes(currentCLesson?.num))
                 : isSqlLanguage
                 ? (Array.isArray(completedSqlLessons) && completedSqlLessons.includes(currentSqlLesson?.num))
+                : isJavaLanguage
+                ? (Array.isArray(completedJavaLessons) && completedJavaLessons.includes(currentJavaLesson?.num))
                 : selectedCourse.is_completed;
 
               return (
@@ -2847,6 +2945,8 @@ const Courses = () => {
                       toggleCLessonCompleted(currentCLesson.num);
                     } else if (isSqlLanguage && currentSqlLesson) {
                       toggleSqlLessonCompleted(currentSqlLesson.num);
+                    } else if (isJavaLanguage && currentJavaLesson) {
+                      toggleJavaLessonCompleted(currentJavaLesson.num);
                     } else {
                       toggleCourseCompleted(selectedCourse.id, selectedCourse.is_completed);
                     }
@@ -2864,7 +2964,7 @@ const Courses = () => {
               );
             })()}
 
-            {(isCLanguage || isSqlLanguage) && (
+            {(isCLanguage || isSqlLanguage || isJavaLanguage) && (
               <>
                 <button
                   type="button"
@@ -2887,14 +2987,14 @@ const Courses = () => {
           </div>
         </div>
 
-        {isCLanguage || isSqlLanguage ? (
+        {isCLanguage || isSqlLanguage || isJavaLanguage ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-4 space-y-4">
               <div className="glass-card p-5 rounded-3xl border-slate-200 dark:border-slate-800/90 shadow-xl space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2"><Layers className="w-4 h-4 text-sky-500" /> Sommaire du Parcours</h3>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">{isCLanguage ? '50 Leçons' : '27 Leçons'}</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">{isCLanguage ? '50 Leçons' : isSqlLanguage ? '27 Leçons' : `${javaLessons.length} Leçon${javaLessons.length > 1 ? 's' : ''}`}</span>
                   </div>
                   <div className="relative">
                     <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Rechercher une leçon ou notion..." className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-sky-500 focus:outline-none" />
@@ -2928,6 +3028,7 @@ const Courses = () => {
                               <button key={les.num} type="button" onClick={() => {
                                 if (isCLanguage) setSelectedCLessonIdx(les.globalIdx);
                                 else if (isSqlLanguage) setSelectedSqlLessonIdx(les.globalIdx);
+                                else if (isJavaLanguage) setSelectedJavaLessonIdx(les.globalIdx);
                               }} className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-medium text-left transition-all ${les.isActive ? 'bg-sky-500/15 border border-sky-500/30 text-sky-700 dark:text-sky-300 font-bold shadow-2xs' : 'hover:bg-slate-100 dark:hover:bg-slate-900/80 text-slate-700 dark:text-slate-300'}`}>
                                 <div className="flex items-center gap-2.5 min-w-0">{les.isDone ? <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> : les.isActive ? <PlayCircle className="w-4 h-4 text-sky-500 animate-pulse shrink-0" /> : <Circle className="w-4 h-4 text-slate-400 dark:text-slate-600 shrink-0" />}<span className="whitespace-normal break-words"><strong className="text-slate-400 mr-1.5">#{les.num}</strong>{les.title}</span></div>
                                 <div className="flex items-center gap-1.5 shrink-0 ml-2"><span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold text-slate-500">{les.type}</span></div>
