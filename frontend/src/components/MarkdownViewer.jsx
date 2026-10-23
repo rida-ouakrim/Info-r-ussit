@@ -863,7 +863,7 @@ const parseInlineFormatting = (text, lineHighlights = []) => {
   if (!text) return '';
 
   // Improved regex: code backticks `...` MUST come before *italic* to prevent asterisks in code (e.g. `=2*B$4`) from breaking markdown
-  const inlineRegex = /(\*\*\*[\s\S]*?\*\*\*|\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\[ICON_ACCESS_QUERY\]|⚡|!\[[^\]]*\]\([^)]*\)|<img\s+[^>]*\/?>)/gi;
+  const inlineRegex = /(\*\*\*[\s\S]*?\*\*\*|\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*|\$\$[\s\S]*?\$\$|\$[^$\n]+\$|\[ICON_ACCESS_QUERY\]|⚡|!\[[^\]]*\]\([^)]*\)|<img\s+[^>]*\/?>|<u>[\s\S]*?<\/u>)/gi;
   const parts = text.split(inlineRegex);
 
   if (parts.length <= 1) {
@@ -872,6 +872,15 @@ const parseInlineFormatting = (text, lineHighlights = []) => {
 
   return parts.map((part, i) => {
     if (!part) return null;
+
+    if (part.toLowerCase().startsWith('<u>') && part.toLowerCase().endsWith('</u>') && part.length >= 7) {
+      const inner = part.slice(3, -4);
+      return (
+        <u key={`u-${i}`} className="underline underline-offset-2 font-bold decoration-slate-900 dark:decoration-white">
+          {parseInlineFormatting(inner, lineHighlights)}
+        </u>
+      );
+    }
 
     if (part.startsWith('***') && part.endsWith('***') && part.length > 6) {
       const inner = part.slice(3, -3);
