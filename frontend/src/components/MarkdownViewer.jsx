@@ -1007,7 +1007,7 @@ const getAuthorImage = (str) => {
   return null;
 };
 
-export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, forceRtl = false }) => {
+export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, forceRtl = false, compact = false }) => {
   if (!content) return <div className="text-slate-400 dark:text-slate-500 italic p-4">Aucun contenu disponible.</div>;
 
   const processedContent = ensureFencedCodeBlocks(content);
@@ -1236,12 +1236,12 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
       const authorImg = getAuthorImage(titleText);
 
       elements.push(
-        <h1 key={`h1-${index}`} data-line-idx={index} dir={isTitleAr ? 'rtl' : 'ltr'} className={`text-2xl sm:text-3xl font-black text-[#1a2e2a] mt-8 mb-5 pb-3 border-b-2 border-[#d4ede9] flex items-center justify-between gap-3 ${isTitleAr ? 'text-right font-arabic' : 'text-left'}`}>
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            <span className="w-2.5 h-8 bg-gradient-to-b from-[#03594e] to-[#046a5d] rounded-full inline-block shrink-0 shadow-md"></span>
+        <h1 key={`h1-${index}`} data-line-idx={index} dir={isTitleAr ? 'rtl' : 'ltr'} className={compact ? `text-sm font-black text-[#1a2e2a] dark:text-white mt-3 mb-1.5 pb-1 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 ${isTitleAr ? 'text-right font-arabic' : 'text-left'}` : `text-2xl sm:text-3xl font-black text-[#1a2e2a] mt-8 mb-5 pb-3 border-b-2 border-[#d4ede9] flex items-center justify-between gap-3 ${isTitleAr ? 'text-right font-arabic' : 'text-left'}`}>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className={compact ? "w-1.5 h-4 bg-gradient-to-b from-[#03594e] to-[#046a5d] rounded-full inline-block shrink-0 shadow-xs" : "w-2.5 h-8 bg-gradient-to-b from-[#03594e] to-[#046a5d] rounded-full inline-block shrink-0 shadow-md"}></span>
             <span className="leading-snug">{renderTextWithMatrices(titleText, getLineHighlights(index, titleText))}</span>
           </div>
-          {authorImg && <AuthorAvatar src={authorImg.src} name={authorImg.name} sizeClass="w-12 h-12 sm:w-14 sm:h-14" />}
+          {authorImg && <AuthorAvatar src={authorImg.src} name={authorImg.name} sizeClass={compact ? "w-7 h-7" : "w-12 h-12 sm:w-14 sm:h-14"} />}
         </h1>
       );
     }
@@ -1252,12 +1252,12 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
       const authorImg = getAuthorImage(h2Text);
 
       elements.push(
-        <h2 key={`h2-${index}`} data-line-idx={index} dir={isH2Ar ? 'rtl' : 'ltr'} className={`text-lg sm:text-xl font-extrabold text-[#03594e] mt-7 mb-3.5 flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-[#f0f9f8] border border-[#d4ede9] shadow-xs ${isH2Ar ? 'text-right font-arabic' : 'text-left'}`}>
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <span className="w-2 h-6 bg-[#F8C62F] rounded-full inline-block shrink-0 shadow-xs"></span>
+        <h2 key={`h2-${index}`} data-line-idx={index} dir={isH2Ar ? 'rtl' : 'ltr'} className={compact ? `text-xs sm:text-sm font-extrabold text-[#03594e] dark:text-emerald-400 mt-2.5 mb-1 flex items-center justify-between gap-2 p-2 rounded-xl bg-[#f0f9f8] dark:bg-slate-900 border border-[#d4ede9] dark:border-slate-800 shadow-xs ${isH2Ar ? 'text-right font-arabic' : 'text-left'}` : `text-lg sm:text-xl font-extrabold text-[#03594e] mt-7 mb-3.5 flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-[#f0f9f8] border border-[#d4ede9] shadow-xs ${isH2Ar ? 'text-right font-arabic' : 'text-left'}`}>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className={compact ? "w-1.5 h-3.5 bg-[#F8C62F] rounded-full inline-block shrink-0" : "w-2 h-6 bg-[#F8C62F] rounded-full inline-block shrink-0 shadow-xs"}></span>
             <span className="leading-snug">{renderTextWithMatrices(h2Text, getLineHighlights(index, h2Text))}</span>
           </div>
-          {authorImg && <AuthorAvatar src={authorImg.src} name={authorImg.name} sizeClass="w-10 h-10 sm:w-12 sm:h-12" />}
+          {authorImg && <AuthorAvatar src={authorImg.src} name={authorImg.name} sizeClass={compact ? "w-6 h-6" : "w-10 h-10 sm:w-12 sm:h-12"} />}
         </h2>
       );
     }
@@ -1268,12 +1268,12 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
       const authorImg = getAuthorImage(h3Text);
 
       elements.push(
-        <h3 key={`h3-${index}`} data-line-idx={index} dir={isH3Ar ? 'rtl' : 'ltr'} className={`text-base sm:text-lg font-extrabold text-[#1a2e2a] mt-5 mb-2 flex items-center justify-between gap-2 ${isH3Ar ? 'text-right font-arabic' : 'text-left'}`}>
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <span className="w-1.5 h-4 bg-[#03594e] rounded-full inline-block shrink-0"></span>
-            <span>{renderTextWithMatrices(h3Text, getLineHighlights(index, h3Text))}</span>
+        <h3 key={`h3-${index}`} data-line-idx={index} dir={isH3Ar ? 'rtl' : 'ltr'} className={compact ? `text-xs sm:text-[13px] font-extrabold text-slate-900 dark:text-white mt-2.5 mb-1 flex items-center justify-between gap-1.5 ${isH3Ar ? 'text-right font-arabic' : 'text-left'}` : `text-base sm:text-lg font-extrabold text-[#1a2e2a] mt-5 mb-2 flex items-center justify-between gap-2 ${isH3Ar ? 'text-right font-arabic' : 'text-left'}`}>
+          <div className="flex items-center gap-1.5 min-w-0 flex-1">
+            <span className={compact ? "w-1 h-3 bg-[#03594e] dark:bg-emerald-400 rounded-full inline-block shrink-0" : "w-1.5 h-4 bg-[#03594e] rounded-full inline-block shrink-0"}></span>
+            <span className="leading-snug">{renderTextWithMatrices(h3Text, getLineHighlights(index, h3Text))}</span>
           </div>
-          {authorImg && <AuthorAvatar src={authorImg.src} name={authorImg.name} sizeClass="w-8 h-8 sm:w-10 sm:h-10" />}
+          {authorImg && <AuthorAvatar src={authorImg.src} name={authorImg.name} sizeClass={compact ? "w-5 h-5" : "w-8 h-8 sm:w-10 sm:h-10"} />}
         </h3>
       );
     }
@@ -1282,8 +1282,8 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
       const h4Text = trimmed.replace('#### ', '');
       const isH4Ar = checkLineIsArabic(h4Text, isOverallArabic, forceLtr, forceRtl);
       elements.push(
-        <h4 key={`h4-${index}`} data-line-idx={index} dir={isH4Ar ? 'rtl' : 'ltr'} className={`text-sm sm:text-base font-bold text-[#1a2e2a] mt-4 mb-1.5 flex items-center gap-1.5 ${isH4Ar ? 'text-right font-arabic' : 'text-left'}`}>
-          <span className="w-1.5 h-3 bg-[#F8C62F] rounded-full inline-block shrink-0"></span>
+        <h4 key={`h4-${index}`} data-line-idx={index} dir={isH4Ar ? 'rtl' : 'ltr'} className={compact ? `text-[11.5px] font-bold text-slate-800 dark:text-slate-100 mt-2 mb-0.5 flex items-center gap-1.5 ${isH4Ar ? 'text-right font-arabic' : 'text-left'}` : `text-sm sm:text-base font-bold text-[#1a2e2a] mt-4 mb-1.5 flex items-center gap-1.5 ${isH4Ar ? 'text-right font-arabic' : 'text-left'}`}>
+          <span className={compact ? "w-1 h-2.5 bg-[#F8C62F] rounded-full inline-block shrink-0" : "w-1.5 h-3 bg-[#F8C62F] rounded-full inline-block shrink-0"}></span>
           <span>{renderTextWithMatrices(h4Text, getLineHighlights(index, h4Text))}</span>
         </h4>
       );
@@ -1293,7 +1293,7 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
       const h5Text = trimmed.replace('##### ', '');
       const isH5Ar = checkLineIsArabic(h5Text, isOverallArabic, forceLtr, forceRtl);
       elements.push(
-        <h5 key={`h5-${index}`} data-line-idx={index} dir={isH5Ar ? 'rtl' : 'ltr'} className={`text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-350 mt-3.5 mb-1 ${isH5Ar ? 'text-right font-arabic' : 'text-left'}`}>
+        <h5 key={`h5-${index}`} data-line-idx={index} dir={isH5Ar ? 'rtl' : 'ltr'} className={compact ? `text-[11px] font-bold text-slate-700 dark:text-slate-300 mt-1 mb-0.5` : `text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-350 mt-3.5 mb-1 ${isH5Ar ? 'text-right font-arabic' : 'text-left'}`}>
           <span>{renderTextWithMatrices(h5Text, getLineHighlights(index, h5Text))}</span>
         </h5>
       );
@@ -1303,7 +1303,7 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
       const h6Text = trimmed.replace('###### ', '');
       const isH6Ar = checkLineIsArabic(h6Text, isOverallArabic, forceLtr, forceRtl);
       elements.push(
-        <h6 key={`h6-${index}`} data-line-idx={index} dir={isH6Ar ? 'rtl' : 'ltr'} className={`text-xs font-medium text-slate-600 dark:text-slate-400 mt-3 mb-1 uppercase tracking-wider ${isH6Ar ? 'text-right font-arabic' : 'text-left'}`}>
+        <h6 key={`h6-${index}`} data-line-idx={index} dir={isH6Ar ? 'rtl' : 'ltr'} className={compact ? `text-[10px] font-bold text-slate-600 dark:text-slate-400 mt-1 mb-0.5 uppercase tracking-wider` : `text-xs font-medium text-slate-600 dark:text-slate-400 mt-3 mb-1 uppercase tracking-wider ${isH6Ar ? 'text-right font-arabic' : 'text-left'}`}>
           <span>{renderTextWithMatrices(h6Text, getLineHighlights(index, h6Text))}</span>
         </h6>
       );
@@ -1313,8 +1313,8 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
       const text = trimmed.substring(2);
       const isLiAr = checkLineIsArabic(text, isOverallArabic, forceLtr, forceRtl);
       elements.push(
-        <div key={`li-${index}`} data-line-idx={index} dir={isLiAr ? 'rtl' : 'ltr'} className={`flex items-start gap-3 my-2 text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed pl-2 ${isLiAr ? 'text-right font-arabic' : 'text-left'}`}>
-          <div className="w-2 h-2 rounded-full bg-[#03594e] mt-2 shrink-0 shadow-xs"></div>
+        <div key={`li-${index}`} data-line-idx={index} dir={isLiAr ? 'rtl' : 'ltr'} className={compact ? `flex items-start gap-2 my-1 text-slate-700 dark:text-slate-200 text-xs leading-relaxed pl-1 ${isLiAr ? 'text-right font-arabic' : 'text-left'}` : `flex items-start gap-3 my-2 text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed pl-2 ${isLiAr ? 'text-right font-arabic' : 'text-left'}`}>
+          <div className={compact ? "w-1.5 h-1.5 rounded-full bg-[#03594e] dark:bg-emerald-400 mt-1.5 shrink-0 shadow-2xs" : "w-2 h-2 rounded-full bg-[#03594e] mt-2 shrink-0 shadow-xs"}></div>
           <div className="flex-1">{renderTextWithMatrices(text, getLineHighlights(index, text))}</div>
         </div>
       );
@@ -1323,7 +1323,7 @@ export const MarkdownViewer = ({ content, highlights = [], forceLtr = false, for
     // Standard paragraph / block
     else {
       elements.push(
-        <div key={`p-${index}`} data-line-idx={index} dir={isAr ? 'rtl' : 'ltr'} className={`text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed my-2.5 ${textDirClass}`}>
+        <div key={`p-${index}`} data-line-idx={index} dir={isAr ? 'rtl' : 'ltr'} className={compact ? `text-slate-700 dark:text-slate-200 text-xs leading-relaxed my-1.5 ${textDirClass}` : `text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed my-2.5 ${textDirClass}`}>
           {renderTextWithMatrices(trimmed, getLineHighlights(index, trimmed))}
         </div>
       );

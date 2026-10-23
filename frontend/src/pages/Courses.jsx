@@ -3161,7 +3161,7 @@ const Courses = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 30, scale: 0.95 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-6 right-6 w-96 max-w-[92vw] h-[480px] z-50 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 backdrop-blur-xl shadow-2xl flex flex-col overflow-hidden"
+              className="fixed bottom-6 right-6 w-[430px] max-w-[94vw] h-[520px] z-50 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 backdrop-blur-xl shadow-2xl flex flex-col overflow-hidden"
               style={{ boxShadow: '0 20px 50px rgba(3, 89, 78, 0.25)' }}
             >
               {/* AI Drawer Header */}
@@ -3199,12 +3199,18 @@ const Courses = () => {
                       </div>
                     )}
                     <div
-                      className={`max-w-[82%] p-3 rounded-2xl ${msg.sender === 'user'
+                      className={`max-w-[88%] p-3.5 rounded-2xl ${msg.sender === 'user'
                         ? 'bg-[#03594e] text-white rounded-br-none shadow-sm'
                         : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700/80 rounded-bl-none shadow-sm'
                         }`}
                     >
-                      <p className="whitespace-pre-wrap leading-relaxed">{msg.text}</p>
+                      {msg.sender === 'user' ? (
+                        <p className="whitespace-pre-wrap leading-relaxed text-xs">{msg.text}</p>
+                      ) : (
+                        <div className="text-xs leading-relaxed overflow-x-auto">
+                          <MarkdownViewer content={msg.text} compact={true} />
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
