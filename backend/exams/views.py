@@ -58,8 +58,20 @@ class RecordAttemptView(APIView):
             return Response({"error": "Question not found"}, status=status.HTTP_404_NOT_FOUND)
 
         chosen_option = request.data.get('chosen_option', '').strip().upper()
-        correct_option = question.correct_option.strip().upper()
-        is_correct = (chosen_option == correct_option)
+        correct_option_raw = (question.correct_option or '').strip().upper()
+        valid_options = [opt.strip().upper() for opt in correct_option_raw.split(',') if opt.strip()]
+
+        # Check if chosen option is directly valid
+        is_correct = chosen_option in valid_options
+
+        # Also support identical text matches (e.g. duplicate option text like 'ls -i')
+        if not is_correct and chosen_option:
+            chosen_text = (getattr(question, f"option_{chosen_option.lower()}", "") or "").strip().lower()
+            for v_opt in valid_options:
+                correct_text = (getattr(question, f"option_{v_opt.lower()}", "") or "").strip().lower()
+                if chosen_text and correct_text and chosen_text == correct_text:
+                    is_correct = True
+                    break
 
         attempt = UserAttempt.objects.create(
             user=request.user,
@@ -72,7 +84,7 @@ class RecordAttemptView(APIView):
             "attempt_id": attempt.id,
             "question_id": question.id,
             "chosen_option": chosen_option,
-            "correct_option": correct_option,
+            "correct_option": correct_option_raw,
             "is_correct": is_correct,
             "explanation": question.explanation,
             "astuce": question.astuce

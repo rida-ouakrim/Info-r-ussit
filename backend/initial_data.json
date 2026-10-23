@@ -7635,7 +7635,7 @@
       "option_c": "ls -a",
       "option_d": "ls -i",
       "option_e": null,
-      "correct_option": "A",
+      "correct_option": "A,D",
       "explanation": "Sous Linux, la commande `ls` avec l'option `-i` (pour inode) permet d'afficher le numéro d'inode de chaque fichier ou répertoire listé. L'inode est une structure de données qui stocke des informations sur un fichier ou un répertoire, à l'exception de son nom et de son contenu.",
       "astuce": "L'option `-i` est facile à retenir car elle correspond à la première lettre du mot 'inode'.",
       "reference_text": null,

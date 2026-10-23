@@ -1515,24 +1515,36 @@ const Exams = () => {
               >
                 {(() => {
                   const availableKeys = ['A', 'B', 'C', 'D', 'E'];
+                  const correctRaw = currentAttempt?.details?.correct_option || currentQ.correct_option || '';
+                  const validCorrectKeys = correctRaw.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+                  const correctTexts = validCorrectKeys.map(k => (currentQ[`option_${k.toLowerCase()}`] || '').trim().toLowerCase()).filter(Boolean);
+
                   return availableKeys.map((optKey) => {
                     const rawText = currentQ[`option_${optKey.toLowerCase()}`];
                     const optText = rawText || (optKey === 'E' ? (isArabicQuestion ? 'لا شيء مما سبق' : 'Aucune des réponses ci-dessus') : '');
                     if (!optText && optKey === 'E') return null;
                     const isChosen = currentAttempt?.choice === optKey;
-                    const isCorrect = currentQ.correct_option?.trim() === optKey || currentAttempt?.details?.correct_option === optKey;
+                    const isDuplicateOfCorrect = rawText && correctTexts.includes(rawText.trim().toLowerCase());
+                    const isThisOptionCorrect = validCorrectKeys.includes(optKey) || isDuplicateOfCorrect;
                     const isFullWidth = optKey === 'E' && availableKeys.length % 2 !== 0;
+
+                    let btnStyle = 'bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200';
+                    if (isChosen) {
+                      if (currentAttempt.is_correct || isThisOptionCorrect) {
+                        btnStyle = 'bg-emerald-500/20 border-emerald-500 text-emerald-800 dark:text-emerald-300 font-bold';
+                      } else {
+                        btnStyle = 'bg-red-500/20 border-red-500 text-red-800 dark:text-red-300 font-bold';
+                      }
+                    } else if (currentAttempt && mode === 'Entraînement' && isThisOptionCorrect) {
+                      btnStyle = 'border-emerald-500/50 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 font-semibold';
+                    }
 
                     return (
                       <button
                         key={optKey}
                         onClick={() => handleOptionSelect(currentQ.id, optKey)}
                         disabled={Boolean(currentAttempt)}
-                        className={`p-3 sm:p-4 rounded-xl border text-xs sm:text-sm font-medium transition-all cursor-pointer ${isArabicQuestion ? 'text-right' : 'text-left'} ${isFullWidth ? 'sm:col-span-2' : ''
-                          } ${isChosen
-                            ? (isCorrect ? 'bg-emerald-500/20 border-emerald-500 text-emerald-800 dark:text-emerald-300 font-bold' : 'bg-red-500/20 border-red-500 text-red-800 dark:text-red-300 font-bold')
-                            : 'bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200'
-                          }`}
+                        className={`p-3 sm:p-4 rounded-xl border text-xs sm:text-sm font-medium transition-all cursor-pointer ${isArabicQuestion ? 'text-right' : 'text-left'} ${isFullWidth ? 'sm:col-span-2' : ''} ${btnStyle}`}
                       >
                         <strong className="text-[#03594e] dark:text-[#F8C62F] mx-1 inline-block" dir="ltr">{optKey})</strong> {optText}
                       </button>
@@ -1547,14 +1559,21 @@ const Exams = () => {
         {/* Correction Feedback (Mode Entraînement) */}
         {currentAttempt && mode === 'Entraînement' && (
           <div className="space-y-3 pt-3.5 border-t border-slate-200 dark:border-slate-800">
-            <div dir="auto" className={`p-3 sm:p-4 rounded-xl text-[11px] sm:text-xs space-y-2 bidi-plaintext ${currentAttempt.is_correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300'}`}>
-              <div className="font-bold text-xs sm:text-sm" dir="ltr">
-                {currentAttempt.is_correct ? '✔️ Correct ! Bonne réponse.' : `❌ Incorrect. Bonne réponse : ${currentAttempt.details?.correct_option || currentQ.correct_option}`}
-              </div>
-              <div dir="auto" className="leading-relaxed bidi-plaintext">
-                <MarkdownViewer content={currentAttempt.details?.explanation || currentQ.explanation || ''} />
-              </div>
-            </div>
+            {(() => {
+              const correctRaw = currentAttempt?.details?.correct_option || currentQ.correct_option || '';
+              const validCorrectKeys = correctRaw.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+              const labelCorrect = validCorrectKeys.length > 1 ? validCorrectKeys.join(' ou ') : (validCorrectKeys[0] || correctRaw);
+              return (
+                <div dir="auto" className={`p-3 sm:p-4 rounded-xl text-[11px] sm:text-xs space-y-2 bidi-plaintext ${currentAttempt.is_correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300' : 'bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300'}`}>
+                  <div className="font-bold text-xs sm:text-sm" dir="ltr">
+                    {currentAttempt.is_correct ? '✔️ Correct ! Bonne réponse.' : `❌ Incorrect. Bonne réponse : ${labelCorrect}`}
+                  </div>
+                  <div dir="auto" className="leading-relaxed bidi-plaintext">
+                    <MarkdownViewer content={currentAttempt.details?.explanation || currentQ.explanation || ''} />
+                  </div>
+                </div>
+              );
+            })()}
 
             {currentQ.astuce && (
               <div dir="auto" className="p-3 sm:p-4 rounded-xl bg-[#03594e]/10 border border-[#03594e]/30 text-[#03594e] dark:text-emerald-300 text-[11px] sm:text-xs font-medium bidi-plaintext space-y-1.5">
