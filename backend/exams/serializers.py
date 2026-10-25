@@ -27,6 +27,9 @@ class QuestionSerializer(serializers.ModelSerializer):
             'course_astuces', 'course_video_url', 'is_bookmarked'
         )
     def get_is_bookmarked(self, obj):
+        bookmarks_set = self.context.get('user_bookmarks_set')
+        if bookmarks_set is not None:
+            return obj.id in bookmarks_set
         user = self.context.get('request').user if self.context.get('request') else None
         if user and user.is_authenticated:
             return Bookmark.objects.filter(user=user, question=obj).exists()

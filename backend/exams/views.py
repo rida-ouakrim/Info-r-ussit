@@ -13,8 +13,19 @@ class QuestionListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = QuestionSerializer
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        user = self.request.user
+        if user and user.is_authenticated:
+            context['user_bookmarks_set'] = set(
+                Bookmark.objects.filter(user=user).values_list('question_id', flat=True)
+            )
+        else:
+            context['user_bookmarks_set'] = set()
+        return context
+
     def get_queryset(self):
-        queryset = Question.objects.all().select_related('domain', 'subdomain')
+        queryset = Question.objects.all().select_related('domain', 'subdomain', 'course')
         
         year = self.request.query_params.get('year')
         subdomain = self.request.query_params.get('subdomain')

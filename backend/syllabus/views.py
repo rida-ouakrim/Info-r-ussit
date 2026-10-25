@@ -13,6 +13,17 @@ class CourseListView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = CourseSerializer
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        user = self.request.user
+        if user and user.is_authenticated:
+            context['user_completed_courses_set'] = set(
+                CourseProgress.objects.filter(user=user, is_completed=True).values_list('course_id', flat=True)
+            )
+        else:
+            context['user_completed_courses_set'] = set()
+        return context
+
     def get_queryset(self):
         queryset = Course.objects.all().select_related('subdomain', 'subdomain__domain')
         subdomain_code = self.request.query_params.get('subdomain')

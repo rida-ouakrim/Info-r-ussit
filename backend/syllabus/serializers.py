@@ -24,6 +24,9 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ('id', 'subdomain', 'subdomain_code', 'subdomain_name', 'domain_code', 'title', 'title_ar', 'video_url', 'is_completed')
 
     def get_is_completed(self, obj):
+        completed_set = self.context.get('user_completed_courses_set')
+        if completed_set is not None:
+            return obj.id in completed_set
         user = self.context.get('request').user if self.context.get('request') else None
         if user and user.is_authenticated:
             return CourseProgress.objects.filter(user=user, course=obj, is_completed=True).exists()
