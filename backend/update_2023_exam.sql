@@ -1,5 +1,5 @@
 -- ==============================================================================
--- MISE À JOUR SÉCURISÉE DU CONCOURS SPÉCIALITÉ 2023 (80 QUESTIONS COMPLÈTES)
+-- MISE À JOUR SÉCURISÉE DU CONCOURS SPÉCIALITÉ 2023 (EXACTEMENT 80 QUESTIONS)
 -- AUCUNE PERTE DE DONNÉES : Uniquement des UPDATE ciblés et 1 INSERT sécurisé
 -- ==============================================================================
 
@@ -15,7 +15,7 @@ WHERE exam_year = 2023
   AND question_number IN ('Q20', 'Q23', 'Q26', 'Q27', 'Q28', 'Q29', 'Q30')
   AND (domain_id = 'CONCOURS_ETAT' OR domain_id IS NULL OR domain_id != 'DIDACTIQUE');
 
--- 2. Réassigner la question Q77 (Clé primaire) vers LOG (LOG_OFFICE)
+-- 2. Réassigner UNIQUEMENT la question Q77 (Clé primaire) vers LOG (LOG_OFFICE)
 UPDATE exams_question
 SET domain_id = 'LOG',
     subdomain_id = 'LOG_OFFICE',
@@ -23,9 +23,18 @@ SET domain_id = 'LOG',
 WHERE exam_year = 2023
   AND source_type = 'past_exam'
   AND question_number = 'Q77'
-  AND (domain_id = 'CONCOURS_ETAT' OR domain_id IS NULL);
+  AND question_text ILIKE '%identifie de manière unique chaque enregistrement%';
 
--- 3. Réaffecter les questions intruses de Didactique vers DIDACTIQUE
+-- 3. Remettre impérativement les Q77 de Didactique (Brainstorming / تنشيط) en DIDACTIQUE
+UPDATE exams_question
+SET domain_id = 'DIDACTIQUE',
+    subdomain_id = 'DID_APPROCHES',
+    course_id = 25
+WHERE exam_year = 2023
+  AND question_number = 'Q77'
+  AND question_text NOT ILIKE '%identifie de manière unique chaque enregistrement%';
+
+-- 4. Réaffecter les questions intruses de Didactique vers DIDACTIQUE
 UPDATE exams_question
 SET domain_id = 'DIDACTIQUE',
     subdomain_id = 'DID_CONCEPTS'
@@ -50,7 +59,7 @@ SET domain_id = 'DIDACTIQUE',
 WHERE exam_year = 2023
   AND question_text ILIKE '%L''anomalie du programme proposé influence sur%';
 
--- 4. Insérer la question Q50 si elle n'existe pas déjà
+-- 5. Insérer la question Q50 si elle n'existe pas déjà
 INSERT INTO exams_question (
     source_type,
     exam_year,
@@ -97,7 +106,7 @@ WHERE NOT EXISTS (
 
 COMMIT;
 
--- Vérification immédiate du total pour le Concours Spécialité 2023
+-- Vérification immédiate du total pour le Concours Spécialité 2023 (Doit être STRICTEMENT 80)
 SELECT count(*) AS total_questions_specialite_2023
 FROM exams_question
 WHERE exam_year = 2023
