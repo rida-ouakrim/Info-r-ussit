@@ -9571,9 +9571,9 @@
       "explanation": "La clause `DELETE` est utilisée en SQL pour supprimer des lignes (données) spécifiques d'une table. La clause `DROP` est utilisée pour supprimer la structure entière d'un objet de base de données (comme une table, une base de données ou une vue). `Erase` et `Remove` ne sont pas des clauses SQL standard pour cette opération.",
       "astuce": "`DELETE` supprime les *données* (lignes) d'une table, tandis que `DROP` supprime la *structure* de la table elle-même. Pensez 'Delete Rows, Drop Table'.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:39.147Z"
     }
   },
@@ -9640,9 +9640,9 @@
       "explanation": "L'instruction SQL standard pour modifier les données existantes dans une ou plusieurs lignes d'une table est 'UPDATE'. Les autres options ('Modify', 'Change', 'Alter') ne sont pas utilisées pour cette tâche spécifique ; 'ALTER' est pour la modification de la structure de la table.",
       "astuce": "Mémorisez les quatre opérations CRUD (Create, Read, Update, Delete) en SQL : 'INSERT' (Create), 'SELECT' (Read), 'UPDATE' (Update), 'DELETE' (Delete).",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:39.174Z"
     }
   },
@@ -9709,9 +9709,9 @@
       "explanation": "La clé primaire est une colonne (ou un ensemble de colonnes) dont les valeurs identifient de manière unique chaque enregistrement dans une table. Elle garantit l'intégrité des entités et empêche la duplication des enregistrements.",
       "astuce": "Pensez à la clé primaire comme à la \"carte d'identité\" de chaque ligne de votre table : elle doit être unique et ne jamais être vide pour identifier sans ambiguïté chaque enregistrement.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:39.195Z"
     }
   },
@@ -9732,9 +9732,9 @@
       "explanation": "La syntaxe SQL correcte pour sélectionner une colonne spécifique (ici 'Nom') d'une table (ici 'candidat') est `SELECT Nom FROM candidat`.",
       "astuce": "Retenez la structure de base d'une requête SELECT : `SELECT [colonnes] FROM [table]`. Les colonnes sont listées directement après SELECT, séparées par des virgules si plusieurs.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:39.201Z"
     }
   },
@@ -9755,9 +9755,9 @@
       "explanation": "La commande SQL pour supprimer des enregistrements est `DELETE FROM nom_table WHERE condition`. L'opérateur d'égalité en SQL est `=`. `DROP` est utilisé pour supprimer des objets de la base de données (tables, vues, etc.), pas des lignes.",
       "astuce": "`DELETE` supprime des lignes, `DROP` supprime des objets (tables, bases de données). Utilisez `WHERE` pour cibler les lignes à supprimer, sinon toutes les lignes seront effacées !",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:39.207Z"
     }
   },
@@ -9778,9 +9778,9 @@
       "explanation": "La commande SQL pour modifier des données existantes dans une table est `UPDATE nom_table SET colonne = nouvelle_valeur WHERE condition`. Les options A, B et C utilisent une syntaxe incorrecte ou un mot-clé non standard (`Modify`).",
       "astuce": "Pour modifier des données, pensez `UPDATE`. La structure est toujours `UPDATE [table] SET [colonne1] = [valeur1], [colonne2] = [valeur2]... WHERE [condition]`. N'oubliez jamais le `WHERE` pour éviter de modifier toutes les lignes !",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:39.214Z"
     }
   },
@@ -9801,9 +9801,9 @@
       "explanation": "La commande SQL correcte pour supprimer toutes les lignes d'une table est `DELETE FROM nom_de_la_table;`. L'option 'Delete * from candidat' est une syntaxe incorrecte.",
       "astuce": "Pour vider une table, pensez à 'DELETE FROM' pour les lignes, ou 'TRUNCATE TABLE' pour une suppression plus rapide et non journalisée (si disponible).",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
+      "course": 2,
       "created_at": "2026-08-18T10:03:39.220Z"
     }
   },
@@ -10242,6 +10242,29 @@
       "subdomain": "SYS_NET",
       "course": 13,
       "created_at": "2026-08-18T10:03:39.338Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 394,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2023,
+      "question_number": "Q50",
+      "question_text": "Le nombre de bits qui compose une adresse IP version 6 (IPv6) est :",
+      "option_a": "32 bits",
+      "option_b": "64 bits",
+      "option_c": "128 bits",
+      "option_d": "256 bits",
+      "option_e": null,
+      "correct_option": "C",
+      "explanation": "Une adresse IP version 6 (IPv6) est codée sur 128 bits (soit 16 octets), généralement représentée sous forme de huit groupes de quatre chiffres hexadécimaux séparés par des deux-points (:). Cela offre un espace d'adressage de 2^128 adresses.",
+      "astuce": "IPv4 = 32 bits (4 octets) ; IPv6 = 128 bits (16 octets). 128 = 4 × 32.",
+      "reference_text": null,
+      "domain": "SYS_RES",
+      "subdomain": "SYS_NET",
+      "course": 13,
+      "created_at": "2026-08-18T10:03:39.345Z"
     }
   },
   {
@@ -10859,9 +10882,9 @@
       "explanation": "La clé primaire est un attribut ou un ensemble d'attributs qui identifie de manière unique chaque enregistrement (ligne) dans une table de base de données, garantissant l'intégrité et l'unicité des données.",
       "astuce": "Pensez à la clé primaire comme à la 'carte d'identité' unique de chaque ligne de votre table. Sans elle, pas d'identification fiable des enregistrements.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
-      "course": 56,
+      "domain": "LOG",
+      "subdomain": "LOG_OFFICE",
+      "course": 17,
       "created_at": "2026-08-18T10:03:39.512Z"
     }
   },
@@ -16264,8 +16287,8 @@
       "explanation": "L'information, l'algorithme et la programmation sont des concepts abstraits et fondamentaux de l'informatique. La 'Machine' (l'ordinateur) est un outil physique qui met en œuvre ces concepts, mais elle n'est pas un concept fondamental en soi. L'informatique peut être étudiée et comprise sans se limiter à une machine spécifique.",
       "astuce": "Les concepts fondamentaux sont abstraits; la machine est leur incarnation physique.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_CONCEPTS",
       "course": 34,
       "created_at": "2026-08-18T10:03:41.043Z"
     }
@@ -16563,8 +16586,8 @@
       "explanation": "La pensée informatique (computational thinking) est une approche de résolution de problèmes qui implique de décomposer des problèmes complexes, de reconnaître des motifs, d'abstraire des concepts et de concevoir des algorithmes. Elle ne se limite pas à la programmation ou à la représentation des données, mais englobe une manière de penser structurée et logique, inspirée par les méthodes de l'informatique.",
       "astuce": "La pensée informatique est une compétence de résolution de problèmes, pas seulement de programmation.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_CONCEPTS",
       "course": 34,
       "created_at": "2026-08-18T10:03:41.126Z"
     }
@@ -16678,8 +16701,8 @@
       "explanation": "L'anomalie réside dans l'utilisation de deux instructions 'if' indépendantes suivies d'un 'else' qui ne se rapporte qu'au second 'if'. Cela conduit à un comportement inattendu, par exemple, un nombre positif affichera à la fois \"Le nombre est positif.\" et \"Le nombre est nul.\". La structure correcte devrait utiliser 'if-else if-else'.",
       "astuce": "Pour des conditions mutuellement exclusives, utilisez toujours 'if-else if-else' pour éviter les erreurs logiques et améliorer la lisibilité du code.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 37,
       "created_at": "2026-08-18T10:03:41.157Z"
     }
@@ -16701,8 +16724,8 @@
       "explanation": "Le programme compile et s'exécute sans erreur syntaxique. Cependant, à cause de l'erreur logique dans la structure conditionnelle, le programme ne produit pas le résultat attendu. Par exemple, pour un nombre positif, il affichera deux messages au lieu d'un seul, ce qui est contraire à l'objectif.",
       "astuce": "Une erreur logique n'empêche pas la compilation ou l'exécution, mais elle altère le comportement ou le résultat final du programme.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 37,
       "created_at": "2026-08-18T10:03:41.163Z"
     }
