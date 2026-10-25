@@ -314,6 +314,10 @@ const getLocalizedCourseTitle = (c, lang) => {
   return c.title;
 };
 
+let memoryDomains = null;
+let memoryAllCourses = null;
+let memoryStats = null;
+
 const Courses = () => {
   const { user } = useAuth();
   const [prepLang, setPrepLang] = useState(() => {
@@ -331,13 +335,13 @@ const Courses = () => {
       localStorage.setItem('user_prep_lang', lang);
     } catch (e) { }
   };
-  const [domains, setDomains] = useState([]);
+  const [domains, setDomains] = useState(() => memoryDomains || []);
   const [selectedDomainCode, setSelectedDomainCode] = useState('');
   const [subdomains, setSubdomains] = useState([]);
   const [selectedSubdomainCode, setSelectedSubdomainCode] = useState('');
 
   const [courses, setCourses] = useState([]);
-  const [allCourses, setAllCourses] = useState([]);
+  const [allCourses, setAllCourses] = useState(() => memoryAllCourses || []);
   const [currentStep, setCurrentStep] = useState('domains'); // 'domains', 'subdomains', 'courses'
 
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -710,7 +714,14 @@ const Courses = () => {
 
   useEffect(() => {
     const init = async () => {
-      setLoading(true);
+      if (memoryDomains && memoryAllCourses) {
+        setDomains(memoryDomains);
+        setAllCourses(memoryAllCourses);
+        if (memoryStats) setStats(memoryStats);
+        setLoading(false);
+      } else {
+        setLoading(true);
+      }
       const [domList] = await Promise.all([fetchDomains(), fetchAllCourses(), fetchStats()]);
 
       // Candidate Auto-Direct: open targeted track (e.g. Data Scientist & IA) directly
@@ -737,10 +748,15 @@ const Courses = () => {
     }
   }, [user]);
 
-  const fetchDomains = async () => {
+  const fetchDomains = async (force = false) => {
+    if (!force && memoryDomains) {
+      setDomains(memoryDomains);
+      return memoryDomains;
+    }
     try {
       const res = await API.get('domains/');
       const domList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+      memoryDomains = domList;
       setDomains(domList);
       return domList;
     } catch (err) {
@@ -750,20 +766,28 @@ const Courses = () => {
     }
   };
 
-  const fetchAllCourses = async () => {
+  const fetchAllCourses = async (force = false) => {
+    if (!force && memoryAllCourses) {
+      setAllCourses(memoryAllCourses);
+      return memoryAllCourses;
+    }
     try {
       const res = await API.get('courses/');
       const courseList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+      memoryAllCourses = courseList;
       setAllCourses(courseList);
+      return courseList;
     } catch (err) {
       console.error("fetchAllCourses error:", err);
       setAllCourses([]);
+      return [];
     }
   };
 
   const fetchStats = async () => {
     try {
       const res = await API.get('courses/stats/');
+      memoryStats = res.data;
       setStats(res.data);
     } catch (err) {
       console.error(err);

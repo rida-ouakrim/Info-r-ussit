@@ -25,7 +25,11 @@ class CourseListView(generics.ListAPIView):
         return context
 
     def get_queryset(self):
-        queryset = Course.objects.all().select_related('subdomain', 'subdomain__domain')
+        queryset = Course.objects.all().select_related('subdomain', 'subdomain__domain').defer(
+            'content', 'content_ar', 'content_fr',
+            'examples', 'examples_ar', 'examples_fr',
+            'astuces', 'astuces_ar', 'astuces_fr'
+        )
         subdomain_code = self.request.query_params.get('subdomain')
         if subdomain_code:
             queryset = queryset.filter(subdomain__code=subdomain_code)

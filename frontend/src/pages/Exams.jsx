@@ -12,6 +12,8 @@ import {
   Highlighter, Eraser, NotebookPen
 } from 'lucide-react';
 
+const examQuestionsCache = new Map();
+
 const Exams = () => {
   const { user } = useAuth();
   const isAdmin = Boolean(user?.is_staff || user?.is_superuser);
@@ -480,71 +482,78 @@ const Exams = () => {
       const targetSession = sessionToResume || (resume ? savedSession : null);
       const targetYear = targetSession ? targetSession.exam_year : selectedYear;
 
-      let queryUrl = `questions/?year=${targetYear}&source_type=past_exam`;
-      if (selectedDomainFilter !== 'ALL') {
-        queryUrl += `&domain=${selectedDomainFilter}`;
-      }
+      const cacheKey = `${targetYear}_${selectedDomainFilter}_${selectedLangFilter}`;
+      let filteredQuestions = examQuestionsCache.get(cacheKey) || null;
 
-      const res = await API.get(queryUrl);
-      // Filter by language if Sciences Edu selected and language filter active
-      const rawQuestions = Array.isArray(res.data) ? res.data : (res.data?.results || []);
-      let filteredQuestions = rawQuestions;
-      if (selectedDomainFilter === 'SCIENCES_EDU') {
-        if (selectedLangFilter === 'fr') {
-          const frQuestions = rawQuestions.filter(q => {
-            const text = (q.question_text || '') + ' ' + (q.option_a || '') + ' ' + (q.option_b || '');
-            const arabicCharCount = (text.match(/[\u0600-\u06FF]/g) || []).length;
-            return arabicCharCount <= 5;
-          });
-          if (frQuestions.length > 0) {
-            filteredQuestions = frQuestions;
+      if (!filteredQuestions) {
+        let queryUrl = `questions/?year=${targetYear}&source_type=past_exam`;
+        if (selectedDomainFilter !== 'ALL') {
+          queryUrl += `&domain=${selectedDomainFilter}`;
+        }
+
+        const res = await API.get(queryUrl);
+        // Filter by language if Sciences Edu selected and language filter active
+        const rawQuestions = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+        filteredQuestions = rawQuestions;
+        if (selectedDomainFilter === 'SCIENCES_EDU') {
+          if (selectedLangFilter === 'fr') {
+            const frQuestions = rawQuestions.filter(q => {
+              const text = (q.question_text || '') + ' ' + (q.option_a || '') + ' ' + (q.option_b || '');
+              const arabicCharCount = (text.match(/[\u0600-\u06FF]/g) || []).length;
+              return arabicCharCount <= 5;
+            });
+            if (frQuestions.length > 0) {
+              filteredQuestions = frQuestions;
+            }
+          } else {
+            const arabicQuestions = rawQuestions.filter(q => {
+              const text = (q.question_text || '') + ' ' + (q.option_a || '') + ' ' + (q.option_b || '');
+              const arabicCharCount = (text.match(/[\u0600-\u06FF]/g) || []).length;
+              return arabicCharCount > 5;
+            });
+            if (arabicQuestions.length > 0) {
+              filteredQuestions = arabicQuestions;
+            }
           }
-        } else {
-          const arabicQuestions = rawQuestions.filter(q => {
+        } else if (selectedLangFilter !== 'ALL') {
+          filteredQuestions = rawQuestions.filter(q => {
             const text = (q.question_text || '') + ' ' + (q.option_a || '') + ' ' + (q.option_b || '');
             const arabicCharCount = (text.match(/[\u0600-\u06FF]/g) || []).length;
-            return arabicCharCount > 5;
+            const latinWordCount = (text.match(/\b[a-zA-Z]{4,}\b/g) || []).length;
+            const isMainlyArabic = arabicCharCount > 20 || (arabicCharCount > 5 && latinWordCount < 5);
+            if (selectedLangFilter === 'ar') return isMainlyArabic;
+            if (selectedLangFilter === 'fr') return !isMainlyArabic;
+            return true;
           });
-          if (arabicQuestions.length > 0) {
-            filteredQuestions = arabicQuestions;
+        }
+
+        if (filteredQuestions.length === 0) {
+          alert(`Aucune question disponible pour l'année ${targetYear} avec ce filtre.`);
+          setLoading(false);
+          return;
+        }
+
+        // Deduplicate questions by question_number & question_text
+        const uniqueList = [];
+        const seenKey = new Set();
+        for (const q of filteredQuestions) {
+          const key = `${q.question_number || ''}_${(q.question_text || '').trim().slice(0, 30)}`;
+          if (!seenKey.has(key)) {
+            seenKey.add(key);
+            uniqueList.push(q);
           }
         }
-      } else if (selectedLangFilter !== 'ALL') {
-        filteredQuestions = rawQuestions.filter(q => {
-          const text = (q.question_text || '') + ' ' + (q.option_a || '') + ' ' + (q.option_b || '');
-          const arabicCharCount = (text.match(/[\u0600-\u06FF]/g) || []).length;
-          const latinWordCount = (text.match(/\b[a-zA-Z]{4,}\b/g) || []).length;
-          const isMainlyArabic = arabicCharCount > 20 || (arabicCharCount > 5 && latinWordCount < 5);
-          if (selectedLangFilter === 'ar') return isMainlyArabic;
-          if (selectedLangFilter === 'fr') return !isMainlyArabic;
-          return true;
+        filteredQuestions = uniqueList;
+
+        // Natural numerical sort by question_number (Q61, Q62... Q120)
+        filteredQuestions.sort((a, b) => {
+          const numA = parseInt((a.question_number || '').replace(/\D/g, ''), 10) || 0;
+          const numB = parseInt((b.question_number || '').replace(/\D/g, ''), 10) || 0;
+          return numA - numB;
         });
-      }
 
-      if (filteredQuestions.length === 0) {
-        alert(`Aucune question disponible pour l'année ${targetYear} avec ce filtre.`);
-        setLoading(false);
-        return;
+        examQuestionsCache.set(cacheKey, filteredQuestions);
       }
-
-      // Deduplicate questions by question_number & question_text
-      const uniqueList = [];
-      const seenKey = new Set();
-      for (const q of filteredQuestions) {
-        const key = `${q.question_number || ''}_${(q.question_text || '').trim().slice(0, 30)}`;
-        if (!seenKey.has(key)) {
-          seenKey.add(key);
-          uniqueList.push(q);
-        }
-      }
-      filteredQuestions = uniqueList;
-
-      // Natural numerical sort by question_number (Q61, Q62... Q120)
-      filteredQuestions.sort((a, b) => {
-        const numA = parseInt((a.question_number || '').replace(/\D/g, ''), 10) || 0;
-        const numB = parseInt((b.question_number || '').replace(/\D/g, ''), 10) || 0;
-        return numA - numB;
-      });
 
       setQuestions(filteredQuestions);
 
