@@ -334,6 +334,31 @@ const ensureFencedCodeBlocks = (text) => {
     }
   }
 
+  // Auto-format known exam questions with flattened/unfenced algorithms or code snippets
+  if (!cleaned.includes('```')) {
+    // Q8: proc1()
+    if (/proc1\(\)/i.test(cleaned)) {
+      cleaned = cleaned.replace(/Pour i <- O à/g, 'Pour i <- 0 à').replace(/Pour j <- O à/g, 'Pour j <- 0 à');
+      cleaned = `\`\`\`alg\nproc1()\n  Entier i, j, L, T[40][40]\n  Afficher("Entrer le nombre de lignes ou de colonnes (L=C): ")\n  Lire(L)\n  Pour i <- 0 à L-1\n    Pour j <- 0 à L-1\n      Lire(T[i][j])\n    Fin pour\n  Fin pour\nFin\n\`\`\`\n\nLa procédure \`proc1\` permet :`;
+    }
+    // Q9: f (n :entier) factorielle
+    else if (/f\s*\(\s*n\s*:\s*entier\s*\)/i.test(cleaned) || /retourner\s+n\*f\(n-1\)/i.test(cleaned)) {
+      cleaned = `\`\`\`alg\nf (n :entier)\n  Si n = 0 alors\n    retourner 1\n  Sinon\n    retourner n * f(n-1)\nfin\n\`\`\`\n\nPour n = 4, la fonction f retourne :`;
+    }
+    // Q13: Fonction F(tab) minimum
+    else if (/Fonction\s+F\s*\(\s*tab\s*\)/i.test(cleaned) || /m\s*<-\s*tab\[0\]/i.test(cleaned)) {
+      cleaned = `Que retourne la fonction F définie ci-dessous ?\n\n\`\`\`alg\nFonction F(tab)\n  m <- tab[0]\n  Pour chaque élément x du tableau tab\n    Si x < m Alors\n      m <- x\n  Fin Pour\n  Retourner m\nFin\n\`\`\``;
+    }
+    // Q18: Missing code in syntax error question
+    else if (/Quelle ligne du code suivant contient une erreur de syntaxe/i.test(cleaned) && !cleaned.includes('void f')) {
+      cleaned = `Quelle ligne du code suivant contient une erreur de syntaxe ?\n\n\`\`\`c\n1  void f(unsigned int n) {\n2    int i; j = 1;\n3    for (i=1; i<n; i++) {\n4      j = j * i;\n5    }\n6    printf("Resultat : %d -> %d\\n", n, j);\n7  }\n\`\`\``;
+    }
+    // Q25: PHP MySQL legacy snippet
+    else if (/mysql_connect/i.test(cleaned) && (cleaned.includes('<?') || cleaned.includes('<?php'))) {
+      cleaned = `Que fait ce code ?\n\n\`\`\`php\n<?php\n$db = mysql_connect('localhost', 'mabase', 'mot-de-passe');\nmysql_select_db('mabase', $db);\n$req = mysql_query('SELECT * FROM matable');\n$res = mysql_numrows($req);\necho ".$res";\nmysql_close($db);\n?>\n\`\`\``;
+    }
+  }
+
   // Auto-detect unfenced algorithm structures
   if (!cleaned.includes('```') && ((/algorithme/i.test(cleaned) || /variables/i.test(cleaned)) && (/d[ée]but/i.test(cleaned)))) {
     const lines = cleaned.split('\n');
