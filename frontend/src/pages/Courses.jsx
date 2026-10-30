@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import MarkdownViewer from '../components/MarkdownViewer';
 import ReferenceTextModal, { hasReferenceText } from '../components/ReferenceTextModal';
 import LoadingSpinner from '../components/LoadingSpinner';
+import FloatingNotePad from '../components/FloatingNotePad';
 import { cLessons } from '../data/cLessons';
 import { sqlLessons } from '../data/sqlLessons';
 import { javaLessons } from '../data/javaLessons';
@@ -3111,71 +3112,19 @@ const Courses = () => {
           </div>
         )}
 
-        {/* Global Floating Notes Drawer */}
-        <AnimatePresence>
-          {isNoteChatbotOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.95 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-6 right-6 w-96 max-w-[92vw] z-50 rounded-3xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-950 backdrop-blur-xl shadow-2xl p-5 space-y-3"
-              style={{ boxShadow: '0 20px 50px rgba(0,0,0,0.3)' }}
-            >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-slate-900 text-amber-400 dark:bg-slate-800 shadow-sm">
-                    <FileText className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black text-slate-900 dark:text-white">
-                      Bloc-notes de la leçon
-                    </h4>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={handleCopyNote}
-                    disabled={!notes[currentNoteKey]}
-                    className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold disabled:opacity-40 cursor-pointer"
-                    title="Copier les notes"
-                  >
-                    {copiedNote ? <Check className="w-3.5 h-3.5 text-slate-900 dark:text-white" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleDownloadNote}
-                    disabled={!notes[currentNoteKey]}
-                    className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold disabled:opacity-40 cursor-pointer"
-                    title="Exporter (.txt)"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setIsNoteChatbotOpen(false)}
-                    className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-red-500/10 hover:text-red-500 text-slate-500 transition-colors cursor-pointer"
-                    title="Fermer le bloc-notes"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="relative">
-                <textarea
-                  value={notes[currentNoteKey] || ''}
-                  onChange={(e) => handleNoteChange(e.target.value)}
-                  placeholder="Écrivez vos remarques, définitions ou points clés sur ce cours ici..."
-                  rows={8}
-                  className="w-full p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-xs font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-700 resize-y placeholder:text-slate-400 dark:placeholder:text-slate-600 shadow-inner"
-                />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Global Floating Draggable & Resizable Notes Drawer */}
+        <FloatingNotePad
+          isOpen={isNoteChatbotOpen}
+          onClose={() => setIsNoteChatbotOpen(false)}
+          noteText={notes[currentNoteKey] || ''}
+          onNoteChange={handleNoteChange}
+          onCopy={handleCopyNote}
+          onDownload={handleDownloadNote}
+          onClear={handleClearNote}
+          isCopied={copiedNote}
+          saveStatus={noteSaveStatus}
+          courseTitle={activeCourseData?.title || 'Cours'}
+        />
 
         {/* Global Floating AI Assistant Drawer */}
         <AnimatePresence>
