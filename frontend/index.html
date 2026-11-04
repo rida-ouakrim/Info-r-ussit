@@ -7,10 +7,24 @@
     <link rel="apple-touch-icon" href="/logo.png?v=2" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Inforéussit - Plateforme nationale de préparation aux concours informatiques (CRMEF, Agrégation, Master, Ingénieurs, Techniciens) au Maroc avec cours et QCM IA." />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#03594e" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Inforéussit" />
     <title>Inforéussit - Préparation aux Concours Informatiques</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((reg) => console.log('[PWA] Service Worker enregistré avec succès:', reg.scope))
+            .catch((err) => console.warn('[PWA] Échec enregistrement Service Worker:', err));
+        });
+      }
+    </script>
   </body>
 </html>
