@@ -63,8 +63,8 @@ export default function Header({ onMenuClick }) {
   return (
     <header className="glass-nav sticky top-0 z-30 px-4 sm:px-6 h-16 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
 
-      {/* Left: Menu + Title */}
-      <div className="flex items-center gap-3">
+      {/* Left: Menu + Brand Logo + Title */}
+      <div className="flex items-center gap-2.5">
         {/* Mobile menu button */}
         <button
           onClick={onMenuClick}
@@ -75,10 +75,15 @@ export default function Header({ onMenuClick }) {
           <Menu className="w-5 h-5" />
         </button>
 
+        {/* Mobile Logo */}
+        <Link to="/" className="md:hidden flex items-center">
+          <img src="/logo.png" alt="Inforéussit" className="h-8 w-auto object-contain" />
+        </Link>
+
         {/* Page title */}
         <div>
-          <h1 className="text-base font-extrabold text-slate-800 dark:text-white leading-tight">{pageInfo.title}</h1>
-          <p className="text-[11px] font-semibold text-[#03594e] dark:text-[#F8C62F] leading-none mt-0.5">Inforéussit</p>
+          <h1 className="text-sm sm:text-base font-extrabold text-slate-800 dark:text-white leading-tight">{pageInfo.title}</h1>
+          <p className="text-[10px] sm:text-[11px] font-semibold text-[#03594e] dark:text-[#F8C62F] leading-none mt-0.5">Inforéussit</p>
         </div>
       </div>
 

@@ -42,23 +42,23 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
       `}
     >
       {/* ── Brand Header ── */}
-      <div className="flex items-center justify-between px-3 py-3 border-b border-inherit relative">
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-inherit min-h-[60px]">
         <Link
           to="/"
-          className={`flex items-center justify-center flex-1 min-w-0 ${collapsed ? 'hidden md:hidden' : 'flex'} py-1`}
+          className={`flex items-center flex-1 min-w-0 ${collapsed ? 'hidden md:hidden' : 'flex'} py-1`}
           onClick={onCloseMobile}
         >
           <img 
             src="/logo.png" 
             alt="Inforéussit" 
-            className="h-20 sm:h-24 w-auto object-contain max-h-[105px] transition-transform hover:scale-105 mx-auto" 
+            className="h-10 sm:h-12 w-auto object-contain max-h-[48px] transition-transform hover:scale-105" 
             onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }} 
           />
           <div className="hidden items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#03594e] flex items-center justify-center shrink-0">
-              <GraduationCap className="w-4 h-4 text-white" />
+            <div className="w-7 h-7 rounded-lg bg-[#03594e] flex items-center justify-center shrink-0">
+              <GraduationCap className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-black text-base text-[#03594e]">Inforéussit</span>
+            <span className="font-black text-sm text-[#03594e]">Inforéussit</span>
           </div>
         </Link>
 
@@ -76,8 +76,8 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
               setCollapsed(true);
             }
           }}
-          className={`p-1 rounded-md text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 ${collapsed ? 'hidden md:hidden' : 'block'} absolute right-2 top-3`}
-          title="Réduire le menu"
+          className={`p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 ${collapsed ? 'hidden md:hidden' : 'block'}`}
+          title="Fermer le menu"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>

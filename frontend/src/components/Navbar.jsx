@@ -106,23 +106,23 @@ export default function Navbar() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className={`flex items-center justify-between transition-all duration-300 ${sticky ? 'h-16 sm:h-20' : 'h-24 sm:h-28'}`}>
+          <div className={`flex items-center justify-between transition-all duration-300 ${sticky ? 'h-14 sm:h-18' : 'h-16 sm:h-22'}`}>
 
             {/* Brand Logo */}
-            <Link to="/" className="flex items-center gap-2.5 shrink-0 py-1">
+            <Link to="/" className="flex items-center gap-2 shrink-0 py-1">
               <img 
                 src="/logo.png" 
                 alt="Inforéussit" 
                 className={`w-auto object-contain transition-all duration-300 hover:scale-105 ${
-                  sticky ? 'h-14 sm:h-16 max-h-[65px]' : 'h-20 sm:h-24 md:h-28 max-h-[110px]'
+                  sticky ? 'h-9 sm:h-12 md:h-14 max-h-[55px]' : 'h-10 sm:h-14 md:h-18 max-h-[70px]'
                 }`} 
                 onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }} 
               />
               <div className="hidden items-center gap-2">
-                <div className="w-10 h-10 rounded-xl bg-[#03594e] flex items-center justify-center">
-                  <GraduationCap className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 rounded-xl bg-[#03594e] flex items-center justify-center">
+                  <GraduationCap className="w-4 h-4 text-white" />
                 </div>
-                <span className="font-black text-2xl text-[#03594e]">Inforéussit</span>
+                <span className="font-black text-xl text-[#03594e]">Inforéussit</span>
               </div>
             </Link>
 
@@ -232,7 +232,7 @@ export default function Navbar() {
       </header>
 
       {/* Spacer to prevent layout shift when header becomes fixed */}
-      {sticky && <div className="h-24 sm:h-28 w-full pointer-events-none" />}
+      {sticky && <div className="h-16 sm:h-22 w-full pointer-events-none" />}
     </>
   );
 }
