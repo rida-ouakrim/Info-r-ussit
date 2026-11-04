@@ -4,7 +4,8 @@ import {
   ShieldCheck, Users, Key, BookOpen, Plus, 
   RefreshCw, CheckCircle2, Copy, Lock, EyeOff, Eye, X,
   Clock, Award, Search, UserCheck, UserX, BarChart2,
-  Archive, ArchiveRestore, FolderArchive, Trash2, AlertTriangle
+  Archive, ArchiveRestore, FolderArchive, Trash2, AlertTriangle,
+  Smartphone
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -158,6 +159,22 @@ const AdminDashboard = () => {
       showToast(`Compte ${newStatus ? 'archivé 📁 (masqué de la liste)' : 'désarchivé 📥'}`);
     } catch (err) {
       console.error("Failed to toggle archive status:", err);
+    }
+  };
+
+  const handleToggleOfflineAccess = async (userId, currentOfflineStatus) => {
+    const newStatus = !currentOfflineStatus;
+    try {
+      await API.post('auth/admin/update-generations/', { user_id: userId, can_download_offline: newStatus });
+      setData(prev => {
+        const updatedCandidates = prev.candidates.map(c => 
+          c.id === userId ? { ...c, can_download_offline: newStatus } : c
+        );
+        return { ...prev, candidates: updatedCandidates };
+      });
+      showToast(`Accès hors-ligne ${newStatus ? 'autorisé 📶' : 'désactivé 🔒'}`);
+    } catch (err) {
+      console.error("Failed to toggle offline access:", err);
     }
   };
 
@@ -497,13 +514,14 @@ const AdminDashboard = () => {
                 <th className="px-4 py-3">📚 Fiches Maîtrisées</th>
                 <th className="px-4 py-3">⚡ Crédits IA</th>
                 <th className="px-4 py-3">Rôle / Accès</th>
+                <th className="px-3 py-3 text-center">Hors-Ligne 📶</th>
                 <th className="px-4 py-3 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {filteredCandidates.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-slate-400 font-medium">
+                  <td colSpan={9} className="px-4 py-8 text-center text-slate-400 font-medium">
                     {showArchived 
                       ? "Aucun compte archivé." 
                       : "Aucun utilisateur ne correspond à vos critères de recherche."}
@@ -619,6 +637,22 @@ const AdminDashboard = () => {
                         <option value="candidat">Candidat</option>
                         <option value="admin">👑 Admin</option>
                       </select>
+                    </td>
+
+                    {/* Offline Download Permission */}
+                    <td className="px-3 py-3.5 text-center">
+                      <button
+                        onClick={() => handleToggleOfflineAccess(c.id, c.can_download_offline)}
+                        title={c.can_download_offline ? "Désactiver le téléchargement hors-ligne" : "Autoriser le téléchargement hors-ligne"}
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-black border transition-all cursor-pointer inline-flex items-center gap-1 ${
+                          c.can_download_offline
+                            ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
+                        }`}
+                      >
+                        <Smartphone className="w-3 h-3" />
+                        <span>{c.can_download_offline ? 'Autorisé' : 'Bloqué'}</span>
+                      </button>
                     </td>
 
                     {/* Actions */}

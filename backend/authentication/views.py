@@ -313,6 +313,7 @@ class AdminDashboardView(APIView):
                 "account_type": c.account_type,
                 "is_active": c.is_active,
                 "is_archived": getattr(c, 'is_archived', False),
+                "can_download_offline": getattr(c, 'can_download_offline', False),
                 "is_staff": c.is_staff,
                 "is_superuser": c.is_superuser,
                 "last_login": c.last_login,
@@ -360,6 +361,8 @@ class UpdateAllowedGenerationsView(APIView):
                 user.is_active = bool(request.data.get('is_active'))
             if 'is_archived' in request.data:
                 user.is_archived = bool(request.data.get('is_archived'))
+            if 'can_download_offline' in request.data:
+                user.can_download_offline = bool(request.data.get('can_download_offline'))
             if 'is_staff' in request.data:
                 is_staff_val = bool(request.data.get('is_staff'))
                 user.is_staff = is_staff_val
@@ -378,6 +381,7 @@ class UpdateAllowedGenerationsView(APIView):
                 "account_type": user.account_type,
                 "is_active": user.is_active,
                 "is_archived": user.is_archived,
+                "can_download_offline": user.can_download_offline,
                 "is_staff": user.is_staff,
                 "is_superuser": user.is_superuser
             })

@@ -1860,55 +1860,57 @@ const Courses = () => {
           </div>
         </div>
 
-        {/* Offline 1-Click Preload Banner */}
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-[#03594e]/10 via-emerald-500/10 to-[#F8C62F]/10 border border-[#03594e]/20 dark:border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#03594e] text-white flex items-center justify-center shrink-0">
-              <Download className="w-5 h-5 text-[#F8C62F]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
+        {/* Offline 1-Click Preload Banner (Visible UNIQUEMENT pour les comptes autorisés par l'administrateur) */}
+        {(user?.is_staff || user?.is_superuser || user?.can_download_offline) && (
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-[#03594e]/10 via-emerald-500/10 to-[#F8C62F]/10 border border-[#03594e]/20 dark:border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#03594e] text-white flex items-center justify-center shrink-0">
+                <Download className="w-5 h-5 text-[#F8C62F]" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
+                    {isPreloadedDone 
+                      ? "Mode Hors-Ligne 100% Prêt !" 
+                      : "Enregistrer tous les cours sur votre téléphone (1 Clic)"}
+                  </h4>
+                  {isPreloadedDone && (
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> Téléchargé
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium mt-0.5">
                   {isPreloadedDone 
-                    ? "Mode Hors-Ligne 100% Prêt !" 
-                    : "Enregistrer tous les cours sur votre téléphone (1 Clic)"}
-                </h4>
-                {isPreloadedDone && (
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> Téléchargé
-                  </span>
-                )}
+                    ? "Tous les cours sont sauvegardés localement. Vous pouvez couper Internet et réviser partout sans ouvrir chaque cours un par un !" 
+                    : "Pas besoin d'ouvrir les cours un par un : cliquez ici pour précharger l'ensemble des fiches en mémoire."}
+                </p>
               </div>
-              <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium mt-0.5">
-                {isPreloadedDone 
-                  ? "Tous les cours sont sauvegardés localement. Vous pouvez couper Internet et réviser partout sans ouvrir chaque cours un par un !" 
-                  : "Pas besoin d'ouvrir les cours un par un : cliquez ici pour précharger l'ensemble des fiches en mémoire."}
-              </p>
+            </div>
+
+            <div className="shrink-0 flex items-center gap-2">
+              {isPreloading ? (
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
+                  <RefreshCw className="w-4 h-4 text-[#03594e] dark:text-[#F8C62F] animate-spin" />
+                  <span>{preloadProgress.current} / {preloadProgress.total} cours...</span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handlePreloadAllCourses}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all shadow-sm ${
+                    isPreloadedDone
+                      ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
+                      : 'bg-[#03594e] hover:bg-[#02473e] text-white shadow-[#03594e]/20'
+                  }`}
+                >
+                  <Download className="w-4 h-4 text-[#F8C62F]" />
+                  <span>{isPreloadedDone ? "Re-synchroniser" : "Télécharger tout (Hors-Ligne)"}</span>
+                </button>
+              )}
             </div>
           </div>
-
-          <div className="shrink-0 flex items-center gap-2">
-            {isPreloading ? (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200">
-                <RefreshCw className="w-4 h-4 text-[#03594e] dark:text-[#F8C62F] animate-spin" />
-                <span>{preloadProgress.current} / {preloadProgress.total} cours...</span>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={handlePreloadAllCourses}
-                className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all shadow-sm ${
-                  isPreloadedDone
-                    ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700'
-                    : 'bg-[#03594e] hover:bg-[#02473e] text-white shadow-[#03594e]/20'
-                }`}
-              >
-                <Download className="w-4 h-4 text-[#F8C62F]" />
-                <span>{isPreloadedDone ? "Re-synchroniser" : "Télécharger tout (Hors-Ligne)"}</span>
-              </button>
-            )}
-          </div>
-        </div>
+        )}
 
         {/* Admin Switcher Bar */}
         {(user?.is_staff || user?.is_superuser) && (
