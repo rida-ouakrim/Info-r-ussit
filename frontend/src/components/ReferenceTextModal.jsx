@@ -98,6 +98,11 @@ export const hasReferenceText = (question) => {
     domainName.includes('RESEAUX') || 
     domainName.includes('INFORMATIQUE');
 
+  // If DB has explicit reference text (e.g. relational schema for SQL or text for Didactique/Education)
+  if (question.reference_text && question.reference_text.trim().length > 0) {
+    return true;
+  }
+
   if (isTechnical) {
     return false;
   }
@@ -109,11 +114,6 @@ export const hasReferenceText = (question) => {
     domainName.includes('ÉDUCATION') || 
     domainName.includes('EDUCATION') || 
     domainName.includes('DIDACTIQUE');
-
-  // If DB has explicit reference text on an education question
-  if (isEducationOrDidactique && question.reference_text && question.reference_text.trim().length > 0) {
-    return true;
-  }
   
   // Hardcoded fallback checks ONLY for Sciences de l'Éducation
   if (isEducationOrDidactique) {
