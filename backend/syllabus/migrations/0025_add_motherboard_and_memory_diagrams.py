@@ -44,8 +44,8 @@ def add_illustrations(apps, schema_editor):
                 content_fr = content_fr.replace(target_mb, replacement_mb)
             else:
                 if '## 7. La Carte Mère' in content:
-                    content = content.replace('## 7. La Carte Mère', '## 7. La Carte Mère\n\n![Architecture et Composants d'une Carte Mère Format ATX](/images/motherboard_components.png)')
-                    content_fr = content_fr.replace('## 7. La Carte Mère', '## 7. La Carte Mère\n\n![Architecture et Composants d'une Carte Mère Format ATX](/images/motherboard_components.png)')
+                    content = content.replace("## 7. La Carte Mère", "## 7. La Carte Mère\n\n![Architecture et Composants d'une Carte Mère Format ATX](/images/motherboard_components.png)")
+                    content_fr = content_fr.replace("## 7. La Carte Mère", "## 7. La Carte Mère\n\n![Architecture et Composants d'une Carte Mère Format ATX](/images/motherboard_components.png)")
 
         course.content = content
         course.content_fr = content_fr
