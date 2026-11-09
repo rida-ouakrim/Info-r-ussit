@@ -44,6 +44,13 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    try {
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('cached_all_courses_') || key.startsWith('infor_courses_progress') || key.includes('cached_courses')) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (e) {}
     setUser(null);
   };
 

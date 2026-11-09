@@ -318,6 +318,7 @@ const getLocalizedCourseTitle = (c, lang) => {
 let memoryDomains = null;
 let memoryAllCourses = null;
 let memoryStats = null;
+let memoryCachedUserId = null;
 
 const Courses = () => {
   const { user } = useAuth();
@@ -715,6 +716,13 @@ const Courses = () => {
 
   useEffect(() => {
     const init = async () => {
+      // If user changed or logged out, clear memory cache so new accounts never inherit previous user's progress!
+      if (memoryCachedUserId !== user?.id) {
+        memoryAllCourses = null;
+        memoryStats = null;
+        memoryCachedUserId = user?.id;
+      }
+
       if (memoryDomains && memoryAllCourses) {
         setDomains(memoryDomains);
         setAllCourses(memoryAllCourses);
@@ -723,7 +731,7 @@ const Courses = () => {
       } else {
         setLoading(true);
       }
-      const [domList] = await Promise.all([fetchDomains(), fetchAllCourses(), fetchStats()]);
+      const [domList] = await Promise.all([fetchDomains(), fetchAllCourses(true), fetchStats()]);
 
       // Candidate Auto-Direct: open targeted track (e.g. Data Scientist & IA) directly
       if (user && !user.is_staff && !user.is_superuser) {
@@ -837,18 +845,20 @@ const Courses = () => {
   };
 
   const fetchAllCourses = async (force = false) => {
-    if (!force && memoryAllCourses) {
+    if (!force && memoryAllCourses && memoryCachedUserId === user?.id) {
       setAllCourses(memoryAllCourses);
       return memoryAllCourses;
     }
+    const cacheKey = user?.id ? `cached_all_courses_offline_v2_${user.id}` : 'cached_all_courses_offline_v2';
     try {
       const res = await API.get('courses/');
       const courseList = Array.isArray(res.data) ? res.data : (res.data?.results || []);
       if (courseList.length > 0) {
         memoryAllCourses = courseList;
+        memoryCachedUserId = user?.id;
         setAllCourses(courseList);
         try {
-          localStorage.setItem('cached_all_courses_offline_v2', JSON.stringify(courseList));
+          localStorage.setItem(cacheKey, JSON.stringify(courseList));
         } catch (e) {}
         return courseList;
       }
@@ -856,11 +866,12 @@ const Courses = () => {
     } catch (err) {
       console.warn("fetchAllCourses failed, restoring from local offline cache:", err);
       try {
-        const saved = localStorage.getItem('cached_all_courses_offline_v2');
+        const saved = localStorage.getItem(cacheKey);
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
             memoryAllCourses = parsed;
+            memoryCachedUserId = user?.id;
             setAllCourses(parsed);
             return parsed;
           }

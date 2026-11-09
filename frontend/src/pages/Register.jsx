@@ -371,17 +371,24 @@ const Register = () => {
                 name="target_exam"
                 value={formData.target_exam}
                 onChange={handleChange}
-                disabled
                 style={{
-                  width: '100%', padding: '11px 36px 11px 14px', borderRadius: 12, border: '1px solid #b3e6df', background: '#e6f5f3', fontSize: 13.5, fontWeight: 800, color: '#03594e', outline: 'none', appearance: 'none', boxSizing: 'border-box', cursor: 'default'
+                  width: '100%', padding: '11px 36px 11px 14px', borderRadius: 12, border: '1px solid #b3e6df', background: '#e6f5f3', fontSize: 13, fontWeight: 700, color: '#03594e', outline: 'none', appearance: 'none', boxSizing: 'border-box', cursor: 'pointer'
                 }}
               >
-                <option value="CRMEF Informatique">CRMEF Secondaire Informatique</option>
+                <option value="CRMEF Informatique">CRMEF Secondaire Informatique (Disponible ✅)</option>
+                <option value="DATA_SCIENCE_IA" disabled style={{ color: '#94a3b8' }}>Data Science & Intelligence Artificielle (Bientôt disponible 🔒)</option>
+                <option value="INGENIEUR_ETAT" disabled style={{ color: '#94a3b8' }}>Ingénieurs d'État en Informatique (Bientôt disponible 🔒)</option>
+                <option value="ADMIN_RESEAUX_CLOUD" disabled style={{ color: '#94a3b8' }}>Administration Systèmes, Réseaux & Cloud (Bientôt disponible 🔒)</option>
+                <option value="DEVELOPPEUR_FULLSTACK" disabled style={{ color: '#94a3b8' }}>Génie Logiciel & Full Stack (Bientôt disponible 🔒)</option>
+                <option value="TECHNICIEN_SPECIALISE" disabled style={{ color: '#94a3b8' }}>Technicien Spécialisé en Informatique (Bientôt disponible 🔒)</option>
               </select>
               <div style={{ position: 'absolute', right: 12, top: 12, pointerEvents: 'none', color: '#03594e' }}>
                 <ChevronDown size={16} />
               </div>
             </div>
+            <p style={{ fontSize: 11, color: '#64748b', marginTop: 5, lineHeight: 1.4 }}>
+              💡 Filière active : <strong>CRMEF Informatique</strong>. Les autres filières d'ingénieurs et de l'État seront ouvertes très prochainement.
+            </p>
           </div>
 
           <div>

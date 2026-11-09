@@ -42,7 +42,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
       `}
     >
       {/* ── Brand Header ── */}
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-inherit min-h-[60px]">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-inherit min-h-[72px]">
         <Link
           to="/"
           className={`flex items-center flex-1 min-w-0 ${collapsed ? 'hidden md:hidden' : 'flex'} py-1`}
@@ -51,21 +51,25 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
           <img 
             src="/logo.png" 
             alt="Inforéussit" 
-            className="h-10 sm:h-12 w-auto object-contain max-h-[48px] transition-transform hover:scale-105" 
+            className="h-14 sm:h-16 w-auto object-contain max-h-[64px] max-w-[170px] transition-transform hover:scale-105" 
             onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }} 
           />
           <div className="hidden items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#03594e] flex items-center justify-center shrink-0">
-              <GraduationCap className="w-3.5 h-3.5 text-white" />
+            <div className="w-8 h-8 rounded-lg bg-[#03594e] flex items-center justify-center shrink-0">
+              <GraduationCap className="w-4 h-4 text-white" />
             </div>
             <span className="font-black text-sm text-[#03594e]">Inforéussit</span>
           </div>
         </Link>
 
         {collapsed && (
-          <div className="w-8 h-8 rounded-lg bg-[#F8C62F] flex items-center justify-center mx-auto md:flex hidden">
-            <GraduationCap className="w-4 h-4 text-[#1B1D21]" />
-          </div>
+          <Link to="/" className="w-10 h-10 flex items-center justify-center mx-auto md:flex hidden py-1">
+            <img 
+              src="/logo.png" 
+              alt="Inforéussit" 
+              className="h-10 w-10 object-contain" 
+            />
+          </Link>
         )}
 
         <button

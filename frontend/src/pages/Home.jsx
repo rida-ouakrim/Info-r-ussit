@@ -32,9 +32,9 @@ const FEATURES = [
 ];
 
 const TESTIMONIALS = [
-  { name: 'Fatima Ezzahra', role: 'Admise Data Scientist — 2025', img: 'assets/img/testimonial/thumb-1-1.jpg', text: "Inforéussit m'a permis de cibler exactement les chapitres qui tombent au concours. Les fiches sont d'une précision rare et les exercices sont vraiment au niveau des épreuves nationales.", stars: 5 },
+  { name: 'Fatima Ezzahra', role: 'Admise Data Scientist — 2025', img: 'assets/img/testimonial/fatima.jpg', text: "Inforéussit m'a permis de cibler exactement les chapitres qui tombent au concours. Les fiches sont d'une précision rare et les exercices sont vraiment au niveau des épreuves nationales.", stars: 5 },
   { name: 'Youssef Amrani', role: 'Reçu CRMEF Informatique — 2025', img: 'assets/img/testimonial/thumb-1-2.jpg', text: "J'ai utilisé la plateforme pendant 3 mois. L'assistant IA détecte mes lacunes et génère des exercices ciblés. Le meilleur outil pour la préparation.", stars: 5 },
-  { name: 'Sara Benali', role: 'Ingénieure Cloud — 2024', img: 'assets/img/testimonial/thumb-1-3.jpg', text: "Le contenu est sérieux, structuré et complet. Les annales nationales bien décortiquées valent largement les préparations privées qui coûtent une fortune.", stars: 5 },
+  { name: 'Sara Benali', role: 'Ingénieure Cloud — 2024', img: 'assets/img/testimonial/sara.jpg', text: "Le contenu est sérieux, structuré et complet. Les annales nationales bien décortiquées valent largement les préparations privées qui coûtent une fortune.", stars: 5 },
 ];
 
 /* ──────────────────── COUNTER ──────────────────── */
