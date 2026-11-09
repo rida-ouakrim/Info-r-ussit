@@ -12055,8 +12055,8 @@
       "explanation": "L'objectif principal d'un index est d'accélérer les opérations de recherche et de récupération de données. Même si l'index autorise les doublons, il permet au SGBD de localiser rapidement les enregistrements correspondant à une valeur donnée dans ce champ, sans avoir à parcourir toute la table.",
       "astuce": "Pensez à l'index d'un livre : il ne garantit pas l'unicité des pages pour un mot donné, mais il vous aide à trouver rapidement toutes les occurrences de ce mot. Un index est avant tout pour la performance des requêtes (recherche).",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
       "course": 56,
       "created_at": "2026-08-18T10:03:39.833Z"
     }
@@ -12078,8 +12078,8 @@
       "explanation": "Le mot clé DISTINCT est utilisé dans les requêtes SELECT pour éliminer les lignes dupliquées du jeu de résultats, garantissant que chaque ligne retournée est unique.",
       "astuce": "Pensez à 'DISTINCT' comme 'différent' ou 'unique'. Si vous voulez une liste sans répétitions, utilisez DISTINCT.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
       "course": 56,
       "created_at": "2026-08-18T10:03:39.840Z"
     }
@@ -12101,8 +12101,8 @@
       "explanation": "Pour obtenir le nombre d'incidents, il faut utiliser la fonction d'agrégation COUNT(*). Les incidents 'non clôturés' sont ceux dont la date de clôture (dateinsCloture) est NULL. La clause WHERE est utilisée pour filtrer les lignes avant l'agrégation.",
       "astuce": "Pour compter des éléments, utilisez COUNT(*). Pour vérifier si une valeur est absente (non définie), utilisez IS NULL et non = NULL.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
       "course": 56,
       "created_at": "2026-08-18T10:03:39.846Z"
     }
@@ -12124,8 +12124,8 @@
       "explanation": "La requête doit joindre les tables GROUPE, ELEVE et INCIDENT. Pour compter les incidents par groupe, il faut utiliser GROUP BY GROUPE.nom. Ensuite, pour filtrer les groupes dont le nombre d'incidents est supérieur à 10, la clause HAVING est nécessaire avec une fonction d'agrégation (COUNT(INCIDENT.idInc)). L'option A respecte toutes ces conditions.",
       "astuce": "Rappelez-vous l'ordre des clauses SQL: FROM -> JOIN -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY. WHERE filtre les lignes individuelles, HAVING filtre les groupes après agrégation. Utilisez COUNT() pour compter, SUM() pour additionner.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
       "course": 56,
       "created_at": "2026-08-18T10:03:39.853Z"
     }
@@ -12147,8 +12147,8 @@
       "explanation": "Pour calculer la durée entre deux dates, la fonction SQL standard est DATEDIFF (ou DateDiff selon le SGBD). Elle prend généralement en arguments l'unité de temps (ici 'd' pour jours), la date de début et la date de fin. L'option D utilise la bonne fonction et le bon ordre des arguments pour calculer la durée (datesFin - datesDébut).",
       "astuce": "Retenez la syntaxe DATEDIFF(unité, date_début, date_fin). L'ordre des dates est crucial pour obtenir un résultat positif pour une durée écoulée.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
       "course": 56,
       "created_at": "2026-08-18T10:03:39.859Z"
     }
@@ -12170,8 +12170,8 @@
       "explanation": "Pour trouver les groupes n'ayant jamais d'incidents, il faut utiliser une jointure externe gauche (LEFT JOIN) entre la table GROUPE et les incidents (via ELEVE). La sous-requête (ELEVE LEFT JOIN INCIDENT ON ELEVE.idelv = INCIDENT.idelv) permet de lister tous les élèves avec leurs incidents éventuels. Ensuite, une LEFT JOIN de GROUPE avec ce résultat garantit que tous les groupes sont inclus. La clause WHERE INCIDENT.idInc IS NULL filtre les résultats pour ne garder que les groupes pour lesquels aucun incident n'a été trouvé, y compris les groupes sans élèves.",
       "astuce": "Pour trouver les enregistrements d'une table qui n'ont pas de correspondance dans une autre table (anti-jointure), utilisez toujours LEFT JOIN suivi de WHERE [colonne_de_la_table_droite].PK IS NULL.",
       "reference_text": null,
-      "domain": "CONCOURS_ETAT",
-      "subdomain": "DBA_ADMIN",
+      "domain": "DEV",
+      "subdomain": "DEV_SI_BD",
       "course": 56,
       "created_at": "2026-08-18T10:03:39.865Z"
     }
@@ -25947,8 +25947,8 @@
       "explanation": "La situation décrit explicitement la location d'une voiture par M et Mme Sadik auprès de l'agence LOCAVO, avec des conditions de prix spécifiques. C'est le cadre général dans lequel le problème de calcul est posé, avant même la tâche spécifique ou l'outil à utiliser.",
       "astuce": "Le contexte est le 'quoi' général de la situation, avant le 'comment' ou le 'pourquoi' de la tâche.",
       "reference_text": null,
-      "domain": "LOG",
-      "subdomain": "LOG_OFFICE",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_SITUATIONS",
       "course": 16,
       "created_at": "2026-08-18T10:03:44.191Z"
     }
@@ -25970,8 +25970,8 @@
       "explanation": "Le 'Travail à faire' est clairement énoncé dans la situation : 'En utilisant un tableur, calculer le prix à payer pour un kilométrage égal à 600 km.' Cela correspond directement au calcul du montant de la facture en utilisant l'outil spécifié.",
       "astuce": "La tâche est l'action spécifique et l'objectif final demandé aux élèves.",
       "reference_text": null,
-      "domain": "LOG",
-      "subdomain": "LOG_OFFICE",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_SITUATIONS",
       "course": 16,
       "created_at": "2026-08-18T10:03:44.198Z"
     }
@@ -26085,8 +26085,8 @@
       "explanation": "La pensée computationnelle est une approche de résolution de problèmes qui implique de décomposer des problèmes complexes, de reconnaître des schémas, d'abstraire des concepts et de concevoir des algorithmes. Elle est intrinsèquement liée à la capacité de formuler des solutions de manière structurée et logique, souvent en vue d'une implémentation informatique.",
       "astuce": "La pensée computationnelle, c'est penser comme un informaticien pour résoudre des problèmes, en utilisant l'algorithmique.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 34,
       "created_at": "2026-08-18T10:03:44.249Z"
     }
@@ -26108,8 +26108,8 @@
       "explanation": "La pensée computationnelle repose sur quatre piliers fondamentaux : la décomposition (diviser un problème complexe), la reconnaissance de motifs (identifier des similarités), l'abstraction (se concentrer sur l'essentiel) et la pensée algorithmique (développer des étapes de résolution). Ces compétences permettent de résoudre des problèmes de manière structurée et efficace, applicables bien au-delà de l'informatique.",
       "astuce": "Retenez les 4 piliers : Décomposition, Reconnaissance de motifs, Abstraction, Pensée algorithmique (DRAP).",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 34,
       "created_at": "2026-08-18T10:03:44.256Z"
     }
@@ -26499,8 +26499,8 @@
       "explanation": "Le domaine d'action \"Traitement\" au niveau collégial concerne la manipulation et l'organisation des données à l'aide d'outils informatiques. La gestion d'un fichier tableur, qui implique la saisie, le calcul, le tri et la présentation de données, est une activité centrale de ce domaine. Les autres options relèvent de la communication, de la recherche ou des réseaux.",
       "astuce": "\"Traitement\" = manipuler et organiser des données, comme avec un tableur ou un traitement de texte.",
       "reference_text": null,
-      "domain": "LOG",
-      "subdomain": "LOG_OFFICE",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 16,
       "created_at": "2026-08-18T10:03:44.379Z"
     }
@@ -26568,8 +26568,8 @@
       "explanation": "La science informatique repose sur quatre piliers fondamentaux : l'algorithme (la logique de résolution), la machine (le support physique), le langage (l'outil de communication avec la machine) et l'information (les données traitées). Ces concepts sont interdépendants et essentiels pour comprendre le fonctionnement et les applications de l'informatique. Le codage est une activité, et le programme est une réalisation, tandis que l'information est un concept plus large et fondamental.",
       "astuce": "Pensez aux 4 piliers fondamentaux de l'informatique: Algorithme, Machine, Langage, Information (AMLI).",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 34,
       "created_at": "2026-08-18T10:03:44.398Z"
     }
@@ -26591,8 +26591,8 @@
       "explanation": "La programmation informatique exige de structurer la pensée pour décomposer un problème en étapes logiques et séquentielles. Cette démarche, qui consiste à élaborer un ensemble précis d'instructions pour résoudre un problème, est au cœur de la pensée algorithmique, essentielle pour la résolution de problèmes en informatique et au-delà.",
       "astuce": "Programmer, c'est penser comme un algorithme : étape par étape, logiquement et précisément.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 34,
       "created_at": "2026-08-18T10:03:44.405Z"
     }
@@ -26683,8 +26683,8 @@
       "explanation": "L'étude des procédures et fonctions en programmation est un excellent moyen de développer l'abstraction. Elles permettent de regrouper des instructions sous un nom unique, cachant les détails d'implémentation et permettant de se concentrer sur 'ce que fait' la fonction plutôt que sur 'comment elle le fait'. C'est une composante clé de la pensée computationnelle.",
       "astuce": "Les fonctions, c'est comme des boîtes noires : on sait ce qu'elles font, pas forcément comment. C'est l'abstraction.",
       "reference_text": null,
-      "domain": "DEV",
-      "subdomain": "DEV_ALGO",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_CURRICULUM",
       "course": 41,
       "created_at": "2026-08-18T10:03:44.432Z"
     }
@@ -34043,8 +34043,8 @@
       "explanation": "Le critère temporel évalue le respect ou l'efficacité de la gestion du temps accordé ('Rapidité d'exécution').",
       "astuce": "💡 Temps = Rapidité d'exécution.",
       "reference_text": null,
-      "domain": "LOG",
-      "subdomain": "LOG_OFFICE",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 16,
       "created_at": "2026-09-06T12:13:17.551Z"
     }
@@ -34066,8 +34066,8 @@
       "explanation": "Le critère propre à l'apprenant évalue ses aptitudes socio-affectives, comportementales et relationnelles ('Aptitude à travailler en groupe').",
       "astuce": "💡 Propre à l'apprenant = Aptitude à travailler en groupe / Savoir-être.",
       "reference_text": null,
-      "domain": "LOG",
-      "subdomain": "LOG_OFFICE",
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_APPROCHES",
       "course": 16,
       "created_at": "2026-09-06T12:13:17.557Z"
     }
@@ -37780,6 +37780,29 @@
       "astuces_ar": null,
       "astuces_fr": null,
       "video_url": null
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 602,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2022,
+      "question_number": "Q78",
+      "question_text": "Sous Access, un index permet :",
+      "option_a": "D'accélérer la recherche des enregistrements",
+      "option_b": "D'assurer l'intégrité référentielle",
+      "option_c": "D'indiquer le champ unique qui servira à la recherche des enregistrements",
+      "option_d": "D'indiquer que le champ est unique et non nul",
+      "option_e": "Aucune de ces réponses n'est juste",
+      "correct_option": "A",
+      "explanation": "Un index sous Microsoft Access (et dans n'importe quel système de gestion de bases de données) est une structure de données qui améliore la vitesse des opérations de recherche et de tri sur une table.\nEn indexant un champ, Access peut trouver des données spécifiques beaucoup plus rapidement, sans avoir à scanner chaque ligne de la table séquentiellement (table scan).\nLa bonne réponse est donc l'**Option A**.",
+      "astuce": "L'indexation accélère les recherches (SELECT) et les tris (ORDER BY), mais peut ralentir légèrement les opérations d'écriture (INSERT, UPDATE, DELETE) car l'index doit être mis à jour.",
+      "reference_text": null,
+      "domain": "LOG",
+      "subdomain": "LOG_OFFICE",
+      "course": 27,
+      "created_at": "2026-07-22T10:58:33.301Z"
     }
   }
 ]
