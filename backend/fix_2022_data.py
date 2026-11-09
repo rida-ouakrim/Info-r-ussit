@@ -5,17 +5,13 @@ def main():
         data = json.load(f)
 
     # 1. Update intruder Didactique questions
-    intruders_situations = [1145, 1146]
-    intruders_approches = [1971, 1972, 1154, 1155, 1174, 1177, 1178]
+    intruders_approches = [1145, 1146, 1971, 1972, 1154, 1155, 1174, 1177, 1178]
     intruders_curriculum = [1182]
 
     for item in data:
         pk = item.get('pk')
         fields = item.get('fields', {})
-        if pk in intruders_situations:
-            fields['domain'] = 'DIDACTIQUE'
-            fields['subdomain'] = 'DID_SITUATIONS'
-        elif pk in intruders_approches:
+        if pk in intruders_approches:
             fields['domain'] = 'DIDACTIQUE'
             fields['subdomain'] = 'DID_APPROCHES'
         elif pk in intruders_curriculum:

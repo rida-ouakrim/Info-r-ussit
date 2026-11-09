@@ -24,7 +24,7 @@ def update_2022_exam_questions(apps, schema_editor):
         question_text__icontains="SITUATION 1"
     ).update(
         domain_id='DIDACTIQUE',
-        subdomain_id='DID_SITUATIONS'
+        subdomain_id='DID_APPROCHES'
     )
 
     Question.objects.filter(

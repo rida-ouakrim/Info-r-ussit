@@ -16,7 +16,7 @@ def run():
     # 2. Re-assign Didactique intruder questions to DIDACTIQUE
     cur.execute("""
         UPDATE exams_question
-        SET domain_id='DIDACTIQUE', subdomain_id='DID_SITUATIONS'
+        SET domain_id='DIDACTIQUE', subdomain_id='DID_APPROCHES'
         WHERE exam_year=2022 AND question_text LIKE '%SITUATION 1%'
     """)
     print("Updated Situation 1:", cur.rowcount)

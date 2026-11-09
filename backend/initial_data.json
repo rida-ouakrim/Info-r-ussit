@@ -25948,7 +25948,7 @@
       "astuce": "Le contexte est le 'quoi' général de la situation, avant le 'comment' ou le 'pourquoi' de la tâche.",
       "reference_text": null,
       "domain": "DIDACTIQUE",
-      "subdomain": "DID_SITUATIONS",
+      "subdomain": "DID_APPROCHES",
       "course": 16,
       "created_at": "2026-08-18T10:03:44.191Z"
     }
@@ -25971,7 +25971,7 @@
       "astuce": "La tâche est l'action spécifique et l'objectif final demandé aux élèves.",
       "reference_text": null,
       "domain": "DIDACTIQUE",
-      "subdomain": "DID_SITUATIONS",
+      "subdomain": "DID_APPROCHES",
       "course": 16,
       "created_at": "2026-08-18T10:03:44.198Z"
     }
