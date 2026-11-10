@@ -24,6 +24,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import ErrorBoundary from './components/ErrorBoundary';
 import StudyTimeTracker from './components/StudyTimeTracker';
+import DuaaModal from './components/DuaaModal';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -128,6 +129,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <StudyTimeTracker />
+        <DuaaModal />
         <Router>
           <AppContent />
         </Router>

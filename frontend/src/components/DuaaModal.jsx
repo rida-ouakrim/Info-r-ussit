@@ -1,0 +1,162 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Heart, Sparkles, X, BookOpen, Clock } from 'lucide-react';
+
+const THIRTY_MINUTES_SEC = 30 * 60; // 1800 secondes = 30 minutes
+const IDLE_TIMEOUT_MS = 90 * 1000; // 90 secondes d'inactivité -> pause
+
+export default function DuaaModal() {
+  const [isOpen, setIsOpen] = useState(false);
+  const lastActivityRef = useRef(Date.now());
+  const isIdleRef = useRef(false);
+
+  useEffect(() => {
+    // Écouteur pour prévisualisation ou test direct depuis le Panneau Admin
+    const handleTrigger = () => {
+      setIsOpen(true);
+    };
+    window.addEventListener('show_duaa_modal', handleTrigger);
+
+    // Gestion de l'activité utilisateur
+    const handleActivity = () => {
+      lastActivityRef.current = Date.now();
+      isIdleRef.current = false;
+    };
+
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
+    events.forEach(evt => window.addEventListener(evt, handleActivity, { passive: true }));
+
+    // Vérificateur d'inactivité (pause si inactif depuis plus de 90s)
+    const idleInterval = setInterval(() => {
+      if (Date.now() - lastActivityRef.current > IDLE_TIMEOUT_MS) {
+        isIdleRef.current = true;
+      }
+    }, 5000);
+
+    // Compteur de secondes actives
+    const timer = setInterval(() => {
+      const alreadyShown = localStorage.getItem('infor_duaa_popup_shown');
+      if (alreadyShown === 'true') {
+        return; // Ne s'affiche qu'une seule fois
+      }
+
+      // Seulement si l'onglet est visible et l'utilisateur est actif
+      if (!document.hidden && !isIdleRef.current) {
+        const currentSeconds = parseInt(localStorage.getItem('infor_active_seconds_total') || '0', 10) + 1;
+        localStorage.setItem('infor_active_seconds_total', currentSeconds.toString());
+
+        if (currentSeconds >= THIRTY_MINUTES_SEC) {
+          const shown = localStorage.getItem('infor_duaa_popup_shown');
+          if (shown !== 'true') {
+            setIsOpen(true);
+            localStorage.setItem('infor_duaa_popup_shown', 'true');
+          }
+        }
+      }
+    }, 1000);
+
+    return () => {
+      window.removeEventListener('show_duaa_modal', handleTrigger);
+      events.forEach(evt => window.removeEventListener(evt, handleActivity));
+      clearInterval(idleInterval);
+      clearInterval(timer);
+    };
+  }, []);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    localStorage.setItem('infor_duaa_popup_shown', 'true');
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          {/* Backdrop sombre et flou */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleClose}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+          />
+
+          {/* Carte Modale */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-emerald-100 dark:border-emerald-900/40 overflow-hidden z-10 text-slate-800 dark:text-slate-100"
+          >
+            {/* Ligne d'accent supérieure dorée/émeraude */}
+            <div className="h-2 w-full bg-gradient-to-r from-[#03594e] via-[#F8C62F] to-[#03594e]" />
+
+            {/* Bouton Fermer (X) */}
+            <button
+              onClick={handleClose}
+              className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              aria-label="Fermer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="p-6 sm:p-8 space-y-6">
+              {/* En-tête avec badge et icône */}
+              <div className="text-center space-y-3">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#03594e] to-emerald-600 text-white shadow-lg shadow-emerald-900/20 mx-auto">
+                  <Heart className="w-7 h-7 text-[#F8C62F] fill-[#F8C62F]" />
+                </div>
+
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/50 text-[11px] font-bold text-[#03594e] dark:text-emerald-300">
+                  <Sparkles className="w-3.5 h-3.5 text-[#F8C62F]" />
+                  <span>تذكير طيب • دعوة صالحة بالتوفيق</span>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                  تذكير طيب • دعوة صالحة بظهر الغيب
+                </h3>
+              </div>
+
+              {/* Texte du Douaa en Arabe */}
+              <div 
+                dir="rtl"
+                className="p-5 rounded-2xl bg-gradient-to-b from-emerald-50/70 to-emerald-50/30 dark:from-slate-800/80 dark:to-slate-800/40 border border-emerald-200/70 dark:border-emerald-700/40 text-right space-y-3"
+              >
+                <p className="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+                  ما شاء الله تبارك الله، نسأل الله العلي القدير أن يبارك في وقتك وجهدك، وأن يوفقك ويسدد خطاك ويفتح لك أبواب النجاح والتيسير في مسيرتك العلمية والمهنية.
+                </p>
+
+                <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-emerald-100 dark:border-emerald-800/40 shadow-xs">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-1.5 font-bold">
+                    فضلاً وليس أمراً، لا تنسَ أخاك صاحب ومطور هذه المنصة من صالح دعائك بظهر الغيب :
+                  </p>
+                  <p className="text-base sm:text-lg font-bold text-[#03594e] dark:text-[#F8C62F] leading-loose">
+                    « اللهم بارك له في علمه ورزقه، واغفر له ولوالديه وإخوانه وأحبابه ولجميع المسلمين، واجعل هذا العمل خالصاً لوجهك الكريم وصدقة جارية. »
+                  </p>
+                </div>
+              </div>
+
+              {/* Note en Français discrète */}
+              <p className="text-xs text-center text-slate-500 dark:text-slate-400 leading-relaxed px-2">
+                Qu'Allah bénisse votre temps et vos efforts, et couronne votre préparation de succès. Si cette plateforme vous est utile, gardez son créateur dans vos prières bienveillantes.
+              </p>
+
+              {/* Bouton Unique : Continuer les révisions */}
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="w-full py-3.5 px-6 rounded-2xl bg-[#03594e] hover:bg-[#02473e] text-white font-extrabold text-sm sm:text-base transition-all duration-200 shadow-lg shadow-[#03594e]/25 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01]"
+                >
+                  <BookOpen className="w-4 h-4 text-[#F8C62F]" />
+                  <span>متابعة المراجعة • Continuer mes révisions</span>
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  );
+}

@@ -5,7 +5,7 @@ import {
   RefreshCw, CheckCircle2, Copy, Lock, EyeOff, Eye, X,
   Clock, Award, Search, UserCheck, UserX, BarChart2,
   Archive, ArchiveRestore, FolderArchive, Trash2, AlertTriangle,
-  Smartphone
+  Smartphone, Heart, RotateCcw, Sparkles
 } from 'lucide-react';
 
 const AdminDashboard = () => {
@@ -96,6 +96,17 @@ const AdminDashboard = () => {
     } else {
       fallbackCopy(code);
     }
+  };
+
+  const handleTestDuaaModal = () => {
+    window.dispatchEvent(new CustomEvent('show_duaa_modal'));
+    showToast("Pop-up de Douaa déclenchée en prévisualisation !");
+  };
+
+  const handleResetDuaaModal = () => {
+    localStorage.removeItem('infor_duaa_popup_shown');
+    localStorage.setItem('infor_active_seconds_total', '0');
+    showToast("Compteur réinitialisé ! La pop-up réapparaîtra après 30 minutes d'activité.");
   };
 
   const handleUpdateGenerations = async (userId, value) => {
@@ -280,12 +291,25 @@ const AdminDashboard = () => {
           </p>
         </div>
 
-        <button
-          onClick={fetchAdminData}
-          className="px-4 py-2.5 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white text-xs font-extrabold shadow-sm transition-all flex items-center gap-2 shrink-0 cursor-pointer"
-        >
-          <RefreshCw className="w-4 h-4 text-[#F8C62F]" /> Actualiser
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleTestDuaaModal}
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-[#03594e] hover:from-emerald-700 hover:to-[#02473e] text-white text-xs font-extrabold shadow-sm transition-all flex items-center gap-2 shrink-0 cursor-pointer hover:scale-[1.02]"
+            title="Ouvrir instantanément la pop-up pour visualiser son design et son texte"
+          >
+            <Eye className="w-4 h-4 text-[#F8C62F]" />
+            <span>Voir le design Pop-up Douaa</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={fetchAdminData}
+            className="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-extrabold shadow-sm transition-all flex items-center gap-2 shrink-0 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700"
+          >
+            <RefreshCw className="w-4 h-4 text-[#03594e] dark:text-[#F8C62F]" /> Actualiser
+          </button>
+        </div>
       </div>
 
       {/* Primary Metric Cards */}
@@ -443,6 +467,63 @@ const AdminDashboard = () => {
           )}
         </div>
 
+      </div>
+
+      {/* ─── Module Pop-up Douaa (30 min) ─────────────────────────────────── */}
+      <div className="bg-gradient-to-r from-emerald-50 via-white to-amber-50/50 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/20 p-6 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/40 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-emerald-100 dark:border-emerald-900/30 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#03594e] to-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-900/10 shrink-0">
+              <Heart className="w-6 h-6 text-[#F8C62F] fill-[#F8C62F]" />
+            </div>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                  Pop-up Douaa & Baraka (30 minutes d'activité)
+                </h3>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-[#03594e] dark:text-emerald-300 text-[10px] font-extrabold">
+                  Affichage unique par candidat (30 min réelles)
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Déclenchée automatiquement après 30 minutes de révision active. Vous pouvez tester le rendu visuel ou réinitialiser le compteur à tout moment.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={handleTestDuaaModal}
+              className="px-4 py-2.5 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white text-xs font-extrabold transition-all shadow-sm flex items-center gap-2 cursor-pointer hover:scale-[1.02]"
+              title="Afficher immédiatement la pop-up pour tester son apparence"
+            >
+              <Eye className="w-4 h-4 text-[#F8C62F]" />
+              <span>Voir le design Pop-up (Aperçu)</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleResetDuaaModal}
+              className="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-700/60 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-700 text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:scale-[1.02]"
+              title="Réinitialise le compteur local et le flag pour re-déclencher la pop-up après 30 minutes"
+            >
+              <RotateCcw className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>Relancer la pop-up</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Aperçu du texte configuré */}
+        <div className="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-800/60 border border-emerald-100 dark:border-emerald-900/40 text-right space-y-1" dir="rtl">
+          <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">نص الدعاء المعتمد في النافذة المنبثقة :</span>
+          <p className="text-sm sm:text-base font-bold text-[#03594e] dark:text-[#F8C62F] leading-relaxed">
+            « اللهم بارك له في علمه ورزقه، واغفر له ولوالديه وإخوانه وأحبابه ولجميع المسلمين، واجعل هذا العمل خالصاً لوجهك الكريم وصدقة جارية. »
+          </p>
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-between pt-1 border-t border-emerald-100/80 dark:border-slate-700/60" dir="ltr">
+            <span>Bouton unique : <strong>[ متابعة المراجعة • Continuer mes révisions ]</strong> + icône Fermer (X)</span>
+            <span className="text-emerald-700 dark:text-emerald-400 font-bold">1 seule fois par utilisateur</span>
+          </div>
+        </div>
       </div>
 
       {/* Candidate Control Table */}
