@@ -1,23 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Sparkles, X, BookOpen, Clock } from 'lucide-react';
+import { Heart, Sparkles, X, BookOpen } from 'lucide-react';
+import API from '../services/api';
 
 const THIRTY_MINUTES_SEC = 30 * 60; // 1800 secondes = 30 minutes
 const IDLE_TIMEOUT_MS = 90 * 1000; // 90 secondes d'inactivité -> pause
 
 export default function DuaaModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const activeCampaignIdRef = useRef(0);
   const lastActivityRef = useRef(Date.now());
   const isIdleRef = useRef(false);
 
   useEffect(() => {
-    // Écouteur pour prévisualisation ou test direct depuis le Panneau Admin
+    // 1. Écouteur pour ouverture manuelle immédiate (aperçu admin)
     const handleTrigger = () => {
       setIsOpen(true);
     };
     window.addEventListener('show_duaa_modal', handleTrigger);
 
-    // Gestion de l'activité utilisateur
+    // 2. Vérification de relance globale (affichage INSTANTANÉ à l'ouverture pour tous)
+    const checkCampaign = async () => {
+      try {
+        const res = await API.get('auth/duaa-campaign/');
+        const campaign = res.data;
+        if (campaign && campaign.is_instant && campaign.campaign_id) {
+          const lastSeenCampaign = parseInt(localStorage.getItem('infor_last_seen_duaa_campaign') || '0', 10);
+          if (campaign.campaign_id > lastSeenCampaign) {
+            // Relance globale déclenchée par l'admin : pop-up instantanée à l'ouverture du site !
+            activeCampaignIdRef.current = campaign.campaign_id;
+            setIsOpen(true);
+            return;
+          }
+        }
+      } catch (err) {
+        // En cas d'erreur réseau, fonctionnement normal sur le timer
+      }
+    };
+    checkCampaign();
+
+    // 3. Gestion de l'activité utilisateur (timer normal : premières 30 minutes)
     const handleActivity = () => {
       lastActivityRef.current = Date.now();
       isIdleRef.current = false;
@@ -26,18 +48,18 @@ export default function DuaaModal() {
     const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
     events.forEach(evt => window.addEventListener(evt, handleActivity, { passive: true }));
 
-    // Vérificateur d'inactivité (pause si inactif depuis plus de 90s)
+    // Pause du timer si inactif pendant plus de 90 secondes
     const idleInterval = setInterval(() => {
       if (Date.now() - lastActivityRef.current > IDLE_TIMEOUT_MS) {
         isIdleRef.current = true;
       }
     }, 5000);
 
-    // Compteur de secondes actives
+    // Timer des premières 30 minutes
     const timer = setInterval(() => {
-      const alreadyShown = localStorage.getItem('infor_duaa_popup_shown');
-      if (alreadyShown === 'true') {
-        return; // Ne s'affiche qu'une seule fois
+      const first30mShown = localStorage.getItem('infor_duaa_first_30m_shown') || localStorage.getItem('infor_duaa_popup_shown');
+      if (first30mShown === 'true') {
+        return; // S'ouvre dans les premières 30 min (une seule fois pour le cycle standard)
       }
 
       // Seulement si l'onglet est visible et l'utilisateur est actif
@@ -46,11 +68,9 @@ export default function DuaaModal() {
         localStorage.setItem('infor_active_seconds_total', currentSeconds.toString());
 
         if (currentSeconds >= THIRTY_MINUTES_SEC) {
-          const shown = localStorage.getItem('infor_duaa_popup_shown');
-          if (shown !== 'true') {
-            setIsOpen(true);
-            localStorage.setItem('infor_duaa_popup_shown', 'true');
-          }
+          setIsOpen(true);
+          localStorage.setItem('infor_duaa_first_30m_shown', 'true');
+          localStorage.setItem('infor_duaa_popup_shown', 'true');
         }
       }
     }, 1000);
@@ -65,6 +85,10 @@ export default function DuaaModal() {
 
   const handleClose = () => {
     setIsOpen(false);
+    if (activeCampaignIdRef.current > 0) {
+      localStorage.setItem('infor_last_seen_duaa_campaign', activeCampaignIdRef.current.toString());
+    }
+    localStorage.setItem('infor_duaa_first_30m_shown', 'true');
     localStorage.setItem('infor_duaa_popup_shown', 'true');
   };
 

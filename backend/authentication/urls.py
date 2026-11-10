@@ -3,7 +3,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import (
     RegisterView, MeView, LicenseKeyListView, CandidateDashboardView, 
     AdminDashboardView, UpdateAllowedGenerationsView, SendVerificationCodeView, 
-    TrackStudyTimeView, SendPasswordResetCodeView, ResetPasswordWithCodeView
+    TrackStudyTimeView, SendPasswordResetCodeView, ResetPasswordWithCodeView,
+    DuaaCampaignView, AdminRelaunchDuaaView
 )
 
 urlpatterns = [
@@ -19,4 +20,6 @@ urlpatterns = [
     path('dashboard/admin/', AdminDashboardView.as_view(), name='admin_dashboard'),
     path('admin/keys/', LicenseKeyListView.as_view(), name='auth_license_keys'),
     path('admin/update-generations/', UpdateAllowedGenerationsView.as_view(), name='admin_update_generations'),
+    path('duaa-campaign/', DuaaCampaignView.as_view(), name='duaa_campaign'),
+    path('admin/relaunch-duaa/', AdminRelaunchDuaaView.as_view(), name='admin_relaunch_duaa'),
 ]

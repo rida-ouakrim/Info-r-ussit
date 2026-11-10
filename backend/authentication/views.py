@@ -1,4 +1,6 @@
 import secrets
+import os
+import json
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -518,4 +520,49 @@ class ResetPasswordWithCodeView(APIView):
             "success": True,
             "message": "Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter."
         }, status=status.HTTP_200_OK)
+
+
+CAMPAIGN_FILE_PATH = os.path.join(django_settings.BASE_DIR, 'duaa_campaign.json')
+
+def get_duaa_campaign():
+    if os.path.exists(CAMPAIGN_FILE_PATH):
+        try:
+            with open(CAMPAIGN_FILE_PATH, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"campaign_id": 0, "is_instant": False, "updated_at": None}
+
+def set_duaa_campaign(campaign_id, is_instant=True):
+    data = {
+        "campaign_id": campaign_id,
+        "is_instant": is_instant,
+        "updated_at": timezone.now().isoformat()
+    }
+    try:
+        with open(CAMPAIGN_FILE_PATH, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error saving duaa_campaign.json: {e}")
+    return data
+
+class DuaaCampaignView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        campaign = get_duaa_campaign()
+        return Response(campaign)
+
+class AdminRelaunchDuaaView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+
+    def post(self, request):
+        new_id = int(timezone.now().timestamp())
+        campaign = set_duaa_campaign(new_id, is_instant=True)
+        return Response({
+            "success": True,
+            "campaign": campaign,
+            "message": "Pop-up relancée ! Tous les utilisateurs qui entreront sur le site la recevront instantanément à l'ouverture."
+        })
+
 

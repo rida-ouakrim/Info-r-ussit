@@ -103,10 +103,18 @@ const AdminDashboard = () => {
     showToast("Pop-up de Douaa déclenchée en prévisualisation !");
   };
 
-  const handleResetDuaaModal = () => {
-    localStorage.removeItem('infor_duaa_popup_shown');
-    localStorage.setItem('infor_active_seconds_total', '0');
-    showToast("Compteur réinitialisé ! La pop-up réapparaîtra après 30 minutes d'activité.");
+  const handleRelaunchDuaaModal = async () => {
+    try {
+      const res = await API.post('auth/admin/relaunch-duaa/');
+      localStorage.removeItem('infor_last_seen_duaa_campaign');
+      window.dispatchEvent(new CustomEvent('show_duaa_modal'));
+      showToast(res.data?.message || "Pop-up relancée ! Tous les utilisateurs l'auront instantanément à l'ouverture.");
+    } catch (err) {
+      console.error("Erreur lors de la relance de la pop-up:", err);
+      localStorage.removeItem('infor_last_seen_duaa_campaign');
+      window.dispatchEvent(new CustomEvent('show_duaa_modal'));
+      showToast("Pop-up relancée en mode instantané !");
+    }
   };
 
   const handleUpdateGenerations = async (userId, value) => {
@@ -304,12 +312,12 @@ const AdminDashboard = () => {
 
           <button
             type="button"
-            onClick={handleResetDuaaModal}
+            onClick={handleRelaunchDuaaModal}
             className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold shadow-sm transition-all flex items-center gap-2 shrink-0 cursor-pointer hover:scale-[1.02]"
-            title="Réinitialise le compteur local et le flag pour re-déclencher la pop-up"
+            title="Relance globale : tous les utilisateurs qui entreront sur le site auront la pop-up instantanément à l'ouverture"
           >
             <RotateCcw className="w-4 h-4" />
-            <span>🔄 Relancer la pop-up</span>
+            <span>🔄 Relancer pour tous (Instantané)</span>
           </button>
 
           <button
@@ -339,7 +347,7 @@ const AdminDashboard = () => {
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Se déclenche automatiquement après 30 minutes de révision active. Utilisez les boutons pour tester ou relancer le rappel.
+                La pop-up s'ouvre dans les premières 30 min pour chaque candidat. Cliquez sur <strong>Relancer pour tous</strong> pour forcer l'affichage instantané dès l'ouverture du site pour tous les utilisateurs.
               </p>
             </div>
           </div>
@@ -356,12 +364,12 @@ const AdminDashboard = () => {
             </button>
             <button
               type="button"
-              onClick={handleResetDuaaModal}
-              className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:scale-[1.02]"
-              title="Réinitialise le compteur local et le flag pour re-déclencher la pop-up après 30 minutes"
+              onClick={handleRelaunchDuaaModal}
+              className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-extrabold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:scale-[1.02]"
+              title="Relance globale : tous les utilisateurs qui entreront sur le site auront la pop-up instantanément à l'ouverture"
             >
               <RotateCcw className="w-4 h-4" />
-              <span>🔄 Relancer la pop-up</span>
+              <span>🔄 Relancer pour tous (Instantané à l'ouverture)</span>
             </button>
           </div>
         </div>
