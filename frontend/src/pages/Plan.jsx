@@ -7,7 +7,7 @@ import {
   ArrowRight, BookOpen, Sparkles,
   CheckCircle2, Compass, Database,
   Globe, Cpu, BarChart3, Clock, Target,
-  ChevronRight, Zap, Calendar, Smartphone,
+  ChevronRight, Zap, Calendar,
   CheckSquare, Award, Flame, AlertCircle,
   HelpCircle, X, ChevronDown, Check
 } from 'lucide-react';
@@ -438,7 +438,6 @@ export default function Plan() {
   // Mode View toggle: 'sprint' (Calendrier 24 jours) vs 'tree' (Arbre pédagogique)
   const [viewMode, setViewMode] = useState('sprint');
   const [selectedNode, setSelectedNode] = useState(null);
-  const [showOfflineModal, setShowOfflineModal] = useState(false);
 
   // LocalStorage progress state
   const [completedTasks, setCompletedTasks] = useState(() => {
@@ -496,205 +495,208 @@ export default function Plan() {
   const progressPercent = Math.round((completedCount / allSprintTasks.length) * 100);
 
   return (
-    <div className="space-y-8 py-3 max-w-6xl mx-auto px-2 sm:px-4 relative z-10">
+    <div className="space-y-6 py-2 max-w-6xl mx-auto px-2 sm:px-4 relative z-10">
 
-      {/* ─── Top Banner: Countdown to November 28, 2026 ─────────────────── */}
+      {/* ─── Top Banner: Compact & Professional Countdown ─────────────────── */}
       <motion.div
-        initial={{ opacity: 0, y: -12 }}
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#03594e] via-[#02433b] to-[#122824] p-5 sm:p-7 text-white shadow-xl border border-emerald-600/30"
+        className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-4"
       >
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-[#F8C62F]/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#F8C62F] text-xs font-black backdrop-blur-md border border-white/10">
-              <Flame className="w-3.5 h-3.5 animate-bounce" />
-              <span>SPPRINT FINAL • CONCOURS DE TAALIM FIXÉ AU 28 NOVEMBRE</span>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="space-y-1.5 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#03594e]/10 text-[#03594e] dark:bg-[#F8C62F]/15 dark:text-[#F8C62F] text-[11px] font-bold">
+              <Flame className="w-3.5 h-3.5" />
+              <span>Sprint Intensif 24 Jours • Concours Taalim (28 Novembre)</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Objectif Réussite CRMEF : J-{timeLeft.days} Jours
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              Plan d'Action & Objectif J-{timeLeft.days} Jours
             </h1>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
-              Le programme ci-dessous a été recalibré en <strong>Sprint Intensif de 24 Jours</strong>. Chaque jour compte : couvrez la Spécialité Info (40%), la Didactique (30%) et les Sciences de l’Éducation (30%).
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+              Feuille de route optimisée jour par jour : Spécialité Informatique (40%), Didactique (30%) et Sciences de l’Éducation (30%).
             </p>
           </div>
 
-          {/* Countdown Clock Display */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-white/15 min-w-[62px]">
-              <span className="text-2xl sm:text-3xl font-black text-[#F8C62F] leading-none">
+          {/* Compact Countdown Badges */}
+          <div className="flex items-center gap-2 shrink-0 bg-slate-50 dark:bg-slate-950 p-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 self-start lg:self-center">
+            <div className="flex flex-col items-center w-13 py-1.5 rounded-xl bg-white dark:bg-slate-900 shadow-xs">
+              <span className="text-lg sm:text-xl font-black text-[#03594e] dark:text-[#F8C62F] leading-none">
                 {String(timeLeft.days).padStart(2, '0')}
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300 mt-1">Jours</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-1">Jours</span>
             </div>
-            <span className="text-xl font-bold text-white/40">:</span>
-            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-white/15 min-w-[62px]">
-              <span className="text-2xl sm:text-3xl font-black text-white leading-none">
+            <span className="text-slate-300 dark:text-slate-700 font-bold text-sm">:</span>
+            <div className="flex flex-col items-center w-13 py-1.5 rounded-xl bg-white dark:bg-slate-900 shadow-xs">
+              <span className="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-200 leading-none">
                 {String(timeLeft.hours).padStart(2, '0')}
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300 mt-1">Heures</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-1">Heures</span>
             </div>
-            <span className="text-xl font-bold text-white/40">:</span>
-            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-white/15 min-w-[62px]">
-              <span className="text-2xl sm:text-3xl font-black text-white leading-none">
+            <span className="text-slate-300 dark:text-slate-700 font-bold text-sm">:</span>
+            <div className="flex flex-col items-center w-13 py-1.5 rounded-xl bg-white dark:bg-slate-900 shadow-xs">
+              <span className="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-200 leading-none">
                 {String(timeLeft.minutes).padStart(2, '0')}
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300 mt-1">Min</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-1">Min</span>
             </div>
-            <span className="text-xl font-bold text-white/40">:</span>
-            <div className="flex flex-col items-center bg-white/10 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-white/15 min-w-[62px]">
-              <span className="text-2xl sm:text-3xl font-black text-[#F8C62F] leading-none">
+            <span className="text-slate-300 dark:text-slate-700 font-bold text-sm">:</span>
+            <div className="flex flex-col items-center w-13 py-1.5 rounded-xl bg-white dark:bg-slate-900 shadow-xs">
+              <span className="text-lg sm:text-xl font-black text-amber-500 leading-none">
                 {String(timeLeft.seconds).padStart(2, '0')}
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300 mt-1">Sec</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-1">Sec</span>
             </div>
           </div>
         </div>
 
-        {/* Sprint Progress Gauge */}
-        <div className="mt-6 pt-5 border-t border-white/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <Award className="w-5 h-5 text-[#F8C62F]" />
-            <span className="text-xs font-bold text-white">
-              Progression du Sprint : {completedCount} / {allSprintTasks.length} étapes validées ({progressPercent}%)
+        {/* Slim Progress Gauge */}
+        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Award className="w-4 h-4 text-[#03594e] dark:text-[#F8C62F]" />
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              Progression du sprint : <strong className="text-[#03594e] dark:text-[#F8C62F]">{completedCount} sur {allSprintTasks.length} étapes</strong> ({progressPercent}%)
             </span>
           </div>
 
-          <div className="flex-1 max-w-xs bg-black/20 rounded-full h-2.5 p-0.5 border border-white/10 overflow-hidden">
+          <div className="flex-1 max-w-md w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-[#F8C62F] to-amber-300 h-full rounded-full transition-all duration-500 shadow-sm"
+              className="bg-gradient-to-r from-[#03594e] to-emerald-500 dark:from-[#F8C62F] dark:to-amber-400 h-full rounded-full transition-all duration-300 shadow-xs"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-
-          <button
-            onClick={() => setShowOfflineModal(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold text-white transition-all border border-white/10"
-          >
-            <Smartphone className="w-3.5 h-3.5 text-[#F8C62F]" />
-            <span>Mode Mobile Hors-Ligne</span>
-          </button>
         </div>
       </motion.div>
 
       {/* ─── Mode View Switcher: Sprint 24J vs Arbre Pédagogique ────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/80 dark:border-slate-800">
-        <div className="inline-flex p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-1 border-b border-slate-200/80 dark:border-slate-800">
+        <div className="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700">
           <button
+            type="button"
             onClick={() => setViewMode('sprint')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               viewMode === 'sprint'
-                ? 'bg-white dark:bg-slate-900 text-[#03594e] dark:text-[#F8C62F] shadow-sm'
+                ? 'bg-white dark:bg-slate-900 text-[#03594e] dark:text-[#F8C62F] shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Calendar className="w-4 h-4" />
-            <span>🚀 Planning Sprint 24 Jours (Jour par Jour)</span>
+            <Calendar className="w-3.5 h-3.5" />
+            <span>Planning 24 Jours</span>
           </button>
           <button
+            type="button"
             onClick={() => setViewMode('tree')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               viewMode === 'tree'
-                ? 'bg-white dark:bg-slate-900 text-[#03594e] dark:text-[#F8C62F] shadow-sm'
+                ? 'bg-white dark:bg-slate-900 text-[#03594e] dark:text-[#F8C62F] shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Compass className="w-4 h-4" />
-            <span>🌳 Arbre Pédagogique par Domaine</span>
+            <Compass className="w-3.5 h-3.5" />
+            <span>Arbre des 7 Modules</span>
           </button>
         </div>
 
+        {/* Soft, harmonious pastel proportion badges */}
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="px-3 py-1 rounded-lg bg-[#03594e] text-white text-xs font-black">40% Info</span>
-          <span className="px-3 py-1 rounded-lg bg-amber-500 text-white text-xs font-black">30% Didactique</span>
-          <span className="px-3 py-1 rounded-lg bg-violet-600 text-white text-xs font-black">30% Éducation</span>
+          <span className="px-2.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/50 text-[11px] font-bold">
+            Spécialité 40%
+          </span>
+          <span className="px-2.5 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/50 text-[11px] font-bold">
+            Didactique 30%
+          </span>
+          <span className="px-2.5 py-0.5 rounded-md bg-violet-50 dark:bg-violet-950/40 text-violet-800 dark:text-violet-300 border border-violet-200/80 dark:border-violet-800/50 text-[11px] font-bold">
+            Sciences Édu. 30%
+          </span>
         </div>
       </div>
 
       {/* ─── VIEW 1: SPRINT 24 JOURS CHRONOLOGIQUE ───────────────────────── */}
       {viewMode === 'sprint' && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {SPRINT_PHASES.map((phase, pIdx) => {
             const PhaseIcon = phase.icon;
             return (
               <motion.div
                 key={phase.id}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: pIdx * 0.08 }}
-                className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden"
+                transition={{ delay: pIdx * 0.05 }}
+                className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden"
               >
-                {/* Phase Header */}
-                <div className={`p-5 sm:p-6 bg-gradient-to-r ${phase.color} text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3`}>
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
-                      <PhaseIcon className="w-6 h-6 text-white" />
+                {/* Phase Header - Clean, subtle and professional */}
+                <div className="p-4 sm:p-4.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-[#03594e]/10 text-[#03594e] dark:bg-[#F8C62F]/15 dark:text-[#F8C62F] flex items-center justify-center shrink-0">
+                      <PhaseIcon className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="text-[11px] font-black uppercase tracking-wider text-white/80">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                         {phase.period}
                       </span>
-                      <h2 className="text-lg sm:text-xl font-black">{phase.title}</h2>
+                      <h2 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">
+                        {phase.title}
+                      </h2>
                     </div>
                   </div>
-                  <p className="text-xs text-white/90 max-w-md sm:text-right font-medium">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md sm:text-right font-medium">
                     {phase.description}
                   </p>
                 </div>
 
                 {/* Days within this phase */}
-                <div className="divide-y divide-slate-100 dark:divide-slate-800/80 p-3 sm:p-5">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800/80 p-2 sm:p-3">
                   {phase.days.map((item) => {
                     const isChecked = !!completedTasks[item.id];
                     return (
                       <div
                         key={item.id}
-                        className={`p-4 sm:p-5 rounded-2xl transition-all my-1.5 ${
+                        className={`p-3.5 sm:p-4 rounded-xl transition-all my-1 ${
                           isChecked
-                            ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40'
-                            : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 border border-transparent'
+                            ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/70 dark:border-emerald-800/30'
+                            : 'hover:bg-slate-50/80 dark:hover:bg-slate-800/40 border border-transparent'
                         }`}
                       >
-                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                        <div className="flex flex-col md:flex-row md:items-start justify-between gap-3.5">
                           {/* Checkbox + Title */}
-                          <div className="flex items-start gap-3.5 flex-1">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
                             <button
+                              type="button"
                               onClick={() => toggleTask(item.id)}
-                              className={`mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
+                              className={`mt-0.5 w-5 h-5 rounded-md flex items-center justify-center shrink-0 transition-all cursor-pointer ${
                                 isChecked
-                                  ? 'bg-emerald-600 text-white shadow-sm'
-                                  : 'border-2 border-slate-300 dark:border-slate-600 hover:border-emerald-500'
+                                  ? 'bg-[#03594e] text-white shadow-xs'
+                                  : 'border border-slate-300 dark:border-slate-600 hover:border-[#03594e]'
                               }`}
+                              title={isChecked ? "Marquer comme non fait" : "Marquer comme terminé"}
                             >
-                              {isChecked && <Check className="w-4 h-4 stroke-[3]" />}
+                              {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                             </button>
 
-                            <div className="space-y-2 flex-1">
+                            <div className="space-y-1.5 flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${phase.badgeBg}`}>
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                                   {item.dayLabel}
                                 </span>
                                 {isChecked && (
-                                  <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3" /> Validé !
+                                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3" /> Validé
                                   </span>
                                 )}
                               </div>
 
-                              <h3 className={`text-sm sm:text-base font-extrabold ${
+                              <h3 className={`text-sm font-bold leading-snug ${
                                 isChecked
-                                  ? 'text-slate-500 dark:text-slate-400 line-through'
+                                  ? 'text-slate-400 dark:text-slate-500 line-through'
                                   : 'text-slate-900 dark:text-white'
                               }`}>
                                 {item.title}
                               </h3>
 
                               {/* Task list bullets */}
-                              <ul className="space-y-1.5 pt-1">
+                              <ul className="space-y-1 pt-0.5">
                                 {item.tasks.map((task, tIdx) => (
-                                  <li key={tIdx} className="text-xs text-slate-600 dark:text-slate-300 font-medium flex items-start gap-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 shrink-0" />
+                                  <li key={tIdx} className="text-xs text-slate-600 dark:text-slate-300 font-medium flex items-start gap-2 leading-relaxed">
+                                    <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-500 mt-1.5 shrink-0" />
                                     <span>{task}</span>
                                   </li>
                                 ))}
@@ -703,20 +705,22 @@ export default function Plan() {
                           </div>
 
                           {/* Action shortcuts */}
-                          <div className="flex sm:flex-col items-center sm:items-end gap-2 shrink-0 pt-2 md:pt-0">
+                          <div className="flex sm:flex-row md:flex-col items-center md:items-end gap-2 shrink-0 pt-1 md:pt-0">
                             <button
+                              type="button"
                               onClick={() => navigate(item.link)}
-                              className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                              className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-[#03594e] hover:text-white text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
                             >
-                              <BookOpen className="w-3.5 h-3.5 text-[#F8C62F]" />
+                              <BookOpen className="w-3.5 h-3.5" />
                               <span>{item.linkText}</span>
                             </button>
 
                             <button
+                              type="button"
                               onClick={() => navigate(item.qcmLink)}
-                              className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-[#F8C62F] hover:bg-[#e0b228] text-[#1B1D21] text-xs font-black flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                              className="px-3 py-1.5 rounded-xl bg-[#03594e]/10 dark:bg-[#F8C62F]/15 hover:bg-[#03594e] hover:text-white dark:hover:bg-[#F8C62F] dark:hover:text-slate-900 text-[#03594e] dark:text-[#F8C62F] text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
                             >
-                              <Sparkles className="w-3.5 h-3.5 text-[#1B1D21]" />
+                              <Sparkles className="w-3.5 h-3.5" />
                               <span>Tester en QCM</span>
                             </button>
                           </div>
@@ -871,65 +875,6 @@ export default function Plan() {
           </div>
         </div>
       )}
-
-      {/* ─── MODAL : COMMENT OUVRIR SUR LE TÉLÉPHONE HORS-LIGNE ────────── */}
-      <AnimatePresence>
-        {showOfflineModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 relative space-y-5"
-            >
-              <button
-                onClick={() => setShowOfflineModal(false)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#03594e]/10 text-[#03594e] dark:bg-[#F8C62F]/10 dark:text-[#F8C62F] flex items-center justify-center">
-                  <Smartphone className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
-                    Réviser sur Mobile Hors-Ligne
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                    Fonctionne même sans connexion Internet !
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-3.5 text-xs text-slate-700 dark:text-slate-300 font-medium">
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                  <div className="w-6 h-6 rounded-full bg-[#03594e] text-white flex items-center justify-center font-bold text-xs shrink-0">1</div>
-                  <p>Ouvrez cette application sur le navigateur de votre téléphone (<strong>Chrome</strong> sur Android ou <strong>Safari</strong> sur iPhone).</p>
-                </div>
-
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                  <div className="w-6 h-6 rounded-full bg-[#03594e] text-white flex items-center justify-center font-bold text-xs shrink-0">2</div>
-                  <p>Sur <strong>Chrome (Android)</strong> : Cliquez sur les 3 points en haut à droite, puis sur <strong>« Installer l’application »</strong> (ou « Ajouter à l'écran d'accueil »).<br />Sur <strong>Safari (iPhone)</strong> : Cliquez sur l'icône Partager (carré avec flèche) puis sur <strong>« Sur l'écran d'accueil »</strong>.</p>
-                </div>
-
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                  <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0">3</div>
-                  <p><strong>C’est tout !</strong> Une icône apparaît sur votre téléphone. Grâce au Service Worker, tous les cours, leçons et plans se chargent immédiatement même sans réseau ni 4G !</p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setShowOfflineModal(false)}
-                className="w-full py-2.5 rounded-xl bg-[#03594e] hover:bg-[#02473e] text-white font-extrabold text-xs shadow-md transition-all"
-              >
-                J'ai compris
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
     </div>
   );
