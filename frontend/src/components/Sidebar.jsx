@@ -5,7 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import {
   BookOpen, FileText, Sparkles, Star, AlertCircle,
   LayoutDashboard, LogOut, ShieldCheck, Sun, Moon, ChevronLeft, ChevronRight,
-  Compass, Languages, GraduationCap
+  Compass, Languages, GraduationCap, Heart
 } from 'lucide-react';
 
 const navLinks = [
@@ -129,6 +129,23 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
             </Link>
           );
         })}
+
+        {user?.is_staff && (
+          <div className="pt-2 mt-2 border-t border-slate-200/60 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent('show_duaa_modal'));
+                if (onCloseMobile) onCloseMobile();
+              }}
+              title="Aperçu Pop-up Douaa"
+              className={`w-full flex items-center gap-3 px-3 py-2 text-xs font-bold rounded-lg text-emerald-700 dark:text-emerald-300 bg-emerald-50/80 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer ${collapsed ? 'justify-center px-0' : ''}`}
+            >
+              <Heart className="w-4 h-4 text-[#F8C62F] fill-[#F8C62F] shrink-0" />
+              {!collapsed && <span className="truncate">Aperçu Pop-up Douaa</span>}
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* ── Footer: Theme + User ── */}
