@@ -27,15 +27,33 @@ export default function DuaaModal() {
     };
     window.addEventListener('show_duaa_modal', handleTrigger);
 
-    // 2. Vérification de relance globale (affichage INSTANTANÉ à l'ouverture pour ce compte)
+    // 2. Vérification de relance globale (réservée aux relances pour utilisateurs existants)
     const checkCampaign = async () => {
       try {
         const res = await API.get('auth/duaa-campaign/');
         const campaign = res.data;
         if (campaign && campaign.is_instant && campaign.campaign_id) {
-          const lastSeenCampaign = parseInt(localStorage.getItem(userCampaignKey) || '0', 10);
+          const stored = localStorage.getItem(userCampaignKey);
+
+          // RÈGLE STRICTE : Un nouveau compte (ou première visite) ne doit JAMAIS avoir la pop-up à l'ouverture.
+          // Il doit obligatoirement passer par les 30 premières minutes de révision normale.
+          if (!stored) {
+            localStorage.setItem(userCampaignKey, campaign.campaign_id.toString());
+            return;
+          }
+
+          // Si le compte a été créé après le lancement de cette campagne, ne pas lui imposer la pop-up
+          if (user?.created_at) {
+            const userCreatedSec = Math.floor(new Date(user.created_at).getTime() / 1000);
+            if (userCreatedSec >= campaign.campaign_id) {
+              localStorage.setItem(userCampaignKey, campaign.campaign_id.toString());
+              return;
+            }
+          }
+
+          const lastSeenCampaign = parseInt(stored, 10);
           if (campaign.campaign_id > lastSeenCampaign) {
-            // Relance globale active : pop-up instantanée dès l'ouverture du site pour ce compte !
+            // Relance déclenchée par l'admin pour un utilisateur existant
             activeCampaignIdRef.current = campaign.campaign_id;
             setIsOpen(true);
             return;
