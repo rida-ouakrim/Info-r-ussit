@@ -42,32 +42,32 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
       `}
     >
       {/* ── Brand Header ── */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-inherit min-h-[72px]">
+      <div className="relative flex items-center justify-center px-4 py-3 border-b border-inherit min-h-[84px]">
         <Link
           to="/"
-          className={`flex items-center flex-1 min-w-0 ${collapsed ? 'hidden md:hidden' : 'flex'} py-1`}
+          className={`flex items-center justify-center flex-1 w-full ${collapsed ? 'hidden md:hidden' : 'flex'} py-1 group`}
           onClick={onCloseMobile}
         >
           <img 
             src="/logo.png" 
             alt="Inforéussit" 
-            className="h-14 sm:h-16 w-auto object-contain max-h-[64px] max-w-[170px] transition-transform hover:scale-105" 
+            className="h-16 sm:h-20 w-auto object-contain max-h-[76px] max-w-[180px] transition-transform group-hover:scale-105 mx-auto" 
             onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'flex'; }} 
           />
           <div className="hidden items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#03594e] flex items-center justify-center shrink-0">
-              <GraduationCap className="w-4 h-4 text-white" />
+            <div className="w-9 h-9 rounded-lg bg-[#03594e] flex items-center justify-center shrink-0">
+              <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            <span className="font-black text-sm text-[#03594e]">Inforéussit</span>
+            <span className="font-black text-base text-[#03594e]">Inforéussit</span>
           </div>
         </Link>
 
         {collapsed && (
-          <Link to="/" className="w-10 h-10 flex items-center justify-center mx-auto md:flex hidden py-1">
+          <Link to="/" className="w-12 h-12 flex items-center justify-center mx-auto md:flex hidden py-1 group">
             <img 
               src="/logo.png" 
               alt="Inforéussit" 
-              className="h-10 w-10 object-contain" 
+              className="h-10 w-10 object-contain mx-auto transition-transform group-hover:scale-110" 
             />
           </Link>
         )}
@@ -80,7 +80,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, onCloseMo
               setCollapsed(true);
             }
           }}
-          className={`p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 ${collapsed ? 'hidden md:hidden' : 'block'}`}
+          className={`absolute right-2 top-2 p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 ${collapsed ? 'hidden md:hidden' : 'block'}`}
           title="Fermer le menu"
         >
           <ChevronLeft className="w-4 h-4" />
