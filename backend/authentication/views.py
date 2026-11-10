@@ -522,28 +522,44 @@ class ResetPasswordWithCodeView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-CAMPAIGN_FILE_PATH = os.path.join(django_settings.BASE_DIR, 'duaa_campaign.json')
+import tempfile
+
+CAMPAIGN_PATHS = [
+    os.path.join(django_settings.BASE_DIR, 'duaa_campaign.json'),
+    os.path.join(tempfile.gettempdir(), 'infor_duaa_campaign.json'),
+    '/tmp/duaa_campaign.json'
+]
+
+_MEM_CAMPAIGN = {"campaign_id": 0, "is_instant": False, "updated_at": None}
 
 def get_duaa_campaign():
-    if os.path.exists(CAMPAIGN_FILE_PATH):
-        try:
-            with open(CAMPAIGN_FILE_PATH, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        except Exception:
-            pass
-    return {"campaign_id": 0, "is_instant": False, "updated_at": None}
+    global _MEM_CAMPAIGN
+    for path in CAMPAIGN_PATHS:
+        if os.path.exists(path):
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    if data.get("campaign_id", 0) >= _MEM_CAMPAIGN.get("campaign_id", 0):
+                        _MEM_CAMPAIGN = data
+                        return _MEM_CAMPAIGN
+            except Exception:
+                pass
+    return _MEM_CAMPAIGN
 
 def set_duaa_campaign(campaign_id, is_instant=True):
+    global _MEM_CAMPAIGN
     data = {
         "campaign_id": campaign_id,
         "is_instant": is_instant,
         "updated_at": timezone.now().isoformat()
     }
-    try:
-        with open(CAMPAIGN_FILE_PATH, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"Error saving duaa_campaign.json: {e}")
+    _MEM_CAMPAIGN = data
+    for path in CAMPAIGN_PATHS:
+        try:
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
     return data
 
 class DuaaCampaignView(APIView):

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import { 
   ShieldCheck, Users, Key, BookOpen, Plus, 
   RefreshCw, CheckCircle2, Copy, Lock, EyeOff, Eye, X,
@@ -9,6 +10,7 @@ import {
 } from 'lucide-react';
 
 const AdminDashboard = () => {
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [keyPrefix, setKeyPrefix] = useState('INFO');
@@ -106,12 +108,21 @@ const AdminDashboard = () => {
   const handleRelaunchDuaaModal = async () => {
     try {
       const res = await API.post('auth/admin/relaunch-duaa/');
-      localStorage.removeItem('infor_last_seen_duaa_campaign');
+      // Nettoyer les clés locales sur ce navigateur pour permettre le test immédiat avec d'autres comptes
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith('infor_last_seen_duaa_campaign')) {
+          localStorage.removeItem(k);
+        }
+      });
       window.dispatchEvent(new CustomEvent('show_duaa_modal'));
       showToast(res.data?.message || "Pop-up relancée ! Tous les utilisateurs l'auront instantanément à l'ouverture.");
     } catch (err) {
       console.error("Erreur lors de la relance de la pop-up:", err);
-      localStorage.removeItem('infor_last_seen_duaa_campaign');
+      Object.keys(localStorage).forEach(k => {
+        if (k.startsWith('infor_last_seen_duaa_campaign')) {
+          localStorage.removeItem(k);
+        }
+      });
       window.dispatchEvent(new CustomEvent('show_duaa_modal'));
       showToast("Pop-up relancée en mode instantané !");
     }

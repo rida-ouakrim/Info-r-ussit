@@ -2,15 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Sparkles, X, BookOpen } from 'lucide-react';
 import API from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 const THIRTY_MINUTES_SEC = 30 * 60; // 1800 secondes = 30 minutes
 const IDLE_TIMEOUT_MS = 90 * 1000; // 90 secondes d'inactivité -> pause
 
 export default function DuaaModal() {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const activeCampaignIdRef = useRef(0);
   const lastActivityRef = useRef(Date.now());
   const isIdleRef = useRef(false);
+
+  // Clés de stockage scopées par compte utilisateur (ou invité) pour que chaque compte soit indépendant
+  const userSuffix = user?.id ? `_u${user.id}` : '_guest';
+  const userCampaignKey = `infor_last_seen_duaa_campaign${userSuffix}`;
+  const userTimerKey = `infor_duaa_first_30m_shown${userSuffix}`;
+  const userSecondsKey = `infor_active_seconds_total${userSuffix}`;
 
   useEffect(() => {
     // 1. Écouteur pour ouverture manuelle immédiate (aperçu admin)
@@ -19,22 +27,22 @@ export default function DuaaModal() {
     };
     window.addEventListener('show_duaa_modal', handleTrigger);
 
-    // 2. Vérification de relance globale (affichage INSTANTANÉ à l'ouverture pour tous)
+    // 2. Vérification de relance globale (affichage INSTANTANÉ à l'ouverture pour ce compte)
     const checkCampaign = async () => {
       try {
         const res = await API.get('auth/duaa-campaign/');
         const campaign = res.data;
         if (campaign && campaign.is_instant && campaign.campaign_id) {
-          const lastSeenCampaign = parseInt(localStorage.getItem('infor_last_seen_duaa_campaign') || '0', 10);
+          const lastSeenCampaign = parseInt(localStorage.getItem(userCampaignKey) || '0', 10);
           if (campaign.campaign_id > lastSeenCampaign) {
-            // Relance globale déclenchée par l'admin : pop-up instantanée à l'ouverture du site !
+            // Relance globale active : pop-up instantanée dès l'ouverture du site pour ce compte !
             activeCampaignIdRef.current = campaign.campaign_id;
             setIsOpen(true);
             return;
           }
         }
       } catch (err) {
-        // En cas d'erreur réseau, fonctionnement normal sur le timer
+        // En cas d'erreur réseau, fonctionnement normal
       }
     };
     checkCampaign();
@@ -55,22 +63,21 @@ export default function DuaaModal() {
       }
     }, 5000);
 
-    // Timer des premières 30 minutes
+    // Timer des premières 30 minutes pour ce compte
     const timer = setInterval(() => {
-      const first30mShown = localStorage.getItem('infor_duaa_first_30m_shown') || localStorage.getItem('infor_duaa_popup_shown');
+      const first30mShown = localStorage.getItem(userTimerKey);
       if (first30mShown === 'true') {
-        return; // S'ouvre dans les premières 30 min (une seule fois pour le cycle standard)
+        return; // S'ouvre dans les premières 30 min (une seule fois pour ce compte)
       }
 
       // Seulement si l'onglet est visible et l'utilisateur est actif
       if (!document.hidden && !isIdleRef.current) {
-        const currentSeconds = parseInt(localStorage.getItem('infor_active_seconds_total') || '0', 10) + 1;
-        localStorage.setItem('infor_active_seconds_total', currentSeconds.toString());
+        const currentSeconds = parseInt(localStorage.getItem(userSecondsKey) || '0', 10) + 1;
+        localStorage.setItem(userSecondsKey, currentSeconds.toString());
 
         if (currentSeconds >= THIRTY_MINUTES_SEC) {
           setIsOpen(true);
-          localStorage.setItem('infor_duaa_first_30m_shown', 'true');
-          localStorage.setItem('infor_duaa_popup_shown', 'true');
+          localStorage.setItem(userTimerKey, 'true');
         }
       }
     }, 1000);
@@ -81,15 +88,14 @@ export default function DuaaModal() {
       clearInterval(idleInterval);
       clearInterval(timer);
     };
-  }, []);
+  }, [user?.id, userCampaignKey, userTimerKey, userSecondsKey]);
 
   const handleClose = () => {
     setIsOpen(false);
     if (activeCampaignIdRef.current > 0) {
-      localStorage.setItem('infor_last_seen_duaa_campaign', activeCampaignIdRef.current.toString());
+      localStorage.setItem(userCampaignKey, activeCampaignIdRef.current.toString());
     }
-    localStorage.setItem('infor_duaa_first_30m_shown', 'true');
-    localStorage.setItem('infor_duaa_popup_shown', 'true');
+    localStorage.setItem(userTimerKey, 'true');
   };
 
   return (
