@@ -34782,9 +34782,32 @@
       "explanation": "Le postulat d'éducabilité (Philippe Meirieu, Joseph Jacotot) est un principe éthique et pédagogique fondamental affirmant que tout être humain détient la capacité d'apprendre et d'évoluer intellectuellement à tout moment.",
       "astuce": "💡 Postulat d'éducabilité = Affirmation de la capacité universelle et permanente de tout élève à apprendre.",
       "reference_text": null,
-      "domain": "SCIENCES_EDU",
-      "subdomain": "EDU_PSYCHO",
-      "course": 26,
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_CONCEPTS",
+      "course": 20,
+      "created_at": "2026-09-06T12:55:56.012Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 2008,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2025,
+      "question_number": "Q5",
+      "question_text": "Les croyances d'un individu à l'égard de ses capacités à accomplir avec succès une tâche ou un ensemble de tâches, constitue :",
+      "option_a": "Le sentiment de supériorité",
+      "option_b": "Le sentiment d'efficacité personnelle",
+      "option_c": "Le sentiment de confiance",
+      "option_d": "Le sentiment d'intelligence",
+      "option_e": "Aucune de ces réponses n'est juste",
+      "correct_option": "B",
+      "explanation": "Théorisé par Albert Bandura dans le cadre de la théorie sociocognitive, le sentiment d'efficacité personnelle (SEP) (ou auto-efficacité / self-efficacy) désigne l'ensemble des croyances d'un individu à l'égard de ses capacités à accomplir avec succès une tâche ou un ensemble de tâches données. Ce facteur psychopédagogique joue un rôle déterminant dans l'engagement, l'effort consenti et la persévérance face aux difficultés.",
+      "astuce": "💡 Croyance en sa propre capacité à réussir une tâche spécifique = Sentiment d'Efficacité Personnelle (SEP / Albert Bandura).",
+      "reference_text": null,
+      "domain": "DIDACTIQUE",
+      "subdomain": "DID_CONCEPTS",
+      "course": 20,
       "created_at": "2026-09-06T12:55:56.012Z"
     }
   },
