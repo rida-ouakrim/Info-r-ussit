@@ -34838,7 +34838,7 @@
     "model": "exams.question",
     "pk": 2025,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_01",
       "question_text": "Selon Piaget, quelle caractéristique correspond principalement au stade des opérations formelles ?",
@@ -34861,7 +34861,7 @@
     "model": "exams.question",
     "pk": 2026,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_02",
       "question_text": "Un adolescent formule plusieurs hypothèses pour expliquer un phénomène, déduit les conséquences de chacune et cherche ensuite à les vérifier. Quel type de raisonnement mobilise-t-il principalement ?",
@@ -34884,7 +34884,7 @@
     "model": "exams.question",
     "pk": 2027,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_03",
       "question_text": "Selon Erikson, quelle problématique psychosociale est particulièrement associée à l’adolescence ?",
@@ -34907,7 +34907,7 @@
     "model": "exams.question",
     "pk": 2028,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_04",
       "question_text": "Quelle proposition distingue correctement la puberté de l’adolescence ?",
@@ -34930,7 +34930,7 @@
     "model": "exams.question",
     "pk": 2029,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_05",
       "question_text": "Un élève se demande quelle stratégie utiliser pour résoudre un exercice, vérifie pendant son travail si elle fonctionne, puis la modifie si nécessaire. Quel concept décrit le mieux cette situation ?",
@@ -34953,7 +34953,7 @@
     "model": "exams.question",
     "pk": 2030,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_06",
       "question_text": "Un adolescent étudie un sujet scientifique uniquement parce qu’il éprouve de la curiosité et du plaisir à le comprendre. De quel type de motivation s’agit-il principalement ?",
@@ -34976,7 +34976,7 @@
     "model": "exams.question",
     "pk": 2031,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_07",
       "question_text": "Dans une activité scolaire, des adolescents s’entraident, échangent leurs idées et construisent ensemble une solution. Quel aspect du développement est principalement mobilisé ?",
@@ -34999,7 +34999,7 @@
     "model": "exams.question",
     "pk": 2032,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_08",
       "question_text": "Laquelle de ces pratiques pédagogiques favorise le mieux le développement de la pensée formelle chez l’adolescent ?",
@@ -35022,7 +35022,7 @@
     "model": "exams.question",
     "pk": 2033,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_09",
       "question_text": "Quelle séquence correspond le mieux au fonctionnement général du raisonnement hypothético-déductif ?",
@@ -35045,7 +35045,7 @@
     "model": "exams.question",
     "pk": 2034,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_10",
       "question_text": "Laquelle de ces situations illustre le mieux la métacognition ?",
@@ -35068,7 +35068,7 @@
     "model": "exams.question",
     "pk": 2035,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_11",
       "question_text": "Pourquoi l’influence du groupe de pairs doit-elle être considérée avec nuance dans l’étude de l’adolescence ?",
@@ -35091,7 +35091,7 @@
     "model": "exams.question",
     "pk": 2036,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_12",
       "question_text": "Un enseignant demande à un élève : « Quelle stratégie vas-tu utiliser, comment vérifies-tu qu’elle fonctionne et que changeras-tu si elle échoue ? » Quelle capacité cherche-t-il principalement à développer ?",
@@ -35114,7 +35114,7 @@
     "model": "exams.question",
     "pk": 2037,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_13",
       "question_text": "Quelle affirmation concernant les âges des stades de Piaget est la plus rigoureuse ?",
@@ -35137,7 +35137,7 @@
     "model": "exams.question",
     "pk": 2038,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_14",
       "question_text": "Quel ensemble correspond le mieux aux principales fonctions exécutives et capacités d’autorégulation mobilisées dans l’apprentissage de l’adolescent ?",
@@ -35160,7 +35160,7 @@
     "model": "exams.question",
     "pk": 2039,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_FR_15",
       "question_text": "Un enseignant souhaite prendre en compte à la fois le développement cognitif, affectif et social des adolescents. Quelle approche pédagogique est la plus cohérente ?",
@@ -35183,7 +35183,7 @@
     "model": "exams.question",
     "pk": 2040,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_01",
       "question_text": "حسب بياجيه، أي ميزة تعبر أساسًا عن مرحلة العمليات الصورية؟",
@@ -35206,7 +35206,7 @@
     "model": "exams.question",
     "pk": 2041,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_02",
       "question_text": "يصيغ مراهق عدة فرضيات لتفسير ظاهرة معينة، ويستنتج نتائج كل منها، ثم يسعى للتحقق منها. ما نوع الاستدلال الذي يطبقه أساسًا؟",
@@ -35229,7 +35229,7 @@
     "model": "exams.question",
     "pk": 2042,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_03",
       "question_text": "حسب إريكسون، ما الأزمة النفسية-الاجتماعية المرتبطة بمرحلة المراهقة؟",
@@ -35252,7 +35252,7 @@
     "model": "exams.question",
     "pk": 2043,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_04",
       "question_text": "أي عبارة تميز بشكل صحيح بين البلوغ والمراهقة؟",
@@ -35275,7 +35275,7 @@
     "model": "exams.question",
     "pk": 2044,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_05",
       "question_text": "يتساءل متعلم عن الاستراتيجية المناسبة لحل تمرين، ويتحقق أثناء العمل من فعاليتها، ثم يغيرها عند الحاجة. ما المفهوم الأنسب؟",
@@ -35298,7 +35298,7 @@
     "model": "exams.question",
     "pk": 2045,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_06",
       "question_text": "يدرس مراهق موضوعًا علميًا فقط لأنه يشعر بالفضول والمتعة في فهمه. ما نوع الدافعية؟",
@@ -35321,7 +35321,7 @@
     "model": "exams.question",
     "pk": 2046,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_07",
       "question_text": "في نشاط مدرسي، يتساعد المراهقون ويتبادلون الأفكار ويبنون حلًا مشتركًا. ما جانب النمو الموظف أساسًا؟",
@@ -35344,7 +35344,7 @@
     "model": "exams.question",
     "pk": 2047,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_08",
       "question_text": "أي من الممارسات البيداغوجية التالية تعزز بشكل أفضل نمو التفكير الصوري لدى المراهق؟",
@@ -35367,7 +35367,7 @@
     "model": "exams.question",
     "pk": 2048,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_09",
       "question_text": "أي تسلسل يطابق بشكل أفضل الاشتغال العام للتفكير الفرضي-الاستنباطي؟",
@@ -35390,7 +35390,7 @@
     "model": "exams.question",
     "pk": 2049,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_10",
       "question_text": "أي وضعية توضح بشكل أفضل مفهوم ما وراء المعرفة؟",
@@ -35413,7 +35413,7 @@
     "model": "exams.question",
     "pk": 2050,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_11",
       "question_text": "لماذا يجب التعامل مع تأثير جماعة الأقران بنوع من الدقة والتمييز في مرحلة المراهقة؟",
@@ -35436,7 +35436,7 @@
     "model": "exams.question",
     "pk": 2051,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_12",
       "question_text": "يسأل أستاذ متعلمًا: «ما الاستراتيجية التي ستعتمدها، وكيف تلتأكد من نجاحها، وماذا ستغير إذا فشلت؟». ما القدرة المستهدفة؟",
@@ -35459,7 +35459,7 @@
     "model": "exams.question",
     "pk": 2052,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_13",
       "question_text": "أي عبارة تعتبر الأكثر دقة بشأن الأعمار المرتبطة بمراحل بياجيه؟",
@@ -35482,7 +35482,7 @@
     "model": "exams.question",
     "pk": 2053,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_14",
       "question_text": "أي مجموعة تطابق أفضل الوظائف التنفيذية وقدرات التنظيم الذاتي الموظفة في تعلم المراهق؟",
@@ -35505,7 +35505,7 @@
     "model": "exams.question",
     "pk": 2054,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "CIBLÉ_AR_15",
       "question_text": "يرغب أستاذ في مراعاة النمو المعرفي والوجداني والاجتماعي للمراهقين في آن واحد. ما المقاربة البيداغوجية الأكثر انسجامًا؟",
@@ -35643,7 +35643,7 @@
     "model": "exams.question",
     "pk": 2060,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q01",
       "question_text": "ما الفكرة الأساسية للنظرية السلوكية؟",
@@ -35666,7 +35666,7 @@
     "model": "exams.question",
     "pk": 2061,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q02",
       "question_text": "من أبرز العلماء المرتبطين بالنظرية البنائية؟",
@@ -35689,7 +35689,7 @@
     "model": "exams.question",
     "pk": 2062,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q03",
       "question_text": "حسب البنائية، كيف يحدث التعلم؟",
@@ -35712,7 +35712,7 @@
     "model": "exams.question",
     "pk": 2063,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q04",
       "question_text": "ما المفهوم المرتبط بشكل أساسي بفيغوتسكي؟",
@@ -35735,7 +35735,7 @@
     "model": "exams.question",
     "pk": 2064,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q05",
       "question_text": "في السلوكية، ما تأثير التعزيز؟",
@@ -35758,7 +35758,7 @@
     "model": "exams.question",
     "pk": 2065,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q06",
       "question_text": "ماذا تعني « منطقة النمو القريبة »؟",
@@ -35781,7 +35781,7 @@
     "model": "exams.question",
     "pk": 2066,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q07",
       "question_text": "أي وضعية تمثل التعلم البنائي؟",
@@ -35804,7 +35804,7 @@
     "model": "exams.question",
     "pk": 2067,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q08",
       "question_text": "ما الذي يميز السوسيو-بنائية؟",
@@ -35827,7 +35827,7 @@
     "model": "exams.question",
     "pk": 2068,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q09",
       "question_text": "أستاذ يشجع التلميذ بعد إجابة صحيحة، مما يجعله يكرر المشاركة. ما النظرية الأكثر ارتباطًا بهذا الموقف؟",
@@ -35850,7 +35850,7 @@
     "model": "exams.question",
     "pk": 2069,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q10",
       "question_text": "في البنائية، ما دور المتعلم؟",
@@ -35873,7 +35873,7 @@
     "model": "exams.question",
     "pk": 2070,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q11",
       "question_text": "يعمل التلاميذ في مجموعات ويتبادلون الأفكار لحل مشكلة. أي نظرية تظهر بشكل واضح؟",
@@ -35896,7 +35896,7 @@
     "model": "exams.question",
     "pk": 2071,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q12",
       "question_text": "أي سلسلة ترتبط أكثر بالسلوكية؟",
@@ -35919,7 +35919,7 @@
     "model": "exams.question",
     "pk": 2072,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q13",
       "question_text": "أي من العناصر التالية يرتبط بالبنائية؟",
@@ -35942,7 +35942,7 @@
     "model": "exams.question",
     "pk": 2073,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q14",
       "question_text": "يقدم الأستاذ أسئلة تدريجية لمساعدة تلميذ على إنجاز مهمة لا يستطيع إنجازها بمفرده. ما المفهوم الأكثر ارتباطًا بهذا الموقف؟",
@@ -35965,7 +35965,7 @@
     "model": "exams.question",
     "pk": 2074,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q15",
       "question_text": "أي عبارة تلخص الفرق بين النظريات الثلاث؟",
@@ -35988,7 +35988,7 @@
     "model": "exams.question",
     "pk": 2075,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q01",
       "question_text": "Quelle est l'idée principale du béhaviorisme ?",
@@ -36011,7 +36011,7 @@
     "model": "exams.question",
     "pk": 2076,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q02",
       "question_text": "Quel est le principal théoricien associé au constructivisme ?",
@@ -36034,7 +36034,7 @@
     "model": "exams.question",
     "pk": 2077,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q03",
       "question_text": "Selon le constructivisme, comment l'apprentissage se produit-il ?",
@@ -36057,7 +36057,7 @@
     "model": "exams.question",
     "pk": 2078,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q04",
       "question_text": "Quel concept est principalement associé à Vygotski ?",
@@ -36080,7 +36080,7 @@
     "model": "exams.question",
     "pk": 2079,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q05",
       "question_text": "Dans le béhaviorisme, quel est l'effet du renforcement ?",
@@ -36103,7 +36103,7 @@
     "model": "exams.question",
     "pk": 2080,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q06",
       "question_text": "Que signifie la « Zone proximale de développement » ?",
@@ -36126,7 +36126,7 @@
     "model": "exams.question",
     "pk": 2081,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q07",
       "question_text": "Quelle situation correspond au constructivisme ?",
@@ -36149,7 +36149,7 @@
     "model": "exams.question",
     "pk": 2082,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q08",
       "question_text": "Qu'est-ce qui caractérise le socio-constructivisme ?",
@@ -36172,7 +36172,7 @@
     "model": "exams.question",
     "pk": 2083,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q09",
       "question_text": "Un enseignant encourage un élève après une bonne réponse, ce qui l'amène à participer davantage. À quelle théorie cette situation est-elle principalement associée ?",
@@ -36195,7 +36195,7 @@
     "model": "exams.question",
     "pk": 2084,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q10",
       "question_text": "Dans le constructivisme, quel est le rôle de l'apprenant ?",
@@ -36218,7 +36218,7 @@
     "model": "exams.question",
     "pk": 2085,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q11",
       "question_text": "Des élèves travaillent en groupe et échangent leurs idées pour résoudre un problème. Quelle théorie est clairement mobilisée ?",
@@ -36241,7 +36241,7 @@
     "model": "exams.question",
     "pk": 2086,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q12",
       "question_text": "Quelle séquence est la plus liée au béhaviorisme ?",
@@ -36264,7 +36264,7 @@
     "model": "exams.question",
     "pk": 2087,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q13",
       "question_text": "Quel élément est associé au constructivisme ?",
@@ -36287,7 +36287,7 @@
     "model": "exams.question",
     "pk": 2088,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q14",
       "question_text": "L'enseignant pose progressivement des questions pour aider un élève à réaliser une tâche qu'il ne peut pas encore faire seul. Quel concept correspond le mieux à cette situation ?",
@@ -36310,7 +36310,7 @@
     "model": "exams.question",
     "pk": 2089,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q15",
       "question_text": "Quelle proposition résume le mieux la différence entre les trois théories ?",
@@ -36333,7 +36333,7 @@
     "model": "exams.question",
     "pk": 2090,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q01",
       "question_text": "ما المقصود بعلم الاجتماع التربوي؟",
@@ -36356,7 +36356,7 @@
     "model": "exams.question",
     "pk": 2091,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q02",
       "question_text": "ما المقصود بالمناخ المدرسي؟",
@@ -36379,7 +36379,7 @@
     "model": "exams.question",
     "pk": 2092,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q03",
       "question_text": "أي مما يلي يُعد من أبعاد المناخ المدرسي؟",
@@ -36402,7 +36402,7 @@
     "model": "exams.question",
     "pk": 2093,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q04",
       "question_text": "ما أثر المناخ المدرسي الإيجابي على المتعلم؟",
@@ -36425,7 +36425,7 @@
     "model": "exams.question",
     "pk": 2094,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q05",
       "question_text": "ما الذي يميز المناخ المدرسي الإيجابي؟",
@@ -36448,7 +36448,7 @@
     "model": "exams.question",
     "pk": 2095,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q06",
       "question_text": "ما المقصود بدينامية الجماعة؟",
@@ -36471,7 +36471,7 @@
     "model": "exams.question",
     "pk": 2096,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q07",
       "question_text": "أي مجموعة تمثل أهم عناصر دينامية الجماعة؟",
@@ -36494,7 +36494,7 @@
     "model": "exams.question",
     "pk": 2097,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q08",
       "question_text": "ماذا نعني بالتفاعل داخل الجماعة؟",
@@ -36517,7 +36517,7 @@
     "model": "exams.question",
     "pk": 2098,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q09",
       "question_text": "ما الفرق بين القيادة الرسمية والقيادة غير الرسمية؟",
@@ -36540,7 +36540,7 @@
     "model": "exams.question",
     "pk": 2099,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q10",
       "question_text": "ما المقصود بالتماسك الجماعي؟",
@@ -36563,7 +36563,7 @@
     "model": "exams.question",
     "pk": 2100,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q11",
       "question_text": "ما دور القواعد والمعايير داخل الجماعة؟",
@@ -36586,7 +36586,7 @@
     "model": "exams.question",
     "pk": 2101,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q12",
       "question_text": "لماذا يعتبر توزيع الأدوار مهماً في العمل الجماعي؟",
@@ -36609,7 +36609,7 @@
     "model": "exams.question",
     "pk": 2102,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q13",
       "question_text": "هل الصراع داخل الجماعة ظاهرة سلبية دائماً؟",
@@ -36632,7 +36632,7 @@
     "model": "exams.question",
     "pk": 2103,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q14",
       "question_text": "أي إجراء يساعد الأستاذ على تحسين المناخ المدرسي؟",
@@ -36655,7 +36655,7 @@
     "model": "exams.question",
     "pk": 2104,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q15",
       "question_text": "ما الطريقة الأكثر ملاءمة لتدبير الصراع داخل الجماعة؟",
@@ -36678,7 +36678,7 @@
     "model": "exams.question",
     "pk": 2105,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q01",
       "question_text": "Qu'entend-on par sociologie de l'éducation ?",
@@ -36701,7 +36701,7 @@
     "model": "exams.question",
     "pk": 2106,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q02",
       "question_text": "Qu'est-ce que le climat scolaire ?",
@@ -36724,7 +36724,7 @@
     "model": "exams.question",
     "pk": 2107,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q03",
       "question_text": "Quelles sont les dimensions clés du climat scolaire ?",
@@ -36747,7 +36747,7 @@
     "model": "exams.question",
     "pk": 2108,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q04",
       "question_text": "Quel est l'effet d'un climat scolaire positif sur l'apprenant ?",
@@ -36770,7 +36770,7 @@
     "model": "exams.question",
     "pk": 2109,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q05",
       "question_text": "Qu'est-ce qui caractérise un climat scolaire positif ?",
@@ -36793,7 +36793,7 @@
     "model": "exams.question",
     "pk": 2110,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q06",
       "question_text": "Que désigne la dynamique de groupe ?",
@@ -36816,7 +36816,7 @@
     "model": "exams.question",
     "pk": 2111,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q07",
       "question_text": "Quels sont les éléments fondamentaux de la dynamique de groupe ?",
@@ -36839,7 +36839,7 @@
     "model": "exams.question",
     "pk": 2112,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q08",
       "question_text": "Que signifie l'interaction au sein d'un groupe ?",
@@ -36862,7 +36862,7 @@
     "model": "exams.question",
     "pk": 2113,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q09",
       "question_text": "Quelle est la différence entre leadership officiel et leadership informel ?",
@@ -36885,7 +36885,7 @@
     "model": "exams.question",
     "pk": 2114,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q10",
       "question_text": "Qu'est-ce que la cohésion de groupe ?",
@@ -36908,7 +36908,7 @@
     "model": "exams.question",
     "pk": 2115,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q11",
       "question_text": "Quel est le rôle des règles et des normes dans un groupe ?",
@@ -36931,7 +36931,7 @@
     "model": "exams.question",
     "pk": 2116,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q12",
       "question_text": "Pourquoi la répartition des rôles est-elle essentielle dans le travail d'équipe ?",
@@ -36954,7 +36954,7 @@
     "model": "exams.question",
     "pk": 2117,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q13",
       "question_text": "Le conflit au sein d'un groupe est-il toujours négatif ?",
@@ -36977,7 +36977,7 @@
     "model": "exams.question",
     "pk": 2118,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q14",
       "question_text": "Quelle action permet d'améliorer le climat scolaire ?",
@@ -37000,7 +37000,7 @@
     "model": "exams.question",
     "pk": 2119,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q15",
       "question_text": "Quelle est la méthode la plus appropriée pour gérer un conflit en classe ?",
@@ -37023,7 +37023,7 @@
     "model": "exams.question",
     "pk": 2120,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q01",
       "question_text": "ما المقصود بالتربية الدامجة؟",
@@ -37046,7 +37046,7 @@
     "model": "exams.question",
     "pk": 2121,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q02",
       "question_text": "ما الهدف الأساسي من التربية الدامجة؟",
@@ -37069,7 +37069,7 @@
     "model": "exams.question",
     "pk": 2122,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q03",
       "question_text": "ما الفرق بين الإدماج والإقصاء؟",
@@ -37092,7 +37092,7 @@
     "model": "exams.question",
     "pk": 2123,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q04",
       "question_text": "ما الفرق بين المساواة والإنصاف؟",
@@ -37115,7 +37115,7 @@
     "model": "exams.question",
     "pk": 2124,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q05",
       "question_text": "ما المقصود بتكافؤ الفرص في التعليم؟",
@@ -37138,7 +37138,7 @@
     "model": "exams.question",
     "pk": 2125,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q06",
       "question_text": "أي من العوامل التالية يمكن أن يؤثر في تكافؤ الفرص التعليمية؟",
@@ -37161,7 +37161,7 @@
     "model": "exams.question",
     "pk": 2126,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q07",
       "question_text": "ما الدور الذي يمكن أن يقوم به الأستاذ في التربية الدامجة؟",
@@ -37184,7 +37184,7 @@
     "model": "exams.question",
     "pk": 2127,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q08",
       "question_text": "ماذا يعني تكييف التعليم حسب حاجات المتعلم؟",
@@ -37207,7 +37207,7 @@
     "model": "exams.question",
     "pk": 2128,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q09",
       "question_text": "ما المقصود بأخلاقيات المهنة؟",
@@ -37230,7 +37230,7 @@
     "model": "exams.question",
     "pk": 2129,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q10",
       "question_text": "أي مما يلي يعتبر من مبادئ أخلاقيات مهنة التعليم؟",
@@ -37253,7 +37253,7 @@
     "model": "exams.question",
     "pk": 2130,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q11",
       "question_text": "لماذا تعتبر النزاهة والعدل مهمين في مهنة التعليم؟",
@@ -37276,7 +37276,7 @@
     "model": "exams.question",
     "pk": 2131,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q12",
       "question_text": "ما المقصود بالسرية المهنية؟",
@@ -37299,7 +37299,7 @@
     "model": "exams.question",
     "pk": 2132,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q13",
       "question_text": "كيف يجب أن يكون تقويم المتعلمين من الناحية الأخلاقية؟",
@@ -37322,7 +37322,7 @@
     "model": "exams.question",
     "pk": 2133,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q14",
       "question_text": "كيف يمكن للأستاذ المساهمة في تحقيق تكافؤ الفرص؟",
@@ -37345,7 +37345,7 @@
     "model": "exams.question",
     "pk": 2134,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q15",
       "question_text": "كيف يمكن استعمال التكنولوجيا بطريقة أخلاقية في المجال التعليمي؟",
@@ -37368,7 +37368,7 @@
     "model": "exams.question",
     "pk": 2135,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q01",
       "question_text": "Qu'entend-on par éducation inclusive ?",
@@ -37391,7 +37391,7 @@
     "model": "exams.question",
     "pk": 2136,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q02",
       "question_text": "Quel est l'objectif principal de l'éducation inclusive ?",
@@ -37414,7 +37414,7 @@
     "model": "exams.question",
     "pk": 2137,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q03",
       "question_text": "Quelle est la différence entre inclusion et exclusion ?",
@@ -37437,7 +37437,7 @@
     "model": "exams.question",
     "pk": 2138,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q04",
       "question_text": "Quelle est la différence entre égalité et équité ?",
@@ -37460,7 +37460,7 @@
     "model": "exams.question",
     "pk": 2139,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q05",
       "question_text": "Qu'entend-on par égalité des chances en éducation ?",
@@ -37483,7 +37483,7 @@
     "model": "exams.question",
     "pk": 2140,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q06",
       "question_text": "Lequel des facteurs suivants peut influencer l'égalité des chances éducatives ?",
@@ -37506,7 +37506,7 @@
     "model": "exams.question",
     "pk": 2141,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q07",
       "question_text": "Quel rôle l'enseignant peut-il jouer dans l'éducation inclusive ?",
@@ -37529,7 +37529,7 @@
     "model": "exams.question",
     "pk": 2142,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q08",
       "question_text": "Que signifie adapter l'enseignement aux besoins de l'élève ?",
@@ -37552,7 +37552,7 @@
     "model": "exams.question",
     "pk": 2143,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q09",
       "question_text": "Qu'entend-on par éthique professionnelle (déontologie) ?",
@@ -37575,7 +37575,7 @@
     "model": "exams.question",
     "pk": 2144,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q10",
       "question_text": "Lequel des éléments suivants constitue un principe de l'éthique enseignante ?",
@@ -37598,7 +37598,7 @@
     "model": "exams.question",
     "pk": 2145,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q11",
       "question_text": "Pourquoi l'intégrité et la justice sont-elles primordiales dans le métier d'enseignant ?",
@@ -37621,7 +37621,7 @@
     "model": "exams.question",
     "pk": 2146,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q12",
       "question_text": "Qu'entend-on par secret professionnel ?",
@@ -37644,7 +37644,7 @@
     "model": "exams.question",
     "pk": 2147,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q13",
       "question_text": "Comment l'évaluation des élèves doit-elle être menée sur le plan éthique ?",
@@ -37667,7 +37667,7 @@
     "model": "exams.question",
     "pk": 2148,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q14",
       "question_text": "Comment l'enseignant peut-il contribuer à promouvoir l'égalité des chances ?",
@@ -37690,7 +37690,7 @@
     "model": "exams.question",
     "pk": 2149,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q15",
       "question_text": "Comment utiliser la technologie de façon éthique dans l'enseignement ?",
@@ -37875,6 +37875,144 @@
       "subdomain": "DEV_SI_BD",
       "course": 2,
       "created_at": "2026-11-09T16:35:00.000Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 991,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2025,
+      "question_number": "Q81",
+      "question_text": "وفق صنافة بلوم، في أي مستوى تندرج قدرة المتعلم على تعبئة قدراته ومعارفه في وضعية جديدة؟",
+      "option_a": "الفهم",
+      "option_b": "التحليل",
+      "option_c": "التركيب",
+      "option_d": "التطبيق",
+      "option_e": "جميع الاختيارات المقترحة خاطئة",
+      "correct_option": "D",
+      "explanation": "وفق صنافة بلوم (Bloom's Taxonomy) للأهداف البيداغوجية، يمثل مستوى 'التطبيق' (Application) قدرة المتعلم على توظيف واستخدام المفاهيم والقواعد والقوانين المكتسبة في مواقف ووضعيات جديدة لحل المشكلات.",
+      "astuce": "💡 صنافة بلوم : المعرفة -> الفهم -> التطبيق (استخدام في وضعية جديدة) -> التحليل -> التركيب -> التقويم.",
+      "reference_text": null,
+      "domain": "SCIENCES_EDU",
+      "subdomain": "EDU_PSYCHO",
+      "course": 26,
+      "created_at": "2026-08-04T08:00:00.000Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 1014,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2025,
+      "question_number": "Q104",
+      "question_text": "ماذا يسمى التأثير الذي يؤدي إلى تحسن أداء التلاميذ بسبب التوقعات الإيجابية للأستاذ؟",
+      "option_a": "جوردان Jourdain",
+      "option_b": "بيجماليون Pygmalion",
+      "option_c": "هالو Halo",
+      "option_d": "طوباز Topaze",
+      "option_e": "جميع الاختيارات المقترحة خاطئة",
+      "correct_option": "B",
+      "explanation": "أثر بيجماليون (Pygmalion Effect / Rosenthal & Jacobson) هو ظاهرة سيكوسوسيولوجية تتجلى في تحسن أداء المتعلم ونتائجه نتيجة لتوقعات المدرس الإيجابية وإيمانه بقدرات تلميذه (النبوءة المحققة لذاتها).",
+      "astuce": "💡 أثر بيجماليون = التوقعات الإيجابية للمدرس ترفع أداء التلميذ. أثر طوباز = المدرس يعطي الإجابة بطريقة غير مباشرة. أثر جوردان = قبول سلوك تافه كأنه عمل عبقري.",
+      "reference_text": null,
+      "domain": "SCIENCES_EDU",
+      "subdomain": "EDU_SOCIO",
+      "course": 28,
+      "created_at": "2026-08-04T08:00:00.000Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 1029,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2025,
+      "question_number": "Q119",
+      "question_text": "ما هو المجال الذي ركزت عليه صنافة الأهداف البيداغوجية لـ د. كراثوول Krathwohl؟",
+      "option_a": "العقلي",
+      "option_b": "الحركي",
+      "option_c": "المعرفي",
+      "option_d": "الوجداني",
+      "option_e": "جميع الاختيارات المقترحة خاطئة",
+      "correct_option": "D",
+      "explanation": "اهتم ديفيد كراثوول (David Krathwohl) بصياغة صنافة للأهداف البيداغوجية تركز تحديداً على 'المجال الوجداني / الانفعالي' (Affective Domain)، والذي يشمل المشاعر، القيم، الاتجاهات، والاهتمامات (الاستقبال، الاستجابة، التقدير، التنظيم، والاتصاف بقيمة).",
+      "astuce": "💡 صنافات الأهداف :\n- بلوم (Bloom) = المجال المعرفي (Cognitif)\n- كراثوول (Krathwohl) = المجال الوجداني / الانفعالي (Affectif)\n- هارو / هارو وسيمبسون (Harrow/Simpson) = المجال النفس-حركي (Psychomoteur)",
+      "reference_text": null,
+      "domain": "SCIENCES_EDU",
+      "subdomain": "EDU_PSYCHO",
+      "course": 26,
+      "created_at": "2026-08-04T08:00:00.000Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 1907,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2025,
+      "question_number": "Q81",
+      "question_text": "Selon la taxonomie de Bloom, à quel niveau correspond la capacité de l'apprenant à mobiliser ses ressources et connaissances dans une situation nouvelle ?",
+      "option_a": "La compréhension",
+      "option_b": "L'analyse",
+      "option_c": "La synthèse",
+      "option_d": "L'application",
+      "option_e": "Toutes les options proposées sont fausses",
+      "correct_option": "D",
+      "explanation": "Dans la taxonomie de Bloom des objectifs pédagogiques, le niveau de l'« Application » désigne l'aptitude de l'apprenant à réinvestir des règles, méthodes ou concepts acquis pour résoudre un problème dans une situation inédite.",
+      "astuce": "💡 Taxonomie de Bloom : Connaissance -> Compréhension -> Application (mobilisation en situation nouvelle) -> Analyse -> Synthèse -> Évaluation.",
+      "reference_text": null,
+      "domain": "SCIENCES_EDU",
+      "subdomain": "EDU_PSYCHO",
+      "course": 26,
+      "created_at": "2026-08-04T08:00:00.000Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 1909,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2025,
+      "question_number": "Q104",
+      "question_text": "Comment appelle-t-on l'effet selon lequel les attentes positives de l'enseignant entraînent une amélioration des performances des élèves ?",
+      "option_a": "L'effet Jourdain",
+      "option_b": "L'effet Pygmalion",
+      "option_c": "L'effet de Halo",
+      "option_d": "L'effet Topaze",
+      "option_e": "Toutes les options proposées sont fausses",
+      "correct_option": "B",
+      "explanation": "L'effet Pygmalion (Rosenthal et Jacobson) est une prophétie autoréalisatrice montrant que le simple fait de porter un regard positif et d'avoir des attentes élevées envers un élève améliore significativement ses résultats scolaires.",
+      "astuce": "💡 Effets didactiques & psychologiques :\n- Pygmalion = les attentes positives de l'enseignant boostent l'élève.\n- Topaze = l'enseignant donne la réponse sous forme d'indice trop évident.\n- Jourdain = l'enseignant valide une réponse banale comme un savoir savant.",
+      "reference_text": null,
+      "domain": "SCIENCES_EDU",
+      "subdomain": "EDU_SOCIO",
+      "course": 28,
+      "created_at": "2026-08-04T08:00:00.000Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 1931,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2025,
+      "question_number": "Q119",
+      "question_text": "Sur quel domaine s'est focalisée la taxonomie des objectifs pédagogiques de D. Krathwohl ?",
+      "option_a": "Le domaine intellectuel",
+      "option_b": "Le domaine psychomoteur",
+      "option_c": "Le domaine cognitif",
+      "option_d": "Le domaine affectif",
+      "option_e": "Toutes les options proposées sont fausses",
+      "correct_option": "D",
+      "explanation": "David Krathwohl a élaboré la taxonomie des objectifs pédagogiques relative au domaine affectif (attitudes, valeurs, intérêts, motivation, intégration des normes), complétant ainsi la taxonomie cognitive de Bloom.",
+      "astuce": "💡 Grands auteurs des taxonomies :\n- Bloom = Domaine cognitif (savoirs, intellect)\n- Krathwohl = Domaine affectif (valeurs, émotions, attitudes)\n- Harrow / Simpson = Domaine psychomoteur (gestes, motricité)",
+      "reference_text": null,
+      "domain": "SCIENCES_EDU",
+      "subdomain": "EDU_PSYCHO",
+      "course": 26,
+      "created_at": "2026-08-04T08:00:00.000Z"
     }
   }
 ]
