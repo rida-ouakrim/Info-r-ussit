@@ -22467,19 +22467,19 @@
       "source_type": "past_exam",
       "exam_year": 2025,
       "question_number": "Q64",
-      "question_text": "M. Montessori",
-      "option_a": "Option A",
-      "option_b": "Option B",
-      "option_c": "Option C",
-      "option_d": "Option D",
-      "option_e": "Aucune des réponses ci-dessus",
+      "question_text": "حسب المقاربة التربوية لماريا مونتيسوري M. Montessori، كيف يجب التصرف مع الطفل؟",
+      "option_a": "تركه بمفرده أثناء تعلمه دون حاجة إلى توجيه",
+      "option_b": "مرافقته بما يتوافق مع مرحلته النمائية الحساسة",
+      "option_c": "تحفيزه من خلال تعزيز سلوكه",
+      "option_d": "تلقينه قواعد اللغة من أجل التواصل",
+      "option_e": "جميع الاختيارات المقترحة خاطئة",
       "correct_option": "B",
-      "explanation": "بيداغوجيا ماريا مونتيسوري (Pédagogie Montessori) تقوم على مبدأ \"ساعدني لأفعل ذلك بنفسي\". دور المربي ليس التعليم المباشر أو ترك الطفل كلياً، بل هو الملاحظة الدقيقة للطفل وفهم \"فتراته الحساسة\" (Périodes sensibles)، وهي فترات يكون فيها الطفل ميالاً بشكل طبيعي لتعلم مهارة معينة. بناءً على هذه الملاحظة، يقوم المربي بتهيئة البيئة ومرافقة الطفل لدعم استقلاليته وتعلمه الذاتي.",
-      "astuce": "مونتيسوري = بيئة مُعدَّة + فترات حساسة. دور المربي هو الملاحظة والمرافقة لا التدخل المباشر.",
+      "explanation": "تقوم المقاربة التربوية لماريا مونتيسوري (Maria Montessori) على احترام \"المراحل أو الفترات النمائية الحساسة\" (Périodes sensibles) للطفل، وهي فترات يكون خلالها مهيأً نفسياً وعصبياً لاكتساب مهارات واستقلالية معينة.\n\nدور المربي لا يكمن في تركه بمفرده دون أدنى توجيه (الخيار A خاطئ)، ولا في التلقين المباشر أو التعزيز السلوكي الخارجي المحض (الخياران C و D)، بل في مرافقته وملاحظته وتوفير بيئة مهيأة تدعم تعلمه الذاتي واستقلاليته وفق إيقاعه الخاص.",
+      "astuce": "💡 مفتاح مونتيسوري (Montessori) :\n- مرافقة الطفل ومراعاة فتراته النمائية الحساسة (Périodes sensibles).\n- توفير بيئة مهيأة (Environnement préparé) للتعلّم الذاتي والاستقلالية (\"ساعدني لأفعل ذلك بنفسي\").\n- دور المربي: موجّه ومرافق وملاحظ وليس ملقناً.",
       "reference_text": null,
       "domain": "SCIENCES_EDU",
       "subdomain": "EDU_SOCIO",
-      "course": 26,
+      "course": 38,
       "created_at": "2026-08-18T10:03:43.090Z"
     }
   },
@@ -33550,7 +33550,7 @@
     "model": "exams.question",
     "pk": 1947,
     "fields": {
-      "source_type": "past_exam",
+      "source_type": "ai_generated",
       "exam_year": 2025,
       "question_number": "Q64",
       "question_text": "تعتمد المقاربة البيداغوجية لماريا مونتيسوري (M. Montessori) أساساً على:",
@@ -38013,6 +38013,29 @@
       "subdomain": "EDU_PSYCHO",
       "course": 26,
       "created_at": "2026-08-04T08:00:00.000Z"
+    }
+  },
+  {
+    "model": "exams.question",
+    "pk": 1903,
+    "fields": {
+      "source_type": "past_exam",
+      "exam_year": 2025,
+      "question_number": "Q64",
+      "question_text": "Selon l'approche pédagogique de Maria Montessori, quelle attitude doit-on adopter envers l'enfant ?",
+      "option_a": "Le laisser seul lors de son apprentissage sans aucun besoin de guidage",
+      "option_b": "L'accompagner en cohérence avec ses périodes sensibles de développement",
+      "option_c": "Le motiver à travers le renforcement de son comportement",
+      "option_d": "Lui inculquer les règles de la langue pour la communication",
+      "option_e": "Toutes les options proposées sont fausses",
+      "correct_option": "B",
+      "explanation": "La pédagogie de Maria Montessori repose sur l'accompagnement de l'enfant dans un environnement préparé en respectant ses « périodes sensibles » (phases de développement au cours desquelles l'enfant possède une réceptivité maximale).\n\nLe rôle de l'éducateur n'est pas de délaisser l'enfant sans aucun guidage (option A fausse), ni d'inculquer des règles de façon magistrale (option D), mais de l'observer et de l'accompagner avec bienveillance selon son rythme propre et son niveau de développement.",
+      "astuce": "💡 Repères Concours :\n- Montessori = Accompagnement adapté aux périodes sensibles de l'enfant dans un environnement préparé.\n- Principe fondateur : « Aide-moi à faire seul ».\n- Rôle de l'enseignant : Guide, observateur et facilitateur.",
+      "reference_text": null,
+      "domain": "SCIENCES_EDU",
+      "subdomain": "EDU_SOCIO",
+      "course": 38,
+      "created_at": "2026-08-18T10:03:43.090Z"
     }
   }
 ]
