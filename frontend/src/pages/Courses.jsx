@@ -14,7 +14,7 @@ import {
   HelpCircle, Code2, RefreshCw, Clock,
   ChevronRight, Zap, Play, PlayCircle, Filter,
   FileText, Star, ChevronDown, ChevronUp, User, Globe, Award, Sparkles, Layers, Video,
-  Server, Cpu, Laptop, GraduationCap, Brain, Terminal, Database, Network, LayoutTemplate, ArrowLeft, Users, School, Library,
+  Server, Cpu, Laptop, GraduationCap, Brain, Terminal, Database, Network, LayoutTemplate, ArrowLeft, ArrowRight, Users, School, Library,
   Save, Trash2, Copy, Download, Check, ChevronLeft, Highlighter, X, Eraser, BarChart3, ShieldCheck, Building2, Columns, Minus, MessageSquare, Send, Bot
 } from 'lucide-react';
 
