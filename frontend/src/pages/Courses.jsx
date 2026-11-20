@@ -122,10 +122,20 @@ const getSubdomainConfig = (code) => {
       return { icon: School, desc: 'Programmes officiels, orientations pédagogiques de l’informatique.' };
     case 'DID_APPROCHES':
       return { icon: User, desc: 'Démarches d’enseignement, évaluation, remédiation et activités pratiques.' };
+    case 'EDU_DEV':
+      return { icon: Brain, desc: "Concepts et théories du développement humain (Piaget, Freud, Erikson, Vygotski), étapes et troubles (20%)." };
+    case 'EDU_APPR':
+      return { icon: Sparkles, desc: "Théories de l'apprentissage (Béhaviorisme, Gestalt, Constructivisme, Cognitivisme) (20%)." };
+    case 'EDU_APPROCHES':
+      return { icon: Award, desc: "De la pédagogie par objectifs (PPO) à l'approche par compétences (APC) (15%)." };
+    case 'EDU_METHODES':
+      return { icon: Layers, desc: "Méthodes actives, Montessori, Freinet, résolution de problèmes, différenciation et évaluation (15%)." };
+    case 'EDU_SOCIO':
+      return { icon: Building2, desc: "Sociologie de l'école, socialisation, reproduction sociale (Bourdieu) et contexte marocain (15%)." };
+    case 'EDU_GROUPE':
+      return { icon: Users, desc: "Groupe-classe, dynamique de Lewin, leadership, sociométrie de Moreno, climat et vie scolaire (15%)." };
     case 'EDU_PSYCHO':
       return { icon: Brain, desc: 'Développement cognitif, théories de l’apprentissage (béhaviorisme, etc.).' };
-    case 'EDU_SOCIO':
-      return { icon: Users, desc: 'Sociologie de l’école, dynamique de groupe, relation enseignant-élève.' };
     default:
       return { icon: BookOpen, desc: 'Concepts et ressources du sous-module.' };
   }
@@ -212,17 +222,47 @@ const domainTranslations = {
 };
 
 const subdomainTranslations = {
+  EDU_DEV: {
+    name_fr: "Psychologie du développement (20%)",
+    name_ar: "علم نفس النمو (20%)",
+    desc_fr: "Concepts, théories du développement (Piaget, Freud, Erikson, Vygotski, Wallon), facteurs et étapes du développement.",
+    desc_ar: "مفاهيم النمو ونظرياته الكبرى (بياجي، فرويد، إريكسون، فيغوتسكي، والون)، مراحله، وعوامل واضطرابات النماء."
+  },
+  EDU_APPR: {
+    name_fr: "Psychologie de l'apprentissage (20%)",
+    name_ar: "علم نفس التعلم (20%)",
+    desc_fr: "Théories de l'apprentissage (béhaviorisme, gestalt, constructivisme, socioconstructivisme, cognitivisme), motivation et mémoire.",
+    desc_ar: "نظريات التعلم (السلوكية، الجشطلتية، البنائية، السوسيوبنائية، المعرفية)، شروط التعلم، الدافعية، الذاكرة وعوائق التعلم."
+  },
+  EDU_APPROCHES: {
+    name_fr: "De la PPO à l'Approche par compétences (15%)",
+    name_ar: "من بيداغوجيا الأهداف إلى المقاربة بالكفايات (15%)",
+    desc_fr: "Pédagogie par objectifs, taxonomie de Bloom, approche par compétences (APC), intégration et mobilisation des ressources.",
+    desc_ar: "الأسس النظرية للتدريس بالأهداف، تصنيف بلوم، المقاربة بالكفايات، بيداغوجيا الإدماج والتصريف الإجرائي للكفايات."
+  },
+  EDU_METHODES: {
+    name_fr: "Méthodes d'enseignement et stratégies (15%)",
+    name_ar: "طرائق التدريس واستراتيجيات التعليم والتعلم (15%)",
+    desc_fr: "Méthodes actives, enseignement explicite, Montessori, Dewey, Freinet, résolution de problèmes, projet, différenciation et évaluation.",
+    desc_ar: "الطرائق البيداغوجية، التعلم النشط، بيداغوجيا مونتيسوري وديوي، التعلم التعاوني، حل المشكلات، بيداغوجيا الخطأ والفارقية والتقويم."
+  },
+  EDU_SOCIO: {
+    name_fr: "Sociologie de l'éducation (15%)",
+    name_ar: "سوسيولوجيا التربية (15%)",
+    desc_fr: "Sociologie de l'école, socialisation, reproduction sociale (Bourdieu), inégalités scolaires et contexte marocain.",
+    desc_ar: "المدرسة والمجتمع، التنشئة الاجتماعية، نظريات إعادة الإنتاج والعنف الرمزي (بورديو)، تكافؤ الفرص، وسوسيولوجيا المدرسة المغربية."
+  },
+  EDU_GROUPE: {
+    name_fr: "Dynamique de groupe (15%)",
+    name_ar: "دينامية الجماعة (15%)",
+    desc_fr: "Groupe-classe, dynamique et théorie du champ (Lewin), leadership, sociométrie (Moreno), climat scolaire et vie scolaire.",
+    desc_ar: "مفاهيم دينامية الجماعة، جماعة القسم، أنماط القيادة (ليفين)، القياس السوسيومتري (مورينو)، تدبير النزاعات، التواصل والمناخ المدرسي والحياة المدرسية."
+  },
   EDU_PSYCHO: {
     name_fr: "Psychologie de l'éducation",
     name_ar: "علم النفس التربوي",
     desc_fr: "Développement cognitif, théories de l'apprentissage (béhaviorisme, constructivisme, socio-constructivisme).",
     desc_ar: "النمو المعرفي، ونظريات التعلم (السلوكية، البنائية، السوسيو-بنائية، الجشطالت والتحليل النفسي)."
-  },
-  EDU_SOCIO: {
-    name_fr: "Sociologie de l'éducation",
-    name_ar: "علم الاجتماع التربوي",
-    desc_fr: "Sociologie de l'école, climat scolaire, dynamique de groupe et éthique professionnelle.",
-    desc_ar: "علم الاجتماع التربوي، دينامية الجماعة، الحياة المدرسية، والمواطنة وأخلاقيات المهنة."
   },
   DID_CONCEPTS: {
     name_fr: "Concepts fondamentaux en didactique",
@@ -2078,13 +2118,91 @@ const Courses = () => {
     const domainPercentage = totalCourses > 0 ? Math.round((completedCourses / totalCourses) * 100) : 0;
 
     const getFilteredSubdomains = () => {
-      const list = Array.isArray(subdomains) ? subdomains : [];
+      let list = Array.isArray(subdomains) ? subdomains : [];
+      if (selectedDomainCode === 'SCIENCES_EDU') {
+        // Exclude legacy umbrella EDU_PSYCHO so only the 6 official subdomains show
+        list = list.filter(s => s.code !== 'EDU_PSYCHO');
+        // Order according to official Moroccan Tawsif
+        const order = ['EDU_DEV', 'EDU_APPR', 'EDU_APPROCHES', 'EDU_METHODES', 'EDU_SOCIO', 'EDU_GROUPE'];
+        list.sort((a, b) => {
+          const idxA = order.indexOf(a.code);
+          const idxB = order.indexOf(b.code);
+          return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
+        });
+      }
       if (user?.is_staff || user?.is_superuser) return list;
 
       const target = (user?.target_exam || '').toUpperCase().trim();
       const match = list.find(s => s.code === target);
       if (match) return [match];
       return list;
+    };
+
+    const renderSubdomainCard = (sub) => {
+      const config = getSubdomainConfig(sub.code);
+      const Icon = config.icon;
+
+      const subCourses = allCourses.filter(c => c.subdomain === sub.id || c.subdomain_code === sub.code || c.subdomain === sub.code);
+      const total = subCourses.length;
+      const completed = subCourses.filter(c => c.is_completed).length;
+      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      return (
+        <div
+          key={sub.code}
+          role="button"
+          tabIndex={0}
+          onClick={() => handleSubdomainChange(sub.code)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSubdomainChange(sub.code); }}
+          className="group relative flex flex-col text-left cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl rounded-2xl overflow-hidden select-none"
+          style={{ boxShadow: '0 4px 20px rgba(3,89,78,0.08)', border: '1px solid #d4ede9', background: '#ffffff', minHeight: 200 }}
+        >
+          {/* Top accent */}
+          <div style={{ height: 4, background: 'linear-gradient(90deg,#03594e,#046a5d,#F8C62F)' }} className="w-full shrink-0" />
+
+          <div className="flex flex-col flex-1 p-6 space-y-4 relative z-10 w-full">
+            <div className="flex items-start justify-between">
+              <div className="p-3 rounded-xl group-hover:scale-110 transition-transform" style={{ background: 'rgba(3,89,78,0.08)', border: '1px solid rgba(3,89,78,0.15)' }}>
+                <Icon className="w-5 h-5" style={{ color: '#03594e' }} />
+              </div>
+              <div className="text-right">
+                <div className="text-xs font-black" style={{ color: '#03594e' }}>{total}</div>
+                <div className="text-[10px]" style={{ color: '#6b8c87' }}>{(selectedDomainCode === 'DIDACTIQUE' || sub.code?.startsWith('DID_')) ? 'fiches' : (prepLang === 'ar' ? 'دروس' : 'fiches')}</div>
+              </div>
+            </div>
+
+            <div className="flex-1">
+              <h3 className="text-sm font-extrabold leading-snug group-hover:text-[#03594e] transition-colors" style={{ color: '#1a2e2a' }}>
+                {getLocalizedSubdomainName(sub, prepLang)}
+              </h3>
+              <p className="text-xs mt-2 line-clamp-2 leading-relaxed" style={{ color: '#6b8c87' }}>
+                {getLocalizedSubdomainDesc(sub, prepLang)}
+              </p>
+            </div>
+
+            {total > 0 && (
+              <div className="space-y-1.5 pt-3" style={{ borderTop: '1px solid #e8f5f3' }}>
+                <div className="flex items-center justify-between" style={{ fontSize: 10, fontWeight: 700 }}>
+                  <span style={{ color: '#6b8c87' }}>{percentage}% complété</span>
+                  <span style={{ color: '#03594e' }}>{completed}/{total}</span>
+                </div>
+                <div className="w-full rounded-full overflow-hidden" style={{ height: 5, background: '#e8f5f3' }}>
+                  <div className="h-full rounded-full transition-all duration-700" style={{ width: `${percentage}%`, background: percentage === 100 ? '#03594e' : 'linear-gradient(90deg,#03594e,#F8C62F)' }} />
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between pt-1">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(248,198,47,0.12)', color: '#946e00', border: '1px solid rgba(248,198,47,0.25)' }}>
+                Filière
+              </span>
+              <span className="text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all" style={{ color: '#03594e' }}>
+                Ouvrir <ChevronRight className="w-3.5 h-3.5" />
+              </span>
+            </div>
+          </div>
+        </div>
+      );
     };
 
     return (
@@ -2143,74 +2261,63 @@ const Courses = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-          {getFilteredSubdomains().map((sub) => {
-            const config = getSubdomainConfig(sub.code);
-            const Icon = config.icon;
-
-            const subCourses = allCourses.filter(c => c.subdomain === sub.id || c.subdomain_code === sub.code || c.subdomain === sub.code);
-            const total = subCourses.length;
-            const completed = subCourses.filter(c => c.is_completed).length;
-            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-            return (
-              <div
-                key={sub.code}
-                role="button"
-                tabIndex={0}
-                onClick={() => handleSubdomainChange(sub.code)}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSubdomainChange(sub.code); }}
-                className="group relative flex flex-col text-left cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl rounded-2xl overflow-hidden select-none"
-                style={{ boxShadow: '0 4px 20px rgba(3,89,78,0.08)', border: '1px solid #d4ede9', background: '#ffffff', minHeight: 200 }}
-              >
-                {/* Top accent */}
-                <div style={{ height: 4, background: 'linear-gradient(90deg,#03594e,#046a5d,#F8C62F)' }} className="w-full shrink-0" />
-
-                <div className="flex flex-col flex-1 p-6 space-y-4 relative z-10 w-full">
-                  <div className="flex items-start justify-between">
-                    <div className="p-3 rounded-xl group-hover:scale-110 transition-transform" style={{ background: 'rgba(3,89,78,0.08)', border: '1px solid rgba(3,89,78,0.15)' }}>
-                      <Icon className="w-5 h-5" style={{ color: '#03594e' }} />
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs font-black" style={{ color: '#03594e' }}>{total}</div>
-                      <div className="text-[10px]" style={{ color: '#6b8c87' }}>{(selectedDomainCode === 'DIDACTIQUE' || sub.code?.startsWith('DID_')) ? 'fiches' : (prepLang === 'ar' ? 'دروس' : 'fiches')}</div>
+        {selectedDomainCode === 'SCIENCES_EDU' ? (
+          <div className="space-y-10 pt-2">
+            {[
+              {
+                id: 'mod1',
+                num: '01',
+                title_ar: 'المجال الرئيسي الأول: علم النفس التربوي',
+                title_fr: "Module 01 : Psychologie de l'éducation",
+                weight: '40 %',
+                color: '#03594e',
+                subCodes: ['EDU_DEV', 'EDU_APPR']
+              },
+              {
+                id: 'mod2',
+                num: '02',
+                title_ar: 'المجال الرئيسي الثاني: المقاربات البيداغوجية وطرائق التدريس',
+                title_fr: "Module 02 : Approches pédagogiques et méthodes d'enseignement",
+                weight: '30 %',
+                color: '#0284c7',
+                subCodes: ['EDU_APPROCHES', 'EDU_METHODES']
+              },
+              {
+                id: 'mod3',
+                num: '03',
+                title_ar: 'المجال الرئيسي الثالث: سوسيولوجيا التربية',
+                title_fr: "Module 03 : Sociologie de l'éducation",
+                weight: '30 %',
+                color: '#7c3aed',
+                subCodes: ['EDU_SOCIO', 'EDU_GROUPE']
+              }
+            ].map(module => {
+              const moduleSubs = getFilteredSubdomains().filter(s => module.subCodes.includes(s.code));
+              if (moduleSubs.length === 0) return null;
+              return (
+                <div key={module.id} className="space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b-2 border-slate-200/80 dark:border-slate-800" dir={prepLang === 'ar' ? 'rtl' : 'ltr'}>
+                    <div className="flex items-center gap-3">
+                      <span className="px-3 py-1 rounded-xl text-xs font-black text-white shadow-sm" style={{ background: module.color }}>
+                        {module.weight}
+                      </span>
+                      <h2 className="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {prepLang === 'ar' ? module.title_ar : module.title_fr}
+                      </h2>
                     </div>
                   </div>
-
-                  <div className="flex-1">
-                    <h3 className="text-sm font-extrabold leading-snug group-hover:text-[#03594e] transition-colors" style={{ color: '#1a2e2a' }}>
-                      {getLocalizedSubdomainName(sub, prepLang)}
-                    </h3>
-                    <p className="text-xs mt-2 line-clamp-2 leading-relaxed" style={{ color: '#6b8c87' }}>
-                      {getLocalizedSubdomainDesc(sub, prepLang)}
-                    </p>
-                  </div>
-
-                  {total > 0 && (
-                    <div className="space-y-1.5 pt-3" style={{ borderTop: '1px solid #e8f5f3' }}>
-                      <div className="flex items-center justify-between" style={{ fontSize: 10, fontWeight: 700 }}>
-                        <span style={{ color: '#6b8c87' }}>{percentage}% complété</span>
-                        <span style={{ color: '#03594e' }}>{completed}/{total}</span>
-                      </div>
-                      <div className="w-full rounded-full overflow-hidden" style={{ height: 5, background: '#e8f5f3' }}>
-                        <div className="h-full rounded-full transition-all duration-700" style={{ width: `${percentage}%`, background: percentage === 100 ? '#03594e' : 'linear-gradient(90deg,#03594e,#F8C62F)' }} />
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(248,198,47,0.12)', color: '#946e00', border: '1px solid rgba(248,198,47,0.25)' }}>
-                      Filière
-                    </span>
-                    <span className="text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all" style={{ color: '#03594e' }}>
-                      Ouvrir <ChevronRight className="w-3.5 h-3.5" />
-                    </span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {moduleSubs.map(renderSubdomainCard)}
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            {getFilteredSubdomains().map(renderSubdomainCard)}
+          </div>
+        )}
       </motion.div>
     );
   };
