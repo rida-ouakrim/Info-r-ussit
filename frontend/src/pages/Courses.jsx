@@ -224,38 +224,38 @@ const domainTranslations = {
 const subdomainTranslations = {
   EDU_DEV: {
     name_fr: "Psychologie du développement (20%)",
-    name_ar: "علم نفس النمو (20%)",
-    desc_fr: "Concepts, théories du développement (Piaget, Freud, Erikson, Vygotski, Wallon), facteurs et étapes du développement.",
+    name_ar: "المجال الفرعي 1: علم نفس النمو (20%)",
+    desc_fr: "Concepts fondamentaux, grandes théories du développement humain (Piaget, Freud, Erikson, Vygotski, Wallon), facteurs et étapes du développement.",
     desc_ar: "مفاهيم النمو ونظرياته الكبرى (بياجي، فرويد، إريكسون، فيغوتسكي، والون)، مراحله، وعوامل واضطرابات النماء."
   },
   EDU_APPR: {
     name_fr: "Psychologie de l'apprentissage (20%)",
-    name_ar: "علم نفس التعلم (20%)",
-    desc_fr: "Théories de l'apprentissage (béhaviorisme, gestalt, constructivisme, socioconstructivisme, cognitivisme), motivation et mémoire.",
+    name_ar: "المجال الفرعي 2: علم نفس التعلم (20%)",
+    desc_fr: "Théories de l'apprentissage (béhaviorisme, gestaltisme, constructivisme, socioconstructivisme, cognitivisme), conditions, motivation et mémoire.",
     desc_ar: "نظريات التعلم (السلوكية، الجشطلتية، البنائية، السوسيوبنائية، المعرفية)، شروط التعلم، الدافعية، الذاكرة وعوائق التعلم."
   },
   EDU_APPROCHES: {
     name_fr: "De la PPO à l'Approche par compétences (15%)",
-    name_ar: "من بيداغوجيا الأهداف إلى المقاربة بالكفايات (15%)",
-    desc_fr: "Pédagogie par objectifs, taxonomie de Bloom, approche par compétences (APC), intégration et mobilisation des ressources.",
+    name_ar: "المجال الفرعي 1: من بيداغوجيا الأهداف إلى المقاربة بالكفايات (15%)",
+    desc_fr: "Pédagogie par objectifs, taxonomie de Bloom, approche par compétences (APC), intégration et déclinaison opérationnelle.",
     desc_ar: "الأسس النظرية للتدريس بالأهداف، تصنيف بلوم، المقاربة بالكفايات، بيداغوجيا الإدماج والتصريف الإجرائي للكفايات."
   },
   EDU_METHODES: {
     name_fr: "Méthodes d'enseignement et stratégies (15%)",
-    name_ar: "طرائق التدريس واستراتيجيات التعليم والتعلم (15%)",
-    desc_fr: "Méthodes actives, enseignement explicite, Montessori, Dewey, Freinet, résolution de problèmes, projet, différenciation et évaluation.",
+    name_ar: "المجال الفرعي 2: طرائق التدريس واستراتيجيات التعليم والتعلم (15%)",
+    desc_fr: "Méthodes actives, enseignement explicite, pédagogies nouvelles (Montessori, Dewey, Freinet), résolution de problèmes, différenciation et évaluation.",
     desc_ar: "الطرائق البيداغوجية، التعلم النشط، بيداغوجيا مونتيسوري وديوي، التعلم التعاوني، حل المشكلات، بيداغوجيا الخطأ والفارقية والتقويم."
   },
   EDU_SOCIO: {
     name_fr: "Sociologie de l'éducation (15%)",
-    name_ar: "سوسيولوجيا التربية (15%)",
-    desc_fr: "Sociologie de l'école, socialisation, reproduction sociale (Bourdieu), inégalités scolaires et contexte marocain.",
+    name_ar: "المجال الفرعي 1: سوسيولوجيا التربية (15%)",
+    desc_fr: "Sociologie de l'école, socialisation, théories de la reproduction (Bourdieu), inégalités scolaires et contexte marocain.",
     desc_ar: "المدرسة والمجتمع، التنشئة الاجتماعية، نظريات إعادة الإنتاج والعنف الرمزي (بورديو)، تكافؤ الفرص، وسوسيولوجيا المدرسة المغربية."
   },
   EDU_GROUPE: {
     name_fr: "Dynamique de groupe (15%)",
-    name_ar: "دينامية الجماعة (15%)",
-    desc_fr: "Groupe-classe, dynamique et théorie du champ (Lewin), leadership, sociométrie (Moreno), climat scolaire et vie scolaire.",
+    name_ar: "المجال الفرعي 2: دينامية الجماعة (15%)",
+    desc_fr: "Dynamique du groupe-classe (Lewin), styles de leadership, sociométrie (Moreno), gestion des conflits, climat et vie scolaire.",
     desc_ar: "مفاهيم دينامية الجماعة، جماعة القسم، أنماط القيادة (ليفين)، القياس السوسيومتري (مورينو)، تدبير النزاعات، التواصل والمناخ المدرسي والحياة المدرسية."
   },
   EDU_PSYCHO: {
@@ -300,8 +300,8 @@ const courseArabicTitles = {
 
 const getLocalizedDomainName = (dom, lang) => {
   if (!dom) return '';
-  if (dom.code === 'SCIENCES_EDU' && lang === 'ar' && domainTranslations.SCIENCES_EDU?.name_ar) {
-    return domainTranslations.SCIENCES_EDU.name_ar;
+  if (dom.code === 'SCIENCES_EDU') {
+    return lang === 'ar' ? (domainTranslations.SCIENCES_EDU?.name_ar || "علوم التربية") : (domainTranslations.SCIENCES_EDU?.name_fr || "Sciences de l'éducation");
   }
   return dom.name;
 };
@@ -309,8 +309,10 @@ const getLocalizedDomainName = (dom, lang) => {
 const getLocalizedDomainDesc = (dom, lang) => {
   if (!dom) return '';
   const config = getDomainConfig(dom.code);
-  if (dom.code === 'SCIENCES_EDU' && lang === 'ar' && domainTranslations.SCIENCES_EDU?.desc_ar) {
-    return domainTranslations.SCIENCES_EDU.desc_ar;
+  if (dom.code === 'SCIENCES_EDU') {
+    return lang === 'ar'
+      ? (domainTranslations.SCIENCES_EDU?.desc_ar || "علم النفس التربوي (النمو ونظريات التعلم)، المقاربات البيداغوجية، وسوسيولوجيا التربية ودينامية الجماعة.")
+      : (domainTranslations.SCIENCES_EDU?.desc_fr || "Psychologie de l'éducation, théories de l'apprentissage, approches pédagogiques et sociologie de l'éducation.");
   }
   return dom.description || config.description;
 };
@@ -320,10 +322,12 @@ const getLocalizedSubdomainName = (sub, lang) => {
   if (sub.code?.startsWith('DID_') || sub.domain === 'DIDACTIQUE') {
     return sub.name;
   }
-  if (lang === 'ar' && subdomainTranslations[sub.code]?.name_ar) {
-    return subdomainTranslations[sub.code].name_ar;
+  const trans = subdomainTranslations[sub.code];
+  if (trans) {
+    if (lang === 'ar' && trans.name_ar) return trans.name_ar;
+    if (lang === 'fr' && trans.name_fr) return trans.name_fr;
   }
-  return sub.name;
+  return lang === 'ar' ? (trans?.name_ar || sub.name_ar || sub.name) : (trans?.name_fr || sub.name);
 };
 
 const getLocalizedSubdomainDesc = (sub, lang) => {
@@ -332,10 +336,12 @@ const getLocalizedSubdomainDesc = (sub, lang) => {
   if (sub.code?.startsWith('DID_') || sub.domain === 'DIDACTIQUE') {
     return sub.description || config.desc;
   }
-  if (lang === 'ar' && subdomainTranslations[sub.code]?.desc_ar) {
-    return subdomainTranslations[sub.code].desc_ar;
+  const trans = subdomainTranslations[sub.code];
+  if (trans) {
+    if (lang === 'ar' && trans.desc_ar) return trans.desc_ar;
+    if (lang === 'fr' && trans.desc_fr) return trans.desc_fr;
   }
-  return sub.description || config.desc;
+  return lang === 'ar' ? (trans?.desc_ar || sub.description_ar || sub.description || config.desc) : (trans?.desc_fr || config.desc);
 };
 
 const getLocalizedCourseTitle = (c, lang) => {
@@ -937,7 +943,16 @@ const Courses = () => {
     const domList = Array.isArray(domains) ? domains : [];
     const dom = domList.find(d => d.code === code);
     if (dom) {
-      const subList = Array.isArray(dom.subdomains) ? dom.subdomains : [];
+      let subList = (Array.isArray(dom.subdomains) ? dom.subdomains : []).filter(s => s.code !== 'EDU_PSYCHO');
+      if (code === 'SCIENCES_EDU') {
+        try {
+          const savedLang = localStorage.getItem('user_prep_lang');
+          if (!savedLang) {
+            setPrepLang('ar');
+            setCourseLang('ar');
+          }
+        } catch (e) { }
+      }
       setSubdomains(subList);
       setCurrentStep('subdomains');
     }
@@ -2011,11 +2026,12 @@ const Courses = () => {
             const Icon = config.icon;
             const isSE = dom.code === 'SCIENCES_EDU';
 
-            const domainCourses = allCourses.filter(c => c.domain_code === dom.code);
+            const domainCourses = allCourses.filter(c => c.domain_code === dom.code && !([36, 37, 38, 39].includes(c.id)));
             const total = domainCourses.length;
             const completed = domainCourses.filter(c => c.is_completed).length;
             const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-            const subCount = dom.subdomains?.length || 0;
+            const domSubList = (dom.subdomains || []).filter(s => s.code !== 'EDU_PSYCHO');
+            const subCount = domSubList.length;
 
             return (
               <div
@@ -2024,7 +2040,8 @@ const Courses = () => {
                 tabIndex={0}
                 onClick={() => handleDomainChange(dom.code)}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDomainChange(dom.code); }}
-                className="group relative flex flex-col justify-between p-0 rounded-2xl overflow-hidden text-left cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl select-none"
+                dir={isSE && prepLang === 'ar' ? 'rtl' : 'ltr'}
+                className={`group relative flex flex-col justify-between p-0 rounded-2xl overflow-hidden ${isSE && prepLang === 'ar' ? 'text-right' : 'text-left'} cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl select-none`}
                 style={{ boxShadow: '0 4px 20px rgba(3,89,78,0.08)', border: '1px solid #d4ede9', background: '#ffffff', minHeight: 220 }}
               >
                 {/* Colored top accent bar */}
@@ -2038,7 +2055,7 @@ const Courses = () => {
                       <Icon className="w-6 h-6" style={{ color: '#03594e' }} />
                     </div>
                     <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full" style={{ background: 'rgba(248,198,47,0.15)', color: '#946e00', border: '1px solid rgba(248,198,47,0.3)' }}>
-                      {subCount} {subCount > 1 ? (isSE && prepLang === 'ar' ? 'فروع' : 'filières') : (isSE && prepLang === 'ar' ? 'فرع' : 'filière')}
+                      {subCount} {subCount > 1 ? (isSE && prepLang === 'ar' ? 'مجالات فرعية' : 'filières') : (isSE && prepLang === 'ar' ? 'مجال فرعي' : 'filière')}
                     </span>
                   </div>
 
@@ -2096,7 +2113,11 @@ const Courses = () => {
 
                   <div className="flex items-center justify-end pt-1">
                     <span className="text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all" style={{ color: '#03594e' }}>
-                      {isSE && prepLang === 'ar' ? 'استكشاف الدروس' : 'Explorer'} <ChevronRight className="w-3.5 h-3.5" />
+                      {isSE && prepLang === 'ar' ? (
+                        <>استكشاف المحاور <ChevronLeft className="w-3.5 h-3.5" /></>
+                      ) : (
+                        <>Explorer <ChevronRight className="w-3.5 h-3.5" /></>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -2109,10 +2130,12 @@ const Courses = () => {
   };
 
   const renderSubdomainsView = () => {
+    const isSE = selectedDomainCode === 'SCIENCES_EDU';
+    const isArabic = isSE && prepLang === 'ar';
     const domainObj = (Array.isArray(domains) ? domains : []).find(d => d.code === selectedDomainCode);
     const domainConfig = getDomainConfig(selectedDomainCode);
 
-    const domainCourses = allCourses.filter(c => c.domain_code === selectedDomainCode);
+    const domainCourses = allCourses.filter(c => c.domain_code === selectedDomainCode && !([36, 37, 38, 39].includes(c.id)));
     const totalCourses = domainCourses.length;
     const completedCourses = domainCourses.filter(c => c.is_completed).length;
     const domainPercentage = totalCourses > 0 ? Math.round((completedCourses / totalCourses) * 100) : 0;
@@ -2129,6 +2152,7 @@ const Courses = () => {
           const idxB = order.indexOf(b.code);
           return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
         });
+        return list;
       }
       if (user?.is_staff || user?.is_superuser) return list;
 
@@ -2142,7 +2166,7 @@ const Courses = () => {
       const config = getSubdomainConfig(sub.code);
       const Icon = config.icon;
 
-      const subCourses = allCourses.filter(c => c.subdomain === sub.id || c.subdomain_code === sub.code || c.subdomain === sub.code);
+      const subCourses = allCourses.filter(c => (c.subdomain === sub.id || c.subdomain_code === sub.code || c.subdomain === sub.code) && !([36, 37, 38, 39].includes(c.id)));
       const total = subCourses.length;
       const completed = subCourses.filter(c => c.is_completed).length;
       const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -2154,7 +2178,8 @@ const Courses = () => {
           tabIndex={0}
           onClick={() => handleSubdomainChange(sub.code)}
           onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleSubdomainChange(sub.code); }}
-          className="group relative flex flex-col text-left cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl rounded-2xl overflow-hidden select-none"
+          dir={isArabic ? 'rtl' : 'ltr'}
+          className={`group relative flex flex-col ${isArabic ? 'text-right' : 'text-left'} cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl rounded-2xl overflow-hidden select-none`}
           style={{ boxShadow: '0 4px 20px rgba(3,89,78,0.08)', border: '1px solid #d4ede9', background: '#ffffff', minHeight: 200 }}
         >
           {/* Top accent */}
@@ -2165,9 +2190,11 @@ const Courses = () => {
               <div className="p-3 rounded-xl group-hover:scale-110 transition-transform" style={{ background: 'rgba(3,89,78,0.08)', border: '1px solid rgba(3,89,78,0.15)' }}>
                 <Icon className="w-5 h-5" style={{ color: '#03594e' }} />
               </div>
-              <div className="text-right">
+              <div className={isArabic ? 'text-left' : 'text-right'}>
                 <div className="text-xs font-black" style={{ color: '#03594e' }}>{total}</div>
-                <div className="text-[10px]" style={{ color: '#6b8c87' }}>{(selectedDomainCode === 'DIDACTIQUE' || sub.code?.startsWith('DID_')) ? 'fiches' : (prepLang === 'ar' ? 'دروس' : 'fiches')}</div>
+                <div className="text-[10px]" style={{ color: '#6b8c87' }}>
+                  {isArabic ? 'دروس' : 'fiches'}
+                </div>
               </div>
             </div>
 
@@ -2183,8 +2210,12 @@ const Courses = () => {
             {total > 0 && (
               <div className="space-y-1.5 pt-3" style={{ borderTop: '1px solid #e8f5f3' }}>
                 <div className="flex items-center justify-between" style={{ fontSize: 10, fontWeight: 700 }}>
-                  <span style={{ color: '#6b8c87' }}>{percentage}% complété</span>
-                  <span style={{ color: '#03594e' }}>{completed}/{total}</span>
+                  <span style={{ color: '#6b8c87' }}>
+                    {isArabic ? `${percentage}% مكتمل` : `${percentage}% complété`}
+                  </span>
+                  <span style={{ color: '#03594e' }}>
+                    {completed}/{total} {isArabic ? 'دروس منجزة' : 'validés'}
+                  </span>
                 </div>
                 <div className="w-full rounded-full overflow-hidden" style={{ height: 5, background: '#e8f5f3' }}>
                   <div className="h-full rounded-full transition-all duration-700" style={{ width: `${percentage}%`, background: percentage === 100 ? '#03594e' : 'linear-gradient(90deg,#03594e,#F8C62F)' }} />
@@ -2194,10 +2225,14 @@ const Courses = () => {
 
             <div className="flex items-center justify-between pt-1">
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(248,198,47,0.12)', color: '#946e00', border: '1px solid rgba(248,198,47,0.25)' }}>
-                Filière
+                {isArabic ? 'مجال فرعي' : 'Sous-domaine'}
               </span>
               <span className="text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all" style={{ color: '#03594e' }}>
-                Ouvrir <ChevronRight className="w-3.5 h-3.5" />
+                {isArabic ? (
+                  <>استعراض الدروس <ChevronLeft className="w-3.5 h-3.5" /></>
+                ) : (
+                  <>Ouvrir <ChevronRight className="w-3.5 h-3.5" /></>
+                )}
               </span>
             </div>
           </div>
@@ -2220,27 +2255,60 @@ const Courses = () => {
               onClick={() => setCurrentStep('domains')}
               className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors"
             >
-              Accueil
+              {isArabic ? 'الرئيسية' : 'Accueil'}
             </span>
-            <ChevronRight className="w-3.5 h-3.5 opacity-45" />
+            <ChevronRight className={`w-3.5 h-3.5 opacity-45 ${isArabic ? 'rotate-180' : ''}`} />
             <span className="text-[#03594e] font-extrabold">{getLocalizedDomainName(domainObj, prepLang)}</span>
           </nav>
 
-          <button
-            type="button"
-            onClick={() => setCurrentStep('domains')}
-            className="btn-ghost flex items-center gap-1.5 text-xs py-1.5 px-3.5"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Retour aux grands modules
-          </button>
+          <div className="flex items-center gap-3 flex-wrap">
+            {isSE && (
+              <div className="flex items-center bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl p-1 shadow-xs">
+                <button
+                  type="button"
+                  onClick={() => handleSetPrepLang('ar')}
+                  className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                    prepLang === 'ar'
+                      ? 'bg-[#03594e] text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  🇲🇦 العربية (AR)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSetPrepLang('fr')}
+                  className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer ${
+                    prepLang === 'fr'
+                      ? 'bg-[#03594e] text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  🇫🇷 Français (FR)
+                </button>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setCurrentStep('domains')}
+              className="btn-ghost flex items-center gap-1.5 text-xs py-1.5 px-3.5"
+            >
+              {isArabic ? (
+                <><ArrowRight className="w-3.5 h-3.5" /> العودة إلى المجالات الرئيسية</>
+              ) : (
+                <><ArrowLeft className="w-3.5 h-3.5" /> Retour aux grands modules</>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Compact Header for Subdomain View */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+        <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800 ${isArabic ? 'text-right' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#03594e]/10 text-[#03594e] dark:bg-[#F8C62F]/10 dark:text-[#F8C62F] text-xs font-bold">
               <BookOpen className="w-3.5 h-3.5" />
-              {(selectedDomainCode === 'DIDACTIQUE' || selectedDomainCode === 'DEV' || selectedDomainCode === 'SYS_RES' || selectedDomainCode === 'LOG') ? 'GRAND MODULE' : (prepLang === 'ar' ? 'الوحدة الكبرى' : 'GRAND MODULE')}
+              {isArabic ? 'الوحدة الكبرى' : 'GRAND MODULE'}
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               {getLocalizedDomainName(domainObj, prepLang)}
@@ -2250,25 +2318,29 @@ const Courses = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-4 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shrink-0 shadow-sm">
+          <div className="flex items-center gap-4 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shrink-0 shadow-sm" dir="ltr">
             <ProgressRing percentage={domainPercentage} size={54} strokeWidth={5} />
-            <div>
-              <div className="text-[11px] font-bold text-[#03594e] dark:text-[#F8C62F] uppercase tracking-wider">Avancement du Module</div>
+            <div className={isArabic ? 'text-right' : 'text-left'}>
+              <div className="text-[11px] font-bold text-[#03594e] dark:text-[#F8C62F] uppercase tracking-wider">
+                {isArabic ? 'تقدم الوحدة' : 'Avancement du Module'}
+              </div>
               <div className="text-base font-extrabold text-slate-900 dark:text-white">
-                {completedCourses} / {totalCourses} <span className="text-xs font-normal text-slate-400">validés</span>
+                {completedCourses} / {totalCourses} <span className="text-xs font-normal text-slate-400">{isArabic ? 'مكتمل' : 'validés'}</span>
               </div>
             </div>
           </div>
         </div>
 
         {selectedDomainCode === 'SCIENCES_EDU' ? (
-          <div className="space-y-10 pt-2">
+          <div className="space-y-10 pt-2" dir={isArabic ? 'rtl' : 'ltr'}>
             {[
               {
                 id: 'mod1',
                 num: '01',
-                title_ar: 'المجال الرئيسي الأول: علم النفس التربوي',
-                title_fr: "Module 01 : Psychologie de l'éducation",
+                title_ar: 'المجال الرئيسي الأول: علم النفس التربوي (40 %)',
+                title_fr: "Module 01 : Psychologie de l'éducation (40 %)",
+                desc_ar: 'علم نفس النمو (20 %) وعلم نفس التعلم (20 %)',
+                desc_fr: "Psychologie du développement (20 %) et de l'apprentissage (20 %)",
                 weight: '40 %',
                 color: '#03594e',
                 subCodes: ['EDU_DEV', 'EDU_APPR']
@@ -2276,8 +2348,10 @@ const Courses = () => {
               {
                 id: 'mod2',
                 num: '02',
-                title_ar: 'المجال الرئيسي الثاني: المقاربات البيداغوجية وطرائق التدريس',
-                title_fr: "Module 02 : Approches pédagogiques et méthodes d'enseignement",
+                title_ar: 'المجال الرئيسي الثاني: المقاربات البيداغوجية وطرائق التدريس (30 %)',
+                title_fr: "Module 02 : Approches pédagogiques et méthodes d'enseignement (30 %)",
+                desc_ar: 'المقاربات البيداغوجية من الأهداف إلى الكفايات (15 %) وطرائق التدريس واستراتيجيات التعليم (15 %)',
+                desc_fr: "De la PPO à l'APC (15 %) et Méthodes d'enseignement et stratégies (15 %)",
                 weight: '30 %',
                 color: '#0284c7',
                 subCodes: ['EDU_APPROCHES', 'EDU_METHODES']
@@ -2285,8 +2359,10 @@ const Courses = () => {
               {
                 id: 'mod3',
                 num: '03',
-                title_ar: 'المجال الرئيسي الثالث: سوسيولوجيا التربية',
-                title_fr: "Module 03 : Sociologie de l'éducation",
+                title_ar: 'المجال الرئيسي الثالث: سوسيولوجيا التربية (30 %)',
+                title_fr: "Module 03 : Sociologie de l'éducation (30 %)",
+                desc_ar: 'سوسيولوجيا التربية في سياق المدرسة المغربية (15 %) ودينامية الجماعة والتواصل التربوي (15 %)',
+                desc_fr: "Sociologie de l'éducation (15 %) et Dynamique de groupe et climat scolaire (15 %)",
                 weight: '30 %',
                 color: '#7c3aed',
                 subCodes: ['EDU_SOCIO', 'EDU_GROUPE']
@@ -2296,14 +2372,19 @@ const Courses = () => {
               if (moduleSubs.length === 0) return null;
               return (
                 <div key={module.id} className="space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b-2 border-slate-200/80 dark:border-slate-800" dir={prepLang === 'ar' ? 'rtl' : 'ltr'}>
+                  <div className="flex items-center justify-between pb-3 border-b-2 border-slate-200/80 dark:border-slate-800" dir={isArabic ? 'rtl' : 'ltr'}>
                     <div className="flex items-center gap-3">
                       <span className="px-3 py-1 rounded-xl text-xs font-black text-white shadow-sm" style={{ background: module.color }}>
                         {module.weight}
                       </span>
-                      <h2 className="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
-                        {prepLang === 'ar' ? module.title_ar : module.title_fr}
-                      </h2>
+                      <div>
+                        <h2 className="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                          {isArabic ? module.title_ar : module.title_fr}
+                        </h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                          {isArabic ? module.desc_ar : module.desc_fr}
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -2325,11 +2406,13 @@ const Courses = () => {
   const [courseTypeFilter, setCourseTypeFilter] = useState('all'); // 'all', 'fiches', 'videos'
 
   const renderCoursesListView = () => {
+    const isSE = selectedDomainCode === 'SCIENCES_EDU' || (selectedSubdomainCode && selectedSubdomainCode.startsWith('EDU_'));
+    const isArabic = isSE && prepLang === 'ar';
     const domainObj = (Array.isArray(domains) ? domains : []).find(d => d.code === selectedDomainCode);
     const subdomainObj = (Array.isArray(subdomains) ? subdomains : []).find(s => s.code === selectedSubdomainCode);
     const domainConfig = getDomainConfig(selectedDomainCode);
 
-    const allList = Array.isArray(courses) ? courses : [];
+    const allList = (Array.isArray(courses) ? courses : []).filter(c => !([36, 37, 38, 39].includes(c.id)));
 
     // Sort all courses in numerical order (01, 02, 03... 14)
     const sortedAllList = allList.slice().sort((a, b) => {
@@ -2364,10 +2447,10 @@ const Courses = () => {
         progressText = doneCount === javaLessons.length ? `Toutes les ${javaLessons.length} leçons validées ✓` : `${doneCount} / ${javaLessons.length} leçons validées`;
       } else if (c.video_url && videoProgress[c.id] != null) {
         pct = videoProgress[c.id];
-        progressText = pct === 100 ? "Visionnage complété ✓" : `Visionné à ${pct}%`;
+        progressText = pct === 100 ? (isArabic ? "اكتملت المشاهدة ✓" : "Visionnage complété ✓") : (isArabic ? `تمت مشاهدة ${pct}%` : `Visionné à ${pct}%`);
       } else {
         pct = isDone ? 100 : 0;
-        progressText = isDone ? "Révision complétée ✓" : "Non commencée";
+        progressText = isDone ? (isArabic ? "تمت دراسة الدرس ✓" : "Révision complétée ✓") : (isArabic ? "غير مبدوء" : "Non commencée");
       }
 
       const TypeIcon = isProgressive ? Layers : c.video_url ? Video : BookOpen;
@@ -2378,14 +2461,17 @@ const Courses = () => {
           : c.video_url
             ? { background: 'rgba(239,68,68,0.1)', color: '#dc2626', border: '1px solid rgba(239,68,68,0.2)' }
             : { background: 'rgba(3,89,78,0.08)', color: '#03594e', border: '1px solid rgba(3,89,78,0.2)' };
-      const badgeLabel = isProgressive ? 'FORMATION PROGRESSIVE' : c.video_url ? 'VIDÉO & FICHE' : 'FICHE DE RÉVISION';
+      const badgeLabel = isArabic
+        ? (c.video_url ? 'فيديو وملخص' : 'ملخص شامل')
+        : (isProgressive ? 'FORMATION PROGRESSIVE' : c.video_url ? 'VIDÉO & FICHE' : 'FICHE DE RÉVISION');
 
       return (
         <button
           key={c.id}
           type="button"
           onClick={() => handleCourseSelect(c)}
-          className="group relative flex flex-col text-left cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl rounded-2xl overflow-hidden"
+          dir={isArabic ? 'rtl' : 'ltr'}
+          className={`group relative flex flex-col ${isArabic ? 'text-right' : 'text-left'} cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl rounded-2xl overflow-hidden`}
           style={{ boxShadow: '0 4px 20px rgba(3,89,78,0.07)', border: isDone ? '1px solid rgba(3,89,78,0.3)' : '1px solid #d4ede9', background: '#ffffff' }}
         >
           {/* Top colored strip */}
@@ -2394,7 +2480,7 @@ const Courses = () => {
           {/* Hover overlay */}
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(3,89,78,0.02) 0%, rgba(248,198,47,0.03) 100%)' }} />
 
-          <div className="flex flex-col flex-1 p-5 gap-3 relative z-10">
+          <div className="flex flex-col flex-1 p-5 gap-3 relative z-10 w-full">
             {/* Badge row */}
             <div className="flex items-center justify-between gap-2">
               <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[9px] font-extrabold uppercase tracking-wide" style={badgeStyle}>
@@ -2402,7 +2488,7 @@ const Courses = () => {
                 {badgeLabel}
               </span>
               {isDone
-                ? <div className="flex items-center gap-1 text-[10px] font-bold" style={{ color: '#03594e' }}><CheckCircle2 className="w-4 h-4" /> Fait</div>
+                ? <div className="flex items-center gap-1 text-[10px] font-bold" style={{ color: '#03594e' }}><CheckCircle2 className="w-4 h-4" /> {isArabic ? 'مكتمل' : 'Fait'}</div>
                 : <Circle className="w-4 h-4" style={{ color: '#c8e6e2' }} />
               }
             </div>
@@ -2423,7 +2509,11 @@ const Courses = () => {
               </div>
               <div className="flex items-center justify-end pt-0.5">
                 <span className="text-xs font-bold flex items-center gap-1 group-hover:gap-2 transition-all" style={{ color: '#03594e' }}>
-                  {isProgressive ? 'Ouvrir les leçons' : c.video_url ? 'Regarder & réviser' : 'Ouvrir la fiche'} <ChevronRight className="w-3.5 h-3.5" />
+                  {isArabic ? (
+                    <>{isProgressive ? 'فتح الدروس' : c.video_url ? 'مشاهدة ومراجعة' : 'استعراض الدرس'} <ChevronLeft className="w-3.5 h-3.5" /></>
+                  ) : (
+                    <>{isProgressive ? 'Ouvrir les leçons' : c.video_url ? 'Regarder & réviser' : 'Ouvrir la fiche'} <ChevronRight className="w-3.5 h-3.5" /></>
+                  )}
                 </span>
               </div>
             </div>
@@ -2443,20 +2533,24 @@ const Courses = () => {
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <nav className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 overflow-x-auto no-scrollbar py-1">
-            <span onClick={() => setCurrentStep('domains')} className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors shrink-0">Accueil</span>
-            <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-40" />
+            <span onClick={() => setCurrentStep('domains')} className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors shrink-0">{isArabic ? 'الرئيسية' : 'Accueil'}</span>
+            <ChevronRight className={`w-3.5 h-3.5 shrink-0 opacity-40 ${isArabic ? 'rotate-180' : ''}`} />
             <span onClick={() => setCurrentStep('subdomains')} className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors shrink-0">{getLocalizedDomainName(domainObj, prepLang) || 'Développement'}</span>
-            <ChevronRight className="w-3.5 h-3.5 shrink-0 opacity-40" />
+            <ChevronRight className={`w-3.5 h-3.5 shrink-0 opacity-40 ${isArabic ? 'rotate-180' : ''}`} />
             <span className="text-[#03594e] font-extrabold shrink-0">{getLocalizedSubdomainName(subdomainObj, prepLang) || 'Sous-domaine'}</span>
           </nav>
 
           <button type="button" onClick={() => setCurrentStep('subdomains')} className="btn-ghost flex items-center gap-1.5 text-xs py-1.5 px-3.5">
-            <ArrowLeft className="w-3.5 h-3.5" /> Retour aux sous-modules
+            {isArabic ? (
+              <><ArrowRight className="w-3.5 h-3.5" /> العودة إلى المجالات الفرعية</>
+            ) : (
+              <><ArrowLeft className="w-3.5 h-3.5" /> Retour aux sous-modules</>
+            )}
           </button>
         </div>
 
         {/* Compact Header for Courses List View */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+        <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800 ${isArabic ? 'text-right' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#03594e]/10 text-[#03594e] dark:bg-[#F8C62F]/10 dark:text-[#F8C62F] text-xs font-bold uppercase tracking-wider">
               {getLocalizedDomainName(domainObj, prepLang)}
@@ -2465,7 +2559,7 @@ const Courses = () => {
               {getLocalizedSubdomainName(subdomainObj, prepLang)}
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-              {getLocalizedSubdomainDesc(subdomainObj, prepLang) || 'Retrouvez les fiches de cours académiques et les explications vidéos structurées.'}
+              {getLocalizedSubdomainDesc(subdomainObj, prepLang) || (isArabic ? 'استكشف ملخصات الدروس الأكاديمية والشروحات المنظمة.' : 'Retrouvez les fiches de cours académiques et les explications vidéos structurées.')}
             </p>
           </div>
 
@@ -2480,7 +2574,7 @@ const Courses = () => {
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
               >
-                Tout ({sortedAllList.length})
+                {isArabic ? `الكل (${sortedAllList.length})` : `Tout (${sortedAllList.length})`}
               </button>
               <button
                 type="button"
@@ -2490,7 +2584,7 @@ const Courses = () => {
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
               >
-                <Video className="w-3.5 h-3.5 text-[#F8C62F]" /> Vidéos ({videosList.length})
+                <Video className="w-3.5 h-3.5 text-[#F8C62F]" /> {isArabic ? `الفيديوهات (${videosList.length})` : `Vidéos (${videosList.length})`}
               </button>
             </div>
           )}
@@ -2498,17 +2592,21 @@ const Courses = () => {
 
         {/* Unified List of Courses in Numerical Order (01 to 14) */}
         {(courseTypeFilter === 'all' || courseTypeFilter === 'fiches') && sortedAllList.length > 0 && (
-          <div className="space-y-4 pt-2">
+          <div className="space-y-4 pt-2" dir={isArabic ? 'rtl' : 'ltr'}>
             <div className="flex items-center gap-3 pb-3" style={{ borderBottom: '2px solid #e8f5f3' }}>
               <div className="p-2.5 rounded-xl" style={{ background: 'rgba(3,89,78,0.08)', border: '1px solid rgba(3,89,78,0.15)' }}>
                 <BookOpen className="w-4 h-4" style={{ color: '#03594e' }} />
               </div>
               <div>
                 <h3 className="text-sm font-extrabold" style={{ color: '#1a2e2a' }}>
-                  Programme Complet des Cours ({sortedAllList.length} Chapitres)
-                  <span className="ml-2 px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(248,198,47,0.15)', color: '#946e00', border: '1px solid rgba(248,198,47,0.3)' }}>{sortedAllList.length} leçons</span>
+                  {isArabic ? `البرنامج التفصيلي للدروس (${sortedAllList.length} دروس)` : `Programme Complet des Cours (${sortedAllList.length} Chapitres)`}
+                  <span className="mx-2 px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(248,198,47,0.15)', color: '#946e00', border: '1px solid rgba(248,198,47,0.3)' }}>
+                    {isArabic ? `${sortedAllList.length} دروس` : `${sortedAllList.length} leçons`}
+                  </span>
                 </h3>
-                <p className="text-[11px]" style={{ color: '#6b8c87' }}>Synthèses académiques, algorithmes, pseudo-code et vidéos de révision</p>
+                <p className="text-[11px]" style={{ color: '#6b8c87' }}>
+                  {isArabic ? 'ملخصات بيداغوجية ونظرية شاملة، أطر مفاهيمية، وشروحات وتطبيقات ديداكتيكية' : 'Synthèses académiques, algorithmes, pseudo-code et vidéos de révision'}
+                </p>
               </div>
             </div>
 
@@ -2527,10 +2625,12 @@ const Courses = () => {
               </div>
               <div>
                 <h3 className="text-sm font-extrabold" style={{ color: '#1a2e2a' }}>
-                  Cours Vidéos de Révision (Darija)
-                  <span className="ml-2 px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(239,68,68,0.1)', color: '#dc2626', border: '1px solid rgba(239,68,68,0.2)' }}>{videosList.length}</span>
+                  {isArabic ? 'الفيديوهات والشروحات المسجلة' : 'Cours Vidéos de Révision (Darija)'}
+                  <span className="mx-2 px-2 py-0.5 rounded-full text-[10px]" style={{ background: 'rgba(239,68,68,0.1)', color: '#dc2626', border: '1px solid rgba(239,68,68,0.2)' }}>{videosList.length}</span>
                 </h3>
-                <p className="text-[11px]" style={{ color: '#6b8c87' }}>Vidéos explicatives pas-à-pas intégrées</p>
+                <p className="text-[11px]" style={{ color: '#6b8c87' }}>
+                  {isArabic ? 'شروحات توضيحية وتطبيقات عملية' : 'Vidéos explicatives pas-à-pas intégrées'}
+                </p>
               </div>
             </div>
 

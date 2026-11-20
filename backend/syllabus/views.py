@@ -29,7 +29,7 @@ class CourseListView(generics.ListAPIView):
             'content', 'content_ar', 'content_fr',
             'examples', 'examples_ar', 'examples_fr',
             'astuces', 'astuces_ar', 'astuces_fr'
-        )
+        ).exclude(id__in=[36, 37, 38, 39])
         subdomain_code = self.request.query_params.get('subdomain')
         if subdomain_code:
             queryset = queryset.filter(subdomain__code=subdomain_code)

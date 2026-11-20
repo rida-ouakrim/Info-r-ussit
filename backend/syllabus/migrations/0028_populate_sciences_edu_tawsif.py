@@ -30,6 +30,14 @@ def populate_sciences_edu(apps, schema_editor):
             defaults={'domain': domain, 'name': name, 'description': desc}
         )
 
+    # Reassign legacy courses 36, 37, 38, 39 to DEV_ALGO so they do not count in SCIENCES_EDU
+    try:
+        dev_sub = Subdomain.objects.filter(code='DEV_ALGO').first()
+        if dev_sub:
+            Course.objects.filter(id__in=[36, 37, 38, 39]).update(subdomain=dev_sub)
+    except Exception:
+        pass
+
     # Read initial_data.json
     base_dir = getattr(settings, 'BASE_DIR', None)
     if base_dir:

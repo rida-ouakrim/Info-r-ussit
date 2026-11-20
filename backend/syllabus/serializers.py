@@ -7,11 +7,15 @@ class SubdomainSerializer(serializers.ModelSerializer):
         fields = ('code', 'domain', 'name', 'description')
 
 class DomainSerializer(serializers.ModelSerializer):
-    subdomains = SubdomainSerializer(many=True, read_only=True)
+    subdomains = serializers.SerializerMethodField()
 
     class Meta:
         model = Domain
         fields = ('code', 'name', 'description', 'subdomains')
+
+    def get_subdomains(self, obj):
+        qs = obj.subdomains.exclude(code='EDU_PSYCHO')
+        return SubdomainSerializer(qs, many=True).data
 
 class CourseSerializer(serializers.ModelSerializer):
     subdomain_name = serializers.CharField(source='subdomain.name', read_only=True)
