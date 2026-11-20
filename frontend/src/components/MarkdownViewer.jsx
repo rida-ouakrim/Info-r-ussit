@@ -253,6 +253,9 @@ const ensureFencedCodeBlocks = (text) => {
     cleaned = cleaned.replace(/\\n/g, '\n');
   }
 
+  // Separate combined horizontal rules with headings: "--- # Heading" -> "---\n\n# Heading"
+  cleaned = cleaned.replace(/^\s*(?:---|---|\*\*\*|___)\s*(#{1,6}\s+.+)$/gm, '---\n\n$1');
+
   // Format inline code blocks: ```lang code``` -> ```lang\ncode\n```
   cleaned = cleaned.replace(/```([a-zA-Z0-9_-]+)\s+([^\n`]+?)\s*```/g, '```$1\n$2\n```');
 
